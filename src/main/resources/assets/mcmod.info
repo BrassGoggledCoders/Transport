@@ -1,0 +1,18 @@
+[
+    {
+      "modid": "transport",
+      "name": "Transport",
+      "description": "All kinds of Transport",
+      "version": "${version}",
+      "mcversion": "${mcversion}",
+      "url": "http://minecraft.curseforge.com/projects/transport",
+      "updateUrl": "http://minecraft.curseforge.com/projects/transport/files",
+      "authorList": [
+          "SkySom"
+      ],
+      "credits": "",
+      "logoFile": "",
+      "screenshots": [],
+      "dependencies": []
+    }
+]
