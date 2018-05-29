@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.loaders.block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import xyz.brassgoggledcoders.transport.library.block.loader.BlockLoaderBase;
 import xyz.brassgoggledcoders.transport.loaders.tileentity.TileEntityFELoader;
 
 import javax.annotation.Nonnull;
