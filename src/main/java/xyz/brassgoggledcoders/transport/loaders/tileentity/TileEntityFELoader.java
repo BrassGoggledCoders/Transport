@@ -1,4 +1,33 @@
 package xyz.brassgoggledcoders.transport.loaders.tileentity;
 
-public class TileEntityFELoader extends TileEntityLoaderBase {
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
+import xyz.brassgoggledcoders.transport.library.tileentity.loader.TileEntityLoaderBase;
+
+public class TileEntityFELoader extends TileEntityLoaderBase<IEnergyStorage> {
+    @Override
+    public Capability<?> getCapabilityType() {
+        return CapabilityEnergy.ENERGY;
+    }
+
+    @Override
+    public <T> T castCapability(IEnergyStorage iEnergyStorage) {
+        return CapabilityEnergy.ENERGY.cast(iEnergyStorage);
+    }
+
+    @Override
+    public IEnergyStorage getInternalCapability() {
+        return null;
+    }
+
+    @Override
+    public IEnergyStorage getOutputCapability() {
+        return null;
+    }
+
+    @Override
+    public IEnergyStorage getInputCapability() {
+        return null;
+    }
 }
