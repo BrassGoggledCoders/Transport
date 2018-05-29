@@ -1,0 +1,106 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "rail": "moarcarts:blocks/rails/switch_rail_straight_left"
+    },
+    "transform": "forge:default-block",
+    "model": "rail_flat"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "left=true,north_west=true,shape=north_south,straight=true": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_straight_left"
+      }
+    }],
+    "left=true,north_west=true,shape=north_south,straight=false": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_turn_left"
+      }
+    }],
+    "left=true,north_west=true,shape=east_west,straight=true": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_straight_left"
+      },
+      "y": 270
+    }],
+    "left=true,north_west=true,shape=east_west,straight=false": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_turn_left"
+      },
+      "y": 270
+    }],
+    "left=true,north_west=false,shape=north_south,straight=true": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_straight_left"
+      },
+      "y": 180
+    }],
+    "left=true,north_west=false,shape=north_south,straight=false": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_turn_left"
+      },
+      "y": 180
+    }],
+    "left=true,north_west=false,shape=east_west,straight=true": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_straight_left"
+      },
+      "y": 90
+    }],
+    "left=true,north_west=false,shape=east_west,straight=false": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_turn_left"
+      },
+      "y": 90
+    }],
+    "left=false,north_west=true,shape=north_south,straight=true": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_straight_right"
+      }
+    }],
+    "left=false,north_west=true,shape=north_south,straight=false": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_turn_right"
+      }
+    }],
+    "left=false,north_west=true,shape=east_west,straight=true": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_straight_right"
+      },
+      "y": 270
+    }],
+    "left=false,north_west=true,shape=east_west,straight=false": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_turn_right"
+      },
+      "y": 270
+    }],
+    "left=false,north_west=false,shape=north_south,straight=true": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_straight_right"
+      },
+      "y": 180
+    }],
+    "left=false,north_west=false,shape=north_south,straight=false": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_turn_right"
+      },
+      "y": 180
+    }],
+    "left=false,north_west=false,shape=east_west,straight=true": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_straight_right"
+      },
+      "y": 90
+    }],
+    "left=false,north_west=false,shape=east_west,straight=false": [{
+      "textures": {
+        "rail": "moarcarts:blocks/rails/switch_rail_turn_right"
+      },
+      "y": 90
+    }]
+  }
+}

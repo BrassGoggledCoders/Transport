@@ -1,0 +1,48 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "rail": "transport:blocks/holding"
+    },
+    "transform": "forge:default-block",
+    "model": "rail_flat"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "facing=north,powered=true": [{
+      "textures" : {
+        "rail": "transport:blocks/holding_powered"
+      }
+    }],
+    "facing=east,powered=true": [{
+      "textures" : {
+        "rail": "transport:blocks/holding_powered"
+      },
+      "y": 90
+    }],
+    "facing=south,powered=true": [{
+      "textures" : {
+        "rail": "transport:blocks/holding_powered"
+      },
+      "y": 180
+    }],
+    "facing=west,powered=true": [{
+      "textures" : {
+        "rail": "transport:blocks/holding_powered"
+      },
+      "y": 270
+    }],
+    "facing=north,powered=false": [{
+    }],
+    "facing=east,powered=false": [{
+      "y": 90
+    }],
+    "facing=south,powered=false": [{
+      "y": 180
+    }],
+    "facing=west,powered=false": [{
+      "y": 270
+    }]
+  }
+}
