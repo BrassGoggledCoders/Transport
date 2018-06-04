@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.tracks.block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
+import xyz.brassgoggledcoders.transport.library.block.track.BlockRailFoundation;
 import xyz.brassgoggledcoders.transport.library.block.track.RailPredicates;
 
 import javax.annotation.Nonnull;

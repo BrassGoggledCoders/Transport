@@ -9,6 +9,7 @@ import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import xyz.brassgoggledcoders.transport.library.block.track.BlockRailFoundation;
 import xyz.brassgoggledcoders.transport.library.block.track.RailPredicates;
 
 import javax.annotation.Nonnull;
