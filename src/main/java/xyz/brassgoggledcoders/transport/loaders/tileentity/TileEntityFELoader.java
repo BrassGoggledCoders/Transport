@@ -1,13 +1,15 @@
 package xyz.brassgoggledcoders.transport.loaders.tileentity;
 
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import xyz.brassgoggledcoders.transport.library.tileentity.loader.TileEntityLoaderBase;
 
 public class TileEntityFELoader extends TileEntityLoaderBase<IEnergyStorage> {
     @Override
-    public Capability<?> getCapabilityType() {
+    public Capability<IEnergyStorage> getCapabilityType() {
         return CapabilityEnergy.ENERGY;
     }
 
@@ -29,5 +31,10 @@ public class TileEntityFELoader extends TileEntityLoaderBase<IEnergyStorage> {
     @Override
     public IEnergyStorage getInputCapability() {
         return null;
+    }
+
+    @Override
+    protected boolean transfer(IEnergyStorage from, IEnergyStorage to) {
+        return false;
     }
 }

@@ -7,7 +7,7 @@ import xyz.brassgoggledcoders.transport.library.tileentity.loader.TileEntityLoad
 
 public class TileEntityItemLoader extends TileEntityLoaderBase<IItemHandler> {
     @Override
-    public Capability<?> getCapabilityType() {
+    public Capability<IItemHandler> getCapabilityType() {
         return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
     }
 
@@ -29,5 +29,10 @@ public class TileEntityItemLoader extends TileEntityLoaderBase<IItemHandler> {
     @Override
     public IItemHandler getInputCapability() {
         return null;
+    }
+
+    @Override
+    protected boolean transfer(IItemHandler from, IItemHandler to) {
+        return false;
     }
 }
