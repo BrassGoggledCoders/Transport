@@ -22,7 +22,7 @@ public class TracksModule extends ModuleBase {
         super.registerBlocks(configRegistry, blockRegistry);
         blockRegistry.register(new BlockRailHolding());
         blockRegistry.register(new BlockRailDiamondCrossing());
-        blockRegistry.register(new BlockRailSwitch());
-        blockRegistry.register(new BlockRailWye());
+        //blockRegistry.register(new BlockRailSwitch());
+        //blockRegistry.register(new BlockRailWye());
     }
 }
