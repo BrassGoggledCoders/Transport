@@ -1,20 +1,18 @@
-package xyz.brassgoggledcoders.transport.tracks;
+package xyz.brassgoggledcoders.transport.rails;
 
 import com.teamacronymcoders.base.modulesystem.Module;
 import com.teamacronymcoders.base.modulesystem.ModuleBase;
 import com.teamacronymcoders.base.registrysystem.BlockRegistry;
 import com.teamacronymcoders.base.registrysystem.config.ConfigRegistry;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.tracks.block.BlockRailDiamondCrossing;
-import xyz.brassgoggledcoders.transport.tracks.block.BlockRailHolding;
-import xyz.brassgoggledcoders.transport.tracks.block.BlockRailSwitch;
-import xyz.brassgoggledcoders.transport.tracks.block.BlockRailWye;
+import xyz.brassgoggledcoders.transport.rails.block.BlockRailDiamondCrossing;
+import xyz.brassgoggledcoders.transport.rails.block.BlockRailHolding;
 
 @Module(Transport.ID)
-public class TracksModule extends ModuleBase {
+public class RailsModule extends ModuleBase {
     @Override
     public String getName() {
-        return "Tracks";
+        return "Rails";
     }
 
     @Override

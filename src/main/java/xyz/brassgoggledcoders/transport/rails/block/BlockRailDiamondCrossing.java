@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.tracks.block;
+package xyz.brassgoggledcoders.transport.rails.block;
 
 import com.teamacronymcoders.base.blocks.IHasBlockStateMapper;
 import net.minecraft.block.properties.IProperty;
@@ -9,8 +9,8 @@ import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import xyz.brassgoggledcoders.transport.library.block.track.BlockRailFoundation;
-import xyz.brassgoggledcoders.transport.library.block.track.RailPredicates;
+import xyz.brassgoggledcoders.transport.library.block.rail.BlockRailFoundation;
+import xyz.brassgoggledcoders.transport.library.block.rail.RailPredicates;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

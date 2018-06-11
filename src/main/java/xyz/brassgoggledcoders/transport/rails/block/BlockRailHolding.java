@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.tracks.block;
+package xyz.brassgoggledcoders.transport.rails.block;
 
 import com.teamacronymcoders.base.blocks.IHasBlockStateMapper;
 import net.minecraft.block.Block;
@@ -14,8 +14,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import xyz.brassgoggledcoders.transport.library.block.track.BlockRailFoundation;
-import xyz.brassgoggledcoders.transport.library.block.track.RailPredicates;
+import xyz.brassgoggledcoders.transport.library.block.rail.BlockRailFoundation;
+import xyz.brassgoggledcoders.transport.library.block.rail.RailPredicates;
 
 public class BlockRailHolding extends BlockRailFoundation implements IHasBlockStateMapper {
     public static final PropertyBool NORTH_WEST = PropertyBool.create("north_west");

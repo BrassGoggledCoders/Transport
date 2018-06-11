@@ -1,6 +1,6 @@
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-package xyz.brassgoggledcoders.transport.tracks.block;
+package xyz.brassgoggledcoders.transport.rails.block;
 
 import mcp.MethodsReturnNonnullByDefault;
 

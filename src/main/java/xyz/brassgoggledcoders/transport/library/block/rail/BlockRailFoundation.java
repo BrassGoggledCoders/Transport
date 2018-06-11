@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.library.block.track;
+package xyz.brassgoggledcoders.transport.library.block.rail;
 
 import com.teamacronymcoders.base.IBaseMod;
 import com.teamacronymcoders.base.blocks.IAmBlock;

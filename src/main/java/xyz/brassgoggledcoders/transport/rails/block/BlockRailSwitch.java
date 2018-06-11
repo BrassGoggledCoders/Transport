@@ -1,10 +1,10 @@
-package xyz.brassgoggledcoders.transport.tracks.block;
+package xyz.brassgoggledcoders.transport.rails.block;
 
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
-import xyz.brassgoggledcoders.transport.library.block.track.BlockRailFoundation;
-import xyz.brassgoggledcoders.transport.library.block.track.RailPredicates;
+import xyz.brassgoggledcoders.transport.library.block.rail.BlockRailFoundation;
+import xyz.brassgoggledcoders.transport.library.block.rail.RailPredicates;
 
 import javax.annotation.Nonnull;
 
