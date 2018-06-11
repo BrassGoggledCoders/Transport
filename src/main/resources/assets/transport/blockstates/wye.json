@@ -2,7 +2,7 @@
   "forge_marker": 1,
   "defaults": {
     "textures": {
-      "rail": "transport:blocks/wye_right"
+      "rail": "transport:blocks/rails/wye_right"
     },
     "transform": "forge:default-block",
     "model": "rail_flat"
@@ -17,7 +17,7 @@
     "shape=north_east,switched=false": [
       {
         "textures": {
-          "rail": "transport:blocks/wye_left"
+          "rail": "transport:blocks/rails/wye_left"
         },
         "y": 180
       }
@@ -30,7 +30,7 @@
     "shape=north_west,switched=false": [
       {
         "textures": {
-          "rail": "transport:blocks/wye_left"
+          "rail": "transport:blocks/rails/wye_left"
         },
         "y": 90
       }
@@ -43,7 +43,7 @@
     "shape=south_west,switched=false": [
       {
         "textures": {
-          "rail": "transport:blocks/wye_left"
+          "rail": "transport:blocks/rails/wye_left"
         }
       }
     ],
@@ -55,7 +55,7 @@
     "shape=south_east,switched=false": [
       {
         "textures": {
-          "rail": "transport:blocks/wye_left"
+          "rail": "transport:blocks/rails/wye_left"
         },
         "y": 270
       }

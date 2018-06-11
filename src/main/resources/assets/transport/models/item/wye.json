@@ -1,6 +1,6 @@
 {
   "parent":"item/generated",
   "textures": {
-    "layer0":"transport:blocks/wye_right"
+    "layer0":"transport:blocks/rails/wye_right"
   }
 }

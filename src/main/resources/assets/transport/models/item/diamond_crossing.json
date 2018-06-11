@@ -1,6 +1,6 @@
 {
   "parent":"item/generated",
   "textures": {
-    "layer0":"transport:blocks/diamond_crossing"
+    "layer0":"transport:blocks/rails/diamond_crossing"
   }
 }
