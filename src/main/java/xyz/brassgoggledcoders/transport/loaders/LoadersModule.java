@@ -6,7 +6,9 @@ import com.teamacronymcoders.base.registrysystem.BlockRegistry;
 import com.teamacronymcoders.base.registrysystem.config.ConfigRegistry;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.loaders.block.BlockFELoader;
+import xyz.brassgoggledcoders.transport.loaders.block.BlockFluidLoader;
 import xyz.brassgoggledcoders.transport.loaders.block.BlockItemLoader;
+import xyz.brassgoggledcoders.transport.loaders.block.BlockMobLoader;
 
 @Module(Transport.ID)
 public class LoadersModule extends ModuleBase {
@@ -20,5 +22,7 @@ public class LoadersModule extends ModuleBase {
         super.registerBlocks(configRegistry, blockRegistry);
         blockRegistry.register(new BlockFELoader());
         blockRegistry.register(new BlockItemLoader());
+        blockRegistry.register(new BlockFluidLoader());
+        blockRegistry.register(new BlockMobLoader());
     }
 }
