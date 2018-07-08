@@ -1,6 +1,8 @@
 package xyz.brassgoggledcoders.transport.rails.block;
 
+import com.teamacronymcoders.base.Capabilities;
 import com.teamacronymcoders.base.blocks.IHasBlockStateMapper;
+import com.teamacronymcoders.base.util.CapUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
@@ -32,7 +34,7 @@ public class BlockRailHolding extends BlockRailFoundation implements IHasBlockSt
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
                                     EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (!world.isRemote && player.getHeldItem(hand).isEmpty()) {
+        if (!world.isRemote && CapUtils.getOptional(player.getHeldItem(hand), Capabilities.TOOL).isPresent()) {
             state = state.withProperty(NORTH_WEST, !state.getValue(NORTH_WEST));
             world.setBlockState(pos, state, 3);
             return true;
