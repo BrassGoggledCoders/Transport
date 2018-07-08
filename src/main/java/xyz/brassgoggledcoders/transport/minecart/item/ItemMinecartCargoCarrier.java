@@ -22,6 +22,7 @@ import java.util.List;
 public class ItemMinecartCargoCarrier extends ItemMinecartBase {
     public ItemMinecartCargoCarrier() {
         super("cargo_carrier");
+        this.setHasSubtypes(false);
     }
 
     @Nonnull

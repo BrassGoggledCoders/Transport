@@ -1,0 +1,23 @@
+{
+  "type": "forge:ore_shapeless",
+  "conditions": [
+    {
+      "type": "base:module_active",
+      "name": "Rails"
+    }
+  ],
+  "result": {
+    "item": "transport:holding",
+    "data": 0
+  },
+  "ingredients": [
+    {
+      "type": "minecraft:item",
+      "item": "#rail"
+    },
+    {
+      "type": "minecraft:item",
+      "item": "minecraft:golden_rail"
+    }
+  ]
+}

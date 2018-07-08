@@ -1,0 +1,28 @@
+{
+  "type": "forge:ore_shapeless",
+  "conditions": [
+    {
+      "type": "base:module_active",
+      "name": "Basic Cargo"
+    }
+  ],
+  "result": {
+    "item": "transport:minecart_cargo_carrier",
+    "nbt": {
+      "cargo": {
+        "name": "transport:item_loader"
+      }
+    }
+  },
+  "ingredients": [
+    {
+      "type": "minecraft:item",
+      "item": "#minecart"
+    },
+    {
+      "type": "minecraft:item",
+      "item": "transport:item_loader",
+      "data": 0
+    }
+  ]
+}
