@@ -8,7 +8,6 @@ import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.loaders.block.BlockFELoader;
 import xyz.brassgoggledcoders.transport.loaders.block.BlockFluidLoader;
 import xyz.brassgoggledcoders.transport.loaders.block.BlockItemLoader;
-import xyz.brassgoggledcoders.transport.loaders.block.BlockMobLoader;
 
 @Module(Transport.ID)
 public class LoadersModule extends ModuleBase {
@@ -23,6 +22,5 @@ public class LoadersModule extends ModuleBase {
         blockRegistry.register(new BlockFELoader());
         blockRegistry.register(new BlockItemLoader());
         blockRegistry.register(new BlockFluidLoader());
-        blockRegistry.register(new BlockMobLoader());
     }
 }
