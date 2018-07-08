@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.transport.minecart.render;
 
-import com.teamacronymcoders.base.renderer.entity.loader.EntityRenderer;
 import com.teamacronymcoders.base.renderer.entity.minecart.RenderMinecartBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -25,6 +24,5 @@ public class RenderMinecartCargoCarrier extends RenderMinecartBase<EntityMinecar
         cargoInstance.getCargoRenderer().render(cargoInstance, cargoCarrier, partialTicks);
         GlStateManager.popMatrix();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        cargoInstance.getCargoRenderer().render(cargoInstance, cargoCarrier, partialTicks);
     }
 }

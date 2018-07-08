@@ -2,7 +2,10 @@ package xyz.brassgoggledcoders.transport.api.registry;
 
 import com.google.common.collect.Maps;
 import net.minecraft.util.ResourceLocation;
+import xyz.brassgoggledcoders.transport.api.cargo.ICargo;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public abstract class TransportRegistry<T extends ITransportRegistryItem> {
@@ -28,4 +31,8 @@ public abstract class TransportRegistry<T extends ITransportRegistryItem> {
     }
 
     public abstract T getEmpty();
+
+    public Collection<T> getEntries() {
+        return entries.values();
+    }
 }

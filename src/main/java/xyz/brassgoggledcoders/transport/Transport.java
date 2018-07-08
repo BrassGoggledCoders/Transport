@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.cargo.CapabilityCargo;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoRegistry;
 import xyz.brassgoggledcoders.transport.api.registry.TransportRegisterEvent;
 import xyz.brassgoggledcoders.transport.proxy.IProxy;
@@ -35,6 +36,7 @@ public class Transport extends BaseModFoundation<Transport> {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         TransportAPI.setCargoRendererLoader(proxy::getCargoRenderer);
+        CapabilityCargo.register();
         super.preInit(event);
         this.getLibProxy().addSidedBlockDomain();
         MinecraftForge.EVENT_BUS.post(new TransportRegisterEvent<>(TransportAPI.getCargoRegistry(), CargoRegistry.class));

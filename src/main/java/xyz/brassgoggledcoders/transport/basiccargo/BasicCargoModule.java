@@ -1,5 +1,7 @@
 package xyz.brassgoggledcoders.transport.basiccargo;
 
+import com.teamacronymcoders.base.capability.energy.EnergyStorageSerializable;
+import com.teamacronymcoders.base.capability.fluid.FluidTankSerializable;
 import com.teamacronymcoders.base.modulesystem.Module;
 import com.teamacronymcoders.base.modulesystem.ModuleBase;
 import net.minecraft.util.ResourceLocation;
@@ -25,9 +27,9 @@ public class BasicCargoModule extends ModuleBase {
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
         TransportAPI.getCargoRegistry().addEntries(
-                new CargoBasic<>(new ResourceLocation(Transport.ID, "energy_loader"), CapabilityEnergy.ENERGY, new EnergyStorage(100000)),
-                new CargoBasic<>(new ResourceLocation(Transport.ID, "item_loader"), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemStackHandler(27)),
-                new CargoBasic<>(new ResourceLocation(Transport.ID, "fluid_loader"), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, new FluidTank(16))
+                new CargoBasic<>(new ResourceLocation(Transport.ID, "fe_loader"), CapabilityEnergy.ENERGY, new EnergyStorageSerializable(100000, 10000)),
+                new CargoBasic<>(new ResourceLocation(Transport.ID, "item_loader"), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemStackHandler(9)),
+                new CargoBasic<>(new ResourceLocation(Transport.ID, "fluid_loader"), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, new FluidTankSerializable(16000))
         );
     }
 }

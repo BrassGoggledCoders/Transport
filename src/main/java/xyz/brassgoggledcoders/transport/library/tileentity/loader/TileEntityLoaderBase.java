@@ -5,9 +5,11 @@ import com.teamacronymcoders.base.tileentities.TileEntitySidedBase;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.List;
 import java.util.Optional;

@@ -12,6 +12,7 @@ import java.util.Optional;
 public class CargoCarrierItem implements ICargoCarrier {
     private final ItemStack itemStack;
     private ICargo cargo;
+    private ICargoInstance cargoInstance;
 
     public CargoCarrierItem(ItemStack itemStack) {
         this.itemStack = itemStack;
@@ -37,7 +38,10 @@ public class CargoCarrierItem implements ICargoCarrier {
 
     @Override
     public ICargoInstance getCargoInstance() {
-        return null;
+        if (cargoInstance == null) {
+            cargoInstance = this.getCargo().create(this.getWorld().orElse(null));
+        }
+        return cargoInstance;
     }
 
     @Override

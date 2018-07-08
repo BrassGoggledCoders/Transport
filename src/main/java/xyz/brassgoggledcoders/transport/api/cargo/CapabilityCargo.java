@@ -15,7 +15,7 @@ public class CapabilityCargo {
     @CapabilityInject(ICargoCarrier.class)
     public static Capability<ICargoCarrier> CARRIER;
 
-    public static void registerCapability() {
+    public static void register() {
         CapabilityManager.INSTANCE.register(ICargoCarrier.class, new Capability.IStorage<ICargoCarrier>() {
             @Nullable
             @Override

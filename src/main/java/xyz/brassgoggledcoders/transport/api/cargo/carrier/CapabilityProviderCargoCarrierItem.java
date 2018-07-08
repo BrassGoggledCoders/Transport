@@ -10,7 +10,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class CapabilityProviderCargoCarrierItem implements ICapabilityProvider {
+    private final CargoCarrierItem cargoCarrierItem;
+
     public CapabilityProviderCargoCarrierItem(ItemStack stack) {
+        cargoCarrierItem = new CargoCarrierItem(stack);
     }
 
     @Override
@@ -21,6 +24,6 @@ public class CapabilityProviderCargoCarrierItem implements ICapabilityProvider {
     @Nullable
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-        return null;
+        return capability == CapabilityCargo.CARRIER ? CapabilityCargo.CARRIER.cast(cargoCarrierItem) : null;
     }
 }

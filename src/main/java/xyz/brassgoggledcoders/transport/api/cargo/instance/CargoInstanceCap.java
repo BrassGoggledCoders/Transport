@@ -1,10 +1,13 @@
 package xyz.brassgoggledcoders.transport.api.cargo.instance;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.render.ICargoRenderer;
@@ -20,13 +23,14 @@ public class CargoInstanceCap<CAP> implements ICargoInstance {
 
     public CargoInstanceCap(Capability<CAP> capabilityType, CAP capabilityInstance, ResourceLocation cargoBlock) {
         this(capabilityType, capabilityInstance, "xyz.brassgoggledcoders.transport.library.render.cargo.CargoBlockRenderer",
-                Optional.ofNullable(ForgeRegistries.BLOCKS.getValue(cargoBlock))
-                    .map(Block::getDefaultState)
-                    .orElse(Blocks.AIR.getDefaultState()));
+                new Class[]{IBlockState.class},
+                new Object[]{Optional.ofNullable(ForgeRegistries.BLOCKS.getValue(cargoBlock))
+                        .map(Block::getDefaultState)
+                        .orElse(Blocks.AIR.getDefaultState())});
     }
 
-    public CargoInstanceCap(Capability<CAP> capabilityType, CAP capabilityInstance, String cargoRenderer, Object... inputs) {
-        this.cargoRenderer = TransportAPI.getCargoRendererLoader().loadRenderer(cargoRenderer, inputs);
+    public CargoInstanceCap(Capability<CAP> capabilityType, CAP capabilityInstance, String cargoRenderer, Class[] classes, Object[] inputs) {
+        this.cargoRenderer = TransportAPI.getCargoRendererLoader().loadRenderer(cargoRenderer, classes, inputs);
         this.capabilityType = capabilityType;
         this.capabilityInstance = capabilityInstance;
     }
@@ -35,6 +39,24 @@ public class CargoInstanceCap<CAP> implements ICargoInstance {
     @Override
     public ICargoRenderer getCargoRenderer() {
         return cargoRenderer;
+    }
+
+    @Nonnull
+    @Override
+    @SuppressWarnings("unchecked")
+    public NBTTagCompound writeToNBT() {
+        if (capabilityInstance instanceof INBTSerializable) {
+            return ((INBTSerializable<NBTTagCompound>) capabilityInstance).serializeNBT();
+        }
+        return new NBTTagCompound();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        if (capabilityInstance instanceof INBTSerializable) {
+            ((INBTSerializable<NBTTagCompound>) capabilityInstance).deserializeNBT(nbtTagCompound);
+        }
     }
 
     @Override

@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.api.cargo.instance.ICargoInstance;
 import xyz.brassgoggledcoders.transport.api.registry.ITransportRegistryItem;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public interface ICargo<T extends ICargoInstance> extends ITransportRegistryItem {
@@ -27,5 +28,5 @@ public interface ICargo<T extends ICargoInstance> extends ITransportRegistryItem
 
     }
 
-    T create(World world);
+    T create(@Nullable World world);
 }
