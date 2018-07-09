@@ -43,9 +43,4 @@ public class CargoCarrierItem implements ICargoCarrier {
         }
         return cargoInstance;
     }
-
-    @Override
-    public float getBrightness() {
-        return 0;
-    }
 }

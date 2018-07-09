@@ -25,6 +25,9 @@ public class MinecartModule extends ModuleBase {
     @Override
     public void registerItems(ConfigRegistry configRegistry, ItemRegistry itemRegistry) {
         super.registerItems(configRegistry, itemRegistry);
-        itemRegistry.register(new ItemMinecartCargoCarrier());
+        ItemMinecartCargoCarrier itemMinecartCargoCarrier = new ItemMinecartCargoCarrier();
+        itemRegistry.register(itemMinecartCargoCarrier);
+        Transport.proxy.setItemRenderer(itemMinecartCargoCarrier,
+                "xyz.brassgoggledcoders.transport.minecart.render.RenderItemMinecartCargoCarrier");
     }
 }

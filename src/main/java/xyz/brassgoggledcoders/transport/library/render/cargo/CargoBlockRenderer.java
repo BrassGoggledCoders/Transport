@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.library.render.cargo;
 
+import com.teamacronymcoders.base.client.ClientHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -20,7 +21,7 @@ public class CargoBlockRenderer implements ICargoRenderer {
     public void render(ICargoInstance cargo, ICargoCarrier cargoCarrier, float partialTicks) {
         GlStateManager.pushMatrix();
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        Minecraft.getMinecraft().getBlockRendererDispatcher().renderBlockBrightness(blockState, cargoCarrier.getBrightness());
+        Minecraft.getMinecraft().getBlockRendererDispatcher().renderBlockBrightness(blockState, ClientHelper.player().getBrightness());
         GlStateManager.popMatrix();
     }
 }

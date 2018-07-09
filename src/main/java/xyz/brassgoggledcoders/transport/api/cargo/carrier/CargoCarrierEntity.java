@@ -40,12 +40,6 @@ public class CargoCarrierEntity implements ICargoCarrier, INBTSerializable<NBTTa
     }
 
     @Override
-    public float getBrightness() {
-        Entity actualEntity = entity.get();
-        return actualEntity != null ? actualEntity.getBrightness() : 0;
-    }
-
-    @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound cargoTag = new NBTTagCompound();
         cargoTag.setString("name", cargo.getRegistryName().toString());

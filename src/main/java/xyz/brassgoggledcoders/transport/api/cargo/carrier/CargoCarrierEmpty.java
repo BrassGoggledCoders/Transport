@@ -24,9 +24,4 @@ public class CargoCarrierEmpty implements ICargoCarrier {
     public ICargoInstance getCargoInstance() {
         return cargoInstanceEmpty;
     }
-
-    @Override
-    public float getBrightness() {
-        return 0;
-    }
 }

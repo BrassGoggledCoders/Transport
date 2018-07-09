@@ -5,8 +5,10 @@ import com.teamacronymcoders.base.items.minecart.ItemMinecartBase;
 import com.teamacronymcoders.base.util.CapUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CapabilityCargo;
 import xyz.brassgoggledcoders.transport.api.cargo.ICargo;
@@ -51,4 +53,9 @@ public class ItemMinecartCargoCarrier extends ItemMinecartBase {
         }
         return itemStacks;
     }
-}
+
+    @Override
+    public List<ResourceLocation> getResourceLocations(List<ResourceLocation> resourceLocations) {
+        resourceLocations.add(new ResourceLocation(Transport.ID, "tesr"));
+        return resourceLocations;
+    }

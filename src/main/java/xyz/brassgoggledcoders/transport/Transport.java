@@ -38,6 +38,7 @@ public class Transport extends BaseModFoundation<Transport> {
         TransportAPI.setCargoRendererLoader(proxy::getCargoRenderer);
         CapabilityCargo.register();
         super.preInit(event);
+        proxy.setupModelLoader();
         this.getLibProxy().addSidedBlockDomain();
         MinecraftForge.EVENT_BUS.post(new TransportRegisterEvent<>(TransportAPI.getCargoRegistry(), CargoRegistry.class));
     }

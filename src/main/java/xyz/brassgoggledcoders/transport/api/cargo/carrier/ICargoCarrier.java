@@ -12,6 +12,4 @@ public interface ICargoCarrier {
     ICargo getCargo();
 
     ICargoInstance getCargoInstance();
-
-    float getBrightness();
 }
