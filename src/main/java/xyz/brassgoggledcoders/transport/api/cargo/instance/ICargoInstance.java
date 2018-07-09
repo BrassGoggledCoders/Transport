@@ -18,4 +18,6 @@ public interface ICargoInstance extends ICapabilityProvider {
 
     @Nonnull
     ICargoRenderer getCargoRenderer();
+
+    String getLocalizedName();
 }

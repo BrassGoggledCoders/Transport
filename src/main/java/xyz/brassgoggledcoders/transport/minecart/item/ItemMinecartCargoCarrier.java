@@ -3,17 +3,22 @@ package xyz.brassgoggledcoders.transport.minecart.item;
 import com.teamacronymcoders.base.entities.EntityMinecartBase;
 import com.teamacronymcoders.base.items.minecart.ItemMinecartBase;
 import com.teamacronymcoders.base.util.CapUtils;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CapabilityCargo;
 import xyz.brassgoggledcoders.transport.api.cargo.ICargo;
 import xyz.brassgoggledcoders.transport.api.cargo.carrier.CapabilityProviderCargoCarrierItem;
 import xyz.brassgoggledcoders.transport.api.cargo.carrier.ICargoCarrier;
+import xyz.brassgoggledcoders.transport.api.cargo.instance.ICargoInstance;
 import xyz.brassgoggledcoders.transport.minecart.entity.EntityMinecartCargoCarrier;
 
 import javax.annotation.Nonnull;
@@ -59,3 +64,21 @@ public class ItemMinecartCargoCarrier extends ItemMinecartBase {
         resourceLocations.add(new ResourceLocation(Transport.ID, "tesr"));
         return resourceLocations;
     }
+
+    @Override
+    @Nonnull
+    @SideOnly(Side.CLIENT)
+    public String getItemStackDisplayName(@Nonnull ItemStack cartItemStack) {
+        String displayName = "";
+
+        displayName += Items.MINECART.getItemStackDisplayName(cartItemStack);
+
+        displayName += CapUtils.getOptional(cartItemStack, CapabilityCargo.CARRIER)
+                .map(ICargoCarrier::getCargoInstance)
+                .map(ICargoInstance::getLocalizedName)
+                .map(name -> " " + I18n.format("transport.separator.with") + " " + name)
+                .orElse("");
+
+        return displayName;
+    }
+}

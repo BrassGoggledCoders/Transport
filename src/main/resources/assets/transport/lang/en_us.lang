@@ -8,3 +8,6 @@ tile.transport.diamond_crossing.name=Diamond Crossing Rail
 tile.transport.holding.name=Holding Rail
 tile.transport.wye.name=Wye Rail
 tile.transport.switch.name=Switch Rail
+
+#Carrier
+transport.separator.with=With
