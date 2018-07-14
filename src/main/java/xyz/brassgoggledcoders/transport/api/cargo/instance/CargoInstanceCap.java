@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.api.cargo.instance;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -20,25 +21,32 @@ public class CargoInstanceCap<CAP> implements ICargoInstance {
     private final ICargoRenderer cargoRenderer;
     private final Capability<CAP> capabilityType;
     private final CAP capabilityInstance;
+    private final String localizedKey;
 
-    public CargoInstanceCap(Capability<CAP> capabilityType, CAP capabilityInstance, ResourceLocation cargoBlock) {
-        this(capabilityType, capabilityInstance, "xyz.brassgoggledcoders.transport.library.render.cargo.CargoBlockRenderer",
+    public CargoInstanceCap(String localizationKey, Capability<CAP> capabilityType, CAP capabilityInstance, ResourceLocation cargoBlock) {
+        this(localizationKey, capabilityType, capabilityInstance, "xyz.brassgoggledcoders.transport.library.render.cargo.CargoBlockRenderer",
                 new Class[]{IBlockState.class},
                 new Object[]{Optional.ofNullable(ForgeRegistries.BLOCKS.getValue(cargoBlock))
                         .map(Block::getDefaultState)
                         .orElse(Blocks.AIR.getDefaultState())});
     }
 
-    public CargoInstanceCap(Capability<CAP> capabilityType, CAP capabilityInstance, String cargoRenderer, Class[] classes, Object[] inputs) {
+    public CargoInstanceCap(String localizedKey, Capability<CAP> capabilityType, CAP capabilityInstance, String cargoRenderer, Class[] classes, Object[] inputs) {
         this.cargoRenderer = TransportAPI.getCargoRendererLoader().loadRenderer(cargoRenderer, classes, inputs);
         this.capabilityType = capabilityType;
         this.capabilityInstance = capabilityInstance;
+        this.localizedKey = localizedKey;
     }
 
     @Nonnull
     @Override
     public ICargoRenderer getCargoRenderer() {
         return cargoRenderer;
+    }
+
+    @Override
+    public String getLocalizedName() {
+        return TransportAPI.getLangHandler().format(localizedKey);
     }
 
     @Nonnull

@@ -18,6 +18,11 @@ public class CargoInstanceEmpty implements ICargoInstance {
     }
 
     @Override
+    public String getLocalizedName() {
+        return "Empty";
+    }
+
+    @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
         return false;
     }

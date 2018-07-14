@@ -36,6 +36,7 @@ public class Transport extends BaseModFoundation<Transport> {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         TransportAPI.setCargoRendererLoader(proxy::getCargoRenderer);
+        TransportAPI.setLangHandler(proxy::format);
         CapabilityCargo.register();
         super.preInit(event);
         proxy.setupModelLoader();

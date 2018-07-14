@@ -11,3 +11,8 @@ tile.transport.switch.name=Switch Rail
 
 #Carrier
 transport.separator.with=With
+
+#Cargo
+cargo.transport.fe_loader=FE Loader
+cargo.transport.item_loader=Item Loader
+cargo.transport.fluid_loader=Fluid Loader
