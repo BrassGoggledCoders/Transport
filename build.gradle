@@ -44,10 +44,18 @@ repositories {
         name 'Tinkers'
         url 'http://dvs1.progwml6.com/files/maven'
     }
+    maven {
+        name "TehNuts WAILA fork"
+        url "http://tehnut.info/maven"
+    }
 }
 
 dependencies {
     deobfCompile "com.teamacronymcoders.base:base:${minecraft_version}-${base_version}-SNAPSHOT.+"
+    deobfCompile("blusunrize:ImmersiveEngineering:${ie_version}") {
+        exclude module: "crafttweaker"
+    }
+    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
 }
 
 processResources {
