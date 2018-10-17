@@ -7,7 +7,7 @@ import xyz.brassgoggledcoders.transport.api.cargo.instance.CargoInstanceCap;
 
 import javax.annotation.Nonnull;
 
-public class CargoBasic<CAP> implements ICargo<CargoInstanceCap<CAP>> {
+public class CargoBasic<CAP> implements ICargo {
     private final ResourceLocation registryLocation;
     private final Capability<CAP> capabilityType;
     private final CAP capabilityInstance;

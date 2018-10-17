@@ -2,42 +2,51 @@ package xyz.brassgoggledcoders.transport.minecart.entity;
 
 import com.teamacronymcoders.base.entities.EntityMinecartBase;
 import com.teamacronymcoders.base.entities.dataserializers.BaseDataSerializers;
+import com.teamacronymcoders.base.guisystem.IHasGui;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemMinecart;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CapabilityCargo;
 import xyz.brassgoggledcoders.transport.api.cargo.ICargo;
+import xyz.brassgoggledcoders.transport.api.cargo.carrier.CargoCarrierEmpty;
 import xyz.brassgoggledcoders.transport.api.cargo.carrier.CargoCarrierEntity;
 import xyz.brassgoggledcoders.transport.api.cargo.carrier.ICargoCarrier;
+import xyz.brassgoggledcoders.transport.api.cargo.instance.ICargoInstance;
 import xyz.brassgoggledcoders.transport.minecart.item.ItemMinecartCargoCarrier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class EntityMinecartCargoCarrier extends EntityMinecartBase {
+public class EntityMinecartCargoCarrier extends EntityMinecartBase implements IHasGui {
     @ObjectHolder(Transport.ID + ":minecart_cargo_carrier")
     private static ItemMinecartCargoCarrier itemMinecartCargoCarrier;
 
     private static final DataParameter<ResourceLocation> CARGO_REGISTRY_NAME =
             EntityDataManager.createKey(EntityMinecartCargoCarrier.class, BaseDataSerializers.RESOURCE_LOCATION);
 
-    private CargoCarrierEntity cargoCarrier;
+    private ICargoCarrier cargoCarrier;
 
     public EntityMinecartCargoCarrier(World world) {
         super(world);
     }
 
     public EntityMinecartCargoCarrier(World world, ICargo cargo) {
-        this(world);
+        super(world);
         this.cargoCarrier = new CargoCarrierEntity(this, cargo);
         dataManager.set(CARGO_REGISTRY_NAME, cargo.getRegistryName());
     }
@@ -57,7 +66,7 @@ public class EntityMinecartCargoCarrier extends EntityMinecartBase {
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
         return capability == CapabilityCargo.CARRIER ||
-                cargoCarrier.getCargoInstance().hasCapability(capability, facing) ||
+                this.getCargoCarrier().getCargoInstance().hasCapability(capability, facing) ||
                 super.hasCapability(capability, facing);
     }
 
@@ -67,7 +76,7 @@ public class EntityMinecartCargoCarrier extends EntityMinecartBase {
         if (capability == CapabilityCargo.CARRIER) {
             return CapabilityCargo.CARRIER.cast(cargoCarrier);
         }
-        T cargoCap = cargoCarrier.getCargoInstance().getCapability(capability, facing);
+        T cargoCap = this.getCargoCarrier().getCargoInstance().getCapability(capability, facing);
         return cargoCap != null ? cargoCap : super.getCapability(capability, facing);
     }
 
@@ -102,5 +111,23 @@ public class EntityMinecartCargoCarrier extends EntityMinecartBase {
             cargoCarrier = new CargoCarrierEntity(this, cargo);
         }
         return cargoCarrier;
+    }
+
+    @Nullable
+    @Override
+    @SideOnly(Side.CLIENT)
+    public Gui getGui(EntityPlayer entityPlayer, World world, BlockPos blockPos) {
+        cargoCarrier = this.getCargoCarrier();
+        ICargoInstance cargoInstance = cargoCarrier.getCargoInstance();
+        return cargoInstance.getGui(cargoCarrier, entityPlayer).orElse(null);
+    }
+
+    @Nullable
+    @Override
+    public Container getContainer(EntityPlayer entityPlayer, World world, BlockPos blockPos) {
+        cargoCarrier = this.getCargoCarrier();
+        ICargoInstance cargoInstance = cargoCarrier.getCargoInstance();
+        return cargoInstance.getContainer(cargoCarrier, entityPlayer)
+                .orElse(null);
     }
 }

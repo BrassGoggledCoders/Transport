@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.api.cargo.carrier;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -37,6 +38,14 @@ public class CargoCarrierEntity implements ICargoCarrier, INBTSerializable<NBTTa
     @Override
     public ICargoInstance getCargoInstance() {
         return cargoInstance;
+    }
+
+    @Override
+    public boolean canPlayerInteractWith(EntityPlayer entityPlayer) {
+        return Optional.ofNullable(entity.get())
+                .filter(Entity::isEntityAlive)
+                .filter(entity -> entityPlayer.getDistance(entity) < 64D)
+                .isPresent();
     }
 
     @Override

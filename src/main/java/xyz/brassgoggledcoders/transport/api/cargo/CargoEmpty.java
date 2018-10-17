@@ -6,7 +6,7 @@ import xyz.brassgoggledcoders.transport.api.cargo.instance.CargoInstanceEmpty;
 
 import javax.annotation.Nonnull;
 
-public class CargoEmpty implements ICargo<CargoInstanceEmpty> {
+public class CargoEmpty implements ICargo {
     public static final ResourceLocation NAME = new ResourceLocation("transport", "empty");
 
     @Override
