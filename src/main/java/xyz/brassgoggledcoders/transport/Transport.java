@@ -5,6 +5,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -27,6 +28,9 @@ public class Transport extends BaseModFoundation<Transport> {
     @SidedProxy(clientSide = "xyz.brassgoggledcoders.transport.proxy.ClientProxy",
             serverSide = "xyz.brassgoggledcoders.transport.proxy.ServerProxy")
     public static IProxy proxy;
+
+    @Instance
+    public static Transport instance;
 
     public Transport() {
         super(ID, NAME, VERSION, CreativeTabs.TRANSPORTATION);

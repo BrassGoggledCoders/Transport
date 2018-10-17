@@ -28,7 +28,7 @@ public abstract class TileEntityLoaderBase<CAP> extends TileEntitySidedBase<CAP>
             for (EnumFacing facing : EnumFacing.VALUES) {
                 SideType sideType = this.getSideValue(facing);
                 if (sideType != SideType.NONE) {
-                    IBlockState otherBlockState = world.getBlockState(pos.offset(facing));
+                    IBlockState otherBlockState = world.getBlockState(this.getPos().offset(facing));
                     if (otherBlockState.isFullBlock()) {
                         //noinspection ResultOfMethodCallIgnored
                         tryTransferToTile(sideType, facing);
