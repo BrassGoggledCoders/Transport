@@ -1,35 +1,17 @@
 package xyz.brassgoggledcoders.transport.api.cargo.instance;
 
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.capabilities.Capability;
-import xyz.brassgoggledcoders.transport.api.cargo.render.EmptyCargoRenderer;
-import xyz.brassgoggledcoders.transport.api.cargo.render.ICargoRenderer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class CargoInstanceEmpty implements ICargoInstance {
-    private final ICargoRenderer renderer = new EmptyCargoRenderer();
-
-    @Nonnull
-    @Override
-    public ICargoRenderer getCargoRenderer() {
-        return renderer;
-    }
+    private final static ITextComponent EMPTY_DESCRIPTION = new TranslationTextComponent(
+            Util.makeTranslationKey("cargo", new ResourceLocation("transport", "empty"))
+    );
 
     @Override
-    public String getLocalizedName() {
-        return "Empty";
-    }
-
-    @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-        return false;
-    }
-
-    @Nullable
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-        return null;
+    public ITextComponent getDescription() {
+        return EMPTY_DESCRIPTION;
     }
 }

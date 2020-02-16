@@ -1,24 +1,27 @@
 package xyz.brassgoggledcoders.transport.api.cargo.instance;
 
-import net.minecraft.client.gui.Gui;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import xyz.brassgoggledcoders.transport.api.cargo.carrier.ICargoCarrier;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.api.cargo.render.ICargoRenderer;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
+import javax.annotation.Nullable;
 
-public interface ICargoInstance extends ICapabilityProvider {
+public interface ICargoInstance extends ICapabilitySerializable<CompoundNBT> {
     @Nonnull
-    default NBTTagCompound writeToNBT() {
-        return new NBTTagCompound();
+    @Override
+    default CompoundNBT serializeNBT() {
+        return new CompoundNBT();
     }
 
-    default void readFromNBT(NBTTagCompound nbtTagCompound) {
+    @Override
+    default void deserializeNBT(CompoundNBT compoundNBT) {
 
     }
 
@@ -26,20 +29,15 @@ public interface ICargoInstance extends ICapabilityProvider {
 
     }
 
-    default Optional<Gui> getGui(ICargoCarrier cargoCarrier, EntityPlayer entityPlayer) {
-        return Optional.empty();
-    }
-
-    default Optional<Container> getContainer(ICargoCarrier cargoCarrier, EntityPlayer entityPlayer) {
-        return Optional.empty();
-    }
-
-    default boolean onRightClick(EntityPlayer entityPlayer, EnumHand hand) {
+    default boolean onInteraction(PlayerEntity entityPlayer, Hand hand) {
         return false;
     }
 
-    @Nonnull
-    ICargoRenderer getCargoRenderer();
+    ITextComponent getDescription();
 
-    String getLocalizedName();
+    @Nonnull
+    @Override
+    default <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction direction) {
+        return LazyOptional.empty();
+    }
 }

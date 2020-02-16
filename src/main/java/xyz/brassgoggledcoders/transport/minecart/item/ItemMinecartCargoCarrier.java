@@ -14,8 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.cargo.CapabilityCargo;
-import xyz.brassgoggledcoders.transport.api.cargo.ICargo;
+import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
 import xyz.brassgoggledcoders.transport.api.cargo.carrier.CapabilityProviderCargoCarrierItem;
 import xyz.brassgoggledcoders.transport.api.cargo.carrier.ICargoCarrier;
 import xyz.brassgoggledcoders.transport.api.cargo.instance.ICargoInstance;
@@ -49,7 +48,7 @@ public class ItemMinecartCargoCarrier extends ItemMinecartBase {
 
     @Override
     public List<ItemStack> getAllSubItems(List<ItemStack> itemStacks) {
-        for (ICargo cargo : TransportAPI.getCargoRegistry().getEntries()) {
+        for (Cargo cargo : TransportAPI.getCargoRegistry().getEntries()) {
             ItemStack itemStack = new ItemStack(this);
             NBTTagCompound cargoNBT = new NBTTagCompound();
             cargoNBT.setString("name", cargo.getRegistryName().toString());

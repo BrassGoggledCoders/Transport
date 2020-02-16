@@ -1,33 +1,10 @@
 package xyz.brassgoggledcoders.transport.api;
 
-import xyz.brassgoggledcoders.transport.api.cargo.CargoRegistry;
-import xyz.brassgoggledcoders.transport.api.cargo.render.ICargoRendererLoader;
-import xyz.brassgoggledcoders.transport.api.util.ILangHandler;
-
-import java.util.Objects;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import xyz.brassgoggledcoders.transport.api.cargo.carrier.ICargoCarrier;
 
 public class TransportAPI {
-    private static CargoRegistry cargoRegistry = new CargoRegistry();
-    private static ICargoRendererLoader cargoRendererLoader;
-    private static ILangHandler langHandler;
-
-    public static ICargoRendererLoader getCargoRendererLoader() {
-        return Objects.requireNonNull(cargoRendererLoader, "Cargo Renderer Loader has not be set");
-    }
-
-    public static void setCargoRendererLoader(ICargoRendererLoader cargoRendererLoader) {
-        TransportAPI.cargoRendererLoader = cargoRendererLoader;
-    }
-
-    public static CargoRegistry getCargoRegistry() {
-        return cargoRegistry;
-    }
-
-    public static ILangHandler getLangHandler() {
-        return langHandler;
-    }
-
-    public static void setLangHandler(ILangHandler langHandler) {
-        TransportAPI.langHandler = langHandler;
-    }
+    @CapabilityInject(ICargoCarrier.class)
+    public static Capability<ICargoCarrier> CARRIER_CAP;
 }

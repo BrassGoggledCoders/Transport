@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        mavenCentral()
         jcenter()
         maven {
             name = "forge"
@@ -7,74 +8,89 @@ buildscript {
         }
     }
     dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
     }
 }
 
-apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: "net.minecraftforge.gradle"
 apply plugin: "maven"
+apply plugin: "java"
+apply plugin: "idea"
 
 version = "${minecraft_version}-" + getVersion()
-group = "xyz.brassgoggledcoders"
+group = "${group}"
 archivesBaseName = "${mod_name}"
 
-minecraft {
-    version = "${minecraft_version}-${forge_version}"
-
-    mappings = "${mappings_version}"
-    runDir = "run/"
-    useDepAts = true
-
-    replace "@VERSION@", project.version
-    replaceIn "${mod_name}.java"
-
-    replace "base@[0.0.0,);", "base@[" + base_version +  ",);"
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 repositories {
+    mavenLocal()
     mavenCentral()
     maven {
-        name "BASE"
-        url "https://maven.teamacronymcoders.com/"
+        name = "forge"
+        url = "http://files.minecraftforge.net/maven"
     }
     maven {
-        name 'Tinkers'
-        url 'http://dvs1.progwml6.com/files/maven'
+        name = "The Loader"
+        url = "https://maven.blamejared.com"
     }
     maven {
-        name "TehNuts WAILA fork"
-        url "http://tehnut.info/maven"
+        name = "Titanium"
+        url = "https://cdn.hrzn.studio/maven/"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+minecraft {
+    mappings channel: "snapshot", version: "${mappings_version}"
+
+    runs {
+        client {
+            workingDirectory project.file("run")
+            source sourceSets.main
+        }
+
+        server {
+            workingDirectory project.file("run")
+            source sourceSets.main
+        }
     }
 }
 
 dependencies {
-    deobfCompile "com.teamacronymcoders.base:base:${minecraft_version}-${base_version}-SNAPSHOT.+"
-    deobfCompile("blusunrize:ImmersiveEngineering:${ie_version}") {
-        exclude module: "crafttweaker"
-    }
-    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    compile fg.deobf("com.teamacronymcoders:theloader:1.14.4-${the_loader_version}")
+    compile fg.deobf("com.hrznstudio:titanium:${minecraft_version}-${titanium_version}")
 }
 
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+task srcJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = "sources"
+}
 
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include "mcmod.info"
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = "javadoc"
+    from javadoc.destinationDir
+}
 
-        // replace version and mcversion
-        expand "version": project.version, "mcversion": project.minecraft.version
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : "${title}",
+                "Specification-Vendor"    : "${team}",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "${team}",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
     }
+}
 
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "mcmod.info"
-    }
+artifacts {
+    archives javadocJar
+    archives srcJar
 }
 
 uploadArchives {
@@ -85,15 +101,18 @@ uploadArchives {
     }
 }
 
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
 String getVersion() {
     String version = "${mod_version}"
     String branch = project.hasProperty("branch") ? project.branch : ""
 
-    if(branch != "") {
+    if (branch != "") {
         version += "-" + branch
 
         String buildNumber = getBuildNumber()
-        if(buildNumber != "") {
+        if (buildNumber != "") {
             version += "." + buildNumber
         }
     }
@@ -103,8 +122,14 @@ String getVersion() {
 
 static String getBuildNumber() {
     String buildNumber = System.getenv("BUILD_NUMBER") != null ? System.getenv("BUILD_NUMBER") : ""
-    if(buildNumber == "") {
-        buildNumber = System.getenv("bamboo_buildNumber") != null ? "." + System.getenv("bamboo_buildNumber") : ""
+    if (buildNumber == "") {
+        buildNumber = System.getenv("bamboo_buildNumber") != null ? System.getenv("bamboo_buildNumber") : ""
     }
     return buildNumber
+}
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xmaxerrs" << "10000"
+    }
 }

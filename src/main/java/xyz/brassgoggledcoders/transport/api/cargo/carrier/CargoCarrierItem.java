@@ -1,19 +1,18 @@
 package xyz.brassgoggledcoders.transport.api.cargo.carrier;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.cargo.ICargo;
+import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
 import xyz.brassgoggledcoders.transport.api.cargo.instance.ICargoInstance;
 
 import java.util.Optional;
 
 public class CargoCarrierItem implements ICargoCarrier {
     private final ItemStack itemStack;
-    private ICargo cargo;
+    private Cargo cargo;
     private ICargoInstance cargoInstance;
 
     public CargoCarrierItem(ItemStack itemStack) {
@@ -26,11 +25,11 @@ public class CargoCarrierItem implements ICargoCarrier {
     }
 
     @Override
-    public ICargo getCargo() {
+    public Cargo getCargo() {
         if (cargo == null) {
-            cargo = Optional.ofNullable(itemStack.getTagCompound())
-                    .map(nbtTagCompound -> nbtTagCompound.getCompoundTag("cargo"))
+            cargo = Optional.of(itemStack.getOrCreateChildTag("cargo"))
                     .map(nbtTagCompound -> nbtTagCompound.getString("name"))
+                    .filter(string -> !string.isEmpty())
                     .map(ResourceLocation::new)
                     .map(TransportAPI.getCargoRegistry()::getEntry)
                     .orElseGet(TransportAPI.getCargoRegistry()::getEmpty);
@@ -47,17 +46,7 @@ public class CargoCarrierItem implements ICargoCarrier {
     }
 
     @Override
-    public boolean canPlayerInteractWith(EntityPlayer entityPlayer) {
+    public boolean canInteractWith(PlayerEntity playerEntity) {
         return false;
-    }
-
-    @Override
-    public NBTTagCompound serializeNBT() {
-        return this.getCargoInstance().writeToNBT();
-    }
-
-    @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        this.getCargoInstance().readFromNBT(nbt);
     }
 }

@@ -1,80 +1,51 @@
 package xyz.brassgoggledcoders.transport.api.cargo.instance;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.cargo.render.ICargoRenderer;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Optional;
 
-public class CargoInstanceCap<CAP> implements ICargoInstance {
-    private final ICargoRenderer cargoRenderer;
+public class CargoInstanceCap<CAP extends INBTSerializable<CompoundNBT>> implements ICargoInstance {
     private final Capability<CAP> capabilityType;
     private final CAP capabilityInstance;
-    private final String localizedKey;
+    private final LazyOptional<CAP> lazyOptional;
+    private final ITextComponent description;
 
-    public CargoInstanceCap(String localizationKey, Capability<CAP> capabilityType, CAP capabilityInstance, ResourceLocation cargoBlock) {
-        this(localizationKey, capabilityType, capabilityInstance, "xyz.brassgoggledcoders.transport.library.render.cargo.CargoBlockRenderer",
-                new Class[]{IBlockState.class},
-                new Object[]{Optional.ofNullable(ForgeRegistries.BLOCKS.getValue(cargoBlock))
-                        .map(Block::getDefaultState)
-                        .orElse(Blocks.AIR.getDefaultState())});
-    }
-
-    public CargoInstanceCap(String localizedKey, Capability<CAP> capabilityType, CAP capabilityInstance, String cargoRenderer, Class[] classes, Object[] inputs) {
-        this.cargoRenderer = TransportAPI.getCargoRendererLoader().loadRenderer(cargoRenderer, classes, inputs);
+    public CargoInstanceCap(ResourceLocation registryName, Capability<CAP> capabilityType, CAP capabilityInstance) {
         this.capabilityType = capabilityType;
         this.capabilityInstance = capabilityInstance;
-        this.localizedKey = localizedKey;
+        this.lazyOptional = LazyOptional.of(() -> capabilityInstance);
+        this.description = new TranslationTextComponent(Util.makeTranslationKey("cargo", registryName));
+    }
+
+    @Override
+    public ITextComponent getDescription() {
+        return description;
     }
 
     @Nonnull
     @Override
-    public ICargoRenderer getCargoRenderer() {
-        return cargoRenderer;
+    public CompoundNBT serializeNBT() {
+        return capabilityInstance.serializeNBT();
     }
 
     @Override
-    public String getLocalizedName() {
-        return TransportAPI.getLangHandler().format(localizedKey);
+    public void deserializeNBT(CompoundNBT compoundNBT) {
+        capabilityInstance.deserializeNBT(compoundNBT);
     }
 
     @Nonnull
     @Override
-    @SuppressWarnings("unchecked")
-    public NBTTagCompound writeToNBT() {
-        if (capabilityInstance instanceof INBTSerializable) {
-            return ((INBTSerializable<NBTTagCompound>) capabilityInstance).serializeNBT();
-        }
-        return new NBTTagCompound();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void readFromNBT(NBTTagCompound nbtTagCompound) {
-        if (capabilityInstance instanceof INBTSerializable) {
-            ((INBTSerializable<NBTTagCompound>) capabilityInstance).deserializeNBT(nbtTagCompound);
-        }
-    }
-
-    @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-        return capability == this.capabilityType;
-    }
-
-    @Nullable
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-        return hasCapability(capability, facing) ? this.capabilityType.cast(this.capabilityInstance) : null;
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        return cap == capabilityType ? lazyOptional.cast() : LazyOptional.empty();
     }
 }

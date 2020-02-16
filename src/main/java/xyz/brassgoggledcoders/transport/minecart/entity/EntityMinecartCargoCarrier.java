@@ -20,10 +20,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.cargo.CapabilityCargo;
-import xyz.brassgoggledcoders.transport.api.cargo.ICargo;
-import xyz.brassgoggledcoders.transport.api.cargo.carrier.CargoCarrierEmpty;
-import xyz.brassgoggledcoders.transport.api.cargo.carrier.CargoCarrierEntity;
+import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
 import xyz.brassgoggledcoders.transport.api.cargo.carrier.ICargoCarrier;
 import xyz.brassgoggledcoders.transport.api.cargo.instance.ICargoInstance;
 import xyz.brassgoggledcoders.transport.minecart.item.ItemMinecartCargoCarrier;
@@ -45,7 +42,7 @@ public class EntityMinecartCargoCarrier extends EntityMinecartBase implements IH
         super(world);
     }
 
-    public EntityMinecartCargoCarrier(World world, ICargo cargo) {
+    public EntityMinecartCargoCarrier(World world, Cargo cargo) {
         super(world);
         this.cargoCarrier = new CargoCarrierEntity(this, cargo);
         dataManager.set(CARGO_REGISTRY_NAME, cargo.getRegistryName());
@@ -107,7 +104,7 @@ public class EntityMinecartCargoCarrier extends EntityMinecartBase implements IH
 
     public ICargoCarrier getCargoCarrier() {
         if (cargoCarrier == null) {
-            ICargo cargo = TransportAPI.getCargoRegistry().getEntry(this.dataManager.get(CARGO_REGISTRY_NAME));
+            Cargo cargo = TransportAPI.getCargoRegistry().getEntry(this.dataManager.get(CARGO_REGISTRY_NAME));
             cargoCarrier = new CargoCarrierEntity(this, cargo);
         }
         return cargoCarrier;
