@@ -23,13 +23,13 @@ public class TransportBlocks {
             HoldingRailBlock::new);
     public static final RegistryObject<BlockItem> HOLDING_RAIL_ITEM = ITEMS.register("holding_rail",
             () -> new BlockItem(HOLDING_RAIL.get(), new Item.Properties()
-                    .group(Transport.instance.transportGroup)));
+                    .group(Transport.ITEM_GROUP)));
 
     public static final RegistryObject<DiamondCrossingRailBlock> DIAMOND_CROSSING_RAIL = BLOCKS.register("diamond_crossing_rail",
             DiamondCrossingRailBlock::new);
     public static final RegistryObject<BlockItem> DIAMOND_CROSSING_RAIL_ITEM = ITEMS.register("diamond_crossing_rail",
             () -> new BlockItem(DIAMOND_CROSSING_RAIL.get(), new Item.Properties()
-                    .group(Transport.instance.transportGroup)));
+                    .group(Transport.ITEM_GROUP)));
 
     public static void register(IEventBus modBus) {
         BLOCKS.register(modBus);

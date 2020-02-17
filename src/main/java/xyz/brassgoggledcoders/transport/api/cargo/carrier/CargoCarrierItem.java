@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.api.cargo.carrier;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
@@ -31,8 +32,8 @@ public class CargoCarrierItem implements ICargoCarrier {
                     .map(nbtTagCompound -> nbtTagCompound.getString("name"))
                     .filter(string -> !string.isEmpty())
                     .map(ResourceLocation::new)
-                    .map(TransportAPI.getCargoRegistry()::getEntry)
-                    .orElseGet(TransportAPI.getCargoRegistry()::getEmpty);
+                    .map(TransportAPI.CARGO::getValue)
+                    .orElseGet(TransportAPI.EMPTY_CARGO);
         }
         return cargo;
     }
@@ -48,5 +49,15 @@ public class CargoCarrierItem implements ICargoCarrier {
     @Override
     public boolean canInteractWith(PlayerEntity playerEntity) {
         return false;
+    }
+
+    @Override
+    public CompoundNBT serializeNBT() {
+        return new CompoundNBT();
+    }
+
+    @Override
+    public void deserializeNBT(CompoundNBT nbt) {
+
     }
 }

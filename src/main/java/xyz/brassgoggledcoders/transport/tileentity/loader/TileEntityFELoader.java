@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.loaders.tileentity;
+package xyz.brassgoggledcoders.transport.tileentity.loader;
 
 import com.teamacronymcoders.base.capability.energy.EnergyStorageDirectional;
 import com.teamacronymcoders.base.capability.energy.EnergyStorageSerializable;
@@ -6,7 +6,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import xyz.brassgoggledcoders.transport.library.tileentity.loader.TileEntityLoaderBase;
 
 public class TileEntityFELoader extends TileEntityLoaderBase<IEnergyStorage> {
     private final EnergyStorageSerializable energyStorage;

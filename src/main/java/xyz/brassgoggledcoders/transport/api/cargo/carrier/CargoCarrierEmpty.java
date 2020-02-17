@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.api.cargo.carrier;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
 import xyz.brassgoggledcoders.transport.api.cargo.instance.CargoInstanceEmpty;
@@ -28,5 +29,15 @@ public class CargoCarrierEmpty implements ICargoCarrier {
     @Override
     public boolean canInteractWith(PlayerEntity entityPlayer) {
         return false;
+    }
+
+    @Override
+    public CompoundNBT serializeNBT() {
+        return new CompoundNBT();
+    }
+
+    @Override
+    public void deserializeNBT(CompoundNBT nbt) {
+
     }
 }

@@ -1,17 +1,16 @@
-package xyz.brassgoggledcoders.transport.loaders.block;
+package xyz.brassgoggledcoders.transport.block.loader;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.brassgoggledcoders.transport.library.block.loader.BlockLoaderBase;
-import xyz.brassgoggledcoders.transport.loaders.tileentity.TileEntityItemLoader;
+import xyz.brassgoggledcoders.transport.tileentity.loader.TileEntityItemLoader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class BlockItemLoader extends BlockLoaderBase<TileEntityItemLoader> {
-    public BlockItemLoader() {
+public class BasicItemLoaderBlock extends BasicLoaderBlock<TileEntityItemLoader> {
+    public BasicItemLoaderBlock() {
         super("item");
     }
 

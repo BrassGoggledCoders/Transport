@@ -1,16 +1,18 @@
 package xyz.brassgoggledcoders.transport;
 
-import com.hrznstudio.titanium.tab.TitaniumTab;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.network.datasync.DataSerializers;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.api.cargo.carrier.CargoCarrierEmpty;
 import xyz.brassgoggledcoders.transport.api.cargo.carrier.ICargoCarrier;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.entity.ResourceLocationDataSerializer;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
 import xyz.brassgoggledcoders.transport.nbt.NBTStorage;
 
@@ -19,15 +21,15 @@ import static xyz.brassgoggledcoders.transport.Transport.ID;
 @Mod(ID)
 public class Transport {
     public static final String ID = "transport";
+    public static final Logger LOGGER = LogManager.getLogger(ID);
+    public static final ItemGroup ITEM_GROUP = new TransportItemGroup(ID, TransportBlocks.HOLDING_RAIL_ITEM::get);
+    public static final ResourceLocationDataSerializer RESOURCE_LOCATION_DATA_SERIALIZER = createDataSerializer();
 
     public static Transport instance;
-
-    public final ItemGroup transportGroup;
 
     public Transport() {
         instance = this;
 
-        this.transportGroup = new TransportItemGroup("transport", TransportBlocks.HOLDING_RAIL_ITEM::get);
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         modBus.addListener(this::commonSetup);
@@ -37,5 +39,11 @@ public class Transport {
 
     public void commonSetup(FMLCommonSetupEvent event) {
         CapabilityManager.INSTANCE.register(ICargoCarrier.class, new NBTStorage<>(), CargoCarrierEmpty::new);
+    }
+
+    private static ResourceLocationDataSerializer createDataSerializer() {
+        ResourceLocationDataSerializer dataSerializer = new ResourceLocationDataSerializer();
+        DataSerializers.registerSerializer(dataSerializer);
+        return dataSerializer;
     }
 }

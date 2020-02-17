@@ -1,11 +1,10 @@
-package xyz.brassgoggledcoders.transport.loaders.tileentity;
+package xyz.brassgoggledcoders.transport.tileentity.loader;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import xyz.brassgoggledcoders.transport.library.tileentity.loader.TileEntityLoaderBase;
 
 public class TileEntityFluidLoader extends TileEntityLoaderBase<IFluidHandler> {
     private FluidTank fluidTank;

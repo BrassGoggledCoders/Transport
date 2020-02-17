@@ -1,17 +1,15 @@
-package xyz.brassgoggledcoders.transport.loaders.block;
+package xyz.brassgoggledcoders.transport.block.loader;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
-import xyz.brassgoggledcoders.transport.library.block.loader.BlockLoaderBase;
-import xyz.brassgoggledcoders.transport.loaders.tileentity.TileEntityFELoader;
-import xyz.brassgoggledcoders.transport.loaders.tileentity.TileEntityFluidLoader;
+import xyz.brassgoggledcoders.transport.tileentity.loader.TileEntityFluidLoader;
 
 import javax.annotation.Nonnull;
 
-public class BlockFluidLoader extends BlockLoaderBase<TileEntityFluidLoader> {
-    public BlockFluidLoader() {
+public class BasicFluidLoaderBlock extends BasicLoaderBlock<TileEntityFluidLoader> {
+    public BasicFluidLoaderBlock() {
         super("fluid");
     }
 

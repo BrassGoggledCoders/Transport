@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.loaders.tileentity;
+package xyz.brassgoggledcoders.transport.tileentity.loader;
 
 import com.teamacronymcoders.base.capability.item.ItemHandlerDirectional;
 import com.teamacronymcoders.base.capability.item.ItemStackQueue;
@@ -10,7 +10,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import xyz.brassgoggledcoders.transport.library.tileentity.loader.TileEntityLoaderBase;
 
 import java.util.Optional;
 

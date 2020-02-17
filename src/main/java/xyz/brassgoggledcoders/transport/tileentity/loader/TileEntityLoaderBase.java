@@ -1,5 +1,6 @@
-package xyz.brassgoggledcoders.transport.library.tileentity.loader;
+package xyz.brassgoggledcoders.transport.tileentity.loader;
 
+import com.hrznstudio.titanium.block.tile.ActiveTile;
 import com.teamacronymcoders.base.blocks.properties.SideType;
 import com.teamacronymcoders.base.tileentities.TileEntitySidedBase;
 import net.minecraft.block.state.IBlockState;
@@ -9,12 +10,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.List;
 import java.util.Optional;
 
-public abstract class TileEntityLoaderBase<CAP> extends TileEntitySidedBase<CAP> implements ITickable {
+public abstract class TileEntityLoaderBase<CAP> extends ActiveTile<CAP> implements ITickable {
     int updateTest = -1;
 
     @Override
