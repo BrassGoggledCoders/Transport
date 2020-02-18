@@ -1,15 +1,178 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "transform": "forge:default-block",
-    "model": "transport:side_type/hv/loaders/item/item_loader"
-  },
-  "variants": {
-    "normal": [
-      {}
-    ],
-    "inventory": [
-      {}
-    ]
-  }
+  "multipart": [
+    {
+      "when": {
+        "up": "none"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/up_none",
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "up": "input"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/up_input",
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "up": "output"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/up_output",
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "down": "none"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/up_none",
+        "uvlock": true,
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "down": "input"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/up_input",
+        "uvlock": true,
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "down": "output"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/up_output",
+        "uvlock": true,
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "north": "none"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/side_none",
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "north": "input"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/side_input",
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "north": "output"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/side_output",
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "west": "none"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/side_none",
+        "uvlock": true,
+        "y": -90
+      }
+    },
+    {
+      "when": {
+        "west": "input"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/side_input",
+        "uvlock": true,
+        "y": -90
+      }
+    },
+    {
+      "when": {
+        "west": "output"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/side_output",
+        "uvlock": true,
+        "y": -90
+      }
+    },
+    {
+      "when": {
+        "south": "none"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/side_none",
+        "uvlock": true,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "input"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/side_input",
+        "uvlock": true,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "output"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/side_output",
+        "uvlock": true,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "east": "none"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/side_none",
+        "uvlock": true,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "east": "input"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/side_input",
+        "uvlock": true,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "east": "output"
+      },
+      "apply": {
+        "model": "transport:block/loader/item/side_output",
+        "uvlock": true,
+        "y": 90
+      }
+    }
+  ]
 }
