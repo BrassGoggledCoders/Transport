@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:shaped",
+  "type": "minecraft:crafting_shaped",
   "result": {
     "item": "transport:diamond_crossing_rail"
   },

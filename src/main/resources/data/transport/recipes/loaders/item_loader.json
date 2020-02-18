@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:shaped",
+  "type": "minecraft:crafting_shaped",
   "result": {
     "item": "transport:item_loader"
   },
@@ -10,13 +10,13 @@
   ],
   "key": {
     "I": {
-      "tag": "forge:ingot/iron"
+      "tag": "forge:ingots/iron"
     },
     "W": {
       "tag": "minecraft:wood/plank"
     },
     "U": {
-      "item": "minecraft:chest"
+      "tag": "forge:chests"
     }
   }
 }
