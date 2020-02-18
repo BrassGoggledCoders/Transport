@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:shaped",
+  "result": {
+    "item": "transport:diamond_crossing_rail"
+  },
+  "pattern": [
+    " R ",
+    "RRR",
+    " R "
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:rail"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:shapeless",
+  "result": {
+    "item": "transport:holding_rail"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:rail"
+    },
+    {
+      "item": "minecraft:golden_rail"
+    }
+  ]
+}

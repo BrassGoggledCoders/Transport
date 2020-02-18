@@ -1,11 +1,5 @@
 {
   "type": "forge:ore_shaped",
-  "conditions": [
-    {
-      "type": "base:module_active",
-      "name": "Loaders"
-    }
-  ],
   "result": {
     "item": "transport:fluid_loader",
     "data": 0

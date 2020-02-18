@@ -1,10 +1,13 @@
 package xyz.brassgoggledcoders.transport;
 
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -33,12 +36,18 @@ public class Transport {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         modBus.addListener(this::commonSetup);
+        modBus.addListener(this::clientSetup);
 
         TransportBlocks.register(modBus);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
         CapabilityManager.INSTANCE.register(ICargoCarrier.class, new NBTStorage<>(), CargoCarrierEmpty::new);
+    }
+
+    public void clientSetup(FMLClientSetupEvent event) {
+        RenderTypeLookup.setRenderLayer(TransportBlocks.HOLDING_RAIL.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.DIAMOND_CROSSING_RAIL.get(), RenderType.getCutout());
     }
 
     private static ResourceLocationDataSerializer createDataSerializer() {

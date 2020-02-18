@@ -68,9 +68,9 @@ public class HoldingRailBlock extends AbstractRailBlock {
             }
             Vec3d motion = cart.getMotion();
             if (state.get(SHAPE) == RailShape.NORTH_SOUTH) {
-                motion.add(0, 0, speedIncrease);
+                cart.setMotion(motion.add(0, 0, speedIncrease));
             } else {
-                motion.add(speedIncrease, 0, 0);
+                cart.setMotion(motion.add(speedIncrease, 0, 0));
             }
         } else {
             cart.setMotion(Vec3d.ZERO);

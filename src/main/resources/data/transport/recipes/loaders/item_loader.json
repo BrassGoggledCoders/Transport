@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:shaped",
+  "result": {
+    "item": "transport:item_loader"
+  },
+  "pattern": [
+    "III",
+    "WUW",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingot/iron"
+    },
+    "W": {
+      "tag": "minecraft:wood/plank"
+    },
+    "U": {
+      "item": "minecraft:chest"
+    }
+  }
+}
