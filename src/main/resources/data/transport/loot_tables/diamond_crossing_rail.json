@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:rail"
+          "name": "transport:diamond_crossing_rail"
         }
       ],
       "conditions": [
