@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.block.loader;
 
+import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
