@@ -1,14 +1,15 @@
 {
   "type": "minecraft:crafting_shapeless",
   "result": {
-    "item": "transport:holding_rail"
+    "item": "transport:holding_rail",
+    "count": 2
   },
   "ingredients": [
     {
       "item": "minecraft:rail"
     },
     {
-      "item": "minecraft:golden_rail"
+      "item": "minecraft:powered_rail"
     }
   ]
 }
