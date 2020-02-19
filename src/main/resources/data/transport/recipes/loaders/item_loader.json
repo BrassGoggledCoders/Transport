@@ -13,7 +13,7 @@
       "tag": "forge:ingots/iron"
     },
     "W": {
-      "tag": "minecraft:wood/planks"
+      "tag": "minecraft:planks"
     },
     "U": {
       "tag": "forge:chests"
