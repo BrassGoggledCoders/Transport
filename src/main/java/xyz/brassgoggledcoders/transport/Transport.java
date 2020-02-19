@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport;
 
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.ItemGroup;
@@ -18,6 +19,7 @@ import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.entity.ResourceLocationDataSerializer;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
 import xyz.brassgoggledcoders.transport.nbt.NBTStorage;
+import xyz.brassgoggledcoders.transport.screen.LoaderScreen;
 
 import static xyz.brassgoggledcoders.transport.Transport.ID;
 
@@ -48,6 +50,8 @@ public class Transport {
     public void clientSetup(FMLClientSetupEvent event) {
         RenderTypeLookup.setRenderLayer(TransportBlocks.HOLDING_RAIL.get(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.DIAMOND_CROSSING_RAIL.get(), RenderType.getCutout());
+
+        ScreenManager.registerFactory(TransportBlocks.LOADER_CONTAINER.get(), LoaderScreen::new);
     }
 
     private static ResourceLocationDataSerializer createDataSerializer() {

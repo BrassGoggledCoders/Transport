@@ -1,17 +1,23 @@
 package xyz.brassgoggledcoders.transport.content;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.loader.ItemLoaderBlock;
 import xyz.brassgoggledcoders.transport.block.rail.DiamondCrossingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.HoldingRailBlock;
+import xyz.brassgoggledcoders.transport.container.LoaderContainer;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
 
 @SuppressWarnings({"ConstantConditions", "unused"})
@@ -20,6 +26,8 @@ public class TransportBlocks {
     private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES =
             new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, Transport.ID);
     private static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, Transport.ID);
+    private static final DeferredRegister<ContainerType<?>> CONTAINERS =
+            new DeferredRegister<>(ForgeRegistries.CONTAINERS, Transport.ID);
 
     //region Rails
     public static final RegistryObject<HoldingRailBlock> HOLDING_RAIL = BLOCKS.register("holding_rail",
@@ -36,6 +44,8 @@ public class TransportBlocks {
     //endregion
 
     //region Loaders
+    public static final RegistryObject<ContainerType<LoaderContainer>> LOADER_CONTAINER = CONTAINERS.register("loader",
+            () -> IForgeContainerType.create(LoaderContainer::create));
     public static final RegistryObject<ItemLoaderBlock> ITEM_LOADER = BLOCKS.register("item_loader", ItemLoaderBlock::new);
     public static final RegistryObject<TileEntityType<ItemLoaderTileEntity>> ITEM_LOADER_TILE_ENTITY =
             TILE_ENTITIES.register("item_loader", () -> TileEntityType.Builder.create(ItemLoaderTileEntity::new,
@@ -49,5 +59,6 @@ public class TransportBlocks {
         BLOCKS.register(modBus);
         TILE_ENTITIES.register(modBus);
         ITEMS.register(modBus);
+        CONTAINERS.register(modBus);
     }
 }
