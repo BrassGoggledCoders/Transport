@@ -1,0 +1,6 @@
+{
+  "block.transport.item_loader": "Item Loader",
+  "block.transport.diamond_crossing": "Diamond Crossing Rail",
+  "block.transport.holding": "Holding Rail",
+  "itemGroup.transport": "Transport"
+}
