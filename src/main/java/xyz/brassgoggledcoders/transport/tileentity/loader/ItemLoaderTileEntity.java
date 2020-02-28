@@ -19,13 +19,13 @@ import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import java.util.List;
 
-public class ItemLoaderTileEntity extends BasicLoaderTileEntity<IItemHandler, InventoryComponent<ItemLoaderTileEntity>>
+public class ItemLoaderTileEntity extends BasicLoaderTileEntity<IItemHandler>
         implements IScreenAddonProvider {
     private final InventoryComponent<ItemLoaderTileEntity> inventoryComponent;
     private final LazyOptional<IItemHandler> internalLazyOptional;
 
     public ItemLoaderTileEntity() {
-        this(TransportBlocks.ITEM_LOADER_TILE_ENTITY.get());
+        this(TransportBlocks.ITEM_LOADER.getTileEntityType());
     }
 
     public <T extends ItemLoaderTileEntity> ItemLoaderTileEntity(TileEntityType<T> tileEntityType) {

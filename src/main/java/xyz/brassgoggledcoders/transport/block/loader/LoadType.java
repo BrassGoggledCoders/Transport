@@ -14,16 +14,4 @@ public enum LoadType implements IStringSerializable {
     public String getName() {
         return this.name().toLowerCase();
     }
-
-    public LoadType next() {
-        switch (this) {
-            case INPUT:
-                return OUTPUT;
-            case OUTPUT:
-                return NONE;
-            case NONE:
-                return INPUT;
-        }
-        throw new IllegalStateException("Couldn't find next");
-    }
 }

@@ -18,7 +18,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullConsumer;
 import org.apache.commons.lang3.tuple.Pair;
-import xyz.brassgoggledcoders.transport.block.loader.BasicLoaderBlock;
+import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
 import xyz.brassgoggledcoders.transport.block.loader.LoadType;
 
 import javax.annotation.Nonnull;
@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public abstract class BasicLoaderTileEntity<CAP, IMPL extends CAP> extends TileEntity
+public abstract class BasicLoaderTileEntity<CAP> extends TileEntity
         implements ITickableTileEntity, IComponentHarness, IScreenAddonProvider {
 
     private final Capability<CAP> capability;
@@ -37,8 +37,7 @@ public abstract class BasicLoaderTileEntity<CAP, IMPL extends CAP> extends TileE
     private final EnumMap<Direction, Pair<Long, LazyOptional<CAP>>> neighboringTiles;
     private int run = 20;
 
-    public <T extends BasicLoaderTileEntity<CAP, IMPL>> BasicLoaderTileEntity(TileEntityType<T> tileEntityType,
-                                                                              Capability<CAP> capability) {
+    public <T extends BasicLoaderTileEntity<CAP>> BasicLoaderTileEntity(TileEntityType<T> tileEntityType, Capability<CAP> capability) {
         super(tileEntityType);
         this.capability = capability;
         this.lazyOptionals = Maps.newEnumMap(Direction.class);
@@ -68,7 +67,7 @@ public abstract class BasicLoaderTileEntity<CAP, IMPL extends CAP> extends TileE
 
         for (Direction side : Direction.values()) {
             BlockPos neighborPos = this.getPos().offset(side, 1);
-            LoadType loadType = this.getBlockState().get(BasicLoaderBlock.PROPERTIES.get(side));
+            LoadType loadType = this.getBlockState().get(LoaderBlock.PROPERTIES.get(side));
             if (loadType != LoadType.NONE) {
                 doWorkOnSide(loadType, side, neighborPos, entities.stream().filter(entity -> entity.getPosition().equals(neighborPos)));
             }
@@ -124,7 +123,7 @@ public abstract class BasicLoaderTileEntity<CAP, IMPL extends CAP> extends TileE
     }
 
     private LazyOptional<CAP> getNewCAPForSide(Direction direction) {
-        LoadType loadType = this.getBlockState().get(BasicLoaderBlock.PROPERTIES.get(direction));
+        LoadType loadType = this.getBlockState().get(LoaderBlock.PROPERTIES.get(direction));
         switch (loadType) {
             case NONE:
                 return LazyOptional.empty();

@@ -28,7 +28,7 @@ import static xyz.brassgoggledcoders.transport.Transport.ID;
 public class Transport {
     public static final String ID = "transport";
     public static final Logger LOGGER = LogManager.getLogger(ID);
-    public static final ItemGroup ITEM_GROUP = new TransportItemGroup(ID, TransportBlocks.HOLDING_RAIL_ITEM::get);
+    public static final ItemGroup ITEM_GROUP = new TransportItemGroup(ID, TransportBlocks.HOLDING_RAIL::getItem);
     public static final ResourceLocationDataSerializer RESOURCE_LOCATION_DATA_SERIALIZER = createDataSerializer();
 
     public static Transport instance;
@@ -50,8 +50,8 @@ public class Transport {
     }
 
     public void clientSetup(FMLClientSetupEvent event) {
-        RenderTypeLookup.setRenderLayer(TransportBlocks.HOLDING_RAIL.get(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(TransportBlocks.DIAMOND_CROSSING_RAIL.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.HOLDING_RAIL.getBlock(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.DIAMOND_CROSSING_RAIL.getBlock(), RenderType.getCutout());
 
         ScreenManager.registerFactory(TransportBlocks.LOADER_CONTAINER.get(), LoaderScreen::new);
     }

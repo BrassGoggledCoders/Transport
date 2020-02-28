@@ -11,9 +11,9 @@ import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.tileentity.loader.BasicLoaderTileEntity;
 
 public class LoaderContainer extends BasicInventoryContainer {
-    private final BasicLoaderTileEntity<?, ?> basicLoaderTileEntity;
+    private final BasicLoaderTileEntity<?> basicLoaderTileEntity;
 
-    public LoaderContainer(int id, PlayerInventory inventory, BasicLoaderTileEntity<?, ?> basicLoaderTileEntity) {
+    public LoaderContainer(int id, PlayerInventory inventory, BasicLoaderTileEntity<?> basicLoaderTileEntity) {
         super(TransportBlocks.LOADER_CONTAINER.get(), inventory, id, IAssetProvider.DEFAULT_PROVIDER);
         this.initInventory();
         basicLoaderTileEntity.getIntResourceHolders()
@@ -30,14 +30,14 @@ public class LoaderContainer extends BasicInventoryContainer {
                 (double)pos.getZ() + 0.5D) <= 64.0D;
     }
 
-    public BasicLoaderTileEntity<?, ?> getLoader() {
+    public BasicLoaderTileEntity<?> getLoader() {
         return basicLoaderTileEntity;
     }
 
     public static LoaderContainer create(int id, PlayerInventory inventory, PacketBuffer packetBuffer) {
         TileEntity tileEntity = inventory.player.world.getTileEntity(packetBuffer.readBlockPos());
         if (tileEntity instanceof BasicLoaderTileEntity) {
-            return new LoaderContainer(id, inventory, (BasicLoaderTileEntity<?, ?>) tileEntity);
+            return new LoaderContainer(id, inventory, (BasicLoaderTileEntity<?>) tileEntity);
         }
         throw new IllegalStateException("Failed to Find Loader Tile Entity");
     }

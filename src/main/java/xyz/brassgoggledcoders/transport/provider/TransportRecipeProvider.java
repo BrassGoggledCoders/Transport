@@ -18,13 +18,13 @@ public class TransportRecipeProvider extends RecipeProvider {
     @Override
     protected void registerRecipes(@Nonnull Consumer<IFinishedRecipe> consumer) {
         //region Rails
-        ShapelessRecipeBuilder.shapelessRecipe(TransportBlocks.HOLDING_RAIL.get(), 2)
+        ShapelessRecipeBuilder.shapelessRecipe(TransportBlocks.HOLDING_RAIL.getItem(), 2)
                 .addIngredient(Items.RAIL)
                 .addIngredient(Items.POWERED_RAIL)
                 .addCriterion("has_rail", this.hasItem(ItemTags.RAILS))
                 .build(consumer);
 
-        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.DIAMOND_CROSSING_RAIL.get(), 5)
+        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.DIAMOND_CROSSING_RAIL.getItem(), 5)
                 .patternLine(" R ")
                 .patternLine("RRR")
                 .patternLine(" R ")

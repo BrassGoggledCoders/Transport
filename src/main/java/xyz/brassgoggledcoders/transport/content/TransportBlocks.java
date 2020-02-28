@@ -1,24 +1,25 @@
 package xyz.brassgoggledcoders.transport.content;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.block.loader.ItemLoaderBlock;
+import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
 import xyz.brassgoggledcoders.transport.block.rail.DiamondCrossingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.HoldingRailBlock;
 import xyz.brassgoggledcoders.transport.container.LoaderContainer;
+import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
+import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
+
+import java.util.function.Function;
 
 @SuppressWarnings({"ConstantConditions", "unused"})
 public class TransportBlocks {
@@ -30,29 +31,33 @@ public class TransportBlocks {
             new DeferredRegister<>(ForgeRegistries.CONTAINERS, Transport.ID);
 
     //region Rails
-    public static final RegistryObject<HoldingRailBlock> HOLDING_RAIL = BLOCKS.register("holding_rail",
-            HoldingRailBlock::new);
-    public static final RegistryObject<BlockItem> HOLDING_RAIL_ITEM = ITEMS.register("holding_rail",
-            () -> new BlockItem(HOLDING_RAIL.get(), new Item.Properties()
-                    .group(Transport.ITEM_GROUP)));
+    public static final BlockRegistryObjectGroup<HoldingRailBlock, BlockItem, ?> HOLDING_RAIL =
+            new BlockRegistryObjectGroup<>("holding_rail", HoldingRailBlock::new, blockItemCreator())
+                    .register(BLOCKS, ITEMS);
 
-    public static final RegistryObject<DiamondCrossingRailBlock> DIAMOND_CROSSING_RAIL = BLOCKS.register("diamond_crossing_rail",
-            DiamondCrossingRailBlock::new);
-    public static final RegistryObject<BlockItem> DIAMOND_CROSSING_RAIL_ITEM = ITEMS.register("diamond_crossing_rail",
-            () -> new BlockItem(DIAMOND_CROSSING_RAIL.get(), new Item.Properties()
-                    .group(Transport.ITEM_GROUP)));
+    public static final BlockRegistryObjectGroup<DiamondCrossingRailBlock, BlockItem, ?> DIAMOND_CROSSING_RAIL =
+            new BlockRegistryObjectGroup<>("diamond_crossing_rail", DiamondCrossingRailBlock::new, blockItemCreator())
+                    .register(BLOCKS, ITEMS);
     //endregion
 
     //region Loaders
     public static final RegistryObject<ContainerType<LoaderContainer>> LOADER_CONTAINER = CONTAINERS.register("loader",
             () -> IForgeContainerType.create(LoaderContainer::create));
-    public static final RegistryObject<ItemLoaderBlock> ITEM_LOADER = BLOCKS.register("item_loader", ItemLoaderBlock::new);
-    public static final RegistryObject<TileEntityType<ItemLoaderTileEntity>> ITEM_LOADER_TILE_ENTITY =
-            TILE_ENTITIES.register("item_loader", () -> TileEntityType.Builder.create(ItemLoaderTileEntity::new,
-                    ITEM_LOADER.get()).build(null));
-    public static final RegistryObject<BlockItem> ITEM_LOADER_ITEM = ITEMS.register("item_loader", () ->
-            new BlockItem(ITEM_LOADER.get(), new Item.Properties()
-                    .group(Transport.ITEM_GROUP)));
+
+    public static final BlockRegistryObjectGroup<LoaderBlock, BlockItem, ItemLoaderTileEntity> ITEM_LOADER =
+            new BlockRegistryObjectGroup<>("item_loader", () -> new LoaderBlock(ItemLoaderTileEntity::new),
+                    blockItemCreator(), ItemLoaderTileEntity::new)
+                    .register(BLOCKS, ITEMS, TILE_ENTITIES);
+
+    public static final BlockRegistryObjectGroup<LoaderBlock, BlockItem, FluidLoaderTileEntity> FLUID_LOADER =
+            new BlockRegistryObjectGroup<>("fluid_loader", () -> new LoaderBlock(FluidLoaderTileEntity::new),
+                    blockItemCreator(), FluidLoaderTileEntity::new)
+            .register(BLOCKS, ITEMS, TILE_ENTITIES);
+
+    public static final BlockRegistryObjectGroup<LoaderBlock, BlockItem, EnergyLoaderTileEntity> ENERGY_LOADER =
+            new BlockRegistryObjectGroup<>("energy_loader", () -> new LoaderBlock(EnergyLoaderTileEntity::new),
+                    blockItemCreator(), EnergyLoaderTileEntity::new)
+                    .register(BLOCKS, ITEMS, TILE_ENTITIES);
     //endregion
 
     public static void register(IEventBus modBus) {
@@ -60,5 +65,9 @@ public class TransportBlocks {
         TILE_ENTITIES.register(modBus);
         ITEMS.register(modBus);
         CONTAINERS.register(modBus);
+    }
+
+    private static <B extends Block> Function<B, BlockItem> blockItemCreator() {
+        return block -> new BlockItem(block, new Item.Properties().group(Transport.ITEM_GROUP));
     }
 }
