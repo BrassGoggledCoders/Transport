@@ -19,6 +19,7 @@ import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.entity.ResourceLocationDataSerializer;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
 import xyz.brassgoggledcoders.transport.nbt.NBTStorage;
+import xyz.brassgoggledcoders.transport.provider.TransportDataGenerator;
 import xyz.brassgoggledcoders.transport.screen.LoaderScreen;
 
 import static xyz.brassgoggledcoders.transport.Transport.ID;
@@ -39,6 +40,7 @@ public class Transport {
 
         modBus.addListener(this::commonSetup);
         modBus.addListener(this::clientSetup);
+        modBus.addListener(TransportDataGenerator::gather);
 
         TransportBlocks.register(modBus);
     }
