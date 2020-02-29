@@ -70,6 +70,7 @@ minecraft {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    compile fg.deobf("com.teamacronymcoders:the_loader:1.14.4-1.0.0")
     compile fg.deobf("com.hrznstudio:titanium:${minecraft_version}-${titanium_version}")
 }
 
