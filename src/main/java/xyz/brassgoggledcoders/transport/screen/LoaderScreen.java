@@ -4,7 +4,7 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.client.screen.container.BasicContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-import xyz.brassgoggledcoders.transport.container.LoaderContainer;
+import xyz.brassgoggledcoders.transport.container.loader.LoaderContainer;
 
 public class LoaderScreen extends BasicContainerScreen<LoaderContainer> {
     public LoaderScreen(LoaderContainer container, PlayerInventory inventory, ITextComponent title) {

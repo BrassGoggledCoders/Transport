@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.container;
+package xyz.brassgoggledcoders.transport.container.loader;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

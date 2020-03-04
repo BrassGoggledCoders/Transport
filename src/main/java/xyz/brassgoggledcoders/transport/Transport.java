@@ -13,13 +13,15 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xyz.brassgoggledcoders.transport.api.cargo.carrier.CargoCarrierEmpty;
-import xyz.brassgoggledcoders.transport.api.cargo.carrier.ICargoCarrier;
+import xyz.brassgoggledcoders.transport.api.cargocarrier.CargoCarrierEmpty;
+import xyz.brassgoggledcoders.transport.api.cargocarrier.ICargoCarrier;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.content.TransportContainers;
 import xyz.brassgoggledcoders.transport.entity.ResourceLocationDataSerializer;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
 import xyz.brassgoggledcoders.transport.nbt.NBTStorage;
 import xyz.brassgoggledcoders.transport.provider.TransportDataGenerator;
+import xyz.brassgoggledcoders.transport.screen.CargoScreen;
 import xyz.brassgoggledcoders.transport.screen.LoaderScreen;
 
 import static xyz.brassgoggledcoders.transport.Transport.ID;
@@ -53,7 +55,8 @@ public class Transport {
         RenderTypeLookup.setRenderLayer(TransportBlocks.HOLDING_RAIL.getBlock(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.DIAMOND_CROSSING_RAIL.getBlock(), RenderType.getCutout());
 
-        ScreenManager.registerFactory(TransportBlocks.LOADER_CONTAINER.get(), LoaderScreen::new);
+        ScreenManager.registerFactory(TransportContainers.LOADER.get(), LoaderScreen::new);
+        ScreenManager.registerFactory(TransportContainers.CARGO.get(), CargoScreen::new);
     }
 
     private static ResourceLocationDataSerializer createDataSerializer() {

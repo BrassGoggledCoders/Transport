@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.api.cargo.carrier;
+package xyz.brassgoggledcoders.transport.api.cargocarrier;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -7,14 +7,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
-import xyz.brassgoggledcoders.transport.api.cargo.instance.ICargoInstance;
+import xyz.brassgoggledcoders.transport.api.cargoinstance.CargoInstance;
 
 import java.util.Optional;
 
 public class CargoCarrierItem implements ICargoCarrier {
     private final ItemStack itemStack;
     private Cargo cargo;
-    private ICargoInstance cargoInstance;
+    private CargoInstance cargoInstance;
 
     public CargoCarrierItem(ItemStack itemStack) {
         this.itemStack = itemStack;
@@ -39,7 +39,7 @@ public class CargoCarrierItem implements ICargoCarrier {
     }
 
     @Override
-    public ICargoInstance getCargoInstance() {
+    public CargoInstance getCargoInstance() {
         if (cargoInstance == null) {
             cargoInstance = this.getCargo().create(this.getWorld().orElse(null));
         }

@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.container;
+package xyz.brassgoggledcoders.transport.container.loader;
 
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.impl.BasicInventoryContainer;
@@ -8,13 +8,14 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.content.TransportContainers;
 import xyz.brassgoggledcoders.transport.tileentity.loader.BasicLoaderTileEntity;
 
 public class LoaderContainer extends BasicInventoryContainer {
     private final BasicLoaderTileEntity<?> basicLoaderTileEntity;
 
     public LoaderContainer(int id, PlayerInventory inventory, BasicLoaderTileEntity<?> basicLoaderTileEntity) {
-        super(TransportBlocks.LOADER_CONTAINER.get(), inventory, id, IAssetProvider.DEFAULT_PROVIDER);
+        super(TransportContainers.LOADER.get(), inventory, id, IAssetProvider.DEFAULT_PROVIDER);
         this.initInventory();
         basicLoaderTileEntity.getIntResourceHolders()
                 .forEach(this::trackInt);

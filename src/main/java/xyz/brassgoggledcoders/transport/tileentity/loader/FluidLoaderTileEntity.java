@@ -24,7 +24,7 @@ public class FluidLoaderTileEntity extends BasicLoaderTileEntity<IFluidHandler> 
 
     @Override
     protected void transfer(IFluidHandler from, IFluidHandler to) {
-
+        //TODO Fluid Transfer
     }
 
     @Override

@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.api.cargo.carrier;
+package xyz.brassgoggledcoders.transport.api.cargocarrier;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;

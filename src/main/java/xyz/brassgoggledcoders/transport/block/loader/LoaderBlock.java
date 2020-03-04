@@ -22,7 +22,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
-import xyz.brassgoggledcoders.transport.container.LoaderContainerProvider;
+import xyz.brassgoggledcoders.transport.container.loader.LoaderContainerProvider;
 import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 import xyz.brassgoggledcoders.transport.tileentity.loader.BasicLoaderTileEntity;
 

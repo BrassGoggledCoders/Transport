@@ -7,7 +7,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
-import xyz.brassgoggledcoders.transport.api.cargo.carrier.ICargoCarrier;
+import xyz.brassgoggledcoders.transport.api.cargocarrier.ICargoCarrier;
 
 public class TransportAPI {
     @CapabilityInject(ICargoCarrier.class)

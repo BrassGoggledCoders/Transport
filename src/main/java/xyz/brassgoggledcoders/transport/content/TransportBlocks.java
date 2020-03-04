@@ -14,7 +14,7 @@ import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
 import xyz.brassgoggledcoders.transport.block.rail.DiamondCrossingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.HoldingRailBlock;
-import xyz.brassgoggledcoders.transport.container.LoaderContainer;
+import xyz.brassgoggledcoders.transport.container.loader.LoaderContainer;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
@@ -27,8 +27,6 @@ public class TransportBlocks {
     private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES =
             new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, Transport.ID);
     private static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, Transport.ID);
-    private static final DeferredRegister<ContainerType<?>> CONTAINERS =
-            new DeferredRegister<>(ForgeRegistries.CONTAINERS, Transport.ID);
 
     //region Rails
     public static final BlockRegistryObjectGroup<HoldingRailBlock, BlockItem, ?> HOLDING_RAIL =
@@ -41,9 +39,6 @@ public class TransportBlocks {
     //endregion
 
     //region Loaders
-    public static final RegistryObject<ContainerType<LoaderContainer>> LOADER_CONTAINER = CONTAINERS.register("loader",
-            () -> IForgeContainerType.create(LoaderContainer::create));
-
     public static final BlockRegistryObjectGroup<LoaderBlock, BlockItem, ItemLoaderTileEntity> ITEM_LOADER =
             new BlockRegistryObjectGroup<>("item_loader", () -> new LoaderBlock(ItemLoaderTileEntity::new),
                     blockItemCreator(), ItemLoaderTileEntity::new)
@@ -64,7 +59,6 @@ public class TransportBlocks {
         BLOCKS.register(modBus);
         TILE_ENTITIES.register(modBus);
         ITEMS.register(modBus);
-        CONTAINERS.register(modBus);
     }
 
     private static <B extends Block> Function<B, BlockItem> blockItemCreator() {

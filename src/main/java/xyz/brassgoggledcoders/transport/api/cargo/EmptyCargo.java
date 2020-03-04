@@ -1,9 +1,12 @@
 package xyz.brassgoggledcoders.transport.api.cargo;
 
 import net.minecraft.world.World;
-import xyz.brassgoggledcoders.transport.api.cargo.instance.CargoInstanceEmpty;
 
-public class CargoEmpty extends Cargo {
+public class EmptyCargo extends Cargo {
+    public EmptyCargo() {
+        super(blockSupplier);
+    }
+
     @Override
     public CargoInstanceEmpty create(World world) {
         return new CargoInstanceEmpty();
