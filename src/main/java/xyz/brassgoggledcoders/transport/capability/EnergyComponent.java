@@ -9,10 +9,13 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.IntReferenceHolder;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.EnergyStorage;
+import xyz.brassgoggledcoders.transport.container.tracked.FunctionalReferenceHolder;
+import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddon;
 
+import java.util.Collections;
 import java.util.List;
 
-public class EnergyComponent extends EnergyStorage implements INBTSerializable<CompoundNBT>, IScreenAddonProvider {
+public class EnergyComponent extends EnergyStorage implements INBTSerializable<CompoundNBT>, IScreenAddonProvider, IContainerAddon {
     private final int xPos;
     private final int yPos;
 
@@ -57,7 +60,8 @@ public class EnergyComponent extends EnergyStorage implements INBTSerializable<C
         return Lists.newArrayList(() -> new EnergyBarScreenAddon(xPos, yPos, this));
     }
 
-    public IntReferenceHolder getIntReferenceHolder() {
-        return new FunctionalReferenceHolder(this::getEnergyStored, this::setEnergyStored);
+    @Override
+    public List<IntReferenceHolder> getTrackedInts() {
+        return Collections.singletonList(new FunctionalReferenceHolder(this::getEnergyStored, this::setEnergyStored));
     }
 }

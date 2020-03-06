@@ -21,7 +21,7 @@ import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
 
 import java.util.function.Function;
 
-@SuppressWarnings({"ConstantConditions", "unused"})
+@SuppressWarnings("unused")
 public class TransportBlocks {
     private static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, Transport.ID);
     private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES =

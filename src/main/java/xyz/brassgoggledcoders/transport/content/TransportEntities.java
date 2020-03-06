@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.transport.content;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
@@ -11,6 +10,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
+import xyz.brassgoggledcoders.transport.item.CargoCarrierMinecartItem;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -27,7 +27,11 @@ public class TransportEntities {
                 public CargoCarrierMinecartEntity create(EntityType<CargoCarrierMinecartEntity> entityType, World world) {
                     return new CargoCarrierMinecartEntity(entityType, world);
                 }
-            }, EntityClassification.MISC).build("cargo_minecart"));
+            }, EntityClassification.MISC)
+                    .build("cargo_minecart"));
+
+    public static RegistryObject<CargoCarrierMinecartItem> CARGO_MINECART_ITEM = ITEMS.register("cargo_minecart",
+            CargoCarrierMinecartItem::new);
 
     public static void register(IEventBus modBus) {
         ENTITIES.register(modBus);

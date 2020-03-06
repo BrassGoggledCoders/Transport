@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.capability;
+package xyz.brassgoggledcoders.transport.container.tracked;
 
 import net.minecraft.util.IntReferenceHolder;
 

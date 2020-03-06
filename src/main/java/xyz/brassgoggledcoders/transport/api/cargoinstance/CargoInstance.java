@@ -3,13 +3,17 @@ package xyz.brassgoggledcoders.transport.api.cargoinstance;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
+import xyz.brassgoggledcoders.transport.api.cargocarrier.ICargoCarrier;
+import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,10 +40,6 @@ public class CargoInstance implements ICapabilitySerializable<CompoundNBT> {
 
     }
 
-    public boolean onInteraction(PlayerEntity entityPlayer, Hand hand) {
-        return false;
-    }
-
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction direction) {
@@ -51,6 +51,10 @@ public class CargoInstance implements ICapabilitySerializable<CompoundNBT> {
     }
 
     public ITextComponent getDisplayName() {
-        return cargo.getName();
+        return cargo.getDisplayName();
+    }
+
+    public ActionResultType applyInteraction(ICargoCarrier carrier, PlayerEntity player, Vec3d vec, Hand hand) {
+        return ActionResultType.PASS;
     }
 }

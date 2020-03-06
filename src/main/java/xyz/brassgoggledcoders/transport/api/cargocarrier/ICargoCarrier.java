@@ -13,8 +13,8 @@ import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public interface ICargoCarrier extends INBTSerializable<CompoundNBT> {
-    Optional<World> getWorld();
+public interface ICargoCarrier {
+    World getTheWorld();
 
     @Nonnull
     Cargo getCargo();

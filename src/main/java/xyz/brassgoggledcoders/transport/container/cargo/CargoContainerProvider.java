@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.transport.container.cargo;
 
-import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -12,12 +11,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class ScreenAddonCargoContainerProvider<T extends CargoInstance & IScreenAddonProvider> implements INamedContainerProvider {
-    private final int entityId;
+public class CargoContainerProvider implements INamedContainerProvider {
     private final CargoInstance cargoInstance;
 
-    public ScreenAddonCargoContainerProvider(int entityId, CargoInstance cargoInstance) {
-        this.entityId = entityId;
+    public CargoContainerProvider(CargoInstance cargoInstance) {
         this.cargoInstance = cargoInstance;
     }
 
@@ -31,6 +28,6 @@ public class ScreenAddonCargoContainerProvider<T extends CargoInstance & IScreen
     @Override
     @ParametersAreNonnullByDefault
     public Container createMenu(int containerId, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-        return null;
+        return new CargoContainer(containerId, cargoInstance, playerInventory);
     }
 }

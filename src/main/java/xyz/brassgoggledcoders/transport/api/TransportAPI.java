@@ -18,6 +18,7 @@ public class TransportAPI {
             .setType(Cargo.class)
             .create();
 
-    public static ResourceLocation EMPTY_CARGO_RL = new ResourceLocation("transport", "empty");
-    public static RegistryObject<Cargo> EMPTY_CARGO = RegistryObject.of(EMPTY_CARGO_RL, CARGO);
+    public static final ResourceLocation EMPTY_CARGO_RL = new ResourceLocation("transport", "empty");
+
+    public static final RegistryObject<Cargo> EMPTY_CARGO = RegistryObject.of(EMPTY_CARGO_RL, CARGO);
 }
