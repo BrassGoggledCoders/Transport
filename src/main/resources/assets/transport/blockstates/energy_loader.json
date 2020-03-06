@@ -5,7 +5,7 @@
         "up": "none"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/up_none",
+        "model": "transport:block/loader/energy/up_none",
         "uvlock": true
       }
     },
@@ -14,7 +14,7 @@
         "up": "input"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/up_input",
+        "model": "transport:block/loader/energy/up_input",
         "uvlock": true
       }
     },
@@ -23,7 +23,7 @@
         "up": "output"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/up_output",
+        "model": "transport:block/loader/energy/up_output",
         "uvlock": true
       }
     },
@@ -32,7 +32,7 @@
         "down": "none"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/up_none",
+        "model": "transport:block/loader/energy/up_none",
         "uvlock": true,
         "x": 180
       }
@@ -42,7 +42,7 @@
         "down": "input"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/up_input",
+        "model": "transport:block/loader/energy/up_input",
         "uvlock": true,
         "x": 180
       }
@@ -52,7 +52,7 @@
         "down": "output"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/up_output",
+        "model": "transport:block/loader/energy/up_output",
         "uvlock": true,
         "x": 180
       }
@@ -62,7 +62,7 @@
         "north": "none"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/side_none",
+        "model": "transport:block/loader/energy/side_none",
         "uvlock": true
       }
     },
@@ -71,7 +71,7 @@
         "north": "input"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/side_input",
+        "model": "transport:block/loader/energy/side_input",
         "uvlock": true
       }
     },
@@ -80,7 +80,7 @@
         "north": "output"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/side_output",
+        "model": "transport:block/loader/energy/side_output",
         "uvlock": true
       }
     },
@@ -89,7 +89,7 @@
         "west": "none"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/side_none",
+        "model": "transport:block/loader/energy/side_none",
         "uvlock": true,
         "y": -90
       }
@@ -99,7 +99,7 @@
         "west": "input"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/side_input",
+        "model": "transport:block/loader/energy/side_input",
         "uvlock": true,
         "y": -90
       }
@@ -109,7 +109,7 @@
         "west": "output"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/side_output",
+        "model": "transport:block/loader/energy/side_output",
         "uvlock": true,
         "y": -90
       }
@@ -119,7 +119,7 @@
         "south": "none"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/side_none",
+        "model": "transport:block/loader/energy/side_none",
         "uvlock": true,
         "y": 180
       }
@@ -129,7 +129,7 @@
         "south": "input"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/side_input",
+        "model": "transport:block/loader/energy/side_input",
         "uvlock": true,
         "y": 180
       }
@@ -139,7 +139,7 @@
         "south": "output"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/side_output",
+        "model": "transport:block/loader/energy/side_output",
         "uvlock": true,
         "y": 180
       }
@@ -149,7 +149,7 @@
         "east": "none"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/side_none",
+        "model": "transport:block/loader/energy/side_none",
         "uvlock": true,
         "y": 90
       }
@@ -159,7 +159,7 @@
         "east": "input"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/side_input",
+        "model": "transport:block/loader/energy/side_input",
         "uvlock": true,
         "y": 90
       }
@@ -169,7 +169,7 @@
         "east": "output"
       },
       "apply": {
-        "model": "transport:block/loader/fluid/side_output",
+        "model": "transport:block/loader/energy/side_output",
         "uvlock": true,
         "y": 90
       }

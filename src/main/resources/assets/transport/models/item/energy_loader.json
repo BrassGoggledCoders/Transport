@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "transport:block/loader/energy/energy_loader_up_none",
+    "down": "transport:block/loader/energy/energy_loader_up_none",
+    "up": "transport:block/loader/energy/energy_loader_up_none",
+    "north": "transport:block/loader/energy/energy_loader_side_none",
+    "east": "transport:block/loader/energy/energy_loader_side_none",
+    "south": "transport:block/loader/energy/energy_loader_side_none",
+    "west": "transport:block/loader/energy/energy_loader_side_none"
+  }
+}

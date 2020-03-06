@@ -1,0 +1,6 @@
+{
+  "parent": "transport:block/loader/side_parent",
+  "textures": {
+    "texture": "transport:block/loader/fluid/fluid_loader_side_input"
+  }
+}
