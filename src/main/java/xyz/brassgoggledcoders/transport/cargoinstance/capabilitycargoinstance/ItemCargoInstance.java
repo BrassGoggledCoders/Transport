@@ -27,7 +27,7 @@ public class ItemCargoInstance extends CapabilityCargoInstance<IItemHandler> {
 
     public ItemCargoInstance(Cargo cargo) {
         super(cargo, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-        this.inventory = new InventoryPlusComponent<>("Inventory", 71, 35, 5);
+        this.inventory = new InventoryPlusComponent<>("Inventory", 44, 35, 5);
         this.lazyInventory = LazyOptional.of(() -> inventory);
     }
 

@@ -20,7 +20,7 @@ public class FluidCargoInstance extends CapabilityCargoInstance<IFluidHandler> {
 
     public FluidCargoInstance(Cargo cargo) {
         super(cargo, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
-        this.fluidTank = new FluidTankPlusComponent<>("Tank", 71, 35, 5);
+        this.fluidTank = new FluidTankPlusComponent<>("Tank", 10000, 80, 28);
         this.lazyFluidTank = LazyOptional.of(() -> fluidTank);
     }
 

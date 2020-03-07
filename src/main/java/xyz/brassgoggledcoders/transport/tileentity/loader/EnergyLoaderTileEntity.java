@@ -19,7 +19,7 @@ public class EnergyLoaderTileEntity extends BasicLoaderTileEntity<IEnergyStorage
 
     public EnergyLoaderTileEntity() {
         super(TransportBlocks.ENERGY_LOADER.getTileEntityType(), CapabilityEnergy.ENERGY);
-        this.energyComponent = new EnergyComponent(10000, 50, 15);
+        this.energyComponent = new EnergyComponent(10000, 79, 24);
         this.lazyEnergy = LazyOptional.of(() -> energyComponent);
 
     }

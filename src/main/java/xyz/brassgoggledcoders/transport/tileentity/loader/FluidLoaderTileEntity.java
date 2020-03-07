@@ -18,7 +18,7 @@ public class FluidLoaderTileEntity extends BasicLoaderTileEntity<IFluidHandler> 
 
     public FluidLoaderTileEntity() {
         super(TransportBlocks.FLUID_LOADER.getTileEntityType(), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
-        this.fluidTankComponent = new FluidTankComponent<>("Loader", 10000, 50, 24);
+        this.fluidTankComponent = new FluidTankComponent<>("Loader", 10000, 80, 28);
         this.lazyFluid = LazyOptional.of(() -> fluidTankComponent);
     }
 

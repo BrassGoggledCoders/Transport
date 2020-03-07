@@ -19,7 +19,7 @@ public class EnergyCargoInstance extends CapabilityCargoInstance<IEnergyStorage>
 
     public EnergyCargoInstance(Cargo cargo) {
         super(cargo, CapabilityEnergy.ENERGY);
-        this.energy = new EnergyComponent(10000, 30, 30);
+        this.energy = new EnergyComponent(10000, 79, 24);
         this.lazyEnergy = LazyOptional.of(() -> energy);
     }
 
