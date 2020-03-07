@@ -2,11 +2,17 @@ package xyz.brassgoggledcoders.transport.cargoinstance.capability;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
+import xyz.brassgoggledcoders.transport.api.cargocarrier.ICargoCarrier;
 import xyz.brassgoggledcoders.transport.capability.FluidTankPlusComponent;
 import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddon;
 
@@ -21,6 +27,14 @@ public class FluidCargoInstance extends CapabilityCargoInstance<IFluidHandler> {
         super(cargo, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
         this.fluidTank = new FluidTankPlusComponent<>("Tank", 10000, 80, 28);
         this.lazyFluidTank = LazyOptional.of(() -> fluidTank);
+    }
+
+    @Override
+    public ActionResultType applyInteraction(ICargoCarrier carrier, PlayerEntity player, Vec3d vec, Hand hand) {
+        if (FluidUtil.interactWithFluidHandler(player, hand, this.fluidTank)) {
+            return ActionResultType.SUCCESS;
+        }
+        return super.applyInteraction(carrier, player, vec, hand);
     }
 
     @Override
