@@ -76,6 +76,7 @@ public class CargoCarrierMinecartItem extends MinecartItem {
         if (this.isInGroup(group)) {
             TransportAPI.CARGO.getValues()
                     .stream()
+                    .filter(cargo -> !cargo.isEmpty())
                     .map(Cargo::getRegistryName)
                     .filter(Objects::nonNull)
                     .map(ResourceLocation::toString)
@@ -85,7 +86,6 @@ public class CargoCarrierMinecartItem extends MinecartItem {
                         return itemStack;
                     })
                     .forEach(items::add);
-            items.add(new ItemStack(this));
         }
     }
 

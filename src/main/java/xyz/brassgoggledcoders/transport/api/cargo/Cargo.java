@@ -59,4 +59,8 @@ public class Cargo extends ForgeRegistryEntry<Cargo> {
         }
         return blockState;
     }
+
+    public boolean isEmpty() {
+        return false;
+    }
 }
