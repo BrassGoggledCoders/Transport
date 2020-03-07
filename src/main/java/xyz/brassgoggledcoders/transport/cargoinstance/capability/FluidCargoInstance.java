@@ -1,8 +1,7 @@
-package xyz.brassgoggledcoders.transport.cargoinstance.capabilitycargoinstance;
+package xyz.brassgoggledcoders.transport.cargoinstance.capability;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
-import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;

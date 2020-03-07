@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.cargoinstance.capabilitycargoinstance;
+package xyz.brassgoggledcoders.transport.cargoinstance.capability;
 
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,7 +39,7 @@ public abstract class CapabilityCargoInstance<CAP> extends CargoInstance impleme
     @Override
     public ActionResultType applyInteraction(ICargoCarrier carrier, PlayerEntity player, Vec3d vec, Hand hand) {
         if (!player.isCrouching()) {
-            carrier.openContainer(player, new CargoContainerProvider(this), packetBuffer -> {});
+            carrier.openContainer(player, new CargoContainerProvider(carrier, this), packetBuffer -> {});
             return ActionResultType.SUCCESS;
         }
         return super.applyInteraction(carrier, player, vec, hand);

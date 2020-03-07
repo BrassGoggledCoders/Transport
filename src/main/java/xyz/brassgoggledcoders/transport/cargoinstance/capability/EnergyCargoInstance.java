@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.cargoinstance.capabilitycargoinstance;
+package xyz.brassgoggledcoders.transport.cargoinstance.capability;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;

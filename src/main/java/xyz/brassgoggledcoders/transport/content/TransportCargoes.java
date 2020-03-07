@@ -8,8 +8,9 @@ import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
 import xyz.brassgoggledcoders.transport.cargoinstance.capabilitycargoinstance.EnergyCargoInstance;
-import xyz.brassgoggledcoders.transport.cargoinstance.capabilitycargoinstance.FluidCargoInstance;
-import xyz.brassgoggledcoders.transport.cargoinstance.capabilitycargoinstance.ItemCargoInstance;
+import xyz.brassgoggledcoders.transport.cargoinstance.capability.EnergyCargoInstance;
+import xyz.brassgoggledcoders.transport.cargoinstance.capability.FluidCargoInstance;
+import xyz.brassgoggledcoders.transport.cargoinstance.capability.ItemCargoInstance;
 
 @SuppressWarnings("unused")
 public class TransportCargoes {
