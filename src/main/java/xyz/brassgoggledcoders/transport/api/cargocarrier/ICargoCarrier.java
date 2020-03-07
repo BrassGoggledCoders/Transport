@@ -4,6 +4,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
@@ -25,4 +26,6 @@ public interface ICargoCarrier {
     void openContainer(PlayerEntity playerEntity, INamedContainerProvider provider, Consumer<PacketBuffer> packetBufferConsumer);
 
     boolean canInteractWith(PlayerEntity playerEntity);
+
+    ITextComponent getCarrierDisplayName();
 }

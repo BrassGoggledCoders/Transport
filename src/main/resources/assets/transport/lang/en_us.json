@@ -1,6 +1,15 @@
 {
+  "itemGroup.transport": "Transport",
+  "text.transport.with": "%s With %s",
+  "entity.transport.cargo_minecart": "Minecart",
+  "item.transport.cargo_minecart": "Minecart",
   "block.transport.item_loader": "Item Loader",
+  "block.transport.fluid_loader": "Fluid Loader",
+  "block.transport.energy_loader":  "Energy Loader",
   "block.transport.diamond_crossing": "Diamond Crossing Rail",
   "block.transport.holding": "Holding Rail",
-  "itemGroup.transport": "Transport"
+  "cargo.transport.empty": "No Cargo",
+  "cargo.transport.item": "Inventory",
+  "cargo.transport.fluid": "Fluid Tank",
+  "cargo.transport.energy": "Energy Storage"
 }

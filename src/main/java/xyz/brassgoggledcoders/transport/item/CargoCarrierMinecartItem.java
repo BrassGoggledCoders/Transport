@@ -11,6 +11,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
@@ -28,7 +29,6 @@ import java.util.Optional;
 import static net.minecraft.entity.item.minecart.AbstractMinecartEntity.Type.CHEST;
 
 public class CargoCarrierMinecartItem extends MinecartItem {
-
     public CargoCarrierMinecartItem() {
         this(new Item.Properties()
                 .group(Transport.ITEM_GROUP));
@@ -92,7 +92,9 @@ public class CargoCarrierMinecartItem extends MinecartItem {
     @Override
     @Nonnull
     public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-        return this.getCargo(stack.getChildTag("cargo")).getDisplayName();
+        return new TranslationTextComponent("text.transport.with",
+                Items.MINECART.getDisplayName(stack),
+                this.getCargo(stack.getChildTag("cargo")).getDisplayName());
     }
 
     public static ItemStack getCartStack(CargoInstance cargoInstance) {

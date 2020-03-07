@@ -17,6 +17,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.transport.Transport;
@@ -36,6 +37,8 @@ import java.util.function.Consumer;
 public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implements ICargoCarrier {
     private static final DataParameter<ResourceLocation> CARGO_PARAMETER = EntityDataManager.createKey(
             CargoCarrierMinecartEntity.class, Transport.RESOURCE_LOCATION_DATA_SERIALIZER);
+
+    private ITextComponent displayName;
 
     private Cargo cargo;
     private CargoInstance cargoInstance;
@@ -82,7 +85,11 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @Override
     @Nonnull
     public ITextComponent getDisplayName() {
-        return this.getCargoInstance().getDisplayName();
+        if (displayName == null) {
+            displayName = new TranslationTextComponent("text.transport.with", super.getDisplayName(),
+                    this.getCargoInstance().getDisplayName());
+        }
+        return displayName;
     }
 
     @Override
@@ -148,5 +155,10 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @Override
     public boolean canInteractWith(PlayerEntity playerEntity) {
         return this.isAlive();
+    }
+
+    @Override
+    public ITextComponent getCarrierDisplayName() {
+        return super.getDisplayName();
     }
 }
