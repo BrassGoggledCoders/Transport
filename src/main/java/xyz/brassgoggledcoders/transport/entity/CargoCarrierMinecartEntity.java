@@ -6,6 +6,7 @@ import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
@@ -25,6 +26,7 @@ import xyz.brassgoggledcoders.transport.api.cargocarrier.ICargoCarrier;
 import xyz.brassgoggledcoders.transport.api.cargoinstance.CargoInstance;
 import xyz.brassgoggledcoders.transport.content.TransportCargoes;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.item.CargoCarrierMinecartItem;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -102,6 +104,11 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
         CompoundNBT cargo = new CompoundNBT();
         cargo.putString("name", this.getDataManager().get(CARGO_PARAMETER).toString());
         compound.put("cargo", cargo);
+    }
+
+    @Override
+    public ItemStack getCartItem() {
+        return CargoCarrierMinecartItem.getCartStack(this.getCargoInstance());
     }
 
     @Override

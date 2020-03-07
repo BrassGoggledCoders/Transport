@@ -57,4 +57,8 @@ public class CargoInstance implements ICapabilitySerializable<CompoundNBT> {
     public ActionResultType applyInteraction(ICargoCarrier carrier, PlayerEntity player, Vec3d vec, Hand hand) {
         return ActionResultType.PASS;
     }
+
+    public Cargo getCargo() {
+        return cargo;
+    }
 }

@@ -15,6 +15,8 @@ import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
+import xyz.brassgoggledcoders.transport.api.cargoinstance.CargoInstance;
+import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 
 import javax.annotation.Nonnull;
@@ -91,6 +93,15 @@ public class CargoCarrierMinecartItem extends MinecartItem {
     @Nonnull
     public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
         return this.getCargo(stack.getChildTag("cargo")).getDisplayName();
+    }
+
+    public static ItemStack getCartStack(CargoInstance cargoInstance) {
+        ItemStack itemStack = new ItemStack(TransportEntities.CARGO_MINECART_ITEM
+                .map(Item::asItem)
+                .orElse(Items.MINECART));
+        itemStack.getOrCreateChildTag("cargo").putString("name", Objects.requireNonNull(
+                cargoInstance.getCargo().getRegistryName()).toString());
+        return itemStack;
     }
 
     private Cargo getCargo(@Nullable CompoundNBT cargo) {
