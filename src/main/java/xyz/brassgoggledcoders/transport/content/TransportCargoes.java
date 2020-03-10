@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.transport.content;
 
-import net.minecraft.block.Blocks;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;

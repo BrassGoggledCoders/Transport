@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.container.loader;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -14,18 +15,18 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class LoaderContainerProvider implements INamedContainerProvider {
-    private final LoaderBlock loaderBlock;
     private final BasicLoaderTileEntity<?> loaderTileEntity;
 
-    public LoaderContainerProvider(LoaderBlock loaderBlock, BasicLoaderTileEntity<?> basicLoaderTileEntity) {
-        this.loaderBlock = loaderBlock;
+    public LoaderContainerProvider(BasicLoaderTileEntity<?> basicLoaderTileEntity) {
         this.loaderTileEntity = basicLoaderTileEntity;
     }
 
     @Override
     @Nonnull
     public ITextComponent getDisplayName() {
-        return loaderBlock.getDisplayName()
+        return loaderTileEntity.getBlockState()
+                .getBlock()
+                .getNameTextComponent()
                 .shallowCopy()
                 .applyTextStyle(TextFormatting.BLACK);
     }
