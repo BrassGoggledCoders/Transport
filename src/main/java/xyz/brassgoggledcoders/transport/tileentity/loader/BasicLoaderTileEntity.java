@@ -1,25 +1,29 @@
 package xyz.brassgoggledcoders.transport.tileentity.loader;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import net.minecraft.entity.Entity;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.IntReferenceHolder;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullConsumer;
+import net.minecraftforge.fml.network.NetworkHooks;
 import org.apache.commons.lang3.tuple.Pair;
-import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
 import xyz.brassgoggledcoders.transport.block.loader.LoadType;
+import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
+import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddonProvider;
+import xyz.brassgoggledcoders.transport.container.loader.LoaderContainerProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,8 +33,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public abstract class BasicLoaderTileEntity<CAP> extends TileEntity
-        implements ITickableTileEntity, IComponentHarness, IScreenAddonProvider {
+public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements ITickableTileEntity, IComponentHarness,
+        IScreenAddonProvider, IContainerAddonProvider {
 
     private final Capability<CAP> capability;
     private final EnumMap<Direction, LazyOptional<CAP>> lazyOptionals;
@@ -177,11 +181,11 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity
         return capLazyOptional -> this.neighboringTiles.remove(side);
     }
 
-    public List<IntReferenceHolder> getIntResourceHolders() {
-        return Lists.newArrayList();
-    }
-
-    public List<Slot> getSlots() {
-        return Lists.newArrayList();
+    public void onActivated(PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+        if (player instanceof ServerPlayerEntity) {
+            NetworkHooks.openGui((ServerPlayerEntity) player,
+                    new LoaderContainerProvider(this),
+                    packetBuffer -> packetBuffer.writeBlockPos(pos));
+        }
     }
 }

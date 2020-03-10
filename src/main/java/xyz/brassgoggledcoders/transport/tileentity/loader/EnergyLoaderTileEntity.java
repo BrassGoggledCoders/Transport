@@ -8,6 +8,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import xyz.brassgoggledcoders.transport.capability.EnergyComponent;
 import xyz.brassgoggledcoders.transport.capability.EnergyStorageDirectional;
+import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddon;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import java.util.Collections;
@@ -66,5 +67,10 @@ public class EnergyLoaderTileEntity extends BasicLoaderTileEntity<IEnergyStorage
     @Override
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         return energyComponent.getScreenAddons();
+    }
+
+    @Override
+    public List<IContainerAddon> getContainerAddons() {
+        return Collections.singletonList(energyComponent);
     }
 }

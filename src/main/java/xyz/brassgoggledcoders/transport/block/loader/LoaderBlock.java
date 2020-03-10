@@ -69,11 +69,7 @@ public class LoaderBlock extends Block {
             handleTileEntity(world, pos, basicLoaderTileEntity -> basicLoaderTileEntity.updateSide(rayTraceResult.getFace()));
             return ActionResultType.SUCCESS;
         } else if (!player.isCrouching()) {
-            if (player instanceof ServerPlayerEntity) {
-                handleTileEntity(world, pos, basicLoaderTileEntity -> NetworkHooks.openGui((ServerPlayerEntity) player,
-                        new LoaderContainerProvider(this, basicLoaderTileEntity),
-                        packetBuffer -> packetBuffer.writeBlockPos(pos)));
-            }
+            handleTileEntity(world, pos, basicLoaderTileEntity -> basicLoaderTileEntity.onActivated(player, hand, rayTraceResult));
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
@@ -113,9 +109,5 @@ public class LoaderBlock extends Block {
                                           IWorld world, BlockPos currentPos, BlockPos facingPos) {
         this.handleTileEntity(world, currentPos, basicLoaderTileEntity -> basicLoaderTileEntity.updateSide(facing));
         return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
-    }
-
-    public ITextComponent getDisplayName() {
-        return new TranslationTextComponent(this.getTranslationKey());
     }
 }

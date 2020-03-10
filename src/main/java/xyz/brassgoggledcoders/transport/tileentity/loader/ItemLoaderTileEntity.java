@@ -14,14 +14,17 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.SlotItemHandler;
+import xyz.brassgoggledcoders.transport.capability.InventoryPlusComponent;
 import xyz.brassgoggledcoders.transport.capability.ItemHandlerDirectional;
+import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddon;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ItemLoaderTileEntity extends BasicLoaderTileEntity<IItemHandler>
         implements IScreenAddonProvider {
-    private final InventoryComponent<ItemLoaderTileEntity> inventoryComponent;
+    private final InventoryPlusComponent<ItemLoaderTileEntity> inventoryComponent;
     private final LazyOptional<IItemHandler> internalLazyOptional;
 
     public ItemLoaderTileEntity() {
@@ -30,7 +33,7 @@ public class ItemLoaderTileEntity extends BasicLoaderTileEntity<IItemHandler>
 
     public <T extends ItemLoaderTileEntity> ItemLoaderTileEntity(TileEntityType<T> tileEntityType) {
         super(tileEntityType, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-        this.inventoryComponent = new InventoryComponent<>("inventory", 44, 35, 5);
+        this.inventoryComponent = new InventoryPlusComponent<>("inventory", 44, 35, 5);
         this.internalLazyOptional = LazyOptional.of(() -> inventoryComponent);
     }
 
@@ -81,18 +84,7 @@ public class ItemLoaderTileEntity extends BasicLoaderTileEntity<IItemHandler>
     }
 
     @Override
-    public List<Slot> getSlots() {
-        List<Slot> slots = Lists.newArrayList();
-        int i = 0;
-        for (int y = 0; y < inventoryComponent.getYSize(); ++y) {
-            for (int x = 0; x < inventoryComponent.getXSize(); ++x) {
-                slots.add(new SlotItemHandler(inventoryComponent, i,
-                        inventoryComponent.getXPos() + inventoryComponent.getSlotPosition().apply(i).getLeft(),
-                        inventoryComponent.getYPos() + inventoryComponent.getSlotPosition().apply(i).getRight()
-                ));
-                ++i;
-            }
-        }
-        return slots;
+    public List<IContainerAddon> getContainerAddons() {
+        return Collections.singletonList(inventoryComponent);
     }
 }

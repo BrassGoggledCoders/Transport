@@ -2,29 +2,50 @@ package xyz.brassgoggledcoders.transport.tileentity.loader;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
-import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import xyz.brassgoggledcoders.transport.capability.FluidHandlerDirectional;
+import xyz.brassgoggledcoders.transport.capability.FluidTankPlusComponent;
+import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddon;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
+import java.util.Collections;
 import java.util.List;
 
 public class FluidLoaderTileEntity extends BasicLoaderTileEntity<IFluidHandler> {
-    private final FluidTankComponent<FluidLoaderTileEntity> fluidTankComponent;
+    private final FluidTankPlusComponent<FluidLoaderTileEntity> fluidTankComponent;
     private final LazyOptional<IFluidHandler> lazyFluid;
 
     public FluidLoaderTileEntity() {
         super(TransportBlocks.FLUID_LOADER.getTileEntityType(), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
-        this.fluidTankComponent = new FluidTankComponent<>("Loader", 10000, 80, 28);
+        this.fluidTankComponent = new FluidTankPlusComponent<>("Loader", 10000, 80, 28);
         this.lazyFluid = LazyOptional.of(() -> fluidTankComponent);
     }
 
     @Override
     protected void transfer(IFluidHandler from, IFluidHandler to) {
-        //TODO Fluid Transfer
+        FluidStack output = from.drain(1000, FluidAction.SIMULATE);
+        if (!output.isEmpty()) {
+            int filledAmount = to.fill(output, FluidAction.SIMULATE);
+            if (filledAmount > 0) {
+                to.fill(from.drain(filledAmount, FluidAction.EXECUTE), FluidAction.EXECUTE);
+            }
+        }
+    }
+
+    @Override
+    public void onActivated(PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+        if (this.getTheWorld().isRemote || !FluidUtil.interactWithFluidHandler(player, hand, fluidTankComponent)) {
+            super.onActivated(player, hand, rayTraceResult);
+        }
     }
 
     @Override
@@ -58,5 +79,10 @@ public class FluidLoaderTileEntity extends BasicLoaderTileEntity<IFluidHandler> 
         CompoundNBT nbt = super.serializeNBT();
         nbt.put("tank", fluidTankComponent.writeToNBT(new CompoundNBT()));
         return nbt;
+    }
+
+    @Override
+    public List<IContainerAddon> getContainerAddons() {
+        return Collections.singletonList(fluidTankComponent);
     }
 }

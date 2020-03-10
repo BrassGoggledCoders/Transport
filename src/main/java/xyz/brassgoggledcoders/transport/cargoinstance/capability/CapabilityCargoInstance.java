@@ -18,7 +18,8 @@ import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddon
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class CapabilityCargoInstance<CAP> extends CargoInstance implements IScreenAddonProvider, IContainerAddonProvider {
+public abstract class CapabilityCargoInstance<CAP> extends CargoInstance implements IScreenAddonProvider,
+        IContainerAddonProvider {
     private final Capability<CAP> capability;
 
     public CapabilityCargoInstance(Cargo cargo, Capability<CAP> capability) {
