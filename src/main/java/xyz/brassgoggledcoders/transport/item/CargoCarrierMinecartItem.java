@@ -1,5 +1,7 @@
 package xyz.brassgoggledcoders.transport.item;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.*;
@@ -13,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
@@ -29,9 +32,17 @@ import java.util.Optional;
 import static net.minecraft.entity.item.minecart.AbstractMinecartEntity.Type.CHEST;
 
 public class CargoCarrierMinecartItem extends MinecartItem {
+    private final static Object2FloatMap<ResourceLocation> cargoModels = loadModels();
+
     public CargoCarrierMinecartItem() {
         this(new Item.Properties()
                 .group(Transport.ITEM_GROUP));
+        this.addPropertyOverride(new ResourceLocation(Transport.ID, "cargo"),
+                (itemStack, world, livingEntity) -> Optional.ofNullable(getCargo(itemStack.getChildTag("cargo")))
+                        .map(ForgeRegistryEntry::getRegistryName)
+                        .map(TransportAPI.CARGO::getID)
+                        .map(id -> id / 1000F)
+                        .orElse(0.000F));
     }
 
     public CargoCarrierMinecartItem(Properties properties) {
@@ -56,7 +67,7 @@ public class CargoCarrierMinecartItem extends MinecartItem {
                 }
 
                 CargoCarrierMinecartEntity cargoCarrierMinecartEntity = new CargoCarrierMinecartEntity(world,
-                        this.getCargo(itemstack.getChildTag("cargo")), blockPos.getX() + 0.5D,
+                        getCargo(itemstack.getChildTag("cargo")), blockPos.getX() + 0.5D,
                         blockPos.getY() + 0.0625D + d0, blockPos.getZ() + 0.5D);
                 if (itemstack.hasDisplayName()) {
                     cargoCarrierMinecartEntity.setCustomName(itemstack.getDisplayName());
@@ -94,7 +105,7 @@ public class CargoCarrierMinecartItem extends MinecartItem {
     public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
         return new TranslationTextComponent("text.transport.with",
                 Items.MINECART.getDisplayName(stack),
-                this.getCargo(stack.getChildTag("cargo")).getDisplayName());
+                getCargo(stack.getChildTag("cargo")).getDisplayName());
     }
 
     public static ItemStack getCartStack(CargoInstance cargoInstance) {
@@ -106,11 +117,20 @@ public class CargoCarrierMinecartItem extends MinecartItem {
         return itemStack;
     }
 
-    private Cargo getCargo(@Nullable CompoundNBT cargo) {
+    public static Cargo getCargo(@Nullable CompoundNBT cargo) {
         return Optional.ofNullable(cargo)
                 .map(compoundNBT -> compoundNBT.getString("name"))
                 .map(ResourceLocation::new)
                 .map(TransportAPI.CARGO::getValue)
                 .orElseGet(TransportAPI.EMPTY_CARGO);
+    }
+
+
+    private static Object2FloatMap<ResourceLocation> loadModels() {
+        Object2FloatMap<ResourceLocation> models = new Object2FloatOpenHashMap<>();
+        models.put(new ResourceLocation(Transport.ID, "item"), 0.001F);
+        models.put(new ResourceLocation(Transport.ID, "energy"), 0.002F);
+        models.put(new ResourceLocation(Transport.ID, "fluid"), 0.003F);
+        return models;
     }
 }
