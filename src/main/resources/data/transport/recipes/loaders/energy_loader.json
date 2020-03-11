@@ -13,10 +13,10 @@
       "tag": "minecraft:planks"
     },
     "C": {
-      "tag": "forge:chests"
+      "tag": "forge:dusts/redstone"
     }
   },
   "result": {
-    "item": "transport:item_loader"
+    "item": "transport:energy_loader"
   }
 }

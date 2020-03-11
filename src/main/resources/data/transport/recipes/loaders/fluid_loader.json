@@ -13,10 +13,10 @@
       "tag": "minecraft:planks"
     },
     "C": {
-      "tag": "forge:chests"
+      "item": "minecraft:bucket"
     }
   },
   "result": {
-    "item": "transport:item_loader"
+    "item": "transport:fluid_loader"
   }
 }

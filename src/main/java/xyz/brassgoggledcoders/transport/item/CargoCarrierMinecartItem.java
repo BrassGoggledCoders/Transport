@@ -32,8 +32,6 @@ import java.util.Optional;
 import static net.minecraft.entity.item.minecart.AbstractMinecartEntity.Type.CHEST;
 
 public class CargoCarrierMinecartItem extends MinecartItem {
-    private final static Object2FloatMap<ResourceLocation> cargoModels = loadModels();
-
     public CargoCarrierMinecartItem() {
         this(new Item.Properties()
                 .group(Transport.ITEM_GROUP));
@@ -123,14 +121,5 @@ public class CargoCarrierMinecartItem extends MinecartItem {
                 .map(ResourceLocation::new)
                 .map(TransportAPI.CARGO::getValue)
                 .orElseGet(TransportAPI.EMPTY_CARGO);
-    }
-
-
-    private static Object2FloatMap<ResourceLocation> loadModels() {
-        Object2FloatMap<ResourceLocation> models = new Object2FloatOpenHashMap<>();
-        models.put(new ResourceLocation(Transport.ID, "item"), 0.001F);
-        models.put(new ResourceLocation(Transport.ID, "energy"), 0.002F);
-        models.put(new ResourceLocation(Transport.ID, "fluid"), 0.003F);
-        return models;
     }
 }

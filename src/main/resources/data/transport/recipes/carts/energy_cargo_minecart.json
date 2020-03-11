@@ -1,0 +1,16 @@
+{
+  "type": "transport:cargo",
+  "result": {
+    "item": "transport:cargo_minecart",
+    "count": 1,
+    "cargo": "transport:energy"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:minecart"
+    },
+    {
+      "item": "transport:energy_loader"
+    }
+  ]
+}

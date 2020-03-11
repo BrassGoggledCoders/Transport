@@ -17,10 +17,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.api.cargocarrier.ICargoCarrier;
-import xyz.brassgoggledcoders.transport.content.TransportBlocks;
-import xyz.brassgoggledcoders.transport.content.TransportCargoes;
-import xyz.brassgoggledcoders.transport.content.TransportContainers;
-import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.entity.ResourceLocationDataSerializer;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
 import xyz.brassgoggledcoders.transport.nbt.NBTStorage;
@@ -45,7 +42,6 @@ public class Transport {
 
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        modBus.addListener(this::commonSetup);
         modBus.addListener(this::clientSetup);
         modBus.addListener(TransportDataGenerator::gather);
 
@@ -53,10 +49,7 @@ public class Transport {
         TransportCargoes.register(modBus);
         TransportContainers.register(modBus);
         TransportEntities.register(modBus);
-    }
-
-    public void commonSetup(FMLCommonSetupEvent event) {
-
+        TransportRecipes.register(modBus);
     }
 
     public void clientSetup(FMLClientSetupEvent event) {
