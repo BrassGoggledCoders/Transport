@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.provider;
+package xyz.brassgoggledcoders.transport.datagen;
 
 import net.minecraft.data.*;
 import net.minecraft.item.Item;
