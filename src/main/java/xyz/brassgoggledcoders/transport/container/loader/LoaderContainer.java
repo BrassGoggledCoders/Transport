@@ -4,25 +4,35 @@ import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.impl.BasicInventoryContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
 import xyz.brassgoggledcoders.transport.tileentity.loader.BasicLoaderTileEntity;
 
+import javax.annotation.Nonnull;
+
 public class LoaderContainer extends BasicInventoryContainer {
     private final BasicLoaderTileEntity<?> basicLoaderTileEntity;
+    private int addonSlots = 0;
 
     public LoaderContainer(int id, PlayerInventory inventory, BasicLoaderTileEntity<?> basicLoaderTileEntity) {
         super(TransportContainers.LOADER.get(), inventory, id, IAssetProvider.DEFAULT_PROVIDER);
-        this.initInventory();
         basicLoaderTileEntity.getContainerAddons()
                 .forEach(containerAddon -> {
-                    containerAddon.getSlots(this).forEach(this::addSlot);
+                    containerAddon.getSlots(this).forEach(this::addAddonSlot);
                     containerAddon.getTrackedInts().forEach(this::trackInt);
                     containerAddon.getTrackedIntArrays().forEach(this::trackIntArray);
                 });
+        this.initInventory();
         this.basicLoaderTileEntity = basicLoaderTileEntity;
+    }
+
+    private void addAddonSlot(Slot slot) {
+        this.addSlot(slot);
+        this.addonSlots++;
     }
 
     @Override
@@ -42,5 +52,31 @@ public class LoaderContainer extends BasicInventoryContainer {
             return new LoaderContainer(id, inventory, (BasicLoaderTileEntity<?>) tileEntity);
         }
         throw new IllegalStateException("Failed to Find Loader Tile Entity");
+    }
+
+    @Override
+    @Nonnull
+    public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int index) {
+        ItemStack itemstack = ItemStack.EMPTY;
+        Slot slot = this.inventorySlots.get(index);
+        if (slot != null && slot.getHasStack()) {
+            ItemStack slotStack = slot.getStack();
+            itemstack = slotStack.copy();
+            if (index < addonSlots) {
+                if (!this.mergeItemStack(slotStack, addonSlots, this.inventorySlots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!this.mergeItemStack(slotStack, 0, addonSlots, false)) {
+                return ItemStack.EMPTY;
+            }
+
+            if (slotStack.isEmpty()) {
+                slot.putStack(ItemStack.EMPTY);
+            } else {
+                slot.onSlotChanged();
+            }
+        }
+
+        return itemstack;
     }
 }
