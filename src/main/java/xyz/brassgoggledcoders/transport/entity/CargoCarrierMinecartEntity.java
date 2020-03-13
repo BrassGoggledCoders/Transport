@@ -7,18 +7,17 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -171,5 +170,23 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         LazyOptional<T> cargoLazyOptional = this.getCargoInstance().getCapability(cap, side);
         return cargoLazyOptional.isPresent() ? cargoLazyOptional : super.getCapability(cap, side);
+    }
+
+    @Override
+    public void killMinecart(DamageSource source) {
+        this.remove();
+        if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
+            ItemStack itemstack = new ItemStack(TransportEntities.CARGO_MINECART_ITEM.get());
+            CompoundNBT nbt = itemstack.getOrCreateChildTag("cargo");
+            nbt.putString("name", String.valueOf(this.getCargo().getRegistryName()));
+            nbt.put("instance", this.getCargoInstance().serializeNBT());
+
+            if (this.hasCustomName()) {
+                itemstack.setDisplayName(this.getCustomName());
+            }
+
+            this.entityDropItem(itemstack);
+        }
+
     }
 }

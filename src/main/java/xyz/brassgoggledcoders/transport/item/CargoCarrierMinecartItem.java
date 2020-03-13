@@ -56,7 +56,7 @@ public class CargoCarrierMinecartItem extends MinecartItem {
         if (!blockstate.isIn(BlockTags.RAILS)) {
             return ActionResultType.FAIL;
         } else {
-            ItemStack itemstack = context.getItem();
+            ItemStack itemStack = context.getItem();
             if (!world.isRemote) {
                 RailShape railshape = blockstate.getBlock() instanceof AbstractRailBlock ? ((AbstractRailBlock) blockstate.getBlock()).getRailDirection(blockstate, world, blockPos, null) : RailShape.NORTH_SOUTH;
                 double d0 = 0.0D;
@@ -64,17 +64,22 @@ public class CargoCarrierMinecartItem extends MinecartItem {
                     d0 = 0.5D;
                 }
 
+                CompoundNBT cargoNBT = itemStack.getChildTag("cargo");
                 CargoCarrierMinecartEntity cargoCarrierMinecartEntity = new CargoCarrierMinecartEntity(world,
-                        getCargo(itemstack.getChildTag("cargo")), blockPos.getX() + 0.5D,
+                        getCargo(cargoNBT), blockPos.getX() + 0.5D,
                         blockPos.getY() + 0.0625D + d0, blockPos.getZ() + 0.5D);
-                if (itemstack.hasDisplayName()) {
-                    cargoCarrierMinecartEntity.setCustomName(itemstack.getDisplayName());
+                if (itemStack.hasDisplayName()) {
+                    cargoCarrierMinecartEntity.setCustomName(itemStack.getDisplayName());
                 }
+
+                Optional.ofNullable(cargoNBT)
+                        .map(compoundNBT -> compoundNBT.getCompound("instance"))
+                        .ifPresent(cargoCarrierMinecartEntity.getCargoInstance()::deserializeNBT);
 
                 world.addEntity(cargoCarrierMinecartEntity);
             }
 
-            itemstack.shrink(1);
+            itemStack.shrink(1);
             return ActionResultType.SUCCESS;
         }
     }
