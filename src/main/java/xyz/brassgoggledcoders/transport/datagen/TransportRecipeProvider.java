@@ -7,8 +7,12 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
+import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.recipe.CargoShapelessRecipeBuilder;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.content.TransportEntities;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -44,6 +48,27 @@ public class TransportRecipeProvider extends RecipeProvider {
         createLoader(TransportBlocks.FLUID_LOADER.getItem(), Ingredient.fromItems(Items.BUCKET))
                 .addCriterion("has_item", this.hasItem(Items.BUCKET))
                 .build(consumer);
+        //endregion
+
+        //region Cargo
+        TransportAPI.CARGO.getValues().forEach(cargo -> {
+            if (cargo.asItem() != Items.AIR && cargo.getRegistryName() != null) {
+                ResourceLocation registryName = cargo.getRegistryName();
+                CargoShapelessRecipeBuilder.start(TransportEntities.CARGO_MINECART_ITEM.get(), cargo)
+                        .addIngredient(Tags.Items.SLIMEBALLS)
+                        .addIngredient(Items.MINECART)
+                        .addIngredient(cargo.asItem())
+                        .addCriterion("has_item", hasItem(cargo.asItem()))
+                        .build(consumer, new ResourceLocation(registryName.getNamespace(), "cargo/minecart/" +
+                                registryName.getPath()));
+                ShapelessRecipeBuilder.shapelessRecipe(cargo.asItem())
+                        .addIngredient(Items.WATER_BUCKET)
+                        .addIngredient(Ingredient.fromStacks(cargo.createItemStack(TransportEntities.CARGO_MINECART_ITEM.get())))
+                        .addCriterion("has_item", hasItem(TransportEntities.CARGO_MINECART_ITEM.get()))
+                        .build(consumer, new ResourceLocation(registryName.getNamespace(), "cargo/minecart/" +
+                                registryName.getPath() + "_break"));
+            }
+        });
         //endregion
     }
 

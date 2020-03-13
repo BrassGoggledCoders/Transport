@@ -1,7 +1,5 @@
 package xyz.brassgoggledcoders.transport.item;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.*;
@@ -34,17 +32,18 @@ import static net.minecraft.entity.item.minecart.AbstractMinecartEntity.Type.CHE
 public class CargoCarrierMinecartItem extends MinecartItem {
     public CargoCarrierMinecartItem() {
         this(new Item.Properties()
+                .containerItem(Items.MINECART)
                 .group(Transport.ITEM_GROUP));
+    }
+
+    public CargoCarrierMinecartItem(Properties properties) {
+        super(CHEST, properties);
         this.addPropertyOverride(new ResourceLocation(Transport.ID, "cargo"),
                 (itemStack, world, livingEntity) -> Optional.ofNullable(getCargo(itemStack.getChildTag("cargo")))
                         .map(ForgeRegistryEntry::getRegistryName)
                         .map(TransportAPI.CARGO::getID)
                         .map(id -> id / 1000F)
                         .orElse(0.000F));
-    }
-
-    public CargoCarrierMinecartItem(Properties properties) {
-        super(CHEST, properties);
     }
 
     @Override

@@ -1,16 +1,18 @@
 {
   "type": "transport:cargo",
-  "result": {
-    "item": "transport:cargo_minecart",
-    "count": 1,
-    "cargo": "transport:energy"
-  },
   "ingredients": [
+    {
+      "tag": "forge:slimeballs"
+    },
     {
       "item": "minecraft:minecart"
     },
     {
       "item": "transport:energy_loader"
     }
-  ]
+  ],
+  "result": {
+    "item": "transport:cargo_minecart",
+    "cargo": "transport:energy"
+  }
 }

@@ -176,17 +176,14 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     public void killMinecart(DamageSource source) {
         this.remove();
         if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-            ItemStack itemstack = new ItemStack(TransportEntities.CARGO_MINECART_ITEM.get());
-            CompoundNBT nbt = itemstack.getOrCreateChildTag("cargo");
-            nbt.putString("name", String.valueOf(this.getCargo().getRegistryName()));
-            nbt.put("instance", this.getCargoInstance().serializeNBT());
+            ItemStack itemStack = this.getCargo().createItemStack(TransportEntities.CARGO_MINECART_ITEM.get(),
+                    this.getCargoInstance());
 
             if (this.hasCustomName()) {
-                itemstack.setDisplayName(this.getCustomName());
+                itemStack.setDisplayName(this.getCustomName());
             }
 
-            this.entityDropItem(itemstack);
+            this.entityDropItem(itemStack);
         }
-
     }
 }
