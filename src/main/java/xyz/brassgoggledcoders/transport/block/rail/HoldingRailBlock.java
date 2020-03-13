@@ -17,6 +17,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 
@@ -94,5 +95,10 @@ public class HoldingRailBlock extends AbstractRailBlock {
     @Nonnull
     public Property<RailShape> getShapeProperty() {
         return SHAPE;
+    }
+
+    @Override
+    public boolean canMakeSlopes(BlockState state, IBlockReader world, BlockPos pos) {
+        return false;
     }
 }

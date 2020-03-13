@@ -39,6 +39,8 @@ public class TransportBlockLootTables extends BlockLootTables {
         this.registerLoader(TransportBlocks.FLUID_LOADER.getBlock());
         this.registerDropSelfLootTable(TransportBlocks.DIAMOND_CROSSING_RAIL.getBlock());
         this.registerDropSelfLootTable(TransportBlocks.HOLDING_RAIL.getBlock());
+        this.registerDropSelfLootTable(TransportBlocks.ELEVATOR_SWITCH_RAIL.getBlock());
+        this.registerLootTable(TransportBlocks.ELEVATOR_SWITCH_SUPPORT.get(), LootTable.builder());
     }
 
     private void registerLoader(Block loader) {

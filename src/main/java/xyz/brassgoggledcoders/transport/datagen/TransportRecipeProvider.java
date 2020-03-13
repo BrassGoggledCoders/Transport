@@ -38,6 +38,16 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .key('R', Ingredient.fromItems(Items.RAIL))
                 .addCriterion("has_rail", this.hasItem(ItemTags.RAILS))
                 .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.ELEVATOR_SWITCH_RAIL.getItem())
+                .patternLine("R")
+                .patternLine("P")
+                .patternLine("S")
+                .key('R', Ingredient.fromItems(Items.RAIL))
+                .key('P', Tags.Items.DUSTS_REDSTONE)
+                .key('S', Ingredient.fromItems(Items.SCAFFOLDING))
+                .addCriterion("has_item", this.hasItem(Items.SCAFFOLDING))
+                .build(consumer);
         //endregion
 
         //region Loaders
