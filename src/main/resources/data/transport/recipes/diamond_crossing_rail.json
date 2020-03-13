@@ -1,9 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "transport:diamond_crossing_rail",
-    "count": 5
-  },
   "pattern": [
     " R ",
     "RRR",
@@ -13,5 +9,9 @@
     "R": {
       "item": "minecraft:rail"
     }
+  },
+  "result": {
+    "item": "transport:diamond_crossing_rail",
+    "count": 5
   }
 }

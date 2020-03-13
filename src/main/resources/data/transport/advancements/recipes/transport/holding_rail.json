@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "transport:holding_rail"
+    ]
+  },
+  "criteria": {
+    "has_rail": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "minecraft:rails"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "transport:holding_rail"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_rail",
+      "has_the_recipe"
+    ]
+  ]
+}
