@@ -6,6 +6,7 @@ import com.hrznstudio.titanium.component.IComponentHarness;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -181,11 +182,29 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
         return capLazyOptional -> this.neighboringTiles.remove(side);
     }
 
+    protected abstract CompoundNBT serializeCap();
+
+    protected abstract void deserializeCap(CompoundNBT compoundNBT);
+
     public void onActivated(PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
         if (player instanceof ServerPlayerEntity) {
             NetworkHooks.openGui((ServerPlayerEntity) player,
                     new LoaderContainerProvider(this),
                     packetBuffer -> packetBuffer.writeBlockPos(pos));
         }
+    }
+
+    @Override
+    public void read(CompoundNBT nbt) {
+        super.read(nbt);
+        this.deserializeCap(nbt.getCompound("capability"));
+    }
+
+    @Override
+    @Nonnull
+    public CompoundNBT write(CompoundNBT nbt) {
+        CompoundNBT superNBT = super.write(nbt);
+        superNBT.put("capability", this.serializeCap());
+        return superNBT;
     }
 }

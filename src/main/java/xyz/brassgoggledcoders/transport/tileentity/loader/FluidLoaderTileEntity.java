@@ -64,21 +64,18 @@ public class FluidLoaderTileEntity extends BasicLoaderTileEntity<IFluidHandler> 
     }
 
     @Override
+    protected CompoundNBT serializeCap() {
+        return fluidTankComponent.writeToNBT(new CompoundNBT());
+    }
+
+    @Override
+    protected void deserializeCap(CompoundNBT compoundNBT) {
+        fluidTankComponent.readFromNBT(compoundNBT);
+    }
+
+    @Override
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         return fluidTankComponent.getScreenAddons();
-    }
-
-    @Override
-    public void deserializeNBT(CompoundNBT nbt) {
-        super.deserializeNBT(nbt);
-        fluidTankComponent.readFromNBT(nbt.getCompound("tank"));
-    }
-
-    @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = super.serializeNBT();
-        nbt.put("tank", fluidTankComponent.writeToNBT(new CompoundNBT()));
-        return nbt;
     }
 
     @Override

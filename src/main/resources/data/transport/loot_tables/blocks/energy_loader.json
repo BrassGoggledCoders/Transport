@@ -1,0 +1,39 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "transport:energy_loader"
+        }
+      ],
+      "functions": [
+        {
+          "function": "minecraft:copy_state",
+          "block": "transport:energy_loader",
+          "properties": [
+            "down",
+            "south",
+            "up",
+            "north",
+            "east",
+            "west"
+          ]
+        },
+        {
+          "function": "minecraft:copy_nbt",
+          "source": "block_entity",
+          "ops": [
+            {
+              "source": "capability",
+              "target": "BlockEntityTag.capability",
+              "op": "replace"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

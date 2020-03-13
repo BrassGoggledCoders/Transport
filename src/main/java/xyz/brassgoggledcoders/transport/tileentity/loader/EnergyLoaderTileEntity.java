@@ -52,16 +52,13 @@ public class EnergyLoaderTileEntity extends BasicLoaderTileEntity<IEnergyStorage
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
-        super.deserializeNBT(nbt);
-        this.energyComponent.deserializeNBT(nbt.getCompound("energy"));
+    protected CompoundNBT serializeCap() {
+        return energyComponent.serializeNBT();
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT compoundNBT = super.serializeNBT();
-        compoundNBT.put("energy", energyComponent.serializeNBT());
-        return compoundNBT;
+    protected void deserializeCap(CompoundNBT compoundNBT) {
+        energyComponent.deserializeNBT(compoundNBT);
     }
 
     @Override

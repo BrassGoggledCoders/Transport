@@ -1,7 +1,8 @@
-package xyz.brassgoggledcoders.transport.datagen;
+package xyz.brassgoggledcoders.transport.datagen.loot;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
+import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
@@ -16,6 +17,7 @@ import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -27,28 +29,20 @@ public class TransportLootTableProvider extends LootTableProvider {
 
     @Override
     @Nonnull
+    public String getName() {
+        return "Transport Loot Tables";
+    }
+
+    @Override
+    @Nonnull
     protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootParameterSet>> getTables() {
         return Lists.newArrayList(
-                Pair.of(this::getBlockTables, LootParameterSets.BLOCK)
+                Pair.of(TransportBlockLootTables::new, LootParameterSets.BLOCK)
         );
     }
 
-    private Consumer<BiConsumer<ResourceLocation, LootTable.Builder>> getBlockTables() {
-        return acceptor -> {
-            this.registerLoaderLootTable(TransportBlocks.ITEM_LOADER.getBlock(), acceptor);
-            this.registerLoaderLootTable(TransportBlocks.ENERGY_LOADER.getBlock(), acceptor);
-            this.registerLoaderLootTable(TransportBlocks.FLUID_LOADER.getBlock(), acceptor);
-        };
-    }
+    @Override
+    protected void validate(Map<ResourceLocation, LootTable> map, ValidationTracker validationtracker) {
 
-    private void registerLoaderLootTable(Block loader, BiConsumer<ResourceLocation, LootTable.Builder> acceptor) {
-        acceptor.accept(loader.getRegistryName(), new LootTable.Builder()
-                .addLootPool(LootPool.builder()
-                        .acceptFunction(CopyBlockState.func_227545_a_(loader))
-                        .acceptFunction(CopyNbt.builder(CopyNbt.Source.BLOCK_ENTITY))
-                        .rolls(RandomValueRange.of(1, 1))
-                        .addEntry(ItemLootEntry.builder(loader))
-                )
-        );
     }
 }

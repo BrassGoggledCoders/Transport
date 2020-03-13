@@ -1,11 +1,8 @@
 package xyz.brassgoggledcoders.transport.tileentity.loader;
 
-import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
-import com.hrznstudio.titanium.component.inventory.InventoryComponent;
-import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
@@ -13,7 +10,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.SlotItemHandler;
 import xyz.brassgoggledcoders.transport.capability.InventoryPlusComponent;
 import xyz.brassgoggledcoders.transport.capability.ItemHandlerDirectional;
 import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddon;
@@ -67,15 +63,13 @@ public class ItemLoaderTileEntity extends BasicLoaderTileEntity<IItemHandler>
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = super.serializeNBT();
-        nbt.put("inventory", this.inventoryComponent.serializeNBT());
-        return nbt;
+    protected CompoundNBT serializeCap() {
+        return inventoryComponent.serializeNBT();
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
-        this.inventoryComponent.deserializeNBT(nbt.getCompound("inventory"));
+    protected void deserializeCap(CompoundNBT compoundNBT) {
+        inventoryComponent.deserializeNBT(compoundNBT);
     }
 
     @Override
