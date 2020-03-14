@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import javax.annotation.Nonnull;
 
@@ -26,6 +27,7 @@ public class ElevatorSwitchSupportBlock extends Block {
                 .doesNotBlockMovement()
                 .sound(SoundType.SCAFFOLDING)
                 .variableOpacity());
+        this.setDefaultState(this.getDefaultState().with(WATERLOGGED, false));
     }
 
     public ElevatorSwitchSupportBlock(Properties properties) {
@@ -51,8 +53,13 @@ public class ElevatorSwitchSupportBlock extends Block {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        this.updateState(worldIn, pos);
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+        this.updateState(world, pos);
+        if (block == TransportBlocks.ELEVATOR_SWITCH_RAIL.getBlock() && fromPos.down().equals(pos)) {
+            if (world.getBlockState(fromPos).getBlock() != TransportBlocks.ELEVATOR_SWITCH_RAIL.getBlock()) {
+                world.setBlockState(pos, Blocks.AIR.getDefaultState());
+            }
+        }
     }
 
     @Override
@@ -67,7 +74,7 @@ public class ElevatorSwitchSupportBlock extends Block {
         boolean powered = world.isBlockPowered(pos);
         if (!powered) {
             BlockState railState = world.getBlockState(pos.up());
-            world.setBlockState(pos, Blocks.AIR.getDefaultState(), Constants.BlockFlags.NOTIFY_NEIGHBORS);
+            world.setBlockState(pos, Blocks.AIR.getDefaultState(), Constants.BlockFlags.UPDATE_NEIGHBORS);
             world.setBlockState(pos, ElevatorSwitchRailBlock.oppositeAscend(railState)
                     .with(ElevatorSwitchRailBlock.TOP, false));
         }
