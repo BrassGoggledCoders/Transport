@@ -7,12 +7,14 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -100,5 +102,32 @@ public class HoldingRailBlock extends AbstractRailBlock {
     @Override
     public boolean canMakeSlopes(BlockState state, IBlockReader world, BlockPos pos) {
         return false;
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        BlockState blockState = super.getDefaultState();
+        Direction direction = context.getPlacementHorizontalFacing();
+        switch (direction) {
+            case NORTH:
+            case SOUTH:
+                blockState = blockState.with(SHAPE, RailShape.NORTH_SOUTH);
+                break;
+            case WEST:
+            case EAST:
+                blockState = blockState.with(SHAPE, RailShape.EAST_WEST);
+                break;
+        }
+        switch (direction) {
+            case EAST:
+            case SOUTH:
+                blockState = blockState.with(NORTH_WEST, false);
+                break;
+            case WEST:
+            case NORTH:
+                blockState = blockState.with(NORTH_WEST, true);
+                break;
+        }
+        return blockState;
     }
 }
