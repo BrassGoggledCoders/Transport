@@ -109,8 +109,13 @@ public class ElevatorSwitchRailBlock extends AbstractRailBlock {
         if (!state.get(TOP)) {
             boolean powered = world.isBlockPowered(pos);
             if (powered && world.isAirBlock(pos.up())) {
-                world.setBlockState(pos.up(), oppositeAscend(state).with(TOP, true));
                 world.setBlockState(pos, TransportBlocks.ELEVATOR_SWITCH_SUPPORT.get().getDefaultState());
+                world.setBlockState(pos.up(), oppositeAscend(state).with(TOP, true));
+            }
+        } else {
+            if (world.getBlockState(pos.down()).getBlock() != TransportBlocks.ELEVATOR_SWITCH_SUPPORT.get()) {
+                Block.spawnDrops(state, world, pos);
+                world.setBlockState(pos, Blocks.AIR.getDefaultState(), Constants.BlockFlags.BLOCK_UPDATE);
             }
         }
     }

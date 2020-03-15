@@ -21,11 +21,13 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Random;
 
 public class ElevatorSwitchSupportBlock extends Block {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -34,6 +36,7 @@ public class ElevatorSwitchSupportBlock extends Block {
         this(Properties.create(Material.MISCELLANEOUS, MaterialColor.SAND)
                 .doesNotBlockMovement()
                 .sound(SoundType.SCAFFOLDING)
+                .tickRandomly()
                 .variableOpacity());
         this.setDefaultState(this.getDefaultState().with(WATERLOGGED, false));
     }
@@ -68,11 +71,19 @@ public class ElevatorSwitchSupportBlock extends Block {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-        this.updateState(world, pos);
+    @ParametersAreNonnullByDefault
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        this.updateState(world, pos, true);
     }
 
-    private void updateState(World world, BlockPos pos) {
+    @Override
+    @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
+    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+        this.updateState(worldIn, pos, false);
+    }
+
+    private void updateState(World world, BlockPos pos, boolean doRemoval) {
         boolean powered = world.isBlockPowered(pos);
         BlockState blockState = world.getBlockState(pos.up());
         if (blockState.getBlock() == TransportBlocks.ELEVATOR_SWITCH_RAIL.getBlock()) {
@@ -82,7 +93,7 @@ public class ElevatorSwitchSupportBlock extends Block {
                 world.setBlockState(pos.up(), Blocks.AIR.getDefaultState());
                 world.setBlockState(pos, railState);
             }
-        } else {
+        } else if(doRemoval) {
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
     }
