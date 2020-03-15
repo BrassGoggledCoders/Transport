@@ -16,6 +16,9 @@ public class ClientEventHandler {
     public static void clientSetup(FMLClientSetupEvent event) {
         RenderTypeLookup.setRenderLayer(TransportBlocks.HOLDING_RAIL.getBlock(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.DIAMOND_CROSSING_RAIL.getBlock(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.ELEVATOR_SWITCH_RAIL.getBlock(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.ELEVATOR_SWITCH_SUPPORT.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.SCAFFOLDING_RAIL.getBlock(), RenderType.getCutout());
 
         ScreenManager.registerFactory(TransportContainers.LOADER.get(), LoaderScreen::new);
         ScreenManager.registerFactory(TransportContainers.CARGO.get(), CargoScreen::new);

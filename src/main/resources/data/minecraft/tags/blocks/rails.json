@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "transport:holding_rail",
-    "transport:diamond_crossing_rail"
+    "transport:diamond_crossing_rail",
+    "transport:elevator_switch_rail",
+    "transport:scaffolding_rail"
   ]
 }

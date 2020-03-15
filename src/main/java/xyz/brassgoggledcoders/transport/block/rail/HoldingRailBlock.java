@@ -7,16 +7,19 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 
@@ -51,7 +54,7 @@ public class HoldingRailBlock extends AbstractRailBlock {
     @Nonnull
     @SuppressWarnings("deprecation")
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        if (!world.isRemote && TransportItemTags.TOOLS.contains(player.getHeldItem(hand).getItem())) {
+        if (!world.isRemote && TransportItemTags.WRENCHES.contains(player.getHeldItem(hand).getItem())) {
             state = state.with(NORTH_WEST, !state.get(NORTH_WEST));
             world.setBlockState(pos, state, 3);
             return ActionResultType.SUCCESS;
@@ -94,5 +97,37 @@ public class HoldingRailBlock extends AbstractRailBlock {
     @Nonnull
     public Property<RailShape> getShapeProperty() {
         return SHAPE;
+    }
+
+    @Override
+    public boolean canMakeSlopes(BlockState state, IBlockReader world, BlockPos pos) {
+        return false;
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        BlockState blockState = super.getDefaultState();
+        Direction direction = context.getPlacementHorizontalFacing();
+        switch (direction) {
+            case NORTH:
+            case SOUTH:
+                blockState = blockState.with(SHAPE, RailShape.NORTH_SOUTH);
+                break;
+            case WEST:
+            case EAST:
+                blockState = blockState.with(SHAPE, RailShape.EAST_WEST);
+                break;
+        }
+        switch (direction) {
+            case EAST:
+            case SOUTH:
+                blockState = blockState.with(NORTH_WEST, false);
+                break;
+            case WEST:
+            case NORTH:
+                blockState = blockState.with(NORTH_WEST, true);
+                break;
+        }
+        return blockState;
     }
 }
