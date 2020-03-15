@@ -88,6 +88,14 @@ public class TransportRecipeProvider extends RecipeProvider {
             }
         });
         //endregion
+
+        //region Blocks
+        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getItem(), 6)
+                .patternLine("SSS")
+                .key('S', Ingredient.fromItems(Items.SCAFFOLDING))
+                .addCriterion("has_item", this.hasItem(Items.SCAFFOLDING))
+                .build(consumer);
+        //endregion
     }
 
     @Override

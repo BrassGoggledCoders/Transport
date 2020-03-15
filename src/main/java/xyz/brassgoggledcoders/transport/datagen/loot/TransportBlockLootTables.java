@@ -1,14 +1,16 @@
 package xyz.brassgoggledcoders.transport.datagen.loot;
 
+import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.block.Block;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.data.loot.BlockLootTables;
+import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.Direction;
-import net.minecraft.world.storage.loot.ItemLootEntry;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.RandomValueRange;
+import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.conditions.BlockStateProperty;
 import net.minecraft.world.storage.loot.functions.CopyBlockState;
 import net.minecraft.world.storage.loot.functions.CopyNbt;
+import net.minecraft.world.storage.loot.functions.SetCount;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
@@ -43,6 +45,7 @@ public class TransportBlockLootTables extends BlockLootTables {
         this.registerDropSelfLootTable(TransportBlocks.ELEVATOR_SWITCH_RAIL.getBlock());
         this.registerLootTable(TransportBlocks.ELEVATOR_SWITCH_SUPPORT.get(), LootTable.builder());
         this.registerDropSelfLootTable(TransportBlocks.SCAFFOLDING_RAIL.getBlock());
+        this.registerLootTable(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getBlock(), BlockLootTables::droppingSlab);
     }
 
     private void registerLoader(Block loader) {

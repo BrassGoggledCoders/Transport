@@ -3,7 +3,6 @@ package xyz.brassgoggledcoders.transport.block.rail.elevatorswitch;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
@@ -16,7 +15,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fluids.FluidStack;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import javax.annotation.Nonnull;

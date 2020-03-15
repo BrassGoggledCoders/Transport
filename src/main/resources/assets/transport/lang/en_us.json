@@ -7,6 +7,7 @@
   "block.transport.holding_rail": "Holding Rail",
   "block.transport.item_loader": "Item Loader",
   "block.transport.scaffolding_rail": "Scaffolding Rail",
+  "block.transport.scaffolding_slab": "Scaffolding Slab",
   "cargo.transport.empty": "No Cargo",
   "cargo.transport.energy": "Energy Storage",
   "cargo.transport.fluid": "Fluid Tank",
