@@ -61,7 +61,7 @@ minecraft {
             environment 'target', 'fmluserdevdata'
             properties 'fml.earlyprogresswindow': 'false'
 
-            args '--all', '--output', file('src/resources/'),
+            args '--all', '--output', file('src/datagen/resources/'),
                     '--mod', 'transport', '--reports',
                     '--existing', sourceSets.main.resources.srcDirs[0]
         }
