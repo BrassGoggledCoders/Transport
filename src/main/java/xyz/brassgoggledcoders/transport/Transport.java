@@ -1,24 +1,16 @@
 package xyz.brassgoggledcoders.transport;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import xyz.brassgoggledcoders.transport.content.*;
+import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
 import xyz.brassgoggledcoders.transport.entity.ResourceLocationDataSerializer;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
-import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
-import xyz.brassgoggledcoders.transport.renderer.CargoCarrierMinecartEntityRenderer;
-import xyz.brassgoggledcoders.transport.screen.CargoScreen;
-import xyz.brassgoggledcoders.transport.screen.LoaderScreen;
 
 import static xyz.brassgoggledcoders.transport.Transport.ID;
 

@@ -1,0 +1,18 @@
+{
+  "type": "transport:cargo",
+  "ingredients": [
+    {
+      "tag": "forge:slimeballs"
+    },
+    {
+      "item": "minecraft:minecart"
+    },
+    {
+      "item": "transport:item_loader"
+    }
+  ],
+  "result": {
+    "item": "transport:cargo_minecart",
+    "cargo": "transport:item"
+  }
+}

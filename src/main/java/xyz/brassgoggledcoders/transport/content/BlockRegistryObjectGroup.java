@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class BlockRegistryObjectGroup<B extends Block, I extends Item, T extends TileEntity> {
+public class BlockRegistryObjectGroup<B extends Block, I extends Item, T extends TileEntity> implements Supplier<B> {
     private final String name;
     private final Supplier<B> blockCreator;
     private final Function<B, I> itemCreator;
@@ -65,5 +65,14 @@ public class BlockRegistryObjectGroup<B extends Block, I extends Item, T extends
                     .build(null));
         }
         return this;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public B get() {
+        return this.getBlock();
     }
 }

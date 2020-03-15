@@ -55,4 +55,9 @@ public class DiamondCrossingRailBlock extends AbstractRailBlock {
     public Property<RailShape> getShapeProperty() {
         return SHAPE;
     }
+
+    @Override
+    public boolean canMakeSlopes(BlockState state, IBlockReader world, BlockPos pos) {
+        return false;
+    }
 }

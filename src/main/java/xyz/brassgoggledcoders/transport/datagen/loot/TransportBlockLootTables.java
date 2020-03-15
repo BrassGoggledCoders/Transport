@@ -17,6 +17,7 @@ import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class TransportBlockLootTables extends BlockLootTables {
 
@@ -39,13 +40,19 @@ public class TransportBlockLootTables extends BlockLootTables {
         this.registerLoader(TransportBlocks.FLUID_LOADER.getBlock());
         this.registerDropSelfLootTable(TransportBlocks.DIAMOND_CROSSING_RAIL.getBlock());
         this.registerDropSelfLootTable(TransportBlocks.HOLDING_RAIL.getBlock());
+        this.registerDropSelfLootTable(TransportBlocks.ELEVATOR_SWITCH_RAIL.getBlock());
+        this.registerLootTable(TransportBlocks.ELEVATOR_SWITCH_SUPPORT.get(), LootTable.builder());
+        this.registerDropSelfLootTable(TransportBlocks.SCAFFOLDING_RAIL.getBlock());
     }
 
     private void registerLoader(Block loader) {
         CopyBlockState.Builder copyBlockStateBuilder = CopyBlockState.func_227545_a_(loader);
-        for (Direction direction: Direction.values()) {
-            copyBlockStateBuilder.func_227552_a_(LoaderBlock.PROPERTIES.get(direction));
-        }
+
+        IntStream.range(0, Direction.values().length)
+                .mapToObj(Direction::byIndex)
+                .map(LoaderBlock.PROPERTIES::get)
+                .forEach(copyBlockStateBuilder::func_227552_a_);
+
         this.registerLootTable(loader, new LootTable.Builder()
                 .addLootPool(LootPool.builder()
                         .acceptFunction(copyBlockStateBuilder)

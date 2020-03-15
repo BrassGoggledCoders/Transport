@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR",
+    "SSS"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:rail"
+    },
+    "S": {
+      "item": "minecraft:scaffolding"
+    }
+  },
+  "result": {
+    "item": "transport:scaffolding_rail",
+    "count": 3
+  }
+}
