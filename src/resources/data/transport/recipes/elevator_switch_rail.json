@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "R",
+    "P",
+    "S"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:rail"
+    },
+    "P": {
+      "tag": "forge:dusts/redstone"
+    },
+    "S": {
+      "item": "minecraft:scaffolding"
+    }
+  },
+  "result": {
+    "item": "transport:elevator_switch_rail"
+  }
+}
