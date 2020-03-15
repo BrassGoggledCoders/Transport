@@ -2,19 +2,25 @@ package xyz.brassgoggledcoders.transport.block.rail.elevatorswitch;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.RailShape;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fluids.FluidStack;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ElevatorSwitchRailBlock extends AbstractRailBlock {
@@ -47,10 +53,26 @@ public class ElevatorSwitchRailBlock extends AbstractRailBlock {
     }
 
     @Override
+    @ParametersAreNonnullByDefault
+    public void harvestBlock(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te,
+                             ItemStack stack) {
+        super.harvestBlock(world, player, pos, state, te, stack);
+        if (state.get(TOP)) {
+            BlockPos downPos = pos.down();
+            BlockState downState = world.getBlockState(downPos);
+            if (downState.getBlock() == TransportBlocks.ELEVATOR_SWITCH_SUPPORT.get()) {
+                downState.removedByPlayer(world, downPos, player, true, world.getFluidState(downPos));
+            }
+        }
+    }
+
+    @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(SHAPE, TOP);
     }
 
+    @Override
+    @Nonnull
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockState blockstate = super.getDefaultState();
         Direction direction = context.getPlacementHorizontalFacing();
@@ -83,20 +105,11 @@ public class ElevatorSwitchRailBlock extends AbstractRailBlock {
         this.updateState(worldIn, pos, state);
     }
 
-    @Override
-    @ParametersAreNonnullByDefault
-    public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (oldState.getBlock() != state.getBlock()) {
-            this.updateState(world, pos, state);
-        }
-    }
-
     private void updateState(World world, BlockPos pos, BlockState state) {
         if (!state.get(TOP)) {
             boolean powered = world.isBlockPowered(pos);
             if (powered && world.isAirBlock(pos.up())) {
-                world.setBlockState(pos.up(), oppositeAscend(state).with(TOP, true),
-                        Constants.BlockFlags.NOTIFY_NEIGHBORS);
+                world.setBlockState(pos.up(), oppositeAscend(state).with(TOP, true));
                 world.setBlockState(pos, TransportBlocks.ELEVATOR_SWITCH_SUPPORT.get().getDefaultState());
             }
         }
