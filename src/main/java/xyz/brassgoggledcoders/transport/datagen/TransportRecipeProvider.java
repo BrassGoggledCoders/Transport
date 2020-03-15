@@ -48,6 +48,14 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .key('S', Ingredient.fromItems(Items.SCAFFOLDING))
                 .addCriterion("has_item", this.hasItem(Items.SCAFFOLDING))
                 .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.SCAFFOLDING_RAIL.getItem(), 3)
+                .patternLine("RRR")
+                .patternLine("SSS")
+                .key('R', Ingredient.fromItems(Items.RAIL))
+                .key('S', Ingredient.fromItems(Items.SCAFFOLDING))
+                .addCriterion("has_item", this.hasItem(Items.SCAFFOLDING))
+                .build(consumer);
         //endregion
 
         //region Loaders
