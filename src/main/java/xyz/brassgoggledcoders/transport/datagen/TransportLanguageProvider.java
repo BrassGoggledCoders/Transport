@@ -26,6 +26,7 @@ public class TransportLanguageProvider extends LanguageProvider {
         this.addBlock(TransportBlocks.ITEM_LOADER, "Item Loader");
         this.addBlock(TransportBlocks.ENERGY_LOADER, "Energy Loader");
         this.addBlock(TransportBlocks.FLUID_LOADER, "Fluid Loader");
+        this.addBlock(TransportBlocks.SCAFFOLDING_SLAB_BLOCK, "Scaffolding Slab");
         //endregion
 
         //region Cargo

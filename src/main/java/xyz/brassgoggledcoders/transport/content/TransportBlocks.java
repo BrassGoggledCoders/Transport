@@ -9,6 +9,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
 import xyz.brassgoggledcoders.transport.block.rail.DiamondCrossingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.HoldingRailBlock;
@@ -65,6 +66,11 @@ public class TransportBlocks {
                     blockItemCreator(), EnergyLoaderTileEntity::new)
                     .register(BLOCKS, ITEMS, TILE_ENTITIES);
     //endregion
+
+    //region Assorted
+    public static final BlockRegistryObjectGroup<ScaffoldingSlabBlock, BlockItem, ?> SCAFFOLDING_SLAB_BLOCK =
+            new BlockRegistryObjectGroup<>("scaffolding_slab", ScaffoldingSlabBlock::new, blockItemCreator())
+                    .register(BLOCKS, ITEMS);
 
     public static void register(IEventBus modBus) {
         BLOCKS.register(modBus);
