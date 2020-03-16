@@ -13,6 +13,7 @@ import net.minecraft.world.storage.loot.functions.CopyNbt;
 import net.minecraft.world.storage.loot.functions.SetCount;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
@@ -45,7 +46,23 @@ public class TransportBlockLootTables extends BlockLootTables {
         this.registerDropSelfLootTable(TransportBlocks.ELEVATOR_SWITCH_RAIL.getBlock());
         this.registerLootTable(TransportBlocks.ELEVATOR_SWITCH_SUPPORT.get(), LootTable.builder());
         this.registerDropSelfLootTable(TransportBlocks.SCAFFOLDING_RAIL.getBlock());
-        this.registerLootTable(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getBlock(), BlockLootTables::droppingSlab);
+        this.registerLootTable(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getBlock(), block -> LootTable.builder()
+                .addLootPool(LootPool.builder()
+                        .rolls(ConstantRange.of(1))
+                        .acceptCondition(BlockStateProperty.builder(block)
+                                .fromProperties(StatePropertiesPredicate.Builder.newBuilder()
+                                    .withBoolProp(ScaffoldingSlabBlock.RAILED, false)))
+                        .addEntry(withExplosionDecay(block, ItemLootEntry.builder(block)
+                                .acceptFunction(SetCount.builder(ConstantRange.of(2))
+                                        .acceptCondition(BlockStateProperty.builder(block)
+                                                .fromProperties(StatePropertiesPredicate.Builder.newBuilder()
+                                                        .withProp(SlabBlock.TYPE, SlabType.DOUBLE)
+                                                )
+                                        )
+                                ))
+                        )
+                )
+        );
     }
 
     private void registerLoader(Block loader) {

@@ -26,6 +26,15 @@
           ],
           "name": "transport:scaffolding_slab"
         }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "transport:scaffolding_slab",
+          "properties": {
+            "railed": "false"
+          }
+        }
       ]
     }
   ]

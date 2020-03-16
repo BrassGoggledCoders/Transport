@@ -1,22 +1,17 @@
 package xyz.brassgoggledcoders.transport.block.rail;
 
-import net.minecraft.block.AbstractRailBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.RailShape;
+import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
+import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -26,7 +21,7 @@ public class ScaffoldingRailBlock extends AbstractRailBlock {
 
     public ScaffoldingRailBlock() {
         this(Block.Properties.create(Material.MISCELLANEOUS)
-                .notSolid()
+                .doesNotBlockMovement()
                 .hardnessAndResistance(0.7F)
                 .sound(SoundType.METAL));
     }
@@ -47,27 +42,17 @@ public class ScaffoldingRailBlock extends AbstractRailBlock {
     }
 
     @Override
+    @ParametersAreNonnullByDefault
+    public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
+        if (!isMoving && world.isAirBlock(pos.down())) {
+            world.setBlockState(pos.down(), TransportBlocks.SCAFFOLDING_SLAB_BLOCK.get().getDefaultState()
+                    .with(SlabBlock.TYPE, SlabType.TOP)
+                    .with(ScaffoldingSlabBlock.RAILED, true));
+        }
+    }
+
+    @Override
     public boolean isValidPosition(BlockState state, @Nonnull IWorldReader world, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-        if (!world.isRemote) {
-            this.updateState(state, world, pos, block);
-        }
-    }
-
-    @Override
-    @Nonnull
-    @SuppressWarnings("deprecation")
-    @ParametersAreNonnullByDefault
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        if (context.getEntity() instanceof AbstractMinecartEntity) {
-            return VoxelShapes.empty();
-        } else {
-            return state.getShape(world, pos);
-        }
+        return hasSolidSideOnTop(world, pos.down()) || world.isAirBlock(pos.down());
     }
 }

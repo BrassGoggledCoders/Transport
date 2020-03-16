@@ -7,6 +7,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.FallingBlockEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -28,6 +29,7 @@ import java.util.Random;
 
 public class ScaffoldingSlabBlock extends SlabBlock {
     public static final IntegerProperty DISTANCE_07 = BlockStateProperties.DISTANCE_0_7;
+    public static final BooleanProperty RAILED = BooleanProperty.create("railed");
 
     private static final VoxelShape field_220121_d;
     private static final VoxelShape field_220123_f = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
@@ -47,7 +49,7 @@ public class ScaffoldingSlabBlock extends SlabBlock {
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
-        builder.add(DISTANCE_07);
+        builder.add(DISTANCE_07, RAILED);
     }
 
     @Override
