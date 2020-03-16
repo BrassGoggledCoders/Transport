@@ -5,6 +5,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.FallingBlockEntity;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
@@ -76,20 +77,24 @@ public class ScaffoldingSlabBlock extends SlabBlock {
     @SuppressWarnings("deprecation")
     @ParametersAreNonnullByDefault
     public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        switch (state.get(TYPE)) {
-            case DOUBLE:
-                if (context.func_216378_a(VoxelShapes.fullCube(), pos, true) && !context.func_225581_b_()) {
-                    return field_220121_d;
-                } else {
-                    return state.get(DISTANCE_07) != 0 && context.func_216378_a(field_220124_g, pos, true) ?
-                            field_220123_f : VoxelShapes.empty();
-                }
-            case TOP:
-                return TOP_SHAPE;
-            case BOTTOM:
-                return BOTTOM_SHAPE;
+        if (context.getEntity() instanceof AbstractMinecartEntity) {
+            return VoxelShapes.empty();
+        } else {
+            switch (state.get(TYPE)) {
+                case DOUBLE:
+                    if (context.func_216378_a(VoxelShapes.fullCube(), pos, true) && !context.func_225581_b_()) {
+                        return field_220121_d;
+                    } else {
+                        return state.get(DISTANCE_07) != 0 && context.func_216378_a(field_220124_g, pos, true) ?
+                                field_220123_f : VoxelShapes.empty();
+                    }
+                case TOP:
+                    return TOP_SHAPE;
+                case BOTTOM:
+                    return BOTTOM_SHAPE;
+            }
+            return super.getCollisionShape(state, world, pos, context);
         }
-        return super.getCollisionShape(state, world, pos, context);
     }
 
     @Override
