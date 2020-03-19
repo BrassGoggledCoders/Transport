@@ -16,15 +16,15 @@ public class CargoShapelessRecipeBuilder extends ShapelessRecipeBuilder {
         this.cargo = cargo;
     }
 
-    public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
-        super.build(recipe -> consumer.accept(new CargoRecipeResult(cargo, recipe)), id);
-    }
-
     public static CargoShapelessRecipeBuilder start(IItemProvider result, Cargo cargo) {
         return start(result, cargo, 1);
     }
 
     public static CargoShapelessRecipeBuilder start(IItemProvider result, Cargo cargo, int count) {
         return new CargoShapelessRecipeBuilder(result, cargo, count);
+    }
+
+    public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
+        super.build(recipe -> consumer.accept(new CargoRecipeResult(cargo, recipe)), id);
     }
 }

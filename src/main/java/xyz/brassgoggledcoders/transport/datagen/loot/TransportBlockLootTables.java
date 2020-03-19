@@ -51,7 +51,7 @@ public class TransportBlockLootTables extends BlockLootTables {
                         .rolls(ConstantRange.of(1))
                         .acceptCondition(BlockStateProperty.builder(block)
                                 .fromProperties(StatePropertiesPredicate.Builder.newBuilder()
-                                    .withBoolProp(ScaffoldingSlabBlock.RAILED, false)))
+                                        .withBoolProp(ScaffoldingSlabBlock.RAILED, false)))
                         .addEntry(withExplosionDecay(block, ItemLootEntry.builder(block)
                                 .acceptFunction(SetCount.builder(ConstantRange.of(2))
                                         .acceptCondition(BlockStateProperty.builder(block)

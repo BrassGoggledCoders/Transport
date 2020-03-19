@@ -30,6 +30,14 @@ public class LoaderContainer extends BasicInventoryContainer {
         this.basicLoaderTileEntity = basicLoaderTileEntity;
     }
 
+    public static LoaderContainer create(int id, PlayerInventory inventory, PacketBuffer packetBuffer) {
+        TileEntity tileEntity = inventory.player.world.getTileEntity(packetBuffer.readBlockPos());
+        if (tileEntity instanceof BasicLoaderTileEntity) {
+            return new LoaderContainer(id, inventory, (BasicLoaderTileEntity<?>) tileEntity);
+        }
+        throw new IllegalStateException("Failed to Find Loader Tile Entity");
+    }
+
     private void addAddonSlot(Slot slot) {
         this.addSlot(slot);
         this.addonSlots++;
@@ -44,14 +52,6 @@ public class LoaderContainer extends BasicInventoryContainer {
 
     public BasicLoaderTileEntity<?> getLoader() {
         return basicLoaderTileEntity;
-    }
-
-    public static LoaderContainer create(int id, PlayerInventory inventory, PacketBuffer packetBuffer) {
-        TileEntity tileEntity = inventory.player.world.getTileEntity(packetBuffer.readBlockPos());
-        if (tileEntity instanceof BasicLoaderTileEntity) {
-            return new LoaderContainer(id, inventory, (BasicLoaderTileEntity<?>) tileEntity);
-        }
-        throw new IllegalStateException("Failed to Find Loader Tile Entity");
     }
 
     @Override

@@ -6,14 +6,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -25,7 +22,6 @@ import net.minecraft.world.server.ServerWorld;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
@@ -93,7 +89,7 @@ public class ElevatorSwitchSupportBlock extends Block {
                 world.setBlockState(pos.up(), Blocks.AIR.getDefaultState());
                 world.setBlockState(pos, railState);
             }
-        } else if(doRemoval) {
+        } else if (doRemoval) {
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
     }

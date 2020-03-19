@@ -1,19 +1,14 @@
 package xyz.brassgoggledcoders.transport.datagen.loot;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Range;
-import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.LootTableProvider;
-import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.*;
-import net.minecraft.world.storage.loot.functions.CopyBlockState;
-import net.minecraft.world.storage.loot.functions.CopyName;
-import net.minecraft.world.storage.loot.functions.CopyNbt;
-import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import net.minecraft.world.storage.loot.LootParameterSet;
+import net.minecraft.world.storage.loot.LootParameterSets;
+import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.ValidationTracker;
 
 import javax.annotation.Nonnull;
 import java.util.List;
