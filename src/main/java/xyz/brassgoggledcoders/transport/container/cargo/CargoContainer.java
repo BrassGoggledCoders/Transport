@@ -33,6 +33,14 @@ public class CargoContainer extends BasicInventoryContainer {
         this.initInventory();
     }
 
+    public static CargoContainer create(int id, PlayerInventory playerInventory, PacketBuffer packetBuffer) {
+        Entity entity = playerInventory.player.getEntityWorld().getEntityByID(packetBuffer.readInt());
+        if (entity instanceof ICargoCarrier) {
+            return new CargoContainer(id, ((ICargoCarrier) entity).getCargoInstance(), playerInventory);
+        }
+        throw new IllegalStateException("Failed to Find Loader Tile Entity");
+    }
+
     private void addAddonSlot(Slot slot) {
         this.addSlot(slot);
         this.addonSlots++;
@@ -71,13 +79,5 @@ public class CargoContainer extends BasicInventoryContainer {
         }
 
         return itemstack;
-    }
-
-    public static CargoContainer create(int id, PlayerInventory playerInventory, PacketBuffer packetBuffer) {
-        Entity entity = playerInventory.player.getEntityWorld().getEntityByID(packetBuffer.readInt());
-        if (entity instanceof ICargoCarrier) {
-            return new CargoContainer(id, ((ICargoCarrier) entity).getCargoInstance(), playerInventory);
-        }
-        throw new IllegalStateException("Failed to Find Loader Tile Entity");
     }
 }

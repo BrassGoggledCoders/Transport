@@ -26,11 +26,11 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
                        IRenderTypeBuffer buffer, int packedLightIn) {
         super.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLightIn);
         matrixStack.push();
-        long i = (long)entity.getEntityId() * 493286711L;
+        long i = (long) entity.getEntityId() * 493286711L;
         i = i * i * 4392167121L + i * 98761L;
-        float f = (((float)(i >> 16 & 7L) + 0.5F) / 8.0F - 0.5F) * 0.004F;
-        float f1 = (((float)(i >> 20 & 7L) + 0.5F) / 8.0F - 0.5F) * 0.004F;
-        float f2 = (((float)(i >> 24 & 7L) + 0.5F) / 8.0F - 0.5F) * 0.004F;
+        float f = (((float) (i >> 16 & 7L) + 0.5F) / 8.0F - 0.5F) * 0.004F;
+        float f1 = (((float) (i >> 20 & 7L) + 0.5F) / 8.0F - 0.5F) * 0.004F;
+        float f2 = (((float) (i >> 24 & 7L) + 0.5F) / 8.0F - 0.5F) * 0.004F;
         matrixStack.translate(f, f1, f2);
         double d0 = MathHelper.lerp(partialTicks, entity.lastTickPosX, entity.getPosX());
         double d1 = MathHelper.lerp(partialTicks, entity.lastTickPosY, entity.getPosY());
@@ -52,22 +52,22 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
             Vec3d vec3d3 = vec3d2.add(-vec3d1.x, -vec3d1.y, -vec3d1.z);
             if (vec3d3.length() != 0.0D) {
                 vec3d3 = vec3d3.normalize();
-                entityYaw = (float)(Math.atan2(vec3d3.z, vec3d3.x) * 180.0D / Math.PI);
-                f3 = (float)(Math.atan(vec3d3.y) * 73.0D);
+                entityYaw = (float) (Math.atan2(vec3d3.z, vec3d3.x) * 180.0D / Math.PI);
+                f3 = (float) (Math.atan(vec3d3.y) * 73.0D);
             }
         }
 
         matrixStack.translate(0.0D, 0.375D, 0.0D);
         matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F - entityYaw));
         matrixStack.rotate(Vector3f.ZP.rotationDegrees(-f3));
-        float f5 = (float)entity.getRollingAmplitude() - partialTicks;
+        float f5 = (float) entity.getRollingAmplitude() - partialTicks;
         float f6 = entity.getDamage() - partialTicks;
         if (f6 < 0.0F) {
             f6 = 0.0F;
         }
 
         if (f5 > 0.0F) {
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(MathHelper.sin(f5) * f5 * f6 / 10.0F * (float)entity.getRollingDirection()));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(MathHelper.sin(f5) * f5 * f6 / 10.0F * (float) entity.getRollingDirection()));
         }
 
         int j = entity.getDisplayTileOffset();
@@ -75,7 +75,7 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
         if (blockstate.getRenderType() != BlockRenderType.INVISIBLE) {
             matrixStack.push();
             matrixStack.scale(0.75F, 0.75F, 0.75F);
-            matrixStack.translate(-0.5D, (double)((float)(j - 8) / 16.0F), 0.5D);
+            matrixStack.translate(-0.5D, (float) (j - 8) / 16.0F, 0.5D);
             matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
             this.renderBlockState(entity, partialTicks, blockstate, matrixStack, buffer, packedLightIn);
             matrixStack.pop();

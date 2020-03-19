@@ -24,7 +24,10 @@ public class ClientEventHandler {
         ScreenManager.registerFactory(TransportContainers.LOADER.get(), LoaderScreen::new);
         ScreenManager.registerFactory(TransportContainers.CARGO.get(), CargoScreen::new);
 
-        Minecraft.getInstance().getRenderManager().register(TransportEntities.CARGO_MINECART.get(),
-                new CargoCarrierMinecartEntityRenderer(Minecraft.getInstance().getRenderManager()));
+        event.getMinecraftSupplier()
+                .get()
+                .getRenderManager()
+                .register(TransportEntities.CARGO_MINECART.get(),
+                        new CargoCarrierMinecartEntityRenderer(Minecraft.getInstance().getRenderManager()));
     }
 }

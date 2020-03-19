@@ -11,7 +11,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import org.lwjgl.system.CallbackI;
 import xyz.brassgoggledcoders.transport.api.cargoinstance.CargoInstance;
 
 import javax.annotation.Nonnull;
@@ -21,7 +20,7 @@ import java.util.function.Supplier;
 
 public class Cargo extends ForgeRegistryEntry<Cargo> implements IItemProvider {
     private final Supplier<? extends Block> blockSupplier;
-    private final Function<Cargo,? extends CargoInstance> cargoInstanceCreator;
+    private final Function<Cargo, ? extends CargoInstance> cargoInstanceCreator;
     private BlockState blockState;
     private String translationKey = null;
     private ITextComponent name;

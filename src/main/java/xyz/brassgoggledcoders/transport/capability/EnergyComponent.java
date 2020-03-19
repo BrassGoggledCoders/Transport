@@ -9,8 +9,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.IntReferenceHolder;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.EnergyStorage;
-import xyz.brassgoggledcoders.transport.container.tracked.FunctionalReferenceHolder;
 import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddon;
+import xyz.brassgoggledcoders.transport.container.tracked.FunctionalReferenceHolder;
 
 import java.util.Collections;
 import java.util.List;

@@ -35,6 +35,15 @@ public class ScaffoldingSlabBlock extends SlabBlock {
     private static final VoxelShape field_220123_f = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
     private static final VoxelShape field_220124_g = VoxelShapes.fullCube().withOffset(0.0D, -1.0D, 0.0D);
 
+    static {
+        VoxelShape voxelShape = Block.makeCuboidShape(0.0D, 14.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+        VoxelShape voxelShape1 = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 2.0D, 16.0D, 2.0D);
+        VoxelShape voxelShape2 = Block.makeCuboidShape(14.0D, 0.0D, 0.0D, 16.0D, 16.0D, 2.0D);
+        VoxelShape voxelShape3 = Block.makeCuboidShape(0.0D, 0.0D, 14.0D, 2.0D, 16.0D, 16.0D);
+        VoxelShape voxelShape4 = Block.makeCuboidShape(14.0D, 0.0D, 14.0D, 16.0D, 16.0D, 16.0D);
+        field_220121_d = VoxelShapes.or(voxelShape, voxelShape1, voxelShape2, voxelShape3, voxelShape4);
+    }
+
     public ScaffoldingSlabBlock(Properties properties) {
         super(properties);
     }
@@ -44,6 +53,36 @@ public class ScaffoldingSlabBlock extends SlabBlock {
                 .doesNotBlockMovement()
                 .sound(SoundType.SCAFFOLDING)
                 .variableOpacity());
+    }
+
+    public static int getDistance(IBlockReader blockReader, BlockPos blockPos) {
+        BlockPos.Mutable mutableBlockPos = new BlockPos.Mutable(blockPos).move(Direction.DOWN);
+        BlockState blockState = blockReader.getBlockState(mutableBlockPos);
+        int i = 7;
+        if (blockState.getBlock() instanceof ScaffoldingSlabBlock) {
+            i = blockState.get(DISTANCE_07);
+        } else if (blockState.getBlock() instanceof ScaffoldingBlock) {
+            i = blockState.get(ScaffoldingBlock.field_220118_a);
+        } else if (blockState.isSolidSide(blockReader, mutableBlockPos, Direction.UP)) {
+            return 0;
+        }
+
+        for (Direction direction : Direction.Plane.HORIZONTAL) {
+            BlockState nextCheckedState = blockReader.getBlockState(mutableBlockPos.setPos(blockPos).move(direction));
+            if (nextCheckedState.getBlock() instanceof ScaffoldingBlock) {
+                i = Math.min(i, nextCheckedState.get(ScaffoldingBlock.field_220118_a) + 1);
+                if (i == 1) {
+                    break;
+                }
+            } else if (nextCheckedState.getBlock() instanceof ScaffoldingSlabBlock) {
+                i = Math.min(i, nextCheckedState.get(DISTANCE_07) + 1);
+                if (i == 1) {
+                    break;
+                }
+            }
+        }
+
+        return i;
     }
 
     @Override
@@ -107,7 +146,6 @@ public class ScaffoldingSlabBlock extends SlabBlock {
         }
     }
 
-
     @Override
     @SuppressWarnings("deprecation")
     public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
@@ -126,47 +164,8 @@ public class ScaffoldingSlabBlock extends SlabBlock {
 
     }
 
-    public static int getDistance(IBlockReader blockReader, BlockPos blockPos) {
-        BlockPos.Mutable mutableBlockPos = new BlockPos.Mutable(blockPos).move(Direction.DOWN);
-        BlockState blockState = blockReader.getBlockState(mutableBlockPos);
-        int i = 7;
-        if (blockState.getBlock() instanceof ScaffoldingSlabBlock) {
-            i = blockState.get(DISTANCE_07);
-        } else if (blockState.getBlock() instanceof ScaffoldingBlock) {
-            i = blockState.get(ScaffoldingBlock.field_220118_a);
-        } else if (blockState.isSolidSide(blockReader, mutableBlockPos, Direction.UP)) {
-            return 0;
-        }
-
-        for (Direction direction : Direction.Plane.HORIZONTAL) {
-            BlockState nextCheckedState = blockReader.getBlockState(mutableBlockPos.setPos(blockPos).move(direction));
-            if (nextCheckedState.getBlock() instanceof ScaffoldingBlock) {
-                i = Math.min(i, nextCheckedState.get(ScaffoldingBlock.field_220118_a) + 1);
-                if (i == 1) {
-                    break;
-                }
-            } else if (nextCheckedState.getBlock() instanceof ScaffoldingSlabBlock) {
-                i = Math.min(i, nextCheckedState.get(DISTANCE_07) + 1);
-                if (i == 1) {
-                    break;
-                }
-            }
-        }
-
-        return i;
-    }
-
     @Override
     public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity) {
         return state.get(TYPE) == SlabType.DOUBLE;
-    }
-
-    static {
-        VoxelShape voxelShape = Block.makeCuboidShape(0.0D, 14.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-        VoxelShape voxelShape1 = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 2.0D, 16.0D, 2.0D);
-        VoxelShape voxelShape2 = Block.makeCuboidShape(14.0D, 0.0D, 0.0D, 16.0D, 16.0D, 2.0D);
-        VoxelShape voxelShape3 = Block.makeCuboidShape(0.0D, 0.0D, 14.0D, 2.0D, 16.0D, 16.0D);
-        VoxelShape voxelShape4 = Block.makeCuboidShape(14.0D, 0.0D, 14.0D, 16.0D, 16.0D, 16.0D);
-        field_220121_d = VoxelShapes.or(voxelShape, voxelShape1, voxelShape2, voxelShape3, voxelShape4);
     }
 }
