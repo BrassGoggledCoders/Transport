@@ -46,6 +46,7 @@ public class ScaffoldingSlabBlock extends SlabBlock {
 
     public ScaffoldingSlabBlock(Properties properties) {
         super(properties);
+        this.setDefaultState(this.getDefaultState().with(RAILED, false));
     }
 
     public ScaffoldingSlabBlock() {
