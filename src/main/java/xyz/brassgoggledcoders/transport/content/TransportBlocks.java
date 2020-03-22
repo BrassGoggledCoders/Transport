@@ -16,6 +16,8 @@ import xyz.brassgoggledcoders.transport.block.rail.HoldingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.ScaffoldingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitchSupportBlock;
+import xyz.brassgoggledcoders.transport.block.rail.turnout.SwitchRailBlock;
+import xyz.brassgoggledcoders.transport.block.switchmotor.RedstoneSwitchMotorBlock;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
@@ -43,6 +45,9 @@ public class TransportBlocks {
     public static final BlockRegistryObjectGroup<ScaffoldingRailBlock, BlockItem, ?> SCAFFOLDING_RAIL =
             new BlockRegistryObjectGroup<>("scaffolding_rail", ScaffoldingRailBlock::new, blockItemCreator())
                     .register(BLOCKS, ITEMS);
+    public static final BlockRegistryObjectGroup<SwitchRailBlock, BlockItem, ?> SWITCH_RAIL =
+            new BlockRegistryObjectGroup<>("switch_rail", SwitchRailBlock::new, blockItemCreator())
+                    .register(BLOCKS, ITEMS);
     //endregion
     //region Loaders
     public static final BlockRegistryObjectGroup<LoaderBlock, BlockItem, ItemLoaderTileEntity> ITEM_LOADER =
@@ -61,10 +66,17 @@ public class TransportBlocks {
                     .register(BLOCKS, ITEMS, TILE_ENTITIES);
     //endregion
 
+    //region Switch Motors
+    public static final BlockRegistryObjectGroup<RedstoneSwitchMotorBlock, BlockItem, ?> REDSTONE_SWITCH_MOTOR =
+            new BlockRegistryObjectGroup<>("redstone_switch_motor", RedstoneSwitchMotorBlock::new, blockItemCreator())
+                    .register(BLOCKS, ITEMS);
+    //endregion
+
     //region Assorted
     public static final BlockRegistryObjectGroup<ScaffoldingSlabBlock, BlockItem, ?> SCAFFOLDING_SLAB_BLOCK =
             new BlockRegistryObjectGroup<>("scaffolding_slab", ScaffoldingSlabBlock::new, blockItemCreator())
                     .register(BLOCKS, ITEMS);
+    //endregion
 
     public static void register(IEventBus modBus) {
         BLOCKS.register(modBus);

@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,powered=false": {
+      "model": "transport:block/redstone_switch_motor"
+    },
+    "facing=north,powered=true": {
+      "model": "transport:block/redstone_switch_motor_powered"
+    },
+    "facing=east,powered=false": {
+      "model": "transport:block/redstone_switch_motor",
+      "y": 90
+    },
+    "facing=east,powered=true": {
+      "model": "transport:block/redstone_switch_motor_powered",
+      "y": 90
+    },
+    "facing=south,powered=false": {
+      "model": "transport:block/redstone_switch_motor",
+      "y": 180
+    },
+    "facing=south,powered=true": {
+      "model": "transport:block/redstone_switch_motor_powered",
+      "y": 180
+    },
+    "facing=west,powered=false": {
+      "model": "transport:block/redstone_switch_motor",
+      "y": 270
+    },
+    "facing=west,powered=true": {
+      "model": "transport:block/redstone_switch_motor_powered",
+      "y": 270
+    }
+  }
+}

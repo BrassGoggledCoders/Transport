@@ -56,6 +56,14 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .key('S', Ingredient.fromItems(Items.SCAFFOLDING))
                 .addCriterion("has_item", this.hasItem(Items.SCAFFOLDING))
                 .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.SWITCH_RAIL.getItem(), 4)
+                .patternLine("R ")
+                .patternLine("RR")
+                .patternLine("R ")
+                .key('R', Items.RAIL)
+                .addCriterion("has_item", this.hasItem(Items.RAIL))
+                .build(consumer);
         //endregion
 
         //region Loaders
@@ -94,6 +102,16 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .patternLine("SSS")
                 .key('S', Ingredient.fromItems(Items.SCAFFOLDING))
                 .addCriterion("has_item", this.hasItem(Items.SCAFFOLDING))
+                .build(consumer);
+        //endregion
+
+        //region Switch Motors
+        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.REDSTONE_SWITCH_MOTOR.getItem())
+                .patternLine("L")
+                .patternLine("R")
+                .key('L', Items.LEVER)
+                .key('R', Items.REPEATER)
+                .addCriterion("has_item", this.hasItem(Items.REPEATER))
                 .build(consumer);
         //endregion
     }

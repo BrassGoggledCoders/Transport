@@ -54,7 +54,7 @@ public class HoldingRailBlock extends AbstractRailBlock {
     @Nonnull
     @SuppressWarnings("deprecation")
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        if (!world.isRemote && TransportItemTags.WRENCHES.contains(player.getHeldItem(hand).getItem())) {
+        if (TransportItemTags.WRENCHES.contains(player.getHeldItem(hand).getItem())) {
             state = state.with(NORTH_WEST, !state.get(NORTH_WEST));
             world.setBlockState(pos, state, 3);
             return ActionResultType.SUCCESS;

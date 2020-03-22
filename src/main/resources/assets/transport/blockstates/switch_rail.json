@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "curve=south_east,diverge=false,straight=north_south": {
+      "model": "transport:block/switch_rail_straight_right"
+    },
+    "curve=south_east,diverge=true,straight=north_south": {
+      "model": "transport:block/switch_rail_diverge_right"
+    },
+    "curve=south_west,diverge=false,straight=north_south": {
+      "model": "transport:block/switch_rail_straight_left"
+    },
+    "curve=south_west,diverge=true,straight=north_south": {
+      "model": "transport:block/switch_rail_diverge_left"
+    },
+    "curve=north_east,diverge=false,straight=north_south": {
+      "model": "transport:block/switch_rail_straight_left",
+      "y": 180
+    },
+    "curve=north_east,diverge=true,straight=north_south": {
+      "model": "transport:block/switch_rail_diverge_left",
+      "y": 180
+    },
+    "curve=north_west,diverge=false,straight=north_south": {
+      "model": "transport:block/switch_rail_straight_right",
+      "y": 180
+    },
+    "curve=north_west,diverge=true,straight=north_south": {
+      "model": "transport:block/switch_rail_diverge_right",
+      "y": 180
+    },
+    "curve=north_east,diverge=false,straight=east_west": {
+      "model": "transport:block/switch_rail_straight_right",
+      "y": 270
+    },
+    "curve=north_east,diverge=true,straight=east_west": {
+      "model": "transport:block/switch_rail_diverge_right",
+      "y": 270
+    },
+    "curve=north_west,diverge=false,straight=east_west": {
+      "model": "transport:block/switch_rail_straight_left",
+      "y": 90
+    },
+    "curve=north_west,diverge=true,straight=east_west": {
+      "model": "transport:block/switch_rail_diverge_left",
+      "y": 90
+    },
+    "curve=south_east,diverge=false,straight=east_west": {
+      "model": "transport:block/switch_rail_straight_left",
+      "y": 270
+    },
+    "curve=south_east,diverge=true,straight=east_west": {
+      "model": "transport:block/switch_rail_diverge_left",
+      "y": 270
+    },
+    "curve=south_west,diverge=false,straight=east_west": {
+      "model": "transport:block/switch_rail_straight_right",
+      "y": 90
+    },
+    "curve=south_west,diverge=true,straight=east_west": {
+      "model": "transport:block/switch_rail_diverge_right",
+      "y": 90
+    }
+  }
+}

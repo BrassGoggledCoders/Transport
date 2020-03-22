@@ -46,6 +46,8 @@ public class TransportBlockLootTables extends BlockLootTables {
         this.registerDropSelfLootTable(TransportBlocks.ELEVATOR_SWITCH_RAIL.getBlock());
         this.registerLootTable(TransportBlocks.ELEVATOR_SWITCH_SUPPORT.get(), LootTable.builder());
         this.registerDropSelfLootTable(TransportBlocks.SCAFFOLDING_RAIL.getBlock());
+        this.registerDropSelfLootTable(TransportBlocks.SWITCH_RAIL.getBlock());
+        this.registerDropSelfLootTable(TransportBlocks.REDSTONE_SWITCH_MOTOR.getBlock());
         this.registerLootTable(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getBlock(), block -> LootTable.builder()
                 .addLootPool(LootPool.builder()
                         .rolls(ConstantRange.of(1))
