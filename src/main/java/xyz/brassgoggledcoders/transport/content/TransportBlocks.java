@@ -17,6 +17,7 @@ import xyz.brassgoggledcoders.transport.block.rail.ScaffoldingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitchSupportBlock;
 import xyz.brassgoggledcoders.transport.block.rail.turnout.SwitchRailBlock;
+import xyz.brassgoggledcoders.transport.block.rail.turnout.WyeSwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.switchmotor.RedstoneSwitchMotorBlock;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
@@ -32,6 +33,7 @@ public class TransportBlocks {
     private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES =
             new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, Transport.ID);
     private static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, Transport.ID);
+
     //region Rails
     public static final BlockRegistryObjectGroup<HoldingRailBlock, BlockItem, ?> HOLDING_RAIL =
             new BlockRegistryObjectGroup<>("holding_rail", HoldingRailBlock::new, blockItemCreator())
@@ -48,7 +50,11 @@ public class TransportBlocks {
     public static final BlockRegistryObjectGroup<SwitchRailBlock, BlockItem, ?> SWITCH_RAIL =
             new BlockRegistryObjectGroup<>("switch_rail", SwitchRailBlock::new, blockItemCreator())
                     .register(BLOCKS, ITEMS);
+    public static final BlockRegistryObjectGroup<WyeSwitchRailBlock, BlockItem, ?> WYE_SWITCH_RAIL =
+            new BlockRegistryObjectGroup<>("wye_switch_rail", WyeSwitchRailBlock::new, blockItemCreator())
+                    .register(BLOCKS, ITEMS);
     //endregion
+
     //region Loaders
     public static final BlockRegistryObjectGroup<LoaderBlock, BlockItem, ItemLoaderTileEntity> ITEM_LOADER =
             new BlockRegistryObjectGroup<>("item_loader", () -> new LoaderBlock(ItemLoaderTileEntity::new),

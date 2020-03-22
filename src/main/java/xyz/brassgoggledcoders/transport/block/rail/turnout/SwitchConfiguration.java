@@ -3,9 +3,9 @@ package xyz.brassgoggledcoders.transport.block.rail.turnout;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.Direction;
-import org.lwjgl.system.CallbackI;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public enum SwitchConfiguration {
     NORTH_EAST_DIVERGE(RailShape.NORTH_SOUTH, RailShape.SOUTH_EAST, Direction.SOUTH, Direction.EAST),
@@ -21,13 +21,21 @@ public enum SwitchConfiguration {
     private final Direction divergentSide;
 
     private final RailShape straight;
-    private final RailShape curve;
+    private final RailShape diverge;
 
-    SwitchConfiguration(RailShape straight, RailShape curve, Direction narrowSide, Direction divergentSide) {
+    SwitchConfiguration(RailShape straight, RailShape diverge, Direction narrowSide, Direction divergentSide) {
         this.narrowSide = narrowSide;
         this.divergentSide = divergentSide;
         this.straight = straight;
-        this.curve = curve;
+        this.diverge = diverge;
+    }
+
+    public RailShape getDiverge() {
+        return diverge;
+    }
+
+    public RailShape getStraight() {
+        return straight;
     }
 
     public Direction getDivergentSide() {
@@ -38,33 +46,12 @@ public enum SwitchConfiguration {
         return narrowSide;
     }
 
-    public Direction getMotorSide() {
-        return divergentSide.getOpposite();
-    }
-
-    public static SwitchConfiguration get(RailShape straight, RailShape curve) {
+    public static SwitchConfiguration get(RailShape straight, RailShape diverge) {
         for (SwitchConfiguration switchConfiguration : values()) {
-            if (switchConfiguration.straight == straight && switchConfiguration.curve == curve) {
+            if (switchConfiguration.straight == straight && switchConfiguration.diverge == diverge) {
                 return switchConfiguration;
             }
         }
-        return NORTH_EAST_DIVERGE;
-    }
-
-    public static RailShape getRailShape(RailShape straight, RailShape curve, AbstractMinecartEntity cart,
-                                         Function<Direction, Boolean> shouldDiverge) {
-        SwitchConfiguration switchConfiguration = get(straight, curve);
-        Direction entrance = cart.getAdjustedHorizontalFacing().getOpposite();
-        if (entrance == switchConfiguration.narrowSide) {
-            if (shouldDiverge.apply(switchConfiguration.divergentSide.getOpposite())) {
-                return curve;
-            } else {
-                return straight;
-            }
-        } else if (entrance == switchConfiguration.divergentSide) {
-            return curve;
-        } else {
-            return straight;
-        }
+        throw new IllegalStateException("No Valid Switch Configuration Found");
     }
 }

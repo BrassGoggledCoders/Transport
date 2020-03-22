@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR",
+    " R "
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:rail"
+    }
+  },
+  "result": {
+    "item": "transport:wye_switch_rail",
+    "count": 4
+  }
+}

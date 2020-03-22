@@ -10,6 +10,7 @@
   "block.transport.scaffolding_rail": "Scaffolding Rail",
   "block.transport.scaffolding_slab": "Scaffolding Slab",
   "block.transport.switch_rail": "Switch Rail",
+  "block.transport.wye_switch_rail": "Wye Switch Rail",
   "cargo.transport.empty": "No Cargo",
   "cargo.transport.energy": "Energy Storage",
   "cargo.transport.fluid": "Fluid Tank",

@@ -5,6 +5,7 @@
     "transport:diamond_crossing_rail",
     "transport:elevator_switch_rail",
     "transport:scaffolding_rail",
-    "transport:switch_rail"
+    "transport:switch_rail",
+    "transport:wye_switch_rail"
   ]
 }

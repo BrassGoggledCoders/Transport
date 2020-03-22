@@ -64,6 +64,13 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .key('R', Items.RAIL)
                 .addCriterion("has_item", this.hasItem(Items.RAIL))
                 .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.WYE_SWITCH_RAIL.getItem(), 4)
+                .patternLine("RRR")
+                .patternLine(" R ")
+                .key('R', Items.RAIL)
+                .addCriterion("has_item", this.hasItem(Items.RAIL))
+                .build(consumer);
         //endregion
 
         //region Loaders
