@@ -11,6 +11,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
+import xyz.brassgoggledcoders.transport.block.rail.BumperRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.DiamondCrossingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.HoldingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.ScaffoldingRailBlock;
@@ -49,6 +50,9 @@ public class TransportBlocks {
                     .register(BLOCKS, ITEMS);
     public static final BlockRegistryObjectGroup<WyeSwitchRailBlock, BlockItem, ?> WYE_SWITCH_RAIL =
             new BlockRegistryObjectGroup<>("wye_switch_rail", WyeSwitchRailBlock::new, blockItemCreator())
+                    .register(BLOCKS, ITEMS);
+    public static final BlockRegistryObjectGroup<BumperRailBlock, BlockItem, ?> BUMPER_RAIL =
+            new BlockRegistryObjectGroup<>("bumper_rail", BumperRailBlock::new, blockItemCreator())
                     .register(BLOCKS, ITEMS);
     //endregion
 

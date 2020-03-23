@@ -29,6 +29,7 @@ public class TransportLanguageProvider extends LanguageProvider {
         this.addBlock(TransportBlocks.SCAFFOLDING_SLAB_BLOCK, "Scaffolding Slab");
         this.addBlock(TransportBlocks.SWITCH_RAIL, "Switch Rail");
         this.addBlock(TransportBlocks.WYE_SWITCH_RAIL, "Wye Switch Rail");
+        this.addBlock(TransportBlocks.BUMPER_RAIL, "Bumper Rail");
         //endregion
 
         //region Cargo

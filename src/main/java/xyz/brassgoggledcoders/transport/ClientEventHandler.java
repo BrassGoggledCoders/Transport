@@ -22,7 +22,7 @@ public class ClientEventHandler {
         RenderTypeLookup.setRenderLayer(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getBlock(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.SWITCH_RAIL.getBlock(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.WYE_SWITCH_RAIL.getBlock(), RenderType.getCutout());
-
+        RenderTypeLookup.setRenderLayer(TransportBlocks.BUMPER_RAIL.getBlock(), RenderType.getCutout());
         ScreenManager.registerFactory(TransportContainers.LOADER.get(), LoaderScreen::new);
         ScreenManager.registerFactory(TransportContainers.CARGO.get(), CargoScreen::new);
 

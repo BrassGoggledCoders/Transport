@@ -71,6 +71,17 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .key('R', Items.RAIL)
                 .addCriterion("has_item", this.hasItem(Items.RAIL))
                 .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.BUMPER_RAIL.getItem(), 3)
+                .patternLine("WRW")
+                .patternLine("I I")
+                .patternLine("TTT")
+                .key('W', Tags.Items.DYES_WHITE)
+                .key('R', Tags.Items.DYES_RED)
+                .key('I', Tags.Items.INGOTS_IRON)
+                .key('T', Items.RAIL)
+                .addCriterion("has_item", this.hasItem(Items.RAIL))
+                .build(consumer);
         //endregion
 
         //region Loaders

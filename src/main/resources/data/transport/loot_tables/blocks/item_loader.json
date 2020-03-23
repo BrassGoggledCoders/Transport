@@ -14,10 +14,10 @@
           "function": "minecraft:copy_state",
           "block": "transport:item_loader",
           "properties": [
-            "west",
             "up",
-            "east",
             "north",
+            "east",
+            "west",
             "down",
             "south"
           ]
