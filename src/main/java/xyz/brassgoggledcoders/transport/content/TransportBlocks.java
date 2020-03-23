@@ -16,6 +16,8 @@ import xyz.brassgoggledcoders.transport.block.rail.HoldingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.ScaffoldingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitchSupportBlock;
+import xyz.brassgoggledcoders.transport.block.rail.turnout.SwitchRailBlock;
+import xyz.brassgoggledcoders.transport.block.rail.turnout.WyeSwitchRailBlock;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
@@ -25,11 +27,10 @@ import java.util.function.Function;
 @SuppressWarnings("unused")
 public class TransportBlocks {
     private static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, Transport.ID);
-    public static final RegistryObject<ElevatorSwitchSupportBlock> ELEVATOR_SWITCH_SUPPORT =
-            BLOCKS.register("elevator_switch_support", ElevatorSwitchSupportBlock::new);
     private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES =
             new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, Transport.ID);
     private static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, Transport.ID);
+
     //region Rails
     public static final BlockRegistryObjectGroup<HoldingRailBlock, BlockItem, ?> HOLDING_RAIL =
             new BlockRegistryObjectGroup<>("holding_rail", HoldingRailBlock::new, blockItemCreator())
@@ -43,7 +44,14 @@ public class TransportBlocks {
     public static final BlockRegistryObjectGroup<ScaffoldingRailBlock, BlockItem, ?> SCAFFOLDING_RAIL =
             new BlockRegistryObjectGroup<>("scaffolding_rail", ScaffoldingRailBlock::new, blockItemCreator())
                     .register(BLOCKS, ITEMS);
+    public static final BlockRegistryObjectGroup<SwitchRailBlock, BlockItem, ?> SWITCH_RAIL =
+            new BlockRegistryObjectGroup<>("switch_rail", SwitchRailBlock::new, blockItemCreator())
+                    .register(BLOCKS, ITEMS);
+    public static final BlockRegistryObjectGroup<WyeSwitchRailBlock, BlockItem, ?> WYE_SWITCH_RAIL =
+            new BlockRegistryObjectGroup<>("wye_switch_rail", WyeSwitchRailBlock::new, blockItemCreator())
+                    .register(BLOCKS, ITEMS);
     //endregion
+
     //region Loaders
     public static final BlockRegistryObjectGroup<LoaderBlock, BlockItem, ItemLoaderTileEntity> ITEM_LOADER =
             new BlockRegistryObjectGroup<>("item_loader", () -> new LoaderBlock(ItemLoaderTileEntity::new),
@@ -65,6 +73,9 @@ public class TransportBlocks {
     public static final BlockRegistryObjectGroup<ScaffoldingSlabBlock, BlockItem, ?> SCAFFOLDING_SLAB_BLOCK =
             new BlockRegistryObjectGroup<>("scaffolding_slab", ScaffoldingSlabBlock::new, blockItemCreator())
                     .register(BLOCKS, ITEMS);
+    public static final RegistryObject<ElevatorSwitchSupportBlock> ELEVATOR_SWITCH_SUPPORT =
+            BLOCKS.register("elevator_switch_support", ElevatorSwitchSupportBlock::new);
+    //endregion
 
     public static void register(IEventBus modBus) {
         BLOCKS.register(modBus);

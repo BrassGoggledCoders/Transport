@@ -185,4 +185,9 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
             this.entityDropItem(itemStack);
         }
     }
+
+    @Override
+    public int getComparatorLevel() {
+        return this.getCargoInstance().getComparatorLevel();
+    }
 }

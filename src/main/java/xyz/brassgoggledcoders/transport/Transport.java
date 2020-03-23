@@ -1,12 +1,18 @@
 package xyz.brassgoggledcoders.transport;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.pointmachine.ComparatorPointMachineBehavior;
+import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
+import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
 import xyz.brassgoggledcoders.transport.entity.ResourceLocationDataSerializer;
@@ -29,12 +35,19 @@ public class Transport {
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modBus.addListener(ClientEventHandler::clientSetup));
         modBus.addListener(TransportDataGenerator::gather);
+        modBus.addListener(this::commonSetup);
 
         TransportBlocks.register(modBus);
         TransportCargoes.register(modBus);
         TransportContainers.register(modBus);
         TransportEntities.register(modBus);
         TransportRecipes.register(modBus);
+    }
+
+    public void commonSetup(FMLCommonSetupEvent event) {
+        TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.LEVER, new LeverPointMachineBehavior());
+        TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.REPEATER, new RedstonePointMachineBehavior());
+        TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.COMPARATOR, new ComparatorPointMachineBehavior());
     }
 
     private static ResourceLocationDataSerializer createDataSerializer() {

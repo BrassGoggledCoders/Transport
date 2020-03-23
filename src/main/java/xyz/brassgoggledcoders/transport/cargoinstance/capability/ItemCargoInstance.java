@@ -2,10 +2,13 @@ package xyz.brassgoggledcoders.transport.cargoinstance.capability;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.util.InventoryUtil;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
 import xyz.brassgoggledcoders.transport.capability.InventoryPlusComponent;
 import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddon;
@@ -36,6 +39,11 @@ public class ItemCargoInstance extends CapabilityCargoInstance<IItemHandler> {
     @Override
     protected void deserializeCapability(CompoundNBT nbt) {
         inventory.deserializeNBT(nbt);
+    }
+
+    @Override
+    public int getComparatorLevel() {
+        return ItemHandlerHelper.calcRedstoneFromInventory(inventory);
     }
 
     @Override
