@@ -27,7 +27,6 @@ public class TransportLanguageProvider extends LanguageProvider {
         this.addBlock(TransportBlocks.ENERGY_LOADER, "Energy Loader");
         this.addBlock(TransportBlocks.FLUID_LOADER, "Fluid Loader");
         this.addBlock(TransportBlocks.SCAFFOLDING_SLAB_BLOCK, "Scaffolding Slab");
-        this.addBlock(TransportBlocks.REDSTONE_SWITCH_MOTOR, "Redstone Switch Motor");
         this.addBlock(TransportBlocks.SWITCH_RAIL, "Switch Rail");
         this.addBlock(TransportBlocks.WYE_SWITCH_RAIL, "Wye Switch Rail");
         //endregion

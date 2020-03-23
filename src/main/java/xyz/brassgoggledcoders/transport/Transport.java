@@ -10,8 +10,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.switchmotor.RedstoneSwitchMotorBehavior;
-import xyz.brassgoggledcoders.transport.block.rail.turnout.LeverSwitchMotorBehavior;
+import xyz.brassgoggledcoders.transport.pointmachine.ComparatorPointMachineBehavior;
+import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
+import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
 import xyz.brassgoggledcoders.transport.entity.ResourceLocationDataSerializer;
@@ -44,9 +45,9 @@ public class Transport {
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
-        TransportAPI.TURNOUT_MOTOR_BEHAVIORS.put(Blocks.LEVER, new LeverSwitchMotorBehavior());
-        TransportAPI.TURNOUT_MOTOR_BEHAVIORS.put(TransportBlocks.REDSTONE_SWITCH_MOTOR.getBlock(),
-                new RedstoneSwitchMotorBehavior());
+        TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.LEVER, new LeverPointMachineBehavior());
+        TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.REPEATER, new RedstonePointMachineBehavior());
+        TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.COMPARATOR, new ComparatorPointMachineBehavior());
     }
 
     private static ResourceLocationDataSerializer createDataSerializer() {

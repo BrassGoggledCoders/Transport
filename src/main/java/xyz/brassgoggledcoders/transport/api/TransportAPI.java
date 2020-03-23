@@ -7,7 +7,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
-import xyz.brassgoggledcoders.transport.api.switchmotor.ISwitchMotorBehavior;
+import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
 
 import java.util.Map;
 
@@ -19,5 +19,5 @@ public class TransportAPI {
             .create();
     public static final RegistryObject<Cargo> EMPTY_CARGO = RegistryObject.of(EMPTY_CARGO_RL, CARGO);
 
-    public static final Map<Block, ISwitchMotorBehavior> TURNOUT_MOTOR_BEHAVIORS = Maps.newHashMap();
+    public static final Map<Block, IPointMachineBehavior> POINT_MACHINE_BEHAVIORS = Maps.newHashMap();
 }

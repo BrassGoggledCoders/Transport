@@ -111,16 +111,6 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .addCriterion("has_item", this.hasItem(Items.SCAFFOLDING))
                 .build(consumer);
         //endregion
-
-        //region Switch Motors
-        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.REDSTONE_SWITCH_MOTOR.getItem())
-                .patternLine("L")
-                .patternLine("R")
-                .key('L', Items.LEVER)
-                .key('R', Items.REPEATER)
-                .addCriterion("has_item", this.hasItem(Items.REPEATER))
-                .build(consumer);
-        //endregion
     }
 
     @Override

@@ -10,7 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.switchmotor.ISwitchMotorBehavior;
+import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,7 +25,7 @@ public abstract class AbstractSwitchRailBlock extends AbstractRailBlock {
     protected boolean shouldDivert(IBlockReader blockReader, BlockPos motorLocation, BlockPos switchLocation,
                                    @Nullable AbstractMinecartEntity cart) {
         BlockState motorState = blockReader.getBlockState(motorLocation);
-        ISwitchMotorBehavior motorBehavior = TransportAPI.TURNOUT_MOTOR_BEHAVIORS.get(motorState.getBlock());
+        IPointMachineBehavior motorBehavior = TransportAPI.POINT_MACHINE_BEHAVIORS.get(motorState.getBlock());
         if (motorBehavior != null) {
             return motorBehavior.shouldDiverge(motorState, blockReader, motorLocation, switchLocation, cart);
         } else {

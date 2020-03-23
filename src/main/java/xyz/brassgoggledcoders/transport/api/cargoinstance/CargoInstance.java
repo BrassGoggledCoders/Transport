@@ -39,6 +39,10 @@ public class CargoInstance implements ICapabilitySerializable<CompoundNBT> {
 
     }
 
+    public int getComparatorLevel() {
+        return -1;
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction direction) {

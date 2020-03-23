@@ -18,7 +18,6 @@ import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitch
 import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitchSupportBlock;
 import xyz.brassgoggledcoders.transport.block.rail.turnout.SwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.turnout.WyeSwitchRailBlock;
-import xyz.brassgoggledcoders.transport.block.switchmotor.RedstoneSwitchMotorBlock;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
@@ -28,8 +27,6 @@ import java.util.function.Function;
 @SuppressWarnings("unused")
 public class TransportBlocks {
     private static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, Transport.ID);
-    public static final RegistryObject<ElevatorSwitchSupportBlock> ELEVATOR_SWITCH_SUPPORT =
-            BLOCKS.register("elevator_switch_support", ElevatorSwitchSupportBlock::new);
     private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES =
             new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, Transport.ID);
     private static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, Transport.ID);
@@ -72,16 +69,12 @@ public class TransportBlocks {
                     .register(BLOCKS, ITEMS, TILE_ENTITIES);
     //endregion
 
-    //region Switch Motors
-    public static final BlockRegistryObjectGroup<RedstoneSwitchMotorBlock, BlockItem, ?> REDSTONE_SWITCH_MOTOR =
-            new BlockRegistryObjectGroup<>("redstone_switch_motor", RedstoneSwitchMotorBlock::new, blockItemCreator())
-                    .register(BLOCKS, ITEMS);
-    //endregion
-
     //region Assorted
     public static final BlockRegistryObjectGroup<ScaffoldingSlabBlock, BlockItem, ?> SCAFFOLDING_SLAB_BLOCK =
             new BlockRegistryObjectGroup<>("scaffolding_slab", ScaffoldingSlabBlock::new, blockItemCreator())
                     .register(BLOCKS, ITEMS);
+    public static final RegistryObject<ElevatorSwitchSupportBlock> ELEVATOR_SWITCH_SUPPORT =
+            BLOCKS.register("elevator_switch_support", ElevatorSwitchSupportBlock::new);
     //endregion
 
     public static void register(IEventBus modBus) {

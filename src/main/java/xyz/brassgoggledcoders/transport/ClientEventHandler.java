@@ -21,7 +21,6 @@ public class ClientEventHandler {
         RenderTypeLookup.setRenderLayer(TransportBlocks.SCAFFOLDING_RAIL.getBlock(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getBlock(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.SWITCH_RAIL.getBlock(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(TransportBlocks.REDSTONE_SWITCH_MOTOR.getBlock(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.WYE_SWITCH_RAIL.getBlock(), RenderType.getCutout());
 
         ScreenManager.registerFactory(TransportContainers.LOADER.get(), LoaderScreen::new);
