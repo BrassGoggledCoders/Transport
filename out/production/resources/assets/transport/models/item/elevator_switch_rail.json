@@ -1,7 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "block/scaffolding_top",
-    "layer1": "block/rail"
-  }
-}

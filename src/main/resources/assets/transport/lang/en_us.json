@@ -18,9 +18,5 @@
   "entity.transport.cargo_minecart": "Minecart",
   "item.transport.cargo_minecart": "Minecart",
   "itemGroup.transport": "Transport",
-  "text.transport.with": "%s With %s",
-
-  "guide.transport.name": "Advanced Rails",
-  "guide.transport.subtitle": "A Transport Guide",
-  "guide.transport.landing_text": "Clever reference goes here"
+  "text.transport.with": "%s With %s"
 }

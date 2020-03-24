@@ -72,8 +72,6 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     compile fg.deobf("com.hrznstudio:titanium:${minecraft_version}-${titanium_version}")
     compile fg.deobf("com.teamacronymcoders:theloader:1.15.2-1.1.0")
-    compile fg.deobf("vazkii.patchouli:Patchouli:${minecraft_version}-${patchouli_version}")
-    //runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${minecraft_version}-${patchouli_version}")
 }
 
 task srcJar(type: Jar) {

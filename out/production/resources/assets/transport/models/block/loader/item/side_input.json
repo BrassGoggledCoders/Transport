@@ -1,6 +1,0 @@
-{
-  "parent": "transport:block/loader/side_parent",
-  "textures": {
-    "texture": "transport:block/loader/item/item_loader_side_input"
-  }
-}
