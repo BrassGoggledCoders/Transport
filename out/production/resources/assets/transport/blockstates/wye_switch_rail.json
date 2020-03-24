@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "diverge=false,north_west=true,shape=north_south": {
+      "model": "transport:block/wye_switch_rail"
+    },
+    "diverge=true,north_west=true,shape=north_south": {
+      "model": "transport:block/wye_switch_rail_diverge"
+    },
+    "diverge=false,north_west=false,shape=north_south": {
+      "model": "transport:block/wye_switch_rail",
+      "y": 180
+    },
+    "diverge=true,north_west=false,shape=north_south": {
+      "model": "transport:block/wye_switch_rail_diverge",
+      "y": 180
+    },
+    "diverge=false,north_west=true,shape=east_west": {
+      "model": "transport:block/wye_switch_rail",
+      "y": 270
+    },
+    "diverge=true,north_west=true,shape=east_west": {
+      "model": "transport:block/wye_switch_rail_diverge",
+      "y": 270
+    },
+    "diverge=false,north_west=false,shape=east_west": {
+      "model": "transport:block/wye_switch_rail",
+      "y": 90
+    },
+    "diverge=true,north_west=false,shape=east_west": {
+      "model": "transport:block/wye_switch_rail_diverge",
+      "y": 90
+    }
+  }
+}

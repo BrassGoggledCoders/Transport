@@ -1,0 +1,6 @@
+{
+  "parent": "block/rail_flat",
+  "textures": {
+    "rail": "transport:block/rail/wye_switch_rail_diverge"
+  }
+}

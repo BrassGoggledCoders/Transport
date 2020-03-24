@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "R ",
+    "RR",
+    "R "
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:rail"
+    }
+  },
+  "result": {
+    "item": "transport:switch_rail",
+    "count": 4
+  }
+}

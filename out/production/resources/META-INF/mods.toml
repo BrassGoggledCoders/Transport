@@ -1,0 +1,11 @@
+modLoader="javafml"
+loaderVersion="[31,)"
+issueTrackerURL="https://github.com/Brass-Goggled-Coders/Transport/issues"
+
+[[mods]]
+    modId="transport"
+    version="${file.jarVersion}"
+    displayName="Transport"
+    authors="SkySom"
+    description='''
+    '''

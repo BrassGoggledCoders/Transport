@@ -1,0 +1,29 @@
+{
+  "parent": "item/generated",
+  "overrides": [
+    {
+      "predicate": {
+        "transport:cargo": 0.000
+      },
+      "model": "minecraft:item/minecart"
+    },
+    {
+      "predicate": {
+        "transport:cargo": 0.001
+      },
+      "model": "transport:item/item_cargo_minecart"
+    },
+    {
+      "predicate": {
+        "transport:cargo": 0.002
+      },
+      "model": "transport:item/energy_cargo_minecart"
+    },
+    {
+      "predicate": {
+        "transport:cargo": 0.003
+      },
+      "model": "transport:item/fluid_cargo_minecart"
+    }
+  ]
+}

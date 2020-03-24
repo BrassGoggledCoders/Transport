@@ -1,5 +1,4 @@
 {
-  "block.transport.bumper_rail": "Bumper Rail",
   "block.transport.diamond_crossing_rail": "Diamond Crossing Rail",
   "block.transport.elevator_switch_rail": "Elevator Switch Rail",
   "block.transport.elevator_switch_support": "Elevator Switch Support",
@@ -7,6 +6,7 @@
   "block.transport.fluid_loader": "Fluid Loader",
   "block.transport.holding_rail": "Holding Rail",
   "block.transport.item_loader": "Item Loader",
+  "block.transport.redstone_switch_motor": "Redstone Switch Motor",
   "block.transport.scaffolding_rail": "Scaffolding Rail",
   "block.transport.scaffolding_slab": "Scaffolding Slab",
   "block.transport.switch_rail": "Switch Rail",
@@ -20,7 +20,6 @@
   "itemGroup.transport": "Transport",
   "text.transport.with": "%s With %s",
 
-  "guide.transport.name": "Advanced Rails",
-  "guide.transport.subtitle": "A Transport Guide",
+  "guide.transport.name": "Transport Guide: Advanced Rails",
   "guide.transport.landing_text": "Clever reference goes here"
 }

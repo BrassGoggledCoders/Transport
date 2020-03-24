@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "transport:block/elevator_switch_support"
+    }
+  }
+}
