@@ -18,5 +18,7 @@
   "entity.transport.cargo_minecart": "Minecart",
   "item.transport.cargo_minecart": "Minecart",
   "itemGroup.transport": "Transport",
-  "text.transport.with": "%s With %s"
+  "text.transport.with": "%s With %s",
+  "guide.transport.name": "Transport Guide",
+  "guide.transport.landing_text": "Transport is a mod about railways, because SkySom really likes trains."
 }

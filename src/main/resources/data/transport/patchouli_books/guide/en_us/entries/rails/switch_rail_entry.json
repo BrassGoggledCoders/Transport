@@ -1,7 +1,7 @@
 {
     "name": "Switch Rail",
     "icon": "transport:switch_rail",
-    "category": "rail_category",
+    "category": "rails_category",
     "pages": [
         {
             "type": "text",
