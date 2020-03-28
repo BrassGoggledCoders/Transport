@@ -14,6 +14,7 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.recipe.CargoShapelessRecipeBuilder;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.content.TransportItems;
 import xyz.brassgoggledcoders.transport.recipe.ActualNBTIngredient;
 
 import javax.annotation.Nonnull;
@@ -115,6 +116,17 @@ public class TransportRecipeProvider extends RecipeProvider {
                                 registryName.getPath() + "_break"));
             }
         });
+        //endregion
+
+        //region Items
+        ShapedRecipeBuilder.shapedRecipe(TransportItems.RAIL_BREAKER.get())
+                .patternLine(" RI")
+                .patternLine("RIR")
+                .patternLine("IR ")
+                .key('R', Tags.Items.DYES_RED)
+                .key('I', Tags.Items.INGOTS_IRON)
+                .addCriterion("has_item", this.hasItem(Tags.Items.INGOTS_IRON))
+                .build(consumer);
         //endregion
 
         //region Blocks

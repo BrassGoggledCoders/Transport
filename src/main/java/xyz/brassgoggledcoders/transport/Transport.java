@@ -42,6 +42,7 @@ public class Transport {
         TransportContainers.register(modBus);
         TransportEntities.register(modBus);
         TransportRecipes.register(modBus);
+        TransportItems.register(modBus);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {

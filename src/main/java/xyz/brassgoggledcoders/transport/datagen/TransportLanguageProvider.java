@@ -7,6 +7,7 @@ import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportCargoes;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.content.TransportItems;
 
 import java.util.function.Supplier;
 
@@ -42,6 +43,10 @@ public class TransportLanguageProvider extends LanguageProvider {
         //region Entity
         this.add(TransportEntities.CARGO_MINECART.get(), "Minecart");
         this.add(TransportEntities.CARGO_MINECART_ITEM.get(), "Minecart");
+        //endregion
+
+        //region Item
+        this.add(TransportItems.RAIL_BREAKER.get(), "Rail Breaker");
         //endregion
 
         //region Text

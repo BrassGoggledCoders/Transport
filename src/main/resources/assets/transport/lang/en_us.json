@@ -19,6 +19,7 @@
   "guide.transport.landing_text": "Importing the Transportation of Goods",
   "guide.transport.name": "Advanced Transport",
   "item.transport.cargo_minecart": "Minecart",
+  "item.transport.rail_breaker": "Rail Breaker",
   "itemGroup.transport": "Transport",
   "text.transport.with": "%s With %s"
 }
