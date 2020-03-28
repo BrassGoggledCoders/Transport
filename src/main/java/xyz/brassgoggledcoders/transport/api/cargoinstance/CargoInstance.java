@@ -13,7 +13,6 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
 import xyz.brassgoggledcoders.transport.api.cargocarrier.ICargoCarrier;
-import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,6 +37,10 @@ public class CargoInstance implements ICapabilitySerializable<CompoundNBT> {
 
     public void onTick() {
 
+    }
+
+    public int getComparatorLevel() {
+        return -1;
     }
 
     @Nonnull

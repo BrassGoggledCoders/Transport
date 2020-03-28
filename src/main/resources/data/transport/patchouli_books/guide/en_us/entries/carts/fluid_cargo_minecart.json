@@ -1,0 +1,16 @@
+{
+  "name": "Minecart with Fluid Tank",
+  "icon": "transport:cargo_minecart{cargo:{name:'transport:fluid'}}",
+  "category": "carts",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Putting a Fluid Loader into a Minecart produces a Minecart with Fluid Tank. It can hold up to 10000mb."
+    },
+    {
+      "type": "crafting",
+      "recipe": "transport:cargo/minecart/fluid",
+      "recipe2": "transport:cargo/minecart/fluid_break"
+    }
+  ]
+}

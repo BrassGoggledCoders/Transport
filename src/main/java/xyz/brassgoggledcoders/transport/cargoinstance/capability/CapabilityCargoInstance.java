@@ -40,7 +40,8 @@ public abstract class CapabilityCargoInstance<CAP> extends CargoInstance impleme
     @Override
     public ActionResultType applyInteraction(ICargoCarrier carrier, PlayerEntity player, Vec3d vec, Hand hand) {
         if (!player.isCrouching()) {
-            carrier.openContainer(player, new CargoContainerProvider(carrier, this), packetBuffer -> {});
+            carrier.openContainer(player, new CargoContainerProvider(carrier, this), packetBuffer -> {
+            });
             return ActionResultType.SUCCESS;
         }
         return super.applyInteraction(carrier, player, vec, hand);

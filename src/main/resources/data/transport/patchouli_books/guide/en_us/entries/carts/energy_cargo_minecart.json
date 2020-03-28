@@ -1,0 +1,16 @@
+{
+  "name": "Minecart with Energy Storage",
+  "icon": "transport:cargo_minecart{cargo:{name:'transport:energy'}}",
+  "category": "carts",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Putting a Energy Loader into a Minecart produces a Minecart with Energy Storage. It can hold up to 10000FE."
+    },
+    {
+      "type": "crafting",
+      "recipe": "transport:cargo/minecart/energy",
+      "recipe2": "transport:cargo/minecart/energy_break"
+    }
+  ]
+}

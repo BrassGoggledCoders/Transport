@@ -5,7 +5,10 @@
       "item": "minecraft:water_bucket"
     },
     {
-      "item": "transport:cargo_minecart"
+      "type": "forge:nbt",
+      "item": "transport:cargo_minecart",
+      "count": 1,
+      "nbt": "{cargo:{name:\"transport:energy\"}}"
     }
   ],
   "result": {

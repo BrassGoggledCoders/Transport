@@ -48,6 +48,14 @@ public class LoaderBlock extends Block {
         this.setDefaultState(defaultState);
     }
 
+    private static EnumMap<Direction, EnumProperty<LoadType>> createLoadTypeProperties() {
+        EnumMap<Direction, EnumProperty<LoadType>> loadTypes = Maps.newEnumMap(Direction.class);
+        for (Direction direction : Direction.values()) {
+            loadTypes.put(direction, EnumProperty.create(direction.name().toLowerCase(), LoadType.class));
+        }
+        return loadTypes;
+    }
+
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         PROPERTIES.values().forEach(builder::add);
@@ -87,14 +95,6 @@ public class LoaderBlock extends Block {
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return this.tileSupplier.get();
-    }
-
-    private static EnumMap<Direction, EnumProperty<LoadType>> createLoadTypeProperties() {
-        EnumMap<Direction, EnumProperty<LoadType>> loadTypes = Maps.newEnumMap(Direction.class);
-        for (Direction direction : Direction.values()) {
-            loadTypes.put(direction, EnumProperty.create(direction.name().toLowerCase(), LoadType.class));
-        }
-        return loadTypes;
     }
 
     @Override

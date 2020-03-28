@@ -46,6 +46,23 @@ public class CargoCarrierMinecartItem extends MinecartItem {
                         .orElse(0.000F));
     }
 
+    public static ItemStack getCartStack(CargoInstance cargoInstance) {
+        ItemStack itemStack = new ItemStack(TransportEntities.CARGO_MINECART_ITEM
+                .map(Item::asItem)
+                .orElse(Items.MINECART));
+        itemStack.getOrCreateChildTag("cargo").putString("name", Objects.requireNonNull(
+                cargoInstance.getCargo().getRegistryName()).toString());
+        return itemStack;
+    }
+
+    public static Cargo getCargo(@Nullable CompoundNBT cargo) {
+        return Optional.ofNullable(cargo)
+                .map(compoundNBT -> compoundNBT.getString("name"))
+                .map(ResourceLocation::new)
+                .map(TransportAPI.CARGO::getValue)
+                .orElseGet(TransportAPI.EMPTY_CARGO);
+    }
+
     @Override
     @Nonnull
     public ActionResultType onItemUse(ItemUseContext context) {
@@ -108,22 +125,5 @@ public class CargoCarrierMinecartItem extends MinecartItem {
         return new TranslationTextComponent("text.transport.with",
                 Items.MINECART.getDisplayName(stack),
                 getCargo(stack.getChildTag("cargo")).getDisplayName());
-    }
-
-    public static ItemStack getCartStack(CargoInstance cargoInstance) {
-        ItemStack itemStack = new ItemStack(TransportEntities.CARGO_MINECART_ITEM
-                .map(Item::asItem)
-                .orElse(Items.MINECART));
-        itemStack.getOrCreateChildTag("cargo").putString("name", Objects.requireNonNull(
-                cargoInstance.getCargo().getRegistryName()).toString());
-        return itemStack;
-    }
-
-    public static Cargo getCargo(@Nullable CompoundNBT cargo) {
-        return Optional.ofNullable(cargo)
-                .map(compoundNBT -> compoundNBT.getString("name"))
-                .map(ResourceLocation::new)
-                .map(TransportAPI.CARGO::getValue)
-                .orElseGet(TransportAPI.EMPTY_CARGO);
     }
 }

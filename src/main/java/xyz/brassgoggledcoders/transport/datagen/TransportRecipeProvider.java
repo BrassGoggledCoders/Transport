@@ -9,10 +9,13 @@ import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.NBTIngredient;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.recipe.CargoShapelessRecipeBuilder;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.content.TransportItems;
+import xyz.brassgoggledcoders.transport.recipe.ActualNBTIngredient;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -53,8 +56,34 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .patternLine("RRR")
                 .patternLine("SSS")
                 .key('R', Ingredient.fromItems(Items.RAIL))
-                .key('S', Ingredient.fromItems(Items.SCAFFOLDING))
+                .key('S', Ingredient.fromItems(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getItem()))
                 .addCriterion("has_item", this.hasItem(Items.SCAFFOLDING))
+                .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.SWITCH_RAIL.getItem(), 4)
+                .patternLine("R ")
+                .patternLine("RR")
+                .patternLine("R ")
+                .key('R', Items.RAIL)
+                .addCriterion("has_item", this.hasItem(Items.RAIL))
+                .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.WYE_SWITCH_RAIL.getItem(), 4)
+                .patternLine("RRR")
+                .patternLine(" R ")
+                .key('R', Items.RAIL)
+                .addCriterion("has_item", this.hasItem(Items.RAIL))
+                .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.BUMPER_RAIL.getItem(), 3)
+                .patternLine("WRW")
+                .patternLine("I I")
+                .patternLine("TTT")
+                .key('W', Tags.Items.DYES_WHITE)
+                .key('R', Tags.Items.DYES_RED)
+                .key('I', Tags.Items.INGOTS_IRON)
+                .key('T', Items.RAIL)
+                .addCriterion("has_item", this.hasItem(Items.RAIL))
                 .build(consumer);
         //endregion
 
@@ -81,12 +110,23 @@ public class TransportRecipeProvider extends RecipeProvider {
                                 registryName.getPath()));
                 ShapelessRecipeBuilder.shapelessRecipe(cargo.asItem())
                         .addIngredient(Items.WATER_BUCKET)
-                        .addIngredient(Ingredient.fromStacks(cargo.createItemStack(TransportEntities.CARGO_MINECART_ITEM.get())))
+                        .addIngredient(new ActualNBTIngredient(cargo.createItemStack(TransportEntities.CARGO_MINECART_ITEM.get())))
                         .addCriterion("has_item", hasItem(TransportEntities.CARGO_MINECART_ITEM.get()))
                         .build(consumer, new ResourceLocation(registryName.getNamespace(), "cargo/minecart/" +
                                 registryName.getPath() + "_break"));
             }
         });
+        //endregion
+
+        //region Items
+        ShapedRecipeBuilder.shapedRecipe(TransportItems.RAIL_BREAKER.get())
+                .patternLine(" RI")
+                .patternLine("RIR")
+                .patternLine("IR ")
+                .key('R', Tags.Items.DYES_RED)
+                .key('I', Tags.Items.INGOTS_IRON)
+                .addCriterion("has_item", this.hasItem(Tags.Items.INGOTS_IRON))
+                .build(consumer);
         //endregion
 
         //region Blocks

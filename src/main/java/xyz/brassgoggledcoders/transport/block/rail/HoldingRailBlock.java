@@ -12,6 +12,7 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -21,15 +22,17 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import xyz.brassgoggledcoders.transport.api.TransportBlockStateProperties;
 import xyz.brassgoggledcoders.transport.content.TransportItemTags;
+import xyz.brassgoggledcoders.transport.util.RailUtils;
 
 import javax.annotation.Nonnull;
 
 public class HoldingRailBlock extends AbstractRailBlock {
-    public static final BooleanProperty NORTH_WEST = BooleanProperty.create("north_west");
-    public static final EnumProperty<RailShape> SHAPE = EnumProperty.create("shape", RailShape.class,
-            railShape -> railShape == RailShape.NORTH_SOUTH || railShape == RailShape.EAST_WEST);
-    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
+    public static final BooleanProperty NORTH_WEST = TransportBlockStateProperties.NORTH_WEST;
+    public static final EnumProperty<RailShape> SHAPE = TransportBlockStateProperties.STRAIGHT_RAIL_SHAPE;
+
+    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     public HoldingRailBlock() {
         this(Block.Properties.create(Material.MISCELLANEOUS)
@@ -54,7 +57,7 @@ public class HoldingRailBlock extends AbstractRailBlock {
     @Nonnull
     @SuppressWarnings("deprecation")
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        if (!world.isRemote && TransportItemTags.WRENCHES.contains(player.getHeldItem(hand).getItem())) {
+        if (TransportItemTags.WRENCHES.contains(player.getHeldItem(hand).getItem())) {
             state = state.with(NORTH_WEST, !state.get(NORTH_WEST));
             world.setBlockState(pos, state, 3);
             return ActionResultType.SUCCESS;
@@ -106,28 +109,6 @@ public class HoldingRailBlock extends AbstractRailBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        BlockState blockState = super.getDefaultState();
-        Direction direction = context.getPlacementHorizontalFacing();
-        switch (direction) {
-            case NORTH:
-            case SOUTH:
-                blockState = blockState.with(SHAPE, RailShape.NORTH_SOUTH);
-                break;
-            case WEST:
-            case EAST:
-                blockState = blockState.with(SHAPE, RailShape.EAST_WEST);
-                break;
-        }
-        switch (direction) {
-            case EAST:
-            case SOUTH:
-                blockState = blockState.with(NORTH_WEST, false);
-                break;
-            case WEST:
-            case NORTH:
-                blockState = blockState.with(NORTH_WEST, true);
-                break;
-        }
-        return blockState;
+        return RailUtils.setRailStateWithFacing(this.getDefaultState(), context);
     }
 }

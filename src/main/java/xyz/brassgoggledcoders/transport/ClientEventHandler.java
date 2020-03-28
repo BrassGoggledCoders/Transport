@@ -20,11 +20,16 @@ public class ClientEventHandler {
         RenderTypeLookup.setRenderLayer(TransportBlocks.ELEVATOR_SWITCH_SUPPORT.get(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.SCAFFOLDING_RAIL.getBlock(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getBlock(), RenderType.getCutout());
-
+        RenderTypeLookup.setRenderLayer(TransportBlocks.SWITCH_RAIL.getBlock(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.WYE_SWITCH_RAIL.getBlock(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.BUMPER_RAIL.getBlock(), RenderType.getCutout());
         ScreenManager.registerFactory(TransportContainers.LOADER.get(), LoaderScreen::new);
         ScreenManager.registerFactory(TransportContainers.CARGO.get(), CargoScreen::new);
 
-        Minecraft.getInstance().getRenderManager().register(TransportEntities.CARGO_MINECART.get(),
-                new CargoCarrierMinecartEntityRenderer(Minecraft.getInstance().getRenderManager()));
+        event.getMinecraftSupplier()
+                .get()
+                .getRenderManager()
+                .register(TransportEntities.CARGO_MINECART.get(),
+                        new CargoCarrierMinecartEntityRenderer(Minecraft.getInstance().getRenderManager()));
     }
 }

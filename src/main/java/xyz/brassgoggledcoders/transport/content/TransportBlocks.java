@@ -11,11 +11,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
+import xyz.brassgoggledcoders.transport.block.rail.BumperRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.DiamondCrossingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.HoldingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.ScaffoldingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitchSupportBlock;
+import xyz.brassgoggledcoders.transport.block.rail.turnout.SwitchRailBlock;
+import xyz.brassgoggledcoders.transport.block.rail.turnout.WyeSwitchRailBlock;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
@@ -33,21 +36,24 @@ public class TransportBlocks {
     public static final BlockRegistryObjectGroup<HoldingRailBlock, BlockItem, ?> HOLDING_RAIL =
             new BlockRegistryObjectGroup<>("holding_rail", HoldingRailBlock::new, blockItemCreator())
                     .register(BLOCKS, ITEMS);
-
     public static final BlockRegistryObjectGroup<DiamondCrossingRailBlock, BlockItem, ?> DIAMOND_CROSSING_RAIL =
             new BlockRegistryObjectGroup<>("diamond_crossing_rail", DiamondCrossingRailBlock::new, blockItemCreator())
                     .register(BLOCKS, ITEMS);
-
     public static final BlockRegistryObjectGroup<ElevatorSwitchRailBlock, BlockItem, ?> ELEVATOR_SWITCH_RAIL =
             new BlockRegistryObjectGroup<>("elevator_switch_rail", ElevatorSwitchRailBlock::new, blockItemCreator())
                     .register(BLOCKS, ITEMS);
-
     public static final BlockRegistryObjectGroup<ScaffoldingRailBlock, BlockItem, ?> SCAFFOLDING_RAIL =
             new BlockRegistryObjectGroup<>("scaffolding_rail", ScaffoldingRailBlock::new, blockItemCreator())
                     .register(BLOCKS, ITEMS);
-
-    public static final RegistryObject<ElevatorSwitchSupportBlock> ELEVATOR_SWITCH_SUPPORT =
-            BLOCKS.register("elevator_switch_support", ElevatorSwitchSupportBlock::new);
+    public static final BlockRegistryObjectGroup<SwitchRailBlock, BlockItem, ?> SWITCH_RAIL =
+            new BlockRegistryObjectGroup<>("switch_rail", SwitchRailBlock::new, blockItemCreator())
+                    .register(BLOCKS, ITEMS);
+    public static final BlockRegistryObjectGroup<WyeSwitchRailBlock, BlockItem, ?> WYE_SWITCH_RAIL =
+            new BlockRegistryObjectGroup<>("wye_switch_rail", WyeSwitchRailBlock::new, blockItemCreator())
+                    .register(BLOCKS, ITEMS);
+    public static final BlockRegistryObjectGroup<BumperRailBlock, BlockItem, ?> BUMPER_RAIL =
+            new BlockRegistryObjectGroup<>("bumper_rail", BumperRailBlock::new, blockItemCreator())
+                    .register(BLOCKS, ITEMS);
     //endregion
 
     //region Loaders
@@ -71,6 +77,9 @@ public class TransportBlocks {
     public static final BlockRegistryObjectGroup<ScaffoldingSlabBlock, BlockItem, ?> SCAFFOLDING_SLAB_BLOCK =
             new BlockRegistryObjectGroup<>("scaffolding_slab", ScaffoldingSlabBlock::new, blockItemCreator())
                     .register(BLOCKS, ITEMS);
+    public static final RegistryObject<ElevatorSwitchSupportBlock> ELEVATOR_SWITCH_SUPPORT =
+            BLOCKS.register("elevator_switch_support", ElevatorSwitchSupportBlock::new);
+    //endregion
 
     public static void register(IEventBus modBus) {
         BLOCKS.register(modBus);

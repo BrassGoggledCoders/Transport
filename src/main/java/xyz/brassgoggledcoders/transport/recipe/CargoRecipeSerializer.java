@@ -17,6 +17,19 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 
 public class CargoRecipeSerializer extends ShapelessRecipe.Serializer {
+    private static NonNullList<Ingredient> readIngredients(JsonArray jsonArray) {
+        NonNullList<Ingredient> ingredients = NonNullList.create();
+
+        for (int i = 0; i < jsonArray.size(); ++i) {
+            Ingredient ingredient = Ingredient.deserialize(jsonArray.get(i));
+            if (!ingredient.hasNoMatchingItems()) {
+                ingredients.add(ingredient);
+            }
+        }
+
+        return ingredients;
+    }
+
     @Override
     @Nonnull
     public ShapelessRecipe read(@Nonnull ResourceLocation recipeId, JsonObject json) {
@@ -43,18 +56,5 @@ public class CargoRecipeSerializer extends ShapelessRecipe.Serializer {
                     cargo.getRegistryName()).toString());
             return new ShapelessRecipe(recipeId, s, itemStack, ingredients);
         }
-    }
-
-    private static NonNullList<Ingredient> readIngredients(JsonArray jsonArray) {
-        NonNullList<Ingredient> ingredients = NonNullList.create();
-
-        for(int i = 0; i < jsonArray.size(); ++i) {
-            Ingredient ingredient = Ingredient.deserialize(jsonArray.get(i));
-            if (!ingredient.hasNoMatchingItems()) {
-                ingredients.add(ingredient);
-            }
-        }
-
-        return ingredients;
     }
 }

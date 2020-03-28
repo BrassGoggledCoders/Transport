@@ -7,6 +7,7 @@ import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportCargoes;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.content.TransportItems;
 
 import java.util.function.Supplier;
 
@@ -27,6 +28,9 @@ public class TransportLanguageProvider extends LanguageProvider {
         this.addBlock(TransportBlocks.ENERGY_LOADER, "Energy Loader");
         this.addBlock(TransportBlocks.FLUID_LOADER, "Fluid Loader");
         this.addBlock(TransportBlocks.SCAFFOLDING_SLAB_BLOCK, "Scaffolding Slab");
+        this.addBlock(TransportBlocks.SWITCH_RAIL, "Switch Rail");
+        this.addBlock(TransportBlocks.WYE_SWITCH_RAIL, "Wye Switch Rail");
+        this.addBlock(TransportBlocks.BUMPER_RAIL, "Bumper Rail");
         //endregion
 
         //region Cargo
@@ -41,9 +45,15 @@ public class TransportLanguageProvider extends LanguageProvider {
         this.add(TransportEntities.CARGO_MINECART_ITEM.get(), "Minecart");
         //endregion
 
+        //region Item
+        this.add(TransportItems.RAIL_BREAKER.get(), "Rail Breaker");
+        //endregion
+
         //region Text
         this.add("itemGroup.transport", "Transport");
         this.add("text.transport.with", "%s With %s");
+        this.add("guide.transport.name", "Advanced Transport");
+        this.add("guide.transport.landing_text", "Importing the Transportation of Goods");
         //endregion
     }
 
