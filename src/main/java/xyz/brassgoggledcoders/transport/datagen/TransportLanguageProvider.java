@@ -47,6 +47,8 @@ public class TransportLanguageProvider extends LanguageProvider {
         //region Text
         this.add("itemGroup.transport", "Transport");
         this.add("text.transport.with", "%s With %s");
+        this.add("guide.transport.name", "Advanced Transport");
+        this.add("guide.transport.landing_text", "Importing the Transportation of Goods");
         //endregion
     }
 

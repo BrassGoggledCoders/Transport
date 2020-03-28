@@ -16,9 +16,9 @@
   "cargo.transport.fluid": "Fluid Tank",
   "cargo.transport.item": "Inventory",
   "entity.transport.cargo_minecart": "Minecart",
+  "guide.transport.landing_text": "Importing the Transportation of Goods",
+  "guide.transport.name": "Advanced Transport",
   "item.transport.cargo_minecart": "Minecart",
   "itemGroup.transport": "Transport",
-  "text.transport.with": "%s With %s",
-  "guide.transport.name": "Transport Guide",
-  "guide.transport.landing_text": "Transport is a mod about railways, because SkySom really likes trains."
+  "text.transport.with": "%s With %s"
 }
