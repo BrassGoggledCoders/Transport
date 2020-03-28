@@ -1,0 +1,11 @@
+{
+  "name": "Wrenching",
+  "icon": "minecraft:stick",
+  "category": "concepts",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Any wrench tagged with the Forge Wrench $(thing)Tag$() can be used. If none are available, you may use a Vanilla $(item)Stick$(). This will be replaced with a custom wrench in future versions."
+    }
+  ]
+}

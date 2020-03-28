@@ -9,10 +9,12 @@ import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.NBTIngredient;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.recipe.CargoShapelessRecipeBuilder;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.recipe.ActualNBTIngredient;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -53,7 +55,7 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .patternLine("RRR")
                 .patternLine("SSS")
                 .key('R', Ingredient.fromItems(Items.RAIL))
-                .key('S', Ingredient.fromItems(Items.SCAFFOLDING))
+                .key('S', Ingredient.fromItems(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getItem()))
                 .addCriterion("has_item", this.hasItem(Items.SCAFFOLDING))
                 .build(consumer);
 
@@ -107,7 +109,7 @@ public class TransportRecipeProvider extends RecipeProvider {
                                 registryName.getPath()));
                 ShapelessRecipeBuilder.shapelessRecipe(cargo.asItem())
                         .addIngredient(Items.WATER_BUCKET)
-                        .addIngredient(Ingredient.fromStacks(cargo.createItemStack(TransportEntities.CARGO_MINECART_ITEM.get())))
+                        .addIngredient(new ActualNBTIngredient(cargo.createItemStack(TransportEntities.CARGO_MINECART_ITEM.get())))
                         .addCriterion("has_item", hasItem(TransportEntities.CARGO_MINECART_ITEM.get()))
                         .build(consumer, new ResourceLocation(registryName.getNamespace(), "cargo/minecart/" +
                                 registryName.getPath() + "_break"));

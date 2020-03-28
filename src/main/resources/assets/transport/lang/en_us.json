@@ -16,6 +16,8 @@
   "cargo.transport.fluid": "Fluid Tank",
   "cargo.transport.item": "Inventory",
   "entity.transport.cargo_minecart": "Minecart",
+  "guide.transport.landing_text": "Importing the Transportation of Goods",
+  "guide.transport.name": "Advanced Transport",
   "item.transport.cargo_minecart": "Minecart",
   "itemGroup.transport": "Transport",
   "text.transport.with": "%s With %s"

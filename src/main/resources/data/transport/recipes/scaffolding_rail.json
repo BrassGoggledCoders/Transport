@@ -9,7 +9,7 @@
       "item": "minecraft:rail"
     },
     "S": {
-      "item": "minecraft:scaffolding"
+      "item": "transport:scaffolding_slab"
     }
   },
   "result": {
