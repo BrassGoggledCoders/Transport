@@ -12,8 +12,8 @@ import xyz.brassgoggledcoders.transport.cargoinstance.capability.FluidCargoInsta
 import xyz.brassgoggledcoders.transport.cargoinstance.capability.ItemCargoInstance;
 
 @SuppressWarnings("unused")
-public class TransportCargoes {
-    private static final DeferredRegister<Cargo> CARGO = new DeferredRegister<>(TransportAPI.CARGO, Transport.ID);
+public class TransportCargoModules {
+    private static final DeferredRegister<Cargo> CARGO = new DeferredRegister<>(TransportAPI.CARGO.get(), Transport.ID);
 
     public static final RegistryObject<Cargo> EMPTY = CARGO.register("empty", EmptyCargo::new);
     public static final RegistryObject<Cargo> ITEM = CARGO.register("item", () -> new Cargo(

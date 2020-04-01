@@ -1,9 +1,11 @@
-package xyz.brassgoggledcoders.transport.container.loader;
+package xyz.brassgoggledcoders.transport.container;
 
+import com.hrznstudio.titanium.container.BasicAddonContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -33,6 +35,7 @@ public class LoaderContainerProvider implements INamedContainerProvider {
     @Override
     @ParametersAreNonnullByDefault
     public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-        return new LoaderContainer(i, playerInventory, loaderTileEntity);
+        return new BasicAddonContainer(loaderTileEntity, IWorldPosCallable.of(loaderTileEntity.getTheWorld(),
+                loaderTileEntity.getPos()), playerInventory, i);
     }
 }
