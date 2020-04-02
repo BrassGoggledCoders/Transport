@@ -4,10 +4,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
-import xyz.brassgoggledcoders.transport.content.TransportBlocks;
-import xyz.brassgoggledcoders.transport.content.TransportCargoes;
-import xyz.brassgoggledcoders.transport.content.TransportEntities;
-import xyz.brassgoggledcoders.transport.content.TransportItems;
+import xyz.brassgoggledcoders.transport.content.*;
 
 import java.util.function.Supplier;
 
@@ -34,10 +31,9 @@ public class TransportLanguageProvider extends LanguageProvider {
         //endregion
 
         //region Cargo
-        this.addCargo(TransportCargoes.EMPTY, "No Cargo");
-        this.addCargo(TransportCargoes.ITEM, "Inventory");
-        this.addCargo(TransportCargoes.FLUID, "Fluid Tank");
-        this.addCargo(TransportCargoes.ENERGY, "Energy Storage");
+        this.addCargo(TransportCargoModules.ITEM, "Inventory");
+        this.addCargo(TransportCargoModules.FLUID, "Fluid Tank");
+        this.addCargo(TransportCargoModules.ENERGY, "Energy Storage");
         //endregion
 
         //region Entity

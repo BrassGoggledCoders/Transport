@@ -40,6 +40,9 @@ repositories {
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
 
 minecraft {
@@ -79,6 +82,7 @@ dependencies {
     }
     compile fg.deobf("com.teamacronymcoders:theloader:1.15.2-1.1.0")
     compile fg.deobf("vazkii.patchouli:Patchouli:${minecraft_version}-${patchouli_version}")
+    testImplementation('org.junit.jupiter:junit-jupiter:5.6.1')
 }
 
 task srcJar(type: Jar) {

@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.cargoinstance.capability;
 
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
+import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
@@ -10,20 +11,20 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
-import xyz.brassgoggledcoders.transport.api.cargocarrier.ICargoCarrier;
-import xyz.brassgoggledcoders.transport.api.cargoinstance.CargoInstance;
-import xyz.brassgoggledcoders.transport.container.cargo.CargoContainerProvider;
-import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddonProvider;
+import xyz.brassgoggledcoders.transport.api.cargo.CargoInstance;
+import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
+import xyz.brassgoggledcoders.transport.container.ModuleContainerProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public abstract class CapabilityCargoInstance<CAP> extends CargoInstance implements IScreenAddonProvider,
         IContainerAddonProvider {
     private final Capability<CAP> capability;
 
-    public CapabilityCargoInstance(Cargo cargo, Capability<CAP> capability) {
-        super(cargo);
+    public CapabilityCargoInstance(Cargo cargo, IModularEntity entity, Capability<CAP> capability) {
+        super(cargo, entity);
         this.capability = capability;
     }
 
@@ -38,13 +39,14 @@ public abstract class CapabilityCargoInstance<CAP> extends CargoInstance impleme
     }
 
     @Override
-    public ActionResultType applyInteraction(ICargoCarrier carrier, PlayerEntity player, Vec3d vec, Hand hand) {
+    public ActionResultType applyInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
         if (!player.isCrouching()) {
-            carrier.openContainer(player, new CargoContainerProvider(carrier, this), packetBuffer -> {
-            });
+            this.getModularEntity().openContainer(player, new ModuleContainerProvider(this,
+                    this.getModularEntity()), packetBuffer -> packetBuffer.writeResourceLocation(Objects.requireNonNull(
+                    this.getModule().getType().getRegistryName())));
             return ActionResultType.SUCCESS;
         }
-        return super.applyInteraction(carrier, player, vec, hand);
+        return super.applyInteraction(player, vec, hand);
     }
 
     @Override

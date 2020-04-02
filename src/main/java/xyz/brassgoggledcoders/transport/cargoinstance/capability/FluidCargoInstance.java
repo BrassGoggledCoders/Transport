@@ -2,6 +2,8 @@ package xyz.brassgoggledcoders.transport.cargoinstance.capability;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
+import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
@@ -12,29 +14,26 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
-import xyz.brassgoggledcoders.transport.api.cargocarrier.ICargoCarrier;
-import xyz.brassgoggledcoders.transport.capability.FluidTankPlusComponent;
-import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddon;
+import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
 
-import java.util.Collections;
 import java.util.List;
 
 public class FluidCargoInstance extends CapabilityCargoInstance<IFluidHandler> {
-    private final FluidTankPlusComponent<?> fluidTank;
+    private final FluidTankComponent<?> fluidTank;
     private final LazyOptional<IFluidHandler> lazyFluidTank;
 
-    public FluidCargoInstance(Cargo cargo) {
-        super(cargo, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
-        this.fluidTank = new FluidTankPlusComponent<>("Tank", 10000, 80, 28);
+    public FluidCargoInstance(Cargo cargo, IModularEntity modularEntity) {
+        super(cargo, modularEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+        this.fluidTank = new FluidTankComponent<>("Tank", 10000, 80, 28);
         this.lazyFluidTank = LazyOptional.of(() -> fluidTank);
     }
 
     @Override
-    public ActionResultType applyInteraction(ICargoCarrier carrier, PlayerEntity player, Vec3d vec, Hand hand) {
+    public ActionResultType applyInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
         if (FluidUtil.interactWithFluidHandler(player, hand, this.fluidTank)) {
             return ActionResultType.SUCCESS;
         }
-        return super.applyInteraction(carrier, player, vec, hand);
+        return super.applyInteraction(player, vec, hand);
     }
 
     @Override
@@ -58,7 +57,7 @@ public class FluidCargoInstance extends CapabilityCargoInstance<IFluidHandler> {
     }
 
     @Override
-    public List<IContainerAddon> getContainerAddons() {
-        return Collections.singletonList(fluidTank);
+    public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
+        return fluidTank.getContainerAddons();
     }
 }

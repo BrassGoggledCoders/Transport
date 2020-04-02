@@ -2,25 +2,24 @@ package xyz.brassgoggledcoders.transport.tileentity.loader;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
+import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import xyz.brassgoggledcoders.transport.capability.EnergyComponent;
 import xyz.brassgoggledcoders.transport.capability.EnergyStorageDirectional;
-import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddon;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
-import java.util.Collections;
 import java.util.List;
 
 public class EnergyLoaderTileEntity extends BasicLoaderTileEntity<IEnergyStorage> {
-    private final EnergyComponent energyComponent;
+    private final EnergyStorageComponent energyComponent;
     private final LazyOptional<IEnergyStorage> lazyEnergy;
 
     public EnergyLoaderTileEntity() {
         super(TransportBlocks.ENERGY_LOADER.getTileEntityType(), CapabilityEnergy.ENERGY);
-        this.energyComponent = new EnergyComponent(10000, 79, 24);
+        this.energyComponent = new EnergyStorageComponent(10000, 79, 24);
         this.lazyEnergy = LazyOptional.of(() -> energyComponent);
 
     }
@@ -67,7 +66,7 @@ public class EnergyLoaderTileEntity extends BasicLoaderTileEntity<IEnergyStorage
     }
 
     @Override
-    public List<IContainerAddon> getContainerAddons() {
-        return Collections.singletonList(energyComponent);
+    public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
+        return energyComponent.getContainerAddons();
     }
 }

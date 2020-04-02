@@ -7,7 +7,12 @@ import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 
+@FunctionalInterface
 public interface IPointMachineBehavior {
     boolean shouldDiverge(BlockState motorState, IBlockReader blockReader, BlockPos motorPos, BlockPos switchPos,
                           @Nullable AbstractMinecartEntity minecartEntity);
+
+    default void onBlockStateUpdate(BlockState motorState, IBlockReader blockReader, BlockPos motorPos) {
+
+    }
 }

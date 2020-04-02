@@ -44,7 +44,7 @@ public class CargoRecipeSerializer extends ShapelessRecipe.Serializer {
             Cargo cargo;
             if (result.has("cargo")) {
                 ResourceLocation cargoName = new ResourceLocation(result.get("cargo").getAsString());
-                cargo = TransportAPI.CARGO.getValue(cargoName);
+                cargo = TransportAPI.getCargo(cargoName);
                 if (cargo == null) {
                     throw new JsonParseException("Failed to find Cargo for name: " + cargoName);
                 }
