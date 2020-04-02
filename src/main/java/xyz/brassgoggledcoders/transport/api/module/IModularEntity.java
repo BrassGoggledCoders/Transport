@@ -19,15 +19,6 @@ import java.util.function.Supplier;
 public interface IModularEntity extends IItemProvider {
     void openContainer(PlayerEntity playerEntity, INamedContainerProvider provider, Consumer<PacketBuffer> packetBufferConsumer);
 
-    default void openContainer(PlayerEntity playerEntity, ModuleInstance<?> moduleInstance,
-                               Consumer<PacketBuffer> packetBufferConsumer) {
-        this.openContainer(playerEntity, new ModuleContainerProvider(moduleInstance, this), packetBuffer -> {
-            packetBuffer.writeResourceLocation(Objects.requireNonNull(moduleInstance.getModule().getType().getRegistryName()));
-            packetBufferConsumer.accept(packetBuffer);
-        });
-    }
-
-
     default boolean canInteractWith(PlayerEntity playerEntity) {
         return this.getSelf().isAlive() && playerEntity.getDistanceSq(this.getSelf()) < 64.0D;
     }

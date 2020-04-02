@@ -22,10 +22,12 @@ import xyz.brassgoggledcoders.transport.api.engine.Engine;
 import xyz.brassgoggledcoders.transport.api.engine.EngineInstance;
 import xyz.brassgoggledcoders.transport.api.engine.PoweredState;
 import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
+import xyz.brassgoggledcoders.transport.container.ModuleContainerProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 
 public class SolidFuelEngineInstance extends EngineInstance implements IScreenAddonProvider, IContainerAddonProvider {
     private final InventoryComponent<?> itemStackHandler;
@@ -41,8 +43,9 @@ public class SolidFuelEngineInstance extends EngineInstance implements IScreenAd
     }
 
     public ActionResultType applyInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
-        this.getModularEntity().openContainer(player, this, packetBuffer -> {
-        });
+        this.getModularEntity().openContainer(player, new ModuleContainerProvider(this,
+                this.getModularEntity()), packetBuffer -> packetBuffer.writeResourceLocation(Objects.requireNonNull(
+                this.getModule().getType().getRegistryName())));
         return ActionResultType.SUCCESS;
     }
 
