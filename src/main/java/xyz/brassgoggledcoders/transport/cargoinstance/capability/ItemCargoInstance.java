@@ -2,27 +2,25 @@ package xyz.brassgoggledcoders.transport.cargoinstance.capability;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
-import com.hrznstudio.titanium.util.InventoryUtil;
-import net.minecraft.inventory.container.Container;
+import com.hrznstudio.titanium.component.inventory.InventoryComponent;
+import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
-import xyz.brassgoggledcoders.transport.capability.InventoryPlusComponent;
-import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddon;
+import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
 
-import java.util.Collections;
 import java.util.List;
 
 public class ItemCargoInstance extends CapabilityCargoInstance<IItemHandler> {
-    private final InventoryPlusComponent<?> inventory;
+    private final InventoryComponent<?> inventory;
     private final LazyOptional<IItemHandler> lazyInventory;
 
-    public ItemCargoInstance(Cargo cargo) {
-        super(cargo, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-        this.inventory = new InventoryPlusComponent<>("Inventory", 44, 35, 5);
+    public ItemCargoInstance(Cargo cargo, IModularEntity modularEntity) {
+        super(cargo, modularEntity, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        this.inventory = new InventoryComponent<>("Inventory", 44, 35, 5);
         this.lazyInventory = LazyOptional.of(() -> inventory);
     }
 
@@ -52,7 +50,7 @@ public class ItemCargoInstance extends CapabilityCargoInstance<IItemHandler> {
     }
 
     @Override
-    public List<IContainerAddon> getContainerAddons() {
-        return Collections.singletonList(inventory);
+    public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
+        return inventory.getContainerAddons();
     }
 }

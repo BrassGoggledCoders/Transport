@@ -98,7 +98,7 @@ public class TransportRecipeProvider extends RecipeProvider {
         //endregion
 
         //region Cargo
-        TransportAPI.CARGO.getValues().forEach(cargo -> {
+        TransportAPI.CARGO.get().getValues().forEach(cargo -> {
             if (cargo.asItem() != Items.AIR && cargo.getRegistryName() != null) {
                 ResourceLocation registryName = cargo.getRegistryName();
                 CargoShapelessRecipeBuilder.start(TransportEntities.CARGO_MINECART_ITEM.get(), cargo)

@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.tileentity.loader;
 import com.google.common.collect.Maps;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
+import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,8 +24,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.block.loader.LoadType;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
-import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddonProvider;
-import xyz.brassgoggledcoders.transport.container.loader.LoaderContainerProvider;
+import xyz.brassgoggledcoders.transport.container.LoaderContainerProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -146,7 +146,7 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
     }
 
     @Override
-    public void markComponentForUpdate() {
+    public void markComponentForUpdate(boolean referenced) {
 
     }
 
