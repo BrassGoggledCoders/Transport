@@ -40,7 +40,13 @@ public abstract class AbstractSwitchRailBlock extends AbstractRailBlock {
                                           IWorld world, BlockPos currentPos, BlockPos facingPos) {
         SwitchConfiguration configuration = this.getSwitchConfiguration(state);
         if (this.getMotorDirection(configuration) == facing) {
-            state = state.with(DIVERGE, this.shouldDivert(world, currentPos.offset(facing), currentPos, null));
+            BlockPos motorPos = currentPos.offset(facing);
+            BlockState motorState = world.getBlockState(motorPos);
+            IPointMachineBehavior motorBehavior = TransportAPI.POINT_MACHINE_BEHAVIORS.get(motorState.getBlock());
+            if (motorBehavior != null) {
+                motorBehavior.onBlockStateUpdate(motorState, world, motorPos);
+                state = state.with(DIVERGE, motorBehavior.shouldDiverge(motorState, world, motorPos, currentPos, null));
+            }
         }
         return state;
     }
