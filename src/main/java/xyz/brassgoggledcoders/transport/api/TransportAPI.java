@@ -14,7 +14,7 @@ import xyz.brassgoggledcoders.transport.api.engine.Engine;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorage;
-import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingDeserializer;
+import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingInstructionDeserializer;
 
 import java.util.Locale;
 import java.util.Map;
@@ -24,7 +24,7 @@ public class TransportAPI {
     public static Capability<RoutingStorage> ROUTING_STORAGE;
 
     public static final Map<Block, IPointMachineBehavior> POINT_MACHINE_BEHAVIORS = Maps.newHashMap();
-    private static final Map<String, RoutingDeserializer> ROUTING_DESERIALIZERS = Maps.newHashMap();
+    private static final Map<String, RoutingInstructionDeserializer> ROUTING_DESERIALIZERS = Maps.newHashMap();
 
     public static Lazy<ForgeRegistry<Cargo>> CARGO = Lazy.of(() -> (ForgeRegistry<Cargo>)RegistryManager.ACTIVE.getRegistry(Cargo.class));
     public static Lazy<IForgeRegistry<Engine>> ENGINES = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(Engine.class));
@@ -54,15 +54,15 @@ public class TransportAPI {
         return MODULE_TYPE.get().getValue(resourceLocation);
     }
 
-    public static RoutingDeserializer getRoutingDeserializer(String name) {
+    public static RoutingInstructionDeserializer getRoutingDeserializer(String name) {
         return ROUTING_DESERIALIZERS.get(name.toUpperCase(Locale.ENGLISH));
     }
 
-    public static void addRoutingDeserializer(String name, RoutingDeserializer routingDeserializer) {
-        ROUTING_DESERIALIZERS.put(name, routingDeserializer);
+    public static void addRoutingDeserializer(String name, RoutingInstructionDeserializer routingInstructionDeserializer) {
+        ROUTING_DESERIALIZERS.put(name, routingInstructionDeserializer);
     }
 
-    public static Map<String, RoutingDeserializer> getRoutingDeserializers() {
+    public static Map<String, RoutingInstructionDeserializer> getRoutingDeserializers() {
         return ROUTING_DESERIALIZERS;
     }
 }

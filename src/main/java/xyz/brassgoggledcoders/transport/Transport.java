@@ -29,6 +29,7 @@ import xyz.brassgoggledcoders.transport.api.routing.RoutingStorageProvider;
 import xyz.brassgoggledcoders.transport.api.routing.instruction.FalseInstruction;
 import xyz.brassgoggledcoders.transport.api.routing.instruction.TrueInstruction;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingInstructionDeserializer;
+import xyz.brassgoggledcoders.transport.api.routing.serializer.StringListRoutingInstructionDeserializer;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
@@ -36,7 +37,7 @@ import xyz.brassgoggledcoders.transport.pointmachine.ComparatorPointMachineBehav
 import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RoutingPointMachineBehavior;
-import xyz.brassgoggledcoders.transport.routing.instruction.NameTagRoutingDeserializer;
+import xyz.brassgoggledcoders.transport.routing.instruction.NameRoutingInstruction;
 
 import javax.annotation.Nullable;
 
@@ -94,7 +95,7 @@ public class Transport {
 
         TransportAPI.addRoutingDeserializer("TRUE", new NoInputRoutingInstructionDeserializer(TrueInstruction::new));
         TransportAPI.addRoutingDeserializer("FALSE", new NoInputRoutingInstructionDeserializer(FalseInstruction::new));
-        TransportAPI.addRoutingDeserializer("NAME_TAG", new NameTagRoutingDeserializer());
+        TransportAPI.addRoutingDeserializer("NAME", new StringListRoutingInstructionDeserializer(NameRoutingInstruction::new));
 
         CapabilityManager.INSTANCE.register(RoutingStorage.class, new Capability.IStorage<RoutingStorage>() {
             @Nullable

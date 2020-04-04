@@ -3,7 +3,7 @@ package xyz.brassgoggledcoders.transport.api.routing;
 import com.google.common.collect.Lists;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.routing.instruction.RoutingInstruction;
-import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingDeserializer;
+import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingInstructionDeserializer;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -22,7 +22,7 @@ public class RoutingParser {
         return parse(route, TransportAPI.getRoutingDeserializers());
     }
 
-    public static RoutingInstruction parse(@Nullable String route, Map<String, RoutingDeserializer> routingDeserializers) {
+    public static RoutingInstruction parse(@Nullable String route, Map<String, RoutingInstructionDeserializer> routingDeserializers) {
         if (route != null) {
             List<String> routingInstructions = Arrays.asList(route.split("\\n"));
             if (routingInstructions.size() >= 4) {
@@ -43,9 +43,9 @@ public class RoutingParser {
 
     @Nullable
     public static RoutingInstruction parseInstruction(String method, Iterator<String> routingMethodInputs,
-                                                      Map<String, RoutingDeserializer> routingDeserializers) {
-        RoutingDeserializer routingDeserializer = routingDeserializers.get(method);
-        if (routingDeserializer != null) {
+                                                      Map<String, RoutingInstructionDeserializer> routingDeserializers) {
+        RoutingInstructionDeserializer routingInstructionDeserializer = routingDeserializers.get(method);
+        if (routingInstructionDeserializer != null) {
             List<Object> inputs = Lists.newArrayList();
             while (routingMethodInputs.hasNext()) {
                 String routingInstructionInput = routingMethodInputs.next();
@@ -69,7 +69,7 @@ public class RoutingParser {
                     }
                 }
             }
-            return routingDeserializer.deserialize(inputs);
+            return routingInstructionDeserializer.deserialize(inputs);
         }
         return null;
     }

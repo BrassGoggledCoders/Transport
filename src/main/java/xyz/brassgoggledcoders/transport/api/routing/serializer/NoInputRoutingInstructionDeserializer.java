@@ -5,7 +5,7 @@ import xyz.brassgoggledcoders.transport.api.routing.instruction.RoutingInstructi
 import java.util.List;
 import java.util.function.Supplier;
 
-public class NoInputRoutingInstructionDeserializer extends RoutingDeserializer {
+public class NoInputRoutingInstructionDeserializer extends RoutingInstructionDeserializer {
     private final Supplier<RoutingInstruction> routingInstructionSupplier;
 
     public NoInputRoutingInstructionDeserializer(Supplier<RoutingInstruction> routingInstructionSupplier) {

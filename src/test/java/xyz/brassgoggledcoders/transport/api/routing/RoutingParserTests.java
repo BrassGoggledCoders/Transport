@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 import xyz.brassgoggledcoders.transport.api.routing.instruction.RoutingInstruction;
 import xyz.brassgoggledcoders.transport.api.routing.instruction.TrueInstruction;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingInstructionDeserializer;
-import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingDeserializer;
-import xyz.brassgoggledcoders.transport.routing.instruction.NameTagRoutingDeserializer;
+import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingInstructionDeserializer;
 
 import java.util.Map;
 
@@ -48,8 +47,8 @@ public class RoutingParserTests {
         Assertions.assertNotNull(routingInstruction);
     }
 
-    private Map<String, RoutingDeserializer> createRoutingDeserializers() {
-        Map<String, RoutingDeserializer> map = Maps.newHashMap();
+    private Map<String, RoutingInstructionDeserializer> createRoutingDeserializers() {
+        Map<String, RoutingInstructionDeserializer> map = Maps.newHashMap();
         map.put("TRUE", new NoInputRoutingInstructionDeserializer(TrueInstruction::new));
         map.put("NAME_TAG", new NameTagRoutingDeserializer());
         return map;

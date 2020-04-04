@@ -4,6 +4,6 @@ import xyz.brassgoggledcoders.transport.api.routing.instruction.RoutingInstructi
 
 import java.util.List;
 
-public abstract class RoutingDeserializer {
+public abstract class RoutingInstructionDeserializer {
     public abstract RoutingInstruction deserialize(List<Object> inputs);
 }

@@ -5,17 +5,18 @@ import net.minecraft.util.text.ITextComponent;
 import xyz.brassgoggledcoders.transport.api.routing.instruction.RoutingInstruction;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
-public class NameTagRoutingInstruction extends RoutingInstruction {
-    private final String name;
+public class NameRoutingInstruction extends RoutingInstruction {
+    private final List<String> names;
 
-    public NameTagRoutingInstruction(String name) {
-        this.name = name;
+    public NameRoutingInstruction(List<String> names) {
+        this.names = names;
     }
 
     @Override
     public boolean matches(@Nonnull AbstractMinecartEntity minecartEntity) {
         ITextComponent minecartName = minecartEntity.getCustomName();
-        return minecartName != null && name.equals(minecartName.getString());
+        return minecartName != null && names.contains(minecartName.getString());
     }
 }
