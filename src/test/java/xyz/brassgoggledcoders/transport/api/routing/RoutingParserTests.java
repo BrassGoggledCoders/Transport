@@ -7,8 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import xyz.brassgoggledcoders.transport.api.routing.instruction.Routing;
 import xyz.brassgoggledcoders.transport.api.routing.instruction.TrueRouting;
+import xyz.brassgoggledcoders.transport.api.routing.serializer.ListRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingDeserializer;
+import xyz.brassgoggledcoders.transport.routing.instruction.NameRouting;
 
 import java.util.Map;
 
@@ -42,7 +44,7 @@ public class RoutingParserTests {
     @Test
     @DisplayName("Routing Instruction with NameTag Instruction should return")
     void testRoutingInstructionWithNameTagInstruction() {
-        Routing routing = RoutingParser.parse("ROUTING {\nNAME_TAG{\n\"HELLO\"\n}\n}",
+        Routing routing = RoutingParser.parse("ROUTING {\nNAME{\n\"HELLO\"\n}\n}",
                 this.createRoutingDeserializers());
         Assertions.assertNotNull(routing);
     }
@@ -50,7 +52,7 @@ public class RoutingParserTests {
     private Map<String, RoutingDeserializer> createRoutingDeserializers() {
         Map<String, RoutingDeserializer> map = Maps.newHashMap();
         map.put("TRUE", new NoInputRoutingDeserializer(TrueRouting::new));
-        map.put("NAME_TAG", new NameTagRoutingDeserializer());
+        map.put("NAME", new ListRoutingDeserializer<>(String.class, NameRouting::new));
         return map;
     }
 }
