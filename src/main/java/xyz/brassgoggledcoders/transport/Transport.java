@@ -26,10 +26,10 @@ import xyz.brassgoggledcoders.transport.api.engine.Engine;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorage;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorageProvider;
-import xyz.brassgoggledcoders.transport.api.routing.instruction.FalseInstruction;
-import xyz.brassgoggledcoders.transport.api.routing.instruction.TrueInstruction;
-import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingInstructionDeserializer;
-import xyz.brassgoggledcoders.transport.api.routing.serializer.StringListRoutingInstructionDeserializer;
+import xyz.brassgoggledcoders.transport.api.routing.instruction.FalseRouting;
+import xyz.brassgoggledcoders.transport.api.routing.instruction.TrueRouting;
+import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingDeserializer;
+import xyz.brassgoggledcoders.transport.api.routing.serializer.ListRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
@@ -37,7 +37,9 @@ import xyz.brassgoggledcoders.transport.pointmachine.ComparatorPointMachineBehav
 import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RoutingPointMachineBehavior;
-import xyz.brassgoggledcoders.transport.routing.instruction.NameRoutingInstruction;
+import xyz.brassgoggledcoders.transport.routing.instruction.AndRouting;
+import xyz.brassgoggledcoders.transport.routing.instruction.NameRouting;
+import xyz.brassgoggledcoders.transport.routing.instruction.OrRouting;
 
 import javax.annotation.Nullable;
 
@@ -93,9 +95,11 @@ public class Transport {
         TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.COMPARATOR, new ComparatorPointMachineBehavior());
         TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.LECTERN, new RoutingPointMachineBehavior());
 
-        TransportAPI.addRoutingDeserializer("TRUE", new NoInputRoutingInstructionDeserializer(TrueInstruction::new));
-        TransportAPI.addRoutingDeserializer("FALSE", new NoInputRoutingInstructionDeserializer(FalseInstruction::new));
-        TransportAPI.addRoutingDeserializer("NAME", new StringListRoutingInstructionDeserializer(NameRoutingInstruction::new));
+        TransportAPI.addRoutingDeserializer("TRUE", new NoInputRoutingDeserializer(TrueRouting::new));
+        TransportAPI.addRoutingDeserializer("FALSE", new NoInputRoutingDeserializer(FalseRouting::new));
+        TransportAPI.addRoutingDeserializer("NAME", new ListRoutingDeserializer<>(NameRouting::new));
+        TransportAPI.addRoutingDeserializer("AND", new ListRoutingDeserializer<>(AndRouting::new));
+        TransportAPI.addRoutingDeserializer("OR", new ListRoutingDeserializer<>(OrRouting::new));
 
         CapabilityManager.INSTANCE.register(RoutingStorage.class, new Capability.IStorage<RoutingStorage>() {
             @Nullable

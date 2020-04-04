@@ -9,14 +9,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.common.util.Constants;
-import xyz.brassgoggledcoders.transport.api.routing.instruction.FalseInstruction;
-import xyz.brassgoggledcoders.transport.api.routing.instruction.RoutingInstruction;
+import xyz.brassgoggledcoders.transport.api.routing.instruction.FalseRouting;
+import xyz.brassgoggledcoders.transport.api.routing.instruction.Routing;
 
 public class RoutingStorage {
-    private RoutingInstruction routingInstruction = null;
+    private Routing routing = null;
 
-    public RoutingInstruction getRouting(TileEntity tileEntity) {
-        if (routingInstruction == null) {
+    public Routing getRouting(TileEntity tileEntity) {
+        if (routing == null) {
             if (tileEntity instanceof LecternTileEntity) {
                 LecternTileEntity lecternTileEntity = (LecternTileEntity) tileEntity;
                 if (lecternTileEntity.hasBook()) {
@@ -27,21 +27,21 @@ public class RoutingStorage {
                         String currentPage = pagesNBT.getString(lecternTileEntity.getPage());
                         ITextComponent textComponent = TextComponent.Serializer.fromJson(currentPage);
                         if (textComponent != null) {
-                            this.routingInstruction = RoutingParser.parse(textComponent.getString());
+                            this.routing = RoutingParser.parse(textComponent.getString());
                         }
                     }
                 }
             }
         }
 
-        if (routingInstruction == null) {
-            routingInstruction = new FalseInstruction();
+        if (routing == null) {
+            routing = new FalseRouting();
         }
 
-        return routingInstruction;
+        return routing;
     }
 
     public void invalidate() {
-        routingInstruction = null;
+        routing = null;
     }
 }

@@ -4,6 +4,9 @@ import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 
 import javax.annotation.Nonnull;
 
-public abstract class RoutingInstruction {
-    public abstract boolean matches(@Nonnull AbstractMinecartEntity minecartEntity);
+public class TrueRouting extends Routing {
+    @Override
+    public boolean matches(@Nonnull AbstractMinecartEntity minecartEntity) {
+        return true;
+    }
 }

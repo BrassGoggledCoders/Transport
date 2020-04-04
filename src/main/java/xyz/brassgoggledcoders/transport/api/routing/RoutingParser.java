@@ -2,8 +2,8 @@ package xyz.brassgoggledcoders.transport.api.routing;
 
 import com.google.common.collect.Lists;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.routing.instruction.RoutingInstruction;
-import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingInstructionDeserializer;
+import xyz.brassgoggledcoders.transport.api.routing.instruction.Routing;
+import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingDeserializer;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -18,11 +18,11 @@ public class RoutingParser {
     private static final Predicate<String> NUMBER_INPUT = Pattern.compile("\\d+").asPredicate();
 
     @Nullable
-    public static RoutingInstruction parse(@Nullable String route) {
+    public static Routing parse(@Nullable String route) {
         return parse(route, TransportAPI.getRoutingDeserializers());
     }
 
-    public static RoutingInstruction parse(@Nullable String route, Map<String, RoutingInstructionDeserializer> routingDeserializers) {
+    public static Routing parse(@Nullable String route, Map<String, RoutingDeserializer> routingDeserializers) {
         if (route != null) {
             List<String> routingInstructions = Arrays.asList(route.split("\\n"));
             if (routingInstructions.size() >= 4) {
@@ -42,10 +42,10 @@ public class RoutingParser {
     }
 
     @Nullable
-    public static RoutingInstruction parseInstruction(String method, Iterator<String> routingMethodInputs,
-                                                      Map<String, RoutingInstructionDeserializer> routingDeserializers) {
-        RoutingInstructionDeserializer routingInstructionDeserializer = routingDeserializers.get(method);
-        if (routingInstructionDeserializer != null) {
+    public static Routing parseInstruction(String method, Iterator<String> routingMethodInputs,
+                                           Map<String, RoutingDeserializer> routingDeserializers) {
+        RoutingDeserializer routingDeserializer = routingDeserializers.get(method);
+        if (routingDeserializer != null) {
             List<Object> inputs = Lists.newArrayList();
             while (routingMethodInputs.hasNext()) {
                 String routingInstructionInput = routingMethodInputs.next();
@@ -60,16 +60,16 @@ public class RoutingParser {
                         return null;
                     }
                 } else if (METHOD_START.test(routingInstructionInput)) {
-                    RoutingInstruction routingInstruction = parseInstruction(trimInstruction(routingInstructionInput),
+                    Routing routing = parseInstruction(trimInstruction(routingInstructionInput),
                             routingMethodInputs, routingDeserializers);
-                    if (routingInstruction != null) {
-                        inputs.add(routingInstruction);
+                    if (routing != null) {
+                        inputs.add(routing);
                     } else {
                         return null;
                     }
                 }
             }
-            return routingInstructionDeserializer.deserialize(inputs);
+            return routingDeserializer.deserialize(inputs);
         }
         return null;
     }
