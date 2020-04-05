@@ -1,10 +1,12 @@
 package xyz.brassgoggledcoders.transport.api.routing;
 
 import com.google.common.collect.Lists;
+import com.mojang.datafixers.util.Either;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.routing.instruction.Routing;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingDeserializer;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
@@ -17,33 +19,40 @@ public class RoutingParser {
     private static final Predicate<String> STRING_INPUT = Pattern.compile("\\s*\".+\"\\S*").asPredicate();
     private static final Predicate<String> NUMBER_INPUT = Pattern.compile("\\d+").asPredicate();
 
-    @Nullable
-    public static Routing parse(@Nullable String route) {
+    @Nonnull
+    public static Either<String, Routing> parse(@Nullable String route) {
         return parse(route, TransportAPI.getRoutingDeserializers());
     }
 
-    public static Routing parse(@Nullable String route, Map<String, RoutingDeserializer> routingDeserializers) {
-        if (route != null) {
+    @Nonnull
+    public static Either<String, Routing> parse(@Nullable String route, Map<String, RoutingDeserializer> routingDeserializers) {
+        if (route != null && !route.isEmpty()) {
             List<String> routingInstructions = Arrays.asList(route.split("\\n"));
             if (routingInstructions.size() >= 4) {
                 if (ROUTING_START.test(routingInstructions.get(0)) &&
                         METHOD_END.test(routingInstructions.get(routingInstructions.size() - 1))) {
                     String routingInstruction = routingInstructions.get(1);
                     if (METHOD_START.test(routingInstruction)) {
-                        return parseInstruction(trimInstruction(routingInstruction),
+                        return parseRouting(trimInstruction(routingInstruction),
                                 routingInstructions.subList(2, routingInstructions.size() - 2).iterator(),
                                 routingDeserializers);
+                    } else {
+                        return Either.left("Failed to find valid Routing instruction after ROUTING");
                     }
+                } else {
+                    return Either.left("Invalid Routing formatting. Routing must start with ROUTING and end with }");
                 }
+            } else {
+                return Either.left("Failed to find ROUTING or enough Routing instructions");
             }
+        } else {
+            return Either.left("Failed to find input to parse Routing from");
         }
-
-        return null;
     }
 
-    @Nullable
-    public static Routing parseInstruction(String method, Iterator<String> routingMethodInputs,
-                                           Map<String, RoutingDeserializer> routingDeserializers) {
+    @Nonnull
+    public static Either<String, Routing> parseRouting(String method, Iterator<String> routingMethodInputs,
+                                                       Map<String, RoutingDeserializer> routingDeserializers) {
         RoutingDeserializer routingDeserializer = routingDeserializers.get(method);
         if (routingDeserializer != null) {
             List<Object> inputs = Lists.newArrayList();
@@ -55,23 +64,21 @@ public class RoutingParser {
                     inputs.add(routingInstructionInput.replace("\"", "").trim());
                 } else if (NUMBER_INPUT.test(routingInstructionInput)) {
                     try {
-                        inputs.add(Integer.parseInt(routingInstructionInput));
+                        inputs.add(Integer.parseInt(routingInstructionInput.trim()));
                     } catch (NumberFormatException exception) {
-                        return null;
+                        return Either.left(routingInstructionInput + " is not a valid number");
                     }
                 } else if (METHOD_START.test(routingInstructionInput)) {
-                    Routing routing = parseInstruction(trimInstruction(routingInstructionInput),
-                            routingMethodInputs, routingDeserializers);
-                    if (routing != null) {
-                        inputs.add(routing);
-                    } else {
-                        return null;
-                    }
+                    return parseRouting(trimInstruction(routingInstructionInput), routingMethodInputs,
+                            routingDeserializers);
+                } else {
+                    return Either.left("Unable to parse value for Routing: " + method);
                 }
             }
             return routingDeserializer.deserialize(inputs);
+        } else {
+            return Either.left("Failed to find Routing for " + method);
         }
-        return null;
     }
 
     private static String trimInstruction(String name) {

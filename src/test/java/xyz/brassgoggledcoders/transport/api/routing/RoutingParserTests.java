@@ -2,11 +2,12 @@ package xyz.brassgoggledcoders.transport.api.routing;
 
 
 import com.google.common.collect.Maps;
+import com.mojang.datafixers.util.Either;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import xyz.brassgoggledcoders.transport.api.routing.instruction.Routing;
-import xyz.brassgoggledcoders.transport.api.routing.instruction.TrueRouting;
+import xyz.brassgoggledcoders.transport.routing.instruction.TrueRouting;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.ListRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingDeserializer;
@@ -18,13 +19,13 @@ public class RoutingParserTests {
     @Test
     @DisplayName("Null Input Returns Null")
     void testNullStringReturnsNull() {
-        Assertions.assertNull(RoutingParser.parse(null));
+        Assertions.assertTrue(RoutingParser.parse(null).left().isPresent());
     }
 
     @Test
     @DisplayName("No Routing Instruction Returns Null")
     void testNoRoutingInstructionsReturnsNull() {
-        Assertions.assertNull(RoutingParser.parse("TRUE {\n}"));
+        Assertions.assertTrue(RoutingParser.parse("TRUE {\n}").left().isPresent());
     }
 
     @Test
@@ -36,17 +37,17 @@ public class RoutingParserTests {
     @Test
     @DisplayName("Routing Instruction with True Instruction should return")
     void testRoutingInstructionWithTrueInstruction() {
-        Routing routing = RoutingParser.parse("ROUTING {\nTRUE {\n}\n}",
+        Either<String, Routing> routing = RoutingParser.parse("ROUTING {\nTRUE {\n}\n}",
                 this.createRoutingDeserializers());
-        Assertions.assertNotNull(routing);
+        Assertions.assertTrue(routing.right().isPresent());
     }
 
     @Test
     @DisplayName("Routing Instruction with NameTag Instruction should return")
     void testRoutingInstructionWithNameTagInstruction() {
-        Routing routing = RoutingParser.parse("ROUTING {\nNAME{\n\"HELLO\"\n}\n}",
+        Either<String, Routing> routing = RoutingParser.parse("ROUTING {\nNAME{\n\"HELLO\"\n}\n}",
                 this.createRoutingDeserializers());
-        Assertions.assertNotNull(routing);
+        Assertions.assertTrue(routing.right().isPresent());
     }
 
     private Map<String, RoutingDeserializer> createRoutingDeserializers() {
