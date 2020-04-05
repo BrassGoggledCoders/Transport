@@ -17,21 +17,21 @@ import java.util.Map;
 
 public class RoutingParserTests {
     @Test
-    @DisplayName("Null Input Returns Null")
+    @DisplayName("Null Input Returns Left")
     void testNullStringReturnsNull() {
         Assertions.assertTrue(RoutingParser.parse(null).left().isPresent());
     }
 
     @Test
-    @DisplayName("No Routing Instruction Returns Null")
+    @DisplayName("No Routing Instruction Returns Left")
     void testNoRoutingInstructionsReturnsNull() {
         Assertions.assertTrue(RoutingParser.parse("TRUE {\n}").left().isPresent());
     }
 
     @Test
-    @DisplayName("Routing Instruction with no addition Instructions Returns Null")
+    @DisplayName("Routing Instruction with no addition Instructions Returns Left")
     void testNoAdditionalInstructionsReturnsNull() {
-        Assertions.assertNull(RoutingParser.parse("ROUTING {\n}"));
+        Assertions.assertTrue(RoutingParser.parse("ROUTING {\n}").left().isPresent());
     }
 
     @Test

@@ -28,6 +28,7 @@ import xyz.brassgoggledcoders.transport.api.routing.RoutingStorage;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorageProvider;
 import xyz.brassgoggledcoders.transport.api.routing.instruction.Routing;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.ListRoutingDeserializer;
+import xyz.brassgoggledcoders.transport.api.routing.serializer.ListValidatedRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.SingleRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.content.*;
@@ -102,6 +103,7 @@ public class Transport {
         TransportAPI.addRoutingDeserializer("RIDERS", new SingleRoutingDeserializer<>(Number.class, RiderRouting::new));
         TransportAPI.addRoutingDeserializer("POWERED", new NoInputRoutingDeserializer(PoweredRouting::new));
         TransportAPI.addRoutingDeserializer("COMPARATOR", new SingleRoutingDeserializer<>(Number.class, ComparatorRouting::new));
+        TransportAPI.addRoutingDeserializer("TIME", new ListValidatedRoutingDeserializer<>(String.class, TimeRouting::create));
 
         CapabilityManager.INSTANCE.register(RoutingStorage.class, new Capability.IStorage<RoutingStorage>() {
             @Nullable

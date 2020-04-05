@@ -59,23 +59,29 @@ public class RoutingParser {
             List<Object> inputs = Lists.newArrayList();
             while (routingMethodInputs.hasNext()) {
                 String routingInstructionInput = routingMethodInputs.next();
-                if (METHOD_END.test(routingInstructionInput)) {
-                    break;
-                } else if (STRING_INPUT.test(routingInstructionInput)) {
-                    inputs.add(routingInstructionInput.replace("\"", "").trim());
-                } else if (NUMBER_INPUT.test(routingInstructionInput)) {
-                    try {
-                        inputs.add(Integer.parseInt(routingInstructionInput.trim()));
-                    } catch (NumberFormatException exception) {
-                        return Either.left(routingInstructionInput + " is not a valid number");
+                if (routingInstructionInput != null && !routingInstructionInput.trim().isEmpty()) {
+                    routingInstructionInput = routingInstructionInput.trim();
+                    if (METHOD_END.test(routingInstructionInput)) {
+                        break;
+                    } else if (STRING_INPUT.test(routingInstructionInput)) {
+                        inputs.add(routingInstructionInput.replace("\"", "").trim());
+                    } else if (NUMBER_INPUT.test(routingInstructionInput)) {
+                        try {
+                            inputs.add(Integer.parseInt(routingInstructionInput.trim()));
+                        } catch (NumberFormatException exception) {
+                            return Either.left(routingInstructionInput + " is not a valid number");
+                        }
+                    } else if (METHOD_START.test(routingInstructionInput)) {
+                        String newMethodName = trimInstruction(routingInstructionInput);
+                        return parseRouting(newMethodName, routingMethodInputs, routingDeserializers)
+                                .mapLeft(error -> newMethodName + " failed: " + error);
+                    } else {
+                        return Either.left("Unable to parse value for Routing: " + routingInstructionInput);
                     }
-                } else if (METHOD_START.test(routingInstructionInput)) {
-                    String newMethodName = trimInstruction(routingInstructionInput);
-                    return parseRouting(newMethodName, routingMethodInputs, routingDeserializers)
-                            .mapLeft(error -> newMethodName + " failed: " + error);
                 } else {
-                    return Either.left("Unable to parse value for Routing: " + method);
+                    return Either.left("Found no value for Parsing");
                 }
+
             }
             return routingDeserializer.deserialize(inputs);
         } else {
