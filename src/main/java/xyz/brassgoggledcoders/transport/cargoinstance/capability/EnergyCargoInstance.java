@@ -11,7 +11,6 @@ import net.minecraftforge.energy.IEnergyStorage;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
 import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
 
-import java.util.Collections;
 import java.util.List;
 
 public class EnergyCargoInstance extends CapabilityCargoInstance<IEnergyStorage> {

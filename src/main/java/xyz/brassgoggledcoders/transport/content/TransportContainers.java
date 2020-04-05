@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.content;
 
 import com.hrznstudio.titanium.container.BasicAddonContainer;
+import com.hrznstudio.titanium.network.locator.instance.EmptyLocatorInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -19,6 +20,7 @@ import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
+import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 
 public class TransportContainers {
     private static final DeferredRegister<ContainerType<?>> CONTAINERS =
@@ -32,11 +34,14 @@ public class TransportContainers {
                 if (entity instanceof IModularEntity && moduleType != null) {
                     ModuleInstance<?> moduleInstance = ((IModularEntity) entity).getModuleInstance(moduleType);
                     if (moduleInstance != null) {
-                        return new BasicAddonContainer(moduleInstance, IWorldPosCallable.DUMMY, inv, windowId);
+                        return new BasicAddonContainer(moduleInstance, new EntityLocatorInstance(entity),
+                                IWorldPosCallable.DUMMY, inv, windowId);
                     }
                 }
 
-                return new BasicAddonContainer(new Object(), IWorldPosCallable.DUMMY, inv, windowId);
+                Transport.LOGGER.warn("Failed to find Module for Container");
+                return new BasicAddonContainer(new Object(), new EmptyLocatorInstance(), IWorldPosCallable.DUMMY, inv,
+                        windowId);
             }));
 
     public static void register(IEventBus eventBus) {

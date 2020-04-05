@@ -34,7 +34,10 @@ public class ModuleContainerProvider implements INamedContainerProvider {
     @Override
     @ParametersAreNonnullByDefault
     public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-        return new BasicAddonContainer(moduleInstance, TransportContainers.MODULE.get(),
-                new EntityWorldPosCallable(modularEntity.getSelf()), playerInventory, windowId);
+        return new BasicAddonContainer(moduleInstance, new EntityLocatorInstance(modularEntity.getSelf()),
+                TransportContainers.MODULE.get(), new EntityWorldPosCallable(modularEntity.getSelf()), playerInventory,
+                windowId);
     }
+
+
 }

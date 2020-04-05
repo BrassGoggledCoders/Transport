@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport;
 
+import com.hrznstudio.titanium.network.locator.LocatorType;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.nbt.INBT;
@@ -20,6 +21,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
 import xyz.brassgoggledcoders.transport.api.engine.Engine;
@@ -31,6 +34,7 @@ import xyz.brassgoggledcoders.transport.api.routing.serializer.ListRoutingDeseri
 import xyz.brassgoggledcoders.transport.api.routing.serializer.ListValidatedRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.SingleRoutingDeserializer;
+import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
@@ -48,6 +52,9 @@ import static xyz.brassgoggledcoders.transport.Transport.ID;
 public class Transport {
     public static final String ID = "transport";
     public static final ItemGroup ITEM_GROUP = new TransportItemGroup(ID, TransportBlocks.HOLDING_RAIL::getItem);
+    public static final Logger LOGGER = LogManager.getLogger(ID);
+
+    public static final LocatorType ENTITY = new LocatorType("entity", EntityLocatorInstance::new);
 
     public static Transport instance;
 

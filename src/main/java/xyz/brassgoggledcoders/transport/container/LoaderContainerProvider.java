@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.container;
 
 import com.hrznstudio.titanium.container.BasicAddonContainer;
+import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -35,7 +36,7 @@ public class LoaderContainerProvider implements INamedContainerProvider {
     @Override
     @ParametersAreNonnullByDefault
     public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-        return new BasicAddonContainer(loaderTileEntity, IWorldPosCallable.of(loaderTileEntity.getTheWorld(),
-                loaderTileEntity.getPos()), playerInventory, i);
+        return new BasicAddonContainer(loaderTileEntity, new TileEntityLocatorInstance(loaderTileEntity.getPos()),
+                IWorldPosCallable.of(loaderTileEntity.getTheWorld(), loaderTileEntity.getPos()), playerInventory, i);
     }
 }
