@@ -26,9 +26,9 @@ import xyz.brassgoggledcoders.transport.api.engine.Engine;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorage;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorageProvider;
-import xyz.brassgoggledcoders.transport.api.routing.instruction.FalseRouting;
+import xyz.brassgoggledcoders.transport.routing.instruction.FalseRouting;
 import xyz.brassgoggledcoders.transport.api.routing.instruction.Routing;
-import xyz.brassgoggledcoders.transport.api.routing.instruction.TrueRouting;
+import xyz.brassgoggledcoders.transport.routing.instruction.TrueRouting;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.ListRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.SingleRoutingDeserializer;
@@ -39,10 +39,7 @@ import xyz.brassgoggledcoders.transport.pointmachine.ComparatorPointMachineBehav
 import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RoutingPointMachineBehavior;
-import xyz.brassgoggledcoders.transport.routing.instruction.AndRouting;
-import xyz.brassgoggledcoders.transport.routing.instruction.NameRouting;
-import xyz.brassgoggledcoders.transport.routing.instruction.NotRouting;
-import xyz.brassgoggledcoders.transport.routing.instruction.OrRouting;
+import xyz.brassgoggledcoders.transport.routing.instruction.*;
 
 import javax.annotation.Nullable;
 
@@ -104,6 +101,8 @@ public class Transport {
         TransportAPI.addRoutingDeserializer("AND", new ListRoutingDeserializer<>(Routing.class, AndRouting::new));
         TransportAPI.addRoutingDeserializer("OR", new ListRoutingDeserializer<>(Routing.class, OrRouting::new));
         TransportAPI.addRoutingDeserializer("NOT", new SingleRoutingDeserializer<>(Routing.class, NotRouting::new));
+        TransportAPI.addRoutingDeserializer("RIDERS", new SingleRoutingDeserializer<>(Number.class, RiderRouting::new));
+        TransportAPI.addRoutingDeserializer("POWERED", new NoInputRoutingDeserializer(PoweredRouting::new));
 
         CapabilityManager.INSTANCE.register(RoutingStorage.class, new Capability.IStorage<RoutingStorage>() {
             @Nullable
