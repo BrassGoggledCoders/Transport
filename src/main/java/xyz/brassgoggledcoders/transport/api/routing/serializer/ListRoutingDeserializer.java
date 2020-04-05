@@ -24,13 +24,15 @@ public class ListRoutingDeserializer<T> extends RoutingDeserializer {
         for (Object input: inputs) {
             if (clazz.isInstance(input)) {
                 values.add(clazz.cast(input));
+            } else {
+                return Either.left("Found " + clazz.getName() + " Expected " + input.getClass().getName());
             }
         }
 
         if (!values.isEmpty()) {
             return Either.right(constructor.apply(values));
         } else {
-            return null;
+            return Either.left("Expected at least 1. Found 0.");
         }
     }
 }

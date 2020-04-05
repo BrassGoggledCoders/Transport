@@ -33,9 +33,10 @@ public class RoutingParser {
                         METHOD_END.test(routingInstructions.get(routingInstructions.size() - 1))) {
                     String routingInstruction = routingInstructions.get(1);
                     if (METHOD_START.test(routingInstruction)) {
-                        return parseRouting(trimInstruction(routingInstruction),
-                                routingInstructions.subList(2, routingInstructions.size() - 2).iterator(),
-                                routingDeserializers);
+                        String method = trimInstruction(routingInstruction);
+                        return parseRouting(method, routingInstructions.subList(2, routingInstructions.size() - 2)
+                                .iterator(), routingDeserializers)
+                                .mapLeft(error -> method + " failed: " + error);
                     } else {
                         return Either.left("Failed to find valid Routing instruction after ROUTING");
                     }
@@ -69,8 +70,9 @@ public class RoutingParser {
                         return Either.left(routingInstructionInput + " is not a valid number");
                     }
                 } else if (METHOD_START.test(routingInstructionInput)) {
-                    return parseRouting(trimInstruction(routingInstructionInput), routingMethodInputs,
-                            routingDeserializers);
+                    String newMethodName = trimInstruction(routingInstructionInput);
+                    return parseRouting(newMethodName, routingMethodInputs, routingDeserializers)
+                            .mapLeft(error -> newMethodName + " failed: " + error);
                 } else {
                     return Either.left("Unable to parse value for Routing: " + method);
                 }

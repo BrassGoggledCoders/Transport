@@ -26,11 +26,9 @@ import xyz.brassgoggledcoders.transport.api.engine.Engine;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorage;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorageProvider;
-import xyz.brassgoggledcoders.transport.routing.instruction.FalseRouting;
 import xyz.brassgoggledcoders.transport.api.routing.instruction.Routing;
-import xyz.brassgoggledcoders.transport.routing.instruction.TrueRouting;
-import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.ListRoutingDeserializer;
+import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.SingleRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
@@ -103,6 +101,7 @@ public class Transport {
         TransportAPI.addRoutingDeserializer("NOT", new SingleRoutingDeserializer<>(Routing.class, NotRouting::new));
         TransportAPI.addRoutingDeserializer("RIDERS", new SingleRoutingDeserializer<>(Number.class, RiderRouting::new));
         TransportAPI.addRoutingDeserializer("POWERED", new NoInputRoutingDeserializer(PoweredRouting::new));
+        TransportAPI.addRoutingDeserializer("COMPARATOR", new SingleRoutingDeserializer<>(Number.class, ComparatorRouting::new));
 
         CapabilityManager.INSTANCE.register(RoutingStorage.class, new Capability.IStorage<RoutingStorage>() {
             @Nullable
