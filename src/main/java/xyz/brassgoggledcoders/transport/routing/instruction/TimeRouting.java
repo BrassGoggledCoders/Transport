@@ -103,5 +103,4 @@ public class TimeRouting extends Routing {
         times.put("midnight", 18000);
         return times;
     }
-
 }
