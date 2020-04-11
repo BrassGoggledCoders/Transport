@@ -4,6 +4,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
+import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.content.*;
 
 import java.util.function.Supplier;
@@ -31,14 +32,20 @@ public class TransportLanguageProvider extends LanguageProvider {
         //endregion
 
         //region Cargo
-        this.addCargo(TransportCargoModules.ITEM, "Inventory");
-        this.addCargo(TransportCargoModules.FLUID, "Fluid Tank");
-        this.addCargo(TransportCargoModules.ENERGY, "Energy Storage");
+        this.add(TransportCargoModules.ITEM, "Inventory");
+        this.add(TransportCargoModules.FLUID, "Fluid Tank");
+        this.add(TransportCargoModules.ENERGY, "Energy Storage");
         //endregion
 
         //region Entity
         this.add(TransportEntities.CARGO_MINECART.get(), "Minecart");
         this.add(TransportEntities.CARGO_MINECART_ITEM.get(), "Minecart");
+        //endregion
+
+        //region Engine
+        this.add(TransportEngineModules.CREATIVE, "Creative Engine");
+        this.add(TransportEngineModules.SOLID_FUEL, "Solid Fuel Engine");
+        this.add(TransportEngineModules.BOOSTER, "Booster Engine");
         //endregion
 
         //region Item
@@ -53,11 +60,11 @@ public class TransportLanguageProvider extends LanguageProvider {
         //endregion
     }
 
-    public void addCargo(Supplier<? extends Cargo> cargo, String name) {
-        this.add(cargo.get(), name);
+    public void add(Supplier<? extends Module<?>> registryEntry, String name) {
+        this.add(registryEntry.get(), name);
     }
 
-    public void add(Cargo cargo, String name) {
-        this.add(cargo.getTranslationKey(), name);
+    public void add(Module<?> registryEntry, String name) {
+        this.add(registryEntry.getTranslationKey(), name);
     }
 }

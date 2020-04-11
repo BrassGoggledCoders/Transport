@@ -13,6 +13,7 @@ import net.minecraftforge.common.crafting.NBTIngredient;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.recipe.CargoShapelessRecipeBuilder;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.content.TransportEngineModules;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.content.TransportItems;
 import xyz.brassgoggledcoders.transport.recipe.ActualNBTIngredient;
@@ -116,6 +117,24 @@ public class TransportRecipeProvider extends RecipeProvider {
                                 registryName.getPath() + "_break"));
             }
         });
+        //endregion
+
+        //region Engines
+        ShapedRecipeBuilder.shapedRecipe(TransportEngineModules.BOOSTER_ITEM::get)
+                .patternLine("G G")
+                .patternLine("RGR")
+                .patternLine("G G")
+                .key('G', Tags.Items.INGOTS_GOLD)
+                .key('R', Tags.Items.DUSTS_REDSTONE)
+                .addCriterion("has_item", this.hasItem(Tags.Items.INGOTS_GOLD))
+                .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(TransportEngineModules.SOLID_FUEL_ITEM::get)
+                .patternLine("F")
+                .patternLine("F")
+                .key('F', Items.FURNACE)
+                .addCriterion("has_item", this.hasItem(Items.FURNACE))
+                .build(consumer);
         //endregion
 
         //region Items
