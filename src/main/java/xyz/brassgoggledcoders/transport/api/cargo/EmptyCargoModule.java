@@ -2,8 +2,8 @@ package xyz.brassgoggledcoders.transport.api.cargo;
 
 import net.minecraft.block.Blocks;
 
-public class EmptyCargo extends Cargo {
-    public EmptyCargo() {
+public class EmptyCargoModule extends CargoModule {
+    public EmptyCargoModule() {
         super(() -> Blocks.AIR);
     }
 

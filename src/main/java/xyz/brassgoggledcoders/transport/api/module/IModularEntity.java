@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface IModularEntity extends IItemProvider {
@@ -63,5 +64,15 @@ public interface IModularEntity extends IItemProvider {
     @Nonnull
     default <T extends Module<T>, U extends ModuleInstance<T>> Collection<? extends U> getModuleInstances(Supplier<ModuleType<T>> componentType) {
         return getModuleInstances(componentType.get());
+    }
+
+    default <T extends Module<T>, U extends ModuleInstance<T>, V> V callModule(Supplier<ModuleType<T>> moduleType,
+                                                                               Function<U, V> calling, Supplier<V> defaultValue) {
+        U moduleInstance = this.getModuleInstance(moduleType);
+        if (moduleInstance != null) {
+            return calling.apply(moduleInstance);
+        } else {
+            return defaultValue.get();
+        }
     }
 }

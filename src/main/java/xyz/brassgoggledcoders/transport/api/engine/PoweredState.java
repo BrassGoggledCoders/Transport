@@ -1,17 +1,14 @@
 package xyz.brassgoggledcoders.transport.api.engine;
 
 public enum PoweredState {
-    RUNNING(true),
-    IDLE(false),
-    NO_FUEL(false);
+    RUNNING, IDLE;
 
-    private final boolean moving;
-
-    PoweredState(boolean moving) {
-        this.moving = moving;
-    }
-
-    public boolean isMoving() {
-        return moving;
+    public static PoweredState byName(String name) {
+        for (PoweredState state: PoweredState.values()) {
+            if (state.name().equals(name)) {
+                return state;
+            }
+        }
+        return IDLE;
     }
 }

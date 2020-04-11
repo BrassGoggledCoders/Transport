@@ -1,17 +1,19 @@
 package xyz.brassgoggledcoders.transport.api.engine;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.util.math.Vec3d;
+import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
 
 import javax.annotation.Nonnull;
 
-public abstract class EngineInstance extends ModuleInstance<Engine> {
-    private PoweredState poweredState = PoweredState.IDLE;
+public abstract class EngineModuleInstance extends ModuleInstance<EngineModule> implements IHoldable {
+    private PoweredState poweredState = PoweredState.RUNNING;
 
-    protected EngineInstance(Engine engine, IModularEntity componentCarrier) {
-        super(engine, componentCarrier);
+    protected EngineModuleInstance(EngineModule engineModule, IModularEntity componentCarrier) {
+        super(engineModule, componentCarrier);
     }
 
     public abstract boolean isRunning();
@@ -23,7 +25,7 @@ public abstract class EngineInstance extends ModuleInstance<Engine> {
         return poweredState;
     }
 
-    public void setPoweredState(@Nonnull PoweredState poweredState, @Nonnull Vec3d push) {
+    public void setPoweredState(@Nonnull PoweredState poweredState) {
         this.poweredState = poweredState;
     }
 
@@ -37,5 +39,27 @@ public abstract class EngineInstance extends ModuleInstance<Engine> {
                     0.0D, 0.0D, 0.0D);
         }
 
+    }
+
+    @Override
+    public void onHeld() {
+        this.setPoweredState(PoweredState.IDLE);
+    }
+
+    @Override
+    public void onRelease() {
+        this.setPoweredState(PoweredState.RUNNING);
+    }
+
+    @Override
+    public CompoundNBT serializeNBT() {
+        CompoundNBT compoundNBT = super.serializeNBT();
+        compoundNBT.putString("poweredState", this.poweredState.name());
+        return compoundNBT;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundNBT nbt) {
+        this.poweredState = PoweredState.byName(nbt.getString("poweredState"));
     }
 }

@@ -10,8 +10,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
-import xyz.brassgoggledcoders.transport.api.cargo.CargoInstance;
+import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
+import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
 import xyz.brassgoggledcoders.transport.container.ModuleContainerProvider;
 
@@ -19,12 +19,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public abstract class CapabilityCargoInstance<CAP> extends CargoInstance implements IScreenAddonProvider,
+public abstract class CapabilityCargoModuleInstance<CAP> extends CargoModuleInstance implements IScreenAddonProvider,
         IContainerAddonProvider {
     private final Capability<CAP> capability;
 
-    public CapabilityCargoInstance(Cargo cargo, IModularEntity entity, Capability<CAP> capability) {
-        super(cargo, entity);
+    public CapabilityCargoModuleInstance(CargoModule cargoModule, IModularEntity entity, Capability<CAP> capability) {
+        super(cargoModule, entity);
         this.capability = capability;
     }
 

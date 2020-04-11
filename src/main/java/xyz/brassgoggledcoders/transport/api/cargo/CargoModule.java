@@ -5,12 +5,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
@@ -18,18 +12,17 @@ import xyz.brassgoggledcoders.transport.api.module.Module;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class Cargo extends Module<Cargo> implements IItemProvider {
+public class CargoModule extends Module<CargoModule> {
     private final Supplier<? extends Block> blockSupplier;
     private BlockState blockState;
 
-    public Cargo(Supplier<? extends Block> blockSupplier) {
-        this(blockSupplier, CargoInstance::new);
+    public CargoModule(Supplier<? extends Block> blockSupplier) {
+        this(blockSupplier, CargoModuleInstance::new);
     }
 
-    public Cargo(Supplier<? extends Block> blockSupplier, BiFunction<Cargo, IModularEntity, ? extends CargoInstance> cargoInstanceCreator) {
+    public CargoModule(Supplier<? extends Block> blockSupplier, BiFunction<CargoModule, IModularEntity, ? extends CargoModuleInstance> cargoInstanceCreator) {
         super(TransportObjects.CARGO_TYPE, cargoInstanceCreator);
         this.blockSupplier = blockSupplier;
     }
@@ -50,12 +43,12 @@ public class Cargo extends Module<Cargo> implements IItemProvider {
         return this.createItemStack(item, null);
     }
 
-    public ItemStack createItemStack(Item item, @Nullable CargoInstance cargoInstance) {
+    public ItemStack createItemStack(Item item, @Nullable CargoModuleInstance cargoModuleInstance) {
         ItemStack itemStack = new ItemStack(item);
         CompoundNBT cargoNBT = itemStack.getOrCreateChildTag("cargo");
         cargoNBT.putString("name", String.valueOf(this.getRegistryName()));
-        if (cargoInstance != null) {
-            cargoNBT.put("instance", cargoInstance.serializeNBT());
+        if (cargoModuleInstance != null) {
+            cargoNBT.put("instance", cargoModuleInstance.serializeNBT());
         }
         return itemStack;
     }

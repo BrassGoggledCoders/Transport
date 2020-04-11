@@ -8,17 +8,17 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
+import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
 
 import java.util.List;
 
-public class EnergyCargoInstance extends CapabilityCargoInstance<IEnergyStorage> {
+public class EnergyCargoModuleInstance extends CapabilityCargoModuleInstance<IEnergyStorage> {
     private final EnergyStorageComponent energy;
     private final LazyOptional<IEnergyStorage> lazyEnergy;
 
-    public EnergyCargoInstance(Cargo cargo, IModularEntity modularEntity) {
-        super(cargo, modularEntity, CapabilityEnergy.ENERGY);
+    public EnergyCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity) {
+        super(cargoModule, modularEntity, CapabilityEnergy.ENERGY);
         this.energy = new EnergyStorageComponent(10000, 79, 24);
         this.lazyEnergy = LazyOptional.of(() -> energy);
     }

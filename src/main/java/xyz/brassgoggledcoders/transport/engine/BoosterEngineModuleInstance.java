@@ -2,12 +2,12 @@ package xyz.brassgoggledcoders.transport.engine;
 
 import net.minecraft.particles.RedstoneParticleData;
 import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
-import xyz.brassgoggledcoders.transport.api.engine.Engine;
-import xyz.brassgoggledcoders.transport.api.engine.EngineInstance;
+import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
+import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 
-public class BoosterEngineInstance extends EngineInstance {
-    public BoosterEngineInstance(Engine engine, IModularEntity powered) {
-        super(engine, powered);
+public class BoosterEngineModuleInstance extends EngineModuleInstance {
+    public BoosterEngineModuleInstance(EngineModule engineModule, IModularEntity powered) {
+        super(engineModule, powered);
     }
 
     @Override

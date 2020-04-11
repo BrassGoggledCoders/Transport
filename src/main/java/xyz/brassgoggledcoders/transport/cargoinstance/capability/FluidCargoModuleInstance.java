@@ -13,17 +13,17 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
+import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
 
 import java.util.List;
 
-public class FluidCargoInstance extends CapabilityCargoInstance<IFluidHandler> {
+public class FluidCargoModuleInstance extends CapabilityCargoModuleInstance<IFluidHandler> {
     private final FluidTankComponent<?> fluidTank;
     private final LazyOptional<IFluidHandler> lazyFluidTank;
 
-    public FluidCargoInstance(Cargo cargo, IModularEntity modularEntity) {
-        super(cargo, modularEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+    public FluidCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity) {
+        super(cargoModule, modularEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
         this.fluidTank = new FluidTankComponent<>("Tank", 10000, 80, 28);
         this.lazyFluidTank = LazyOptional.of(() -> fluidTank);
     }

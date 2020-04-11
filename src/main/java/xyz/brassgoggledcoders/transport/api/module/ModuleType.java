@@ -1,24 +1,27 @@
 package xyz.brassgoggledcoders.transport.api.module;
 
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ModuleType<T> extends ForgeRegistryEntry<ModuleType<?>> {
     private final Function<ResourceLocation, T> loadValue;
+    private final Supplier<Collection<T>> getValues;
+
     private String translationKey;
     private ITextComponent name;
 
-    public ModuleType(Function<ResourceLocation, T> loadValue) {
+    public ModuleType(Function<ResourceLocation, T> loadValue, Supplier<Collection<T>> getValues) {
         this.loadValue = loadValue;
+        this.getValues = getValues;
     }
 
     @Nonnull
@@ -49,5 +52,9 @@ public class ModuleType<T> extends ForgeRegistryEntry<ModuleType<?>> {
 
     public T load(ResourceLocation registryName) {
         return loadValue.apply(registryName);
+    }
+
+    public Collection<T> getValues() {
+        return getValues.get();
     }
 }

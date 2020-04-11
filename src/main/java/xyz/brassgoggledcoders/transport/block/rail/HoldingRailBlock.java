@@ -23,10 +23,12 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.api.TransportBlockStateProperties;
+import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
 import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 import xyz.brassgoggledcoders.transport.util.RailUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class HoldingRailBlock extends AbstractRailBlock {
     public static final BooleanProperty NORTH_WEST = TransportBlockStateProperties.NORTH_WEST;
@@ -66,6 +68,7 @@ public class HoldingRailBlock extends AbstractRailBlock {
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public void onMinecartPass(BlockState state, World world, BlockPos pos, AbstractMinecartEntity cart) {
         if (state.get(POWERED)) {
             float speedIncrease = .5f;
@@ -78,8 +81,14 @@ public class HoldingRailBlock extends AbstractRailBlock {
             } else {
                 cart.setMotion(motion.add(speedIncrease, 0, 0));
             }
+            if (cart instanceof IHoldable) {
+                ((IHoldable) cart).onRelease();
+            }
         } else {
             cart.setMotion(Vec3d.ZERO);
+            if (cart instanceof IHoldable) {
+                ((IHoldable) cart).onHeld();
+            }
         }
     }
 

@@ -16,9 +16,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.TransportObjects;
-import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
-import xyz.brassgoggledcoders.transport.api.cargo.CargoInstance;
+import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
+import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
+import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 
@@ -47,16 +47,16 @@ public class CargoCarrierMinecartItem extends MinecartItem {
                         .orElse(0.000F));
     }
 
-    public static ItemStack getCartStack(CargoInstance cargoInstance) {
+    public static ItemStack getCartStack(CargoModuleInstance cargoModuleInstance) {
         ItemStack itemStack = new ItemStack(TransportEntities.CARGO_MINECART_ITEM
                 .map(Item::asItem)
                 .orElse(Items.MINECART));
         itemStack.getOrCreateChildTag("cargo").putString("name", Objects.requireNonNull(
-                cargoInstance.getModule().getRegistryName()).toString());
+                cargoModuleInstance.getModule().getRegistryName()).toString());
         return itemStack;
     }
 
-    public static Cargo getCargo(@Nullable CompoundNBT cargo) {
+    public static CargoModule getCargo(@Nullable CompoundNBT cargo) {
         return Optional.ofNullable(cargo)
                 .map(compoundNBT -> compoundNBT.getString("name"))
                 .map(TransportAPI::getCargo)
@@ -94,17 +94,11 @@ public class CargoCarrierMinecartItem extends MinecartItem {
 
                 CompoundNBT cargoNBT = itemStack.getChildTag("cargo");
                 if (cargoNBT != null && cargoNBT.contains("name")) {
-                    Cargo cargo = TransportAPI.getCargo(cargoNBT.getString("name"));
-                    if (cargo != null) {
-                        cargoCarrierMinecartEntity.getModuleCase().addComponent(cargo);
-                        if (cargoNBT.contains("instance")) {
-                            for (CargoInstance cargoInstance : cargoCarrierMinecartEntity.<Cargo, CargoInstance>getModuleInstances(
-                                    TransportObjects.CARGO_TYPE)) {
-                                if (cargoInstance.getModule() == cargo) {
-                                    cargoInstance.deserializeNBT(cargoNBT.getCompound("instance"));
-                                    break;
-                                }
-                            }
+                    CargoModule cargoModule = TransportAPI.getCargo(cargoNBT.getString("name"));
+                    if (cargoModule != null) {
+                        ModuleInstance<CargoModule> moduleInstance = cargoCarrierMinecartEntity.getModuleCase().addModule(cargoModule);
+                        if (cargoNBT.contains("instance") && moduleInstance != null) {
+                            moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
                         }
                     }
                 }
@@ -124,7 +118,7 @@ public class CargoCarrierMinecartItem extends MinecartItem {
             TransportAPI.CARGO.get().getValues()
                     .stream()
                     .filter(cargo -> !cargo.isEmpty())
-                    .map(Cargo::getRegistryName)
+                    .map(CargoModule::getRegistryName)
                     .filter(Objects::nonNull)
                     .map(ResourceLocation::toString)
                     .map(resourceLocation -> {

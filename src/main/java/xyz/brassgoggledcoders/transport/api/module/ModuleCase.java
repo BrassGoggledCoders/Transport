@@ -11,38 +11,41 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Objects;
 
 public class ModuleCase implements INBTSerializable<CompoundNBT> {
-    private final IModularEntity carrier;
-    private final Table<ModuleType<?>, Module<?>, ModuleInstance<?>> equippedComponents;
+    private final IModularEntity modularEntity;
+    private final Table<ModuleType<?>, Module<?>, ModuleInstance<?>> equippedModules;
 
-    public ModuleCase(IModularEntity carrier) {
-        this.carrier = carrier;
-        this.equippedComponents = HashBasedTable.create();
+    public ModuleCase(IModularEntity modularEntity) {
+        this.modularEntity = modularEntity;
+        this.equippedModules = HashBasedTable.create();
     }
 
-    public boolean addComponent(Module<?> component) {
-        if (carrier.canEquipComponent(component) && component.isValidFor(carrier)) {
-            equippedComponents.put(component.getType(), component, component.createInstance(carrier));
-            return true;
+    @Nullable
+    public <T extends Module<T>> ModuleInstance<T> addModule(Module<T> module) {
+        if (modularEntity.canEquipComponent(module) && module.isValidFor(modularEntity)) {
+            ModuleInstance<T> moduleInstance = module.createInstance(modularEntity);
+            equippedModules.put(module.getType(), module, moduleInstance);
+            return moduleInstance;
         } else {
-            return false;
+            return null;
         }
     }
 
     public ItemStack createItemStack() {
-        return new ItemStack(carrier.asItem());
+        return new ItemStack(modularEntity.asItem());
     }
 
     public Collection<ModuleInstance<?>> getComponents() {
-        return equippedComponents.values();
+        return equippedModules.values();
     }
 
     @SuppressWarnings("unchecked")
     public <U extends ModuleInstance<T>, T extends Module<T>> Collection<? extends U> getComponentInstances(ModuleType<T> moduleType) {
-        return (Collection<U>) equippedComponents.row(moduleType)
+        return (Collection<U>) equippedModules.row(moduleType)
                 .values();
     }
 
@@ -50,7 +53,7 @@ public class ModuleCase implements INBTSerializable<CompoundNBT> {
     public CompoundNBT serializeNBT() {
         CompoundNBT caseNBT = new CompoundNBT();
         ListNBT moduleNBT = new ListNBT();
-        for (Table.Cell<ModuleType<?>, Module<?>, ModuleInstance<?>> cell : equippedComponents.cellSet()) {
+        for (Table.Cell<ModuleType<?>, Module<?>, ModuleInstance<?>> cell : equippedModules.cellSet()) {
             CompoundNBT cellNBT = new CompoundNBT();
             cellNBT.putString("type", String.valueOf(Objects.requireNonNull(cell.getRowKey()).getRegistryName()));
             cellNBT.putString("module", String.valueOf(Objects.requireNonNull(cell.getColumnKey()).getRegistryName()));
@@ -70,9 +73,9 @@ public class ModuleCase implements INBTSerializable<CompoundNBT> {
             if (moduleType != null) {
                 Module<?> module = (Module<?>) moduleType.load(cellNBT.getString("module"));
                 if (module != null) {
-                    ModuleInstance<?> moduleInstance = module.createInstance(this.carrier);
+                    ModuleInstance<?> moduleInstance = module.createInstance(this.modularEntity);
                     moduleInstance.deserializeNBT(cellNBT.getCompound("instance"));
-                    equippedComponents.put(moduleType, module, moduleInstance);
+                    equippedModules.put(moduleType, module, moduleInstance);
                 }
             }
         }
@@ -87,13 +90,13 @@ public class ModuleCase implements INBTSerializable<CompoundNBT> {
     }
 
     public void read(PacketBuffer buffer) {
-        equippedComponents.clear();
+        equippedModules.clear();
         int components = buffer.readInt();
         for (int x = 0; x < components; x++) {
             ModuleType<?> moduleType = TransportAPI.getModuleType(buffer.readResourceLocation());
             ResourceLocation componentRegistryName = buffer.readResourceLocation();
             if (moduleType != null) {
-                this.addComponent((Module<?>) moduleType.load(componentRegistryName));
+                this.addModule((Module<?>) moduleType.load(componentRegistryName));
             }
         }
     }

@@ -24,8 +24,8 @@ import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
-import xyz.brassgoggledcoders.transport.api.engine.Engine;
+import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
+import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorage;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorageProvider;
@@ -77,11 +77,11 @@ public class Transport {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
-        //noinspection unchecked
         makeRegistry("module_type", ModuleType.class);
-        makeRegistry("cargo", Cargo.class);
-        makeRegistry("engine", Engine.class);
+        makeRegistry("cargo", CargoModule.class);
+        makeRegistry("engine", EngineModule.class);
 
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         TransportBlocks.register(modBus);
@@ -124,6 +124,8 @@ public class Transport {
 
             }
         }, RoutingStorage::new);
+
+        TransportAPI.generateItemToModuleMap();
     }
 
     private static <T extends IForgeRegistryEntry<T>> void makeRegistry(String name, Class<T> type) {

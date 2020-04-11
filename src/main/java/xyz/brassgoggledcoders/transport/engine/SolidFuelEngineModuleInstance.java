@@ -8,6 +8,7 @@ import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -18,8 +19,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import xyz.brassgoggledcoders.transport.api.engine.Engine;
-import xyz.brassgoggledcoders.transport.api.engine.EngineInstance;
+import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
+import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 import xyz.brassgoggledcoders.transport.api.engine.PoweredState;
 import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
 import xyz.brassgoggledcoders.transport.container.ModuleContainerProvider;
@@ -29,19 +30,20 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-public class SolidFuelEngineInstance extends EngineInstance implements IScreenAddonProvider, IContainerAddonProvider {
+public class SolidFuelEngineModuleInstance extends EngineModuleInstance implements IScreenAddonProvider, IContainerAddonProvider {
     private final InventoryComponent<?> itemStackHandler;
-    private LazyOptional<IItemHandler> optionalItemHandler;
+    private final LazyOptional<IItemHandler> optionalItemHandler;
     private int burnTime = 0;
 
-    public SolidFuelEngineInstance(Engine engine, IModularEntity powered) {
-        super(engine, powered);
+    public SolidFuelEngineModuleInstance(EngineModule engineModule, IModularEntity powered) {
+        super(engineModule, powered);
 
         this.itemStackHandler = new InventoryComponent<>("engine", 80, 35, 1)
                 .setInputFilter((stack, slot) -> ForgeHooks.getBurnTime(stack) > 0);
         this.optionalItemHandler = LazyOptional.of(() -> itemStackHandler);
     }
 
+    @Override
     public ActionResultType applyInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
         this.getModularEntity().openContainer(player, new ModuleContainerProvider(this,
                 this.getModularEntity()), packetBuffer -> packetBuffer.writeResourceLocation(Objects.requireNonNull(
@@ -56,31 +58,33 @@ public class SolidFuelEngineInstance extends EngineInstance implements IScreenAd
 
     @Override
     public void tick() {
-        if (burnTime > 0) {
-            switch (this.getPoweredState()) {
-                case RUNNING:
-                    burnTime--;
-                case IDLE:
-                    burnTime--;
-                    break;
-                default:
-                    break;
+        if (!this.getModularEntity().getTheWorld().isRemote()) {
+            if (burnTime > 0) {
+                switch (this.getPoweredState()) {
+                    case RUNNING:
+                        burnTime--;
+                    case IDLE:
+                        burnTime--;
+                        break;
+                    default:
+                        break;
+                }
             }
-        }
 
-        if (burnTime <= 0) {
-            burnTime = 0;
-            if (this.getPoweredState() == PoweredState.RUNNING) {
-                ItemStack itemStack = itemStackHandler.getStackInSlot(0);
-                if (!itemStack.isEmpty()) {
-                    int newBurnTime = ForgeHooks.getBurnTime(itemStack) * 2;
-                    if (newBurnTime > 0) {
-                        if (itemStack.hasContainerItem()) {
-                            itemStackHandler.setStackInSlot(0, itemStack.getContainerItem());
-                        } else {
-                            itemStack.shrink(1);
+            if (burnTime <= 0) {
+                burnTime = 0;
+                if (this.getPoweredState() == PoweredState.RUNNING) {
+                    ItemStack itemStack = itemStackHandler.getStackInSlot(0);
+                    if (!itemStack.isEmpty()) {
+                        int newBurnTime = ForgeHooks.getBurnTime(itemStack) * 2;
+                        if (newBurnTime > 0) {
+                            if (itemStack.hasContainerItem()) {
+                                itemStackHandler.setStackInSlot(0, itemStack.getContainerItem());
+                            } else {
+                                itemStack.shrink(1);
+                            }
+                            burnTime += newBurnTime;
                         }
-                        burnTime += newBurnTime;
                     }
                 }
             }
@@ -108,5 +112,20 @@ public class SolidFuelEngineInstance extends EngineInstance implements IScreenAd
     @Override
     public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
         return itemStackHandler.getContainerAddons();
+    }
+
+    @Override
+    public CompoundNBT serializeNBT() {
+        CompoundNBT compoundNBT = super.serializeNBT();
+        compoundNBT.putInt("burnTime", this.burnTime);
+        compoundNBT.put("itemStackHandler", itemStackHandler.serializeNBT());
+        return compoundNBT;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundNBT nbt) {
+        super.deserializeNBT(nbt);
+        this.burnTime = nbt.getInt("burnTime");
+        this.itemStackHandler.deserializeNBT(nbt.getCompound("itemStackHandler"));
     }
 }

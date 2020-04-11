@@ -1,13 +1,13 @@
 package xyz.brassgoggledcoders.transport.engine;
 
 import net.minecraft.particles.ParticleTypes;
+import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
-import xyz.brassgoggledcoders.transport.api.engine.Engine;
-import xyz.brassgoggledcoders.transport.api.engine.EngineInstance;
+import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 
-public class CreativeEngineInstance extends EngineInstance {
-    public CreativeEngineInstance(Engine engine, IModularEntity powered) {
-        super(engine, powered);
+public class CreativeEngineModuleInstance extends EngineModuleInstance {
+    public CreativeEngineModuleInstance(EngineModule engineModule, IModularEntity powered) {
+        super(engineModule, powered);
     }
 
     @Override

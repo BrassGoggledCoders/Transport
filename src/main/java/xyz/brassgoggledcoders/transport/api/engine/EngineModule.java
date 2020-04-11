@@ -12,10 +12,10 @@ import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-public class Engine extends Module<Engine> {
+public class EngineModule extends Module<EngineModule> {
     private Item item;
 
-    public Engine(BiFunction<Engine, IModularEntity, ? extends EngineInstance> engineCreator) {
+    public EngineModule(BiFunction<EngineModule, IModularEntity, ? extends EngineModuleInstance> engineCreator) {
         super(TransportObjects.ENGINE_TYPE, engineCreator);
     }
 

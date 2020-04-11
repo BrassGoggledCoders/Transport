@@ -9,17 +9,17 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
+import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
 
 import java.util.List;
 
-public class ItemCargoInstance extends CapabilityCargoInstance<IItemHandler> {
+public class ItemCargoModuleInstance extends CapabilityCargoModuleInstance<IItemHandler> {
     private final InventoryComponent<?> inventory;
     private final LazyOptional<IItemHandler> lazyInventory;
 
-    public ItemCargoInstance(Cargo cargo, IModularEntity modularEntity) {
-        super(cargo, modularEntity, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+    public ItemCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity) {
+        super(cargoModule, modularEntity, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.inventory = new InventoryComponent<>("Inventory", 44, 35, 5);
         this.lazyInventory = LazyOptional.of(() -> inventory);
     }
