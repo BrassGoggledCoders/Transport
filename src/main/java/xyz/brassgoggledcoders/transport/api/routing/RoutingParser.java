@@ -9,6 +9,7 @@ import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingDeserializ
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -21,11 +22,11 @@ public class RoutingParser {
 
     @Nonnull
     public static Either<String, Routing> parse(@Nullable String route) {
-        return parse(route, TransportAPI.getRoutingDeserializers());
+        return parse(route, TransportAPI::getRoutingDeserializer);
     }
 
     @Nonnull
-    public static Either<String, Routing> parse(@Nullable String route, Map<String, RoutingDeserializer> routingDeserializers) {
+    public static Either<String, Routing> parse(@Nullable String route, Function<String, RoutingDeserializer> getDeserializer) {
         if (route != null && !route.isEmpty()) {
             List<String> routingInstructions = Arrays.asList(route.split("\\n"));
             if (routingInstructions.size() >= 4) {
@@ -35,7 +36,7 @@ public class RoutingParser {
                     if (METHOD_START.test(routingInstruction)) {
                         String method = trimInstruction(routingInstruction);
                         return parseRouting(method, routingInstructions.subList(2, routingInstructions.size() - 2)
-                                .iterator(), routingDeserializers)
+                                .iterator(), getDeserializer)
                                 .mapLeft(error -> method + " failed: " + error);
                     } else {
                         return Either.left("Failed to find valid Routing instruction after ROUTING");
@@ -53,8 +54,8 @@ public class RoutingParser {
 
     @Nonnull
     public static Either<String, Routing> parseRouting(String method, Iterator<String> routingMethodInputs,
-                                                       Map<String, RoutingDeserializer> routingDeserializers) {
-        RoutingDeserializer routingDeserializer = routingDeserializers.get(method);
+                                                       Function<String, RoutingDeserializer> getDeserializer) {
+        RoutingDeserializer routingDeserializer = getDeserializer.apply(method);
         if (routingDeserializer != null) {
             List<Object> inputs = Lists.newArrayList();
             while (routingMethodInputs.hasNext()) {
@@ -73,7 +74,7 @@ public class RoutingParser {
                         }
                     } else if (METHOD_START.test(routingInstructionInput)) {
                         String newMethodName = trimInstruction(routingInstructionInput);
-                        return parseRouting(newMethodName, routingMethodInputs, routingDeserializers)
+                        return parseRouting(newMethodName, routingMethodInputs, getDeserializer)
                                 .mapLeft(error -> newMethodName + " failed: " + error);
                     } else {
                         return Either.left("Unable to parse value for Routing: " + routingInstructionInput);

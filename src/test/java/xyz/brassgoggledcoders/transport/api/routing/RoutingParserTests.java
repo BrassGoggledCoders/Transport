@@ -38,7 +38,7 @@ public class RoutingParserTests {
     @DisplayName("Routing Instruction with True Instruction should return")
     void testRoutingInstructionWithTrueInstruction() {
         Either<String, Routing> routing = RoutingParser.parse("ROUTING {\nTRUE {\n}\n}",
-                this.createRoutingDeserializers());
+                this.createRoutingDeserializers()::get);
         Assertions.assertTrue(routing.right().isPresent());
     }
 
@@ -46,7 +46,7 @@ public class RoutingParserTests {
     @DisplayName("Routing Instruction with NameTag Instruction should return")
     void testRoutingInstructionWithNameTagInstruction() {
         Either<String, Routing> routing = RoutingParser.parse("ROUTING {\nNAME{\n\"HELLO\"\n}\n}",
-                this.createRoutingDeserializers());
+                this.createRoutingDeserializers()::get);
         Assertions.assertTrue(routing.right().isPresent());
     }
 
