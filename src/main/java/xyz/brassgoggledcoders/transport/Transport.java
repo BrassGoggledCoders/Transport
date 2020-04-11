@@ -96,10 +96,10 @@ public class Transport {
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
-        TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.LEVER, new LeverPointMachineBehavior());
-        TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.REPEATER, new RedstonePointMachineBehavior());
-        TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.COMPARATOR, new ComparatorPointMachineBehavior());
-        TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.LECTERN, new RoutingPointMachineBehavior());
+        TransportAPI.addPointMachineBehavior(Blocks.LEVER, new LeverPointMachineBehavior());
+        TransportAPI.addPointMachineBehavior(Blocks.REPEATER, new RedstonePointMachineBehavior());
+        TransportAPI.addPointMachineBehavior(Blocks.COMPARATOR, new ComparatorPointMachineBehavior());
+        TransportAPI.addPointMachineBehavior(Blocks.LECTERN, new RoutingPointMachineBehavior());
 
         TransportAPI.addRoutingDeserializer("TRUE", new NoInputRoutingDeserializer(TrueRouting::new));
         TransportAPI.addRoutingDeserializer("FALSE", new NoInputRoutingDeserializer(FalseRouting::new));

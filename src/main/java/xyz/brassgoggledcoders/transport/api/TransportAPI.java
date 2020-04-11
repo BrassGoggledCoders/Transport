@@ -23,7 +23,7 @@ public class TransportAPI {
     @CapabilityInject(RoutingStorage.class)
     public static Capability<RoutingStorage> ROUTING_STORAGE;
 
-    public static final Map<Block, IPointMachineBehavior> POINT_MACHINE_BEHAVIORS = Maps.newHashMap();
+    private static final Map<Block, IPointMachineBehavior> POINT_MACHINE_BEHAVIORS = Maps.newHashMap();
     private static final Map<String, RoutingDeserializer> ROUTING_DESERIALIZERS = Maps.newHashMap();
 
     public static Lazy<ForgeRegistry<Cargo>> CARGO = Lazy.of(() -> (ForgeRegistry<Cargo>)RegistryManager.ACTIVE.getRegistry(Cargo.class));
@@ -64,5 +64,17 @@ public class TransportAPI {
 
     public static Map<String, RoutingDeserializer> getRoutingDeserializers() {
         return ROUTING_DESERIALIZERS;
+    }
+
+    public static IPointMachineBehavior getPointMachineBehavior(Block block) {
+        return POINT_MACHINE_BEHAVIORS.get(block);
+    }
+
+    public static void addPointMachineBehavior(Block block, IPointMachineBehavior pointMachineBehavior) {
+        POINT_MACHINE_BEHAVIORS.put(block, pointMachineBehavior);
+    }
+
+    public static Map<Block, IPointMachineBehavior> getPointMachineBehaviors() {
+        return POINT_MACHINE_BEHAVIORS;
     }
 }

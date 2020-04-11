@@ -14,6 +14,7 @@ import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public abstract class AbstractSwitchRailBlock extends AbstractRailBlock {
     public static final BooleanProperty DIVERGE = BooleanProperty.create("diverge");
@@ -25,7 +26,7 @@ public abstract class AbstractSwitchRailBlock extends AbstractRailBlock {
     protected boolean shouldDivert(IBlockReader blockReader, BlockPos motorLocation, BlockPos switchLocation,
                                    @Nullable AbstractMinecartEntity cart) {
         BlockState motorState = blockReader.getBlockState(motorLocation);
-        IPointMachineBehavior motorBehavior = TransportAPI.POINT_MACHINE_BEHAVIORS.get(motorState.getBlock());
+        IPointMachineBehavior motorBehavior = TransportAPI.getPointMachineBehavior(motorState.getBlock());
         if (motorBehavior != null) {
             return motorBehavior.shouldDiverge(motorState, blockReader, motorLocation, switchLocation, cart);
         } else {
@@ -36,13 +37,14 @@ public abstract class AbstractSwitchRailBlock extends AbstractRailBlock {
     @Override
     @Nonnull
     @SuppressWarnings("deprecation")
-    public BlockState updatePostPlacement(@Nonnull BlockState state, Direction facing, BlockState facingState,
-                                          IWorld world, BlockPos currentPos, BlockPos facingPos) {
+    @ParametersAreNonnullByDefault
+    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world,
+                                          BlockPos currentPos, BlockPos facingPos) {
         SwitchConfiguration configuration = this.getSwitchConfiguration(state);
         if (this.getMotorDirection(configuration) == facing) {
             BlockPos motorPos = currentPos.offset(facing);
             BlockState motorState = world.getBlockState(motorPos);
-            IPointMachineBehavior motorBehavior = TransportAPI.POINT_MACHINE_BEHAVIORS.get(motorState.getBlock());
+            IPointMachineBehavior motorBehavior = TransportAPI.getPointMachineBehavior(motorState.getBlock());
             if (motorBehavior != null) {
                 motorBehavior.onBlockStateUpdate(motorState, world, motorPos);
                 state = state.with(DIVERGE, motorBehavior.shouldDiverge(motorState, world, motorPos, currentPos, null));
