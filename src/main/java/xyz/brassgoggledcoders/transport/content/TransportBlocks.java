@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.content;
 
+import com.hrznstudio.titanium.registry.BlockRegistryObjectGroup;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -9,6 +10,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.block.ModuleConfiguratorBlock;
 import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
 import xyz.brassgoggledcoders.transport.block.rail.BumperRailBlock;
@@ -19,6 +21,7 @@ import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitch
 import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitchSupportBlock;
 import xyz.brassgoggledcoders.transport.block.rail.turnout.SwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.turnout.WyeSwitchRailBlock;
+import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
@@ -79,6 +82,18 @@ public class TransportBlocks {
                     .register(BLOCKS, ITEMS);
     public static final RegistryObject<ElevatorSwitchSupportBlock> ELEVATOR_SWITCH_SUPPORT =
             BLOCKS.register("elevator_switch_support", ElevatorSwitchSupportBlock::new);
+
+    public static final BlockRegistryObjectGroup<ModuleConfiguratorBlock, BlockItem, ModuleConfiguratorTileEntity> MODULE_CONFIGURATOR =
+            new BlockRegistryObjectGroup<>(
+                    "module_configurator",
+                    ModuleConfiguratorBlock::new,
+                    blockItemCreator(),
+                    ModuleConfiguratorTileEntity::new
+            ).register(
+                    BLOCKS,
+                    ITEMS,
+                    TILE_ENTITIES
+            );
     //endregion
 
     public static void register(IEventBus modBus) {

@@ -34,10 +34,11 @@ import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 import xyz.brassgoggledcoders.transport.api.engine.PoweredState;
 import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
-import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleCase;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 
 import javax.annotation.Nonnull;
@@ -86,26 +87,6 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @Nonnull
     @ParametersAreNonnullByDefault
     public ActionResultType applyPlayerInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
-        ItemStack playerHeldItem = player.getHeldItem(hand);
-        if (!playerHeldItem.isEmpty()) {
-            Module<?> module = TransportAPI.getModuleFromItem(playerHeldItem.getItem());
-            if (module != null) {
-                if (!world.isRemote()) {
-                    ModuleInstance<?> moduleInstance = this.moduleCase.addModule(module);
-                    if (moduleInstance != null) {
-                        if (moduleInstance instanceof EngineModuleInstance) {
-                            originalPushX = this.getPosX() - player.getPosX();
-                            originalPushZ = this.getPosZ() - player.getPosZ();
-                        }
-
-                    }
-                    return ActionResultType.SUCCESS;
-                } else {
-                    return ActionResultType.CONSUME;
-                }
-            }
-        }
-
         EngineModuleInstance engineModuleInstance = this.getModuleInstance(TransportObjects.ENGINE_TYPE);
         if (engineModuleInstance != null && vec.getY() < 0.5D) {
             ActionResultType engineResult = engineModuleInstance.applyInteraction(player, vec, hand);
@@ -144,7 +125,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
             if (cargoNBT.contains("name")) {
                 CargoModule cargoModule = TransportAPI.getCargo(cargoNBT.getString("name"));
                 if (cargoModule != null) {
-                    ModuleInstance<CargoModule> moduleInstance = this.getModuleCase().addModule(cargoModule, false);
+                    ModuleInstance<CargoModule> moduleInstance = this.getModuleCase().addModule(cargoModule, ModuleSlots.CARGO, false);
                     if (cargoNBT.contains("instance") && moduleInstance != null) {
                         moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
                     }

@@ -9,7 +9,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
-import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 
 import java.util.List;
 

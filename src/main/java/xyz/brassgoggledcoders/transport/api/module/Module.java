@@ -8,6 +8,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

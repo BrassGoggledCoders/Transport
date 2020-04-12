@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.api.module;
+package xyz.brassgoggledcoders.transport.api.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -7,12 +7,14 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import xyz.brassgoggledcoders.transport.container.ModuleContainerProvider;
+import xyz.brassgoggledcoders.transport.api.module.Module;
+import xyz.brassgoggledcoders.transport.api.module.ModuleCase;
+import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
+import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -58,7 +60,7 @@ public interface IModularEntity extends IItemProvider {
 
     @Nonnull
     default <T extends Module<T>, U extends ModuleInstance<T>> Collection<? extends U> getModuleInstances(ModuleType<T> moduleType) {
-        return this.getModuleCase().getComponentInstances(moduleType);
+        return this.getModuleCase().getByModuleType(moduleType);
     }
 
     @Nonnull

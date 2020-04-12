@@ -5,8 +5,9 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.network.INetworkHandler;
 
 public class NetworkHandler implements INetworkHandler {
@@ -21,24 +22,18 @@ public class NetworkHandler implements INetworkHandler {
                 VERSION::equals
         );
 
-        this.channel.messageBuilder(UpdateModuleCaseMessage.class, 0)
-                .decoder(UpdateModuleCaseMessage::decode)
-                .encoder(UpdateModuleCaseMessage::encode)
-                .consumer(UpdateModuleCaseMessage::consume)
+        this.channel.messageBuilder(AddModuleCaseMessage.class, 0)
+                .decoder(AddModuleCaseMessage::decode)
+                .encoder(AddModuleCaseMessage::encode)
+                .consumer(AddModuleCaseMessage::consume)
                 .add();
     }
 
     @Override
-    public void sendModuleCaseUpdate(IModularEntity entity, ModuleInstance<?> changed, boolean added) {
+    public void sendAddModuleCase(IModularEntity entity, ModuleInstance<?> moduleInstance, ModuleSlot moduleSlot) {
         if (!entity.getTheWorld().isRemote()) {
-            this.channel.send(
-                    PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity::getSelf),
-                    new UpdateModuleCaseMessage(
-                            entity,
-                            changed,
-                            added
-                    )
-            );
+            this.channel.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity::getSelf),
+                    new AddModuleCaseMessage(entity, moduleInstance, moduleSlot));
         }
     }
 }

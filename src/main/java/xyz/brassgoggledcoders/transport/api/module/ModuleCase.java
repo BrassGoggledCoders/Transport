@@ -2,8 +2,6 @@ package xyz.brassgoggledcoders.transport.api.module;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -11,45 +9,39 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class ModuleCase implements INBTSerializable<CompoundNBT> {
     private final IModularEntity modularEntity;
-    private final Map<UUID, ModuleInstance<?>> byUUID;
-    private final Multimap<Module<?>, ModuleInstance<?>> byModule;
-    private final Multimap<ModuleType<?>, ModuleInstance<?>> byModuleType;
+    private final Map<ModuleSlot, ModuleInstance<?>> byModuleSlot;
+    private final Map<ModuleType<?>, ModuleInstance<?>> byModuleType;
 
     public ModuleCase(IModularEntity modularEntity) {
         this.modularEntity = modularEntity;
-        this.byUUID = Maps.newHashMap();
-        this.byModule = Multimaps.newListMultimap(Maps.newHashMap(), Lists::newArrayList);
-        this.byModuleType = Multimaps.newListMultimap(Maps.newHashMap(), Lists::newArrayList);
+        this.byModuleSlot = Maps.newHashMap();
+        this.byModuleType = Maps.newHashMap();
     }
 
     @Nullable
-    public <T extends Module<T>> ModuleInstance<T> addModule(Module<T> module) {
-        return this.addModule(module, UUID.randomUUID(), true);
+    public <T extends Module<T>> ModuleInstance<T> addModule(Module<T> module, ModuleSlot moduleSlot) {
+        return this.addModule(module, moduleSlot, true);
     }
 
     @Nullable
-    public <T extends Module<T>> ModuleInstance<T> addModule(Module<T> module, boolean sendUpdate) {
-        return this.addModule(module, UUID.randomUUID(), sendUpdate);
-    }
-
-    @Nullable
-    public <T extends Module<T>> ModuleInstance<T> addModule(Module<T> module, UUID forcedUniqueId, boolean sendUpdate) {
-        if (modularEntity.canEquipModule(module) && module.isValidFor(modularEntity)) {
+    public <T extends Module<T>> ModuleInstance<T> addModule(Module<T> module, ModuleSlot moduleSlot, boolean sendUpdate) {
+        if (modularEntity.canEquipModule(module) && module.isValidFor(modularEntity) && !byModuleSlot.containsKey(moduleSlot)) {
             ModuleInstance<T> moduleInstance = module.createInstance(modularEntity);
-            moduleInstance.setUniqueId(forcedUniqueId);
-            byUUID.put(moduleInstance.getUniqueId(), moduleInstance);
-            byModule.get(moduleInstance.getModule()).add(moduleInstance);
-            byModuleType.get(moduleInstance.getModuleType()).add(moduleInstance);
+            byModuleSlot.put(moduleSlot, moduleInstance);
+            byModuleType.put(moduleInstance.getModuleType(), moduleInstance);
             if (sendUpdate) {
-                TransportAPI.getNetworkHandler().sendModuleCaseUpdate(this.modularEntity, moduleInstance, true);
+                TransportAPI.getNetworkHandler().sendAddModuleCase(this.modularEntity, moduleInstance, moduleSlot);
             }
             return moduleInstance;
         } else {
@@ -62,19 +54,19 @@ public class ModuleCase implements INBTSerializable<CompoundNBT> {
     }
 
     public Collection<ModuleInstance<?>> getModules() {
-        return byUUID.values();
+        return byModuleSlot.values();
     }
 
     @SuppressWarnings("unchecked")
-    public <U extends ModuleInstance<T>, T extends Module<T>> Collection<? extends U> getComponentInstances(ModuleType<T> moduleType) {
-        return (Collection<? extends U>) byModuleType.get(moduleType);
+    public <U extends ModuleInstance<T>, T extends Module<T>> U getByModuleType(ModuleType<T> moduleType) {
+        return (U) byModuleType.get(moduleType);
     }
 
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT caseNBT = new CompoundNBT();
         ListNBT moduleNBT = new ListNBT();
-        for (ModuleInstance<?> moduleInstance : byUUID.values()) {
+        for (ModuleInstance<?> moduleInstance : byModuleSlot.values()) {
             CompoundNBT moduleInstanceNBT = new CompoundNBT();
             Module.toCompoundNBT(moduleInstance.getModule(), moduleInstanceNBT);
             CompoundNBT instanceNBT = moduleInstance.serializeNBT();
@@ -92,12 +84,10 @@ public class ModuleCase implements INBTSerializable<CompoundNBT> {
         for (int x = 0; x < moduleInstancesNBT.size(); x++) {
             CompoundNBT moduleInstanceNBT = moduleInstancesNBT.getCompound(x);
             Module<?> module = Module.fromCompoundNBT(moduleInstanceNBT);
-            if (module != null) {
+            ModuleSlot moduleSlot = ModuleSlots.MODULE_SLOT_MAP.get(moduleInstanceNBT.getString("moduleSlot"));
+            if (module != null && moduleSlot != null) {
                 CompoundNBT instanceNBT = moduleInstanceNBT.getCompound("instance");
-                ModuleInstance<?> moduleInstance = this.addModule(
-                        module,
-                        instanceNBT.getUniqueId("uniqueId"),
-                        false);
+                ModuleInstance<?> moduleInstance = this.addModule(module, moduleSlot, false);
                 instanceNBT.remove("uniqueId");
                 if (moduleInstance != null) {
                     moduleInstance.deserializeNBT(instanceNBT);
@@ -115,31 +105,30 @@ public class ModuleCase implements INBTSerializable<CompoundNBT> {
     }
 
     public void read(PacketBuffer packetBuffer) {
-        byUUID.clear();
-        byModule.clear();
+        byModuleSlot.clear();
         byModuleType.clear();
         int components = packetBuffer.readInt();
         for (int x = 0; x < components; x++) {
             Module<?> module = Module.fromPacketBuffer(packetBuffer);
-            UUID uniqueId = packetBuffer.readUniqueId();
-            if (module != null) {
-                this.addModule(module, uniqueId, false);
+            ModuleSlot moduleSlot = ModuleSlots.MODULE_SLOT_MAP.get(packetBuffer.readString(64));
+            if (module != null && moduleSlot != null) {
+                this.addModule(module, moduleSlot, false);
             }
         }
     }
 
-    public void remove(ModuleInstance<?> moduleInstance) {
-        this.removeByUniqueId(moduleInstance.getUniqueId(), true);
-    }
-
-    public void removeByUniqueId(UUID uniqueId, boolean sendUpdate) {
-        ModuleInstance<?> moduleInstance = this.byUUID.remove(uniqueId);
+    public void removeByModuleSlot(ModuleSlot moduleSlot, boolean sendUpdate) {
+        ModuleInstance<?> moduleInstance = this.byModuleSlot.remove(moduleSlot);
         if (moduleInstance != null) {
-            byModule.get(moduleInstance.getModule()).remove(moduleInstance);
-            byModuleType.get(moduleInstance.getModuleType()).remove(moduleInstance);
+            byModuleType.remove(moduleInstance.getModuleType());
             if (sendUpdate) {
-                TransportAPI.getNetworkHandler().sendModuleCaseUpdate(modularEntity, moduleInstance, false);
+                //TODO need send?
+                //TransportAPI.getNetworkHandler().sendAddModuleCase(modularEntity, moduleInstance, false);
             }
         }
+    }
+
+    public List<ModuleSlot> getModuleSlots() {
+        return Lists.newArrayList();
     }
 }

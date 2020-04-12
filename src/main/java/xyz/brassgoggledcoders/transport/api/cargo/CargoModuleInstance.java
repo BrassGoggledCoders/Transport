@@ -1,7 +1,7 @@
 package xyz.brassgoggledcoders.transport.api.cargo;
 
 import net.minecraft.block.BlockState;
-import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 
 public class CargoModuleInstance extends ModuleInstance<CargoModule> {

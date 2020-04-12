@@ -19,6 +19,8 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 
@@ -96,7 +98,7 @@ public class CargoCarrierMinecartItem extends MinecartItem {
                 if (cargoNBT != null && cargoNBT.contains("name")) {
                     CargoModule cargoModule = TransportAPI.getCargo(cargoNBT.getString("name"));
                     if (cargoModule != null) {
-                        ModuleInstance<CargoModule> moduleInstance = cargoCarrierMinecartEntity.getModuleCase().addModule(cargoModule, false);
+                        ModuleInstance<CargoModule> moduleInstance = cargoCarrierMinecartEntity.getModuleCase().addModule(cargoModule, ModuleSlots.CARGO,false);
                         if (cargoNBT.contains("instance") && moduleInstance != null) {
                             moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
                         }
