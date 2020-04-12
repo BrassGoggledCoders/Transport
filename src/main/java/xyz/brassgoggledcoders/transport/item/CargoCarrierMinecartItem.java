@@ -96,7 +96,7 @@ public class CargoCarrierMinecartItem extends MinecartItem {
                 if (cargoNBT != null && cargoNBT.contains("name")) {
                     CargoModule cargoModule = TransportAPI.getCargo(cargoNBT.getString("name"));
                     if (cargoModule != null) {
-                        ModuleInstance<CargoModule> moduleInstance = cargoCarrierMinecartEntity.getModuleCase().addModule(cargoModule);
+                        ModuleInstance<CargoModule> moduleInstance = cargoCarrierMinecartEntity.getModuleCase().addModule(cargoModule, false);
                         if (cargoNBT.contains("instance") && moduleInstance != null) {
                             moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
                         }
@@ -127,14 +127,22 @@ public class CargoCarrierMinecartItem extends MinecartItem {
                         return itemStack;
                     })
                     .forEach(items::add);
+            items.add(new ItemStack(this));
         }
     }
 
     @Override
     @Nonnull
     public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-        return new TranslationTextComponent("text.transport.with",
-                Items.MINECART.getDisplayName(stack),
-                getCargo(stack.getChildTag("cargo")).getDisplayName());
+        CargoModule cargoModule = getCargo(stack.getChildTag("cargo"));
+        if (cargoModule != null) {
+            return new TranslationTextComponent(
+                    "text.transport.with",
+                    Items.MINECART.getDisplayName(stack),
+                    cargoModule.getDisplayName()
+            );
+        } else {
+            return super.getDisplayName(stack);
+        }
     }
 }

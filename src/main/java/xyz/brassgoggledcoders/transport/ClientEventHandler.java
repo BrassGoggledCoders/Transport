@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
@@ -30,5 +31,9 @@ public class ClientEventHandler {
                 .getRenderManager()
                 .register(TransportEntities.CARGO_MINECART.get(),
                         new CargoCarrierMinecartEntityRenderer(Minecraft.getInstance().getRenderManager()));
+    }
+
+    public static World getWorld() {
+        return Minecraft.getInstance().world;
     }
 }

@@ -90,13 +90,18 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
         if (!playerHeldItem.isEmpty()) {
             Module<?> module = TransportAPI.getModuleFromItem(playerHeldItem.getItem());
             if (module != null) {
-                ModuleInstance<?> moduleInstance = this.moduleCase.addModule(module);
-                if (moduleInstance != null) {
-                    if (moduleInstance instanceof EngineModuleInstance) {
-                        originalPushX = this.getPosX() - player.getPosX();
-                        originalPushZ = this.getPosZ() - player.getPosZ();
+                if (!world.isRemote()) {
+                    ModuleInstance<?> moduleInstance = this.moduleCase.addModule(module);
+                    if (moduleInstance != null) {
+                        if (moduleInstance instanceof EngineModuleInstance) {
+                            originalPushX = this.getPosX() - player.getPosX();
+                            originalPushZ = this.getPosZ() - player.getPosZ();
+                        }
+
                     }
                     return ActionResultType.SUCCESS;
+                } else {
+                    return ActionResultType.CONSUME;
                 }
             }
         }
@@ -139,7 +144,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
             if (cargoNBT.contains("name")) {
                 CargoModule cargoModule = TransportAPI.getCargo(cargoNBT.getString("name"));
                 if (cargoModule != null) {
-                    ModuleInstance<CargoModule> moduleInstance = this.getModuleCase().addModule(cargoModule);
+                    ModuleInstance<CargoModule> moduleInstance = this.getModuleCase().addModule(cargoModule, false);
                     if (cargoNBT.contains("instance") && moduleInstance != null) {
                         moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
                     }
@@ -176,7 +181,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     }
 
     @Override
-    public boolean canEquipComponent(Module<?> module) {
+    public boolean canEquipModule(Module<?> module) {
         return this.getModuleInstances(module.getType()).isEmpty();
     }
 
@@ -222,7 +227,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @Override
     public void tick() {
         super.tick();
-        moduleCase.getComponents().forEach(ModuleInstance::tick);
+        moduleCase.getModules().forEach(ModuleInstance::tick);
         if (!this.world.isRemote()) {
             EngineModuleInstance engineModuleInstance = this.getModuleInstance(TransportObjects.ENGINE_TYPE);
             if (engineModuleInstance == null || engineModuleInstance.getPoweredState() != PoweredState.RUNNING ||
@@ -314,7 +319,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
 
     @Override
     public void onHeld() {
-        for (ModuleInstance<?> moduleInstance: this.getModuleCase().getComponents()) {
+        for (ModuleInstance<?> moduleInstance : this.getModuleCase().getModules()) {
             if (moduleInstance instanceof IHoldable) {
                 ((IHoldable) moduleInstance).onHeld();
             }
@@ -323,7 +328,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
 
     @Override
     public void onRelease() {
-        for (ModuleInstance<?> moduleInstance: this.getModuleCase().getComponents()) {
+        for (ModuleInstance<?> moduleInstance : this.getModuleCase().getModules()) {
             if (moduleInstance instanceof IHoldable) {
                 ((IHoldable) moduleInstance).onRelease();
             }

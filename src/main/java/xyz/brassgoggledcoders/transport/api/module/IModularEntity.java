@@ -32,7 +32,7 @@ public interface IModularEntity extends IItemProvider {
     @Nonnull
     Entity getSelf();
 
-    boolean canEquipComponent(Module<?> module);
+    boolean canEquipModule(Module<?> module);
 
     @Nonnull
     ITextComponent getCarrierDisplayName();
