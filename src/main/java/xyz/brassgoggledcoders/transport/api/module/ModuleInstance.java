@@ -21,12 +21,10 @@ public class ModuleInstance<MOD extends Module<MOD>>
         implements INBTSerializable<CompoundNBT>, ICapabilityProvider {
     private final MOD module;
     private final IModularEntity modularEntity;
-    private UUID uniqueId;
 
     protected ModuleInstance(MOD module, IModularEntity modularEntity) {
         this.module = module;
         this.modularEntity = modularEntity;
-        this.uniqueId = UUID.randomUUID();
     }
 
     public void tick() {
@@ -49,16 +47,11 @@ public class ModuleInstance<MOD extends Module<MOD>>
 
     @Override
     public CompoundNBT serializeNBT() {
-        CompoundNBT compoundNBT = new CompoundNBT();
-        compoundNBT.putUniqueId("uniqueId", this.uniqueId);
-        return compoundNBT;
+        return new CompoundNBT();
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        if (nbt.hasUniqueId("uniqueId")) {
-            this.setUniqueId(nbt.getUniqueId("uniqueId"));
-        }
     }
 
     public MOD getModule() {
@@ -76,13 +69,5 @@ public class ModuleInstance<MOD extends Module<MOD>>
 
     public ITextComponent getDisplayName() {
         return this.getModule().getDisplayName();
-    }
-
-    public UUID getUniqueId() {
-        return uniqueId;
-    }
-
-    public void setUniqueId(UUID uniqueId) {
-        this.uniqueId = uniqueId;
     }
 }

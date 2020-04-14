@@ -22,11 +22,13 @@ public class ModuleCase implements INBTSerializable<CompoundNBT> {
     private final IModularEntity modularEntity;
     private final Map<ModuleSlot, ModuleInstance<?>> byModuleSlot;
     private final Map<ModuleType<?>, ModuleInstance<?>> byModuleType;
+    private final List<ModuleSlot> moduleSlots;
 
-    public ModuleCase(IModularEntity modularEntity) {
+    public ModuleCase(IModularEntity modularEntity, ModuleSlot... moduleSlots) {
         this.modularEntity = modularEntity;
         this.byModuleSlot = Maps.newHashMap();
         this.byModuleType = Maps.newHashMap();
+        this.moduleSlots = Lists.newArrayList(moduleSlots);
     }
 
     @Nullable
@@ -36,7 +38,8 @@ public class ModuleCase implements INBTSerializable<CompoundNBT> {
 
     @Nullable
     public <T extends Module<T>> ModuleInstance<T> addModule(Module<T> module, ModuleSlot moduleSlot, boolean sendUpdate) {
-        if (modularEntity.canEquipModule(module) && module.isValidFor(modularEntity) && !byModuleSlot.containsKey(moduleSlot)) {
+        if (modularEntity.canEquipModule(module) && module.isValidFor(modularEntity) && !byModuleSlot.containsKey(moduleSlot)
+                && this.getModuleSlots().contains(moduleSlot)) {
             ModuleInstance<T> moduleInstance = module.createInstance(modularEntity);
             byModuleSlot.put(moduleSlot, moduleInstance);
             byModuleType.put(moduleInstance.getModuleType(), moduleInstance);
@@ -57,6 +60,18 @@ public class ModuleCase implements INBTSerializable<CompoundNBT> {
         return byModuleSlot.values();
     }
 
+    @Nullable
+    public ModuleInstance<?> getByModuleSlot(ModuleSlot moduleSlot) {
+        return byModuleSlot.get(moduleSlot);
+    }
+
+    public void removeByModuleSlot(ModuleSlot moduleSlot) {
+        ModuleInstance<?> moduleInstance = byModuleSlot.remove(moduleSlot);
+        if (moduleInstance != null) {
+            byModuleType.remove(moduleInstance.getModuleType());
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public <U extends ModuleInstance<T>, T extends Module<T>> U getByModuleType(ModuleType<T> moduleType) {
         return (U) byModuleType.get(moduleType);
@@ -66,12 +81,13 @@ public class ModuleCase implements INBTSerializable<CompoundNBT> {
     public CompoundNBT serializeNBT() {
         CompoundNBT caseNBT = new CompoundNBT();
         ListNBT moduleNBT = new ListNBT();
-        for (ModuleInstance<?> moduleInstance : byModuleSlot.values()) {
+        for (Map.Entry<ModuleSlot, ModuleInstance<?>> entrySet: byModuleSlot.entrySet()) {
             CompoundNBT moduleInstanceNBT = new CompoundNBT();
+            ModuleInstance<?> moduleInstance = entrySet.getValue();
             Module.toCompoundNBT(moduleInstance.getModule(), moduleInstanceNBT);
             CompoundNBT instanceNBT = moduleInstance.serializeNBT();
-            instanceNBT.putUniqueId("uniqueId", moduleInstance.getUniqueId());
             moduleInstanceNBT.put("instance", instanceNBT);
+            moduleInstanceNBT.putString("moduleSlot", entrySet.getKey().getName());
             moduleNBT.add(moduleInstanceNBT);
         }
         caseNBT.put("moduleInstances", moduleNBT);
@@ -88,7 +104,6 @@ public class ModuleCase implements INBTSerializable<CompoundNBT> {
             if (module != null && moduleSlot != null) {
                 CompoundNBT instanceNBT = moduleInstanceNBT.getCompound("instance");
                 ModuleInstance<?> moduleInstance = this.addModule(module, moduleSlot, false);
-                instanceNBT.remove("uniqueId");
                 if (moduleInstance != null) {
                     moduleInstance.deserializeNBT(instanceNBT);
                 }
@@ -97,10 +112,10 @@ public class ModuleCase implements INBTSerializable<CompoundNBT> {
     }
 
     public void write(PacketBuffer packetBuffer) {
-        packetBuffer.writeInt(this.getModules().size());
-        for (ModuleInstance<?> moduleInstance : this.getModules()) {
-            Module.toPacketBuffer(moduleInstance.getModule(), packetBuffer);
-            packetBuffer.writeUniqueId(moduleInstance.getUniqueId());
+        packetBuffer.writeInt(byModuleSlot.size());
+        for (Map.Entry<ModuleSlot, ModuleInstance<?>> entrySet: byModuleSlot.entrySet()) {
+            Module.toPacketBuffer(entrySet.getValue().getModule(), packetBuffer);
+            packetBuffer.writeString(entrySet.getKey().getName(), 64);
         }
     }
 
@@ -129,6 +144,6 @@ public class ModuleCase implements INBTSerializable<CompoundNBT> {
     }
 
     public List<ModuleSlot> getModuleSlots() {
-        return Lists.newArrayList();
+        return this.moduleSlots;
     }
 }

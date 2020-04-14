@@ -43,7 +43,7 @@ public abstract class Module<MOD extends Module<MOD>> extends ForgeRegistryEntry
         return name;
     }
 
-    public boolean isValidFor(IModularEntity carrier) {
+    public boolean isValidFor(IModularEntity modularEntity) {
         return true;
     }
 
@@ -84,6 +84,6 @@ public abstract class Module<MOD extends Module<MOD>> extends ForgeRegistryEntry
 
     public static void toCompoundNBT(Module<?> module, CompoundNBT compoundNBT) {
         compoundNBT.putString("type", String.valueOf(module.getType().getRegistryName()));
-        compoundNBT.putString("module", String.valueOf(module.getType().getRegistryName()));
+        compoundNBT.putString("module", String.valueOf(module.getRegistryName()));
     }
 }

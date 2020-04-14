@@ -43,29 +43,12 @@ public interface IModularEntity extends IItemProvider {
 
     @Nullable
     default <T extends Module<T>, U extends ModuleInstance<T>> U getModuleInstance(ModuleType<T> moduleType) {
-        Collection<? extends U> moduleInstances = this.getModuleInstances(moduleType);
-        if (moduleInstances.isEmpty()) {
-            return null;
-        } else {
-            return moduleInstances.stream()
-                    .findFirst()
-                    .orElse(null);
-        }
-    }
-
-    @Nullable
-    default <T extends Module<T>, U extends ModuleInstance<T>> U getModuleInstance(Supplier<ModuleType<T>> componentType) {
-        return getModuleInstance(componentType.get());
-    }
-
-    @Nonnull
-    default <T extends Module<T>, U extends ModuleInstance<T>> Collection<? extends U> getModuleInstances(ModuleType<T> moduleType) {
         return this.getModuleCase().getByModuleType(moduleType);
     }
 
-    @Nonnull
-    default <T extends Module<T>, U extends ModuleInstance<T>> Collection<? extends U> getModuleInstances(Supplier<ModuleType<T>> componentType) {
-        return getModuleInstances(componentType.get());
+    @Nullable
+    default <T extends Module<T>, U extends ModuleInstance<T>> U getModuleInstance(Supplier<ModuleType<T>> moduleType) {
+        return getModuleInstance(moduleType.get());
     }
 
     default <T extends Module<T>, U extends ModuleInstance<T>, V> V callModule(Supplier<ModuleType<T>> moduleType,

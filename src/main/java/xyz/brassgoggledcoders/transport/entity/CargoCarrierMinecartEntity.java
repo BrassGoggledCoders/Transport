@@ -58,7 +58,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
 
     public CargoCarrierMinecartEntity(EntityType<CargoCarrierMinecartEntity> entityType, World world) {
         super(entityType, world);
-        this.moduleCase = new ModuleCase(this);
+        this.moduleCase = new ModuleCase(this, ModuleSlots.CARGO, ModuleSlots.BACK);
     }
 
     public CargoCarrierMinecartEntity(World world, double x, double y, double z) {
@@ -68,7 +68,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     public CargoCarrierMinecartEntity(EntityType<CargoCarrierMinecartEntity> entityType, World world,
                                       double x, double y, double z) {
         super(entityType, world, x, y, z);
-        this.moduleCase = new ModuleCase(this);
+        this.moduleCase = new ModuleCase(this, ModuleSlots.CARGO, ModuleSlots.BACK);
     }
 
     @Override
@@ -88,6 +88,10 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @ParametersAreNonnullByDefault
     public ActionResultType applyPlayerInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
         EngineModuleInstance engineModuleInstance = this.getModuleInstance(TransportObjects.ENGINE_TYPE);
+        if (engineModuleInstance != null && originalPushX == 0D && originalPushZ == 0D) {
+            originalPushX = this.getPosX() - player.getPosX();
+            originalPushZ = this.getPosZ() - player.getPosZ();
+        }
         if (engineModuleInstance != null && vec.getY() < 0.5D) {
             ActionResultType engineResult = engineModuleInstance.applyInteraction(player, vec, hand);
             if (engineResult != ActionResultType.PASS) {
@@ -163,7 +167,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
 
     @Override
     public boolean canEquipModule(Module<?> module) {
-        return this.getModuleInstances(module.getType()).isEmpty();
+        return this.getModuleInstance(module.getType()) == null;
     }
 
     @Override
@@ -314,5 +318,14 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
                 ((IHoldable) moduleInstance).onRelease();
             }
         }
+    }
+
+    public void setOriginalPushes(PlayerEntity playerEntity) {
+        this.setOriginalPushes(this.getPosX() - playerEntity.getPosX(), this.getPosZ() - playerEntity.getPosZ());
+    }
+
+    public void setOriginalPushes(double pushX, double pushZ) {
+        this.originalPushX = pushX;
+        this.originalPushZ = pushZ;
     }
 }
