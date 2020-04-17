@@ -218,4 +218,25 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
         return new BasicAddonContainer(this, new TileEntityLocatorInstance(this.pos),
                 IWorldPosCallable.of(Objects.requireNonNull(this.world), this.pos), playerInventory, windowId);
     }
+
+    @Nullable
+    public IModularEntity getEntity() {
+        return this.entity;
+    }
+
+    @Override
+    @Nonnull
+    public CompoundNBT write(@Nonnull CompoundNBT compound) {
+        CompoundNBT compoundNBT = super.write(compound);
+        compoundNBT.put("modularInventory", this.modularItemInventory.serializeNBT());
+        compoundNBT.put("moduleInventory", this.moduleInventory.serializeNBT());
+        return compoundNBT;
+    }
+
+    @Override
+    public void read(@Nonnull CompoundNBT compound) {
+        super.read(compound);
+        this.modularItemInventory.deserializeNBT(compound.getCompound("modularInventory"));
+        this.moduleInventory.deserializeNBT(compound.getCompound("moduleInventory"));
+    }
 }
