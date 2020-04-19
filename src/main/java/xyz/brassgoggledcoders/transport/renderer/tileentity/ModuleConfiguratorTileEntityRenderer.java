@@ -25,7 +25,7 @@ public class ModuleConfiguratorTileEntityRenderer extends TileEntityRenderer<Mod
         if (modularEntity != null) {
             matrixStack.push();
             matrixStack.scale(0.75F, 0.75F, 0.75F);
-            matrixStack.translate(0.675F, 1.2F, 0.675F);
+            matrixStack.translate(0.675F, 0.6F, 0.675F);
             matrixStack.rotate(new Quaternion(0, tileEntity.getBlockState().get(ModuleConfiguratorBlock.FACING)
                     .getHorizontalIndex() * 90, 0, true));
             Minecraft.getInstance().getRenderManager().renderEntityStatic(modularEntity.getSelf(), 0, 0, 0,

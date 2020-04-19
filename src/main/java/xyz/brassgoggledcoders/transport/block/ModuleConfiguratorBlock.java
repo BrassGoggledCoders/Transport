@@ -15,6 +15,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -26,6 +28,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ModuleConfiguratorBlock extends Block {
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
+
+    private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
 
     public ModuleConfiguratorBlock() {
         this(Properties.create(Material.IRON).notSolid());
@@ -43,15 +47,13 @@ public class ModuleConfiguratorBlock extends Block {
     @Nullable
     @Override
     public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
-        return this.getDefaultState().with(FACING, context.getNearestLookingDirection());
+        return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing());
     }
 
     @Override
     public BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation direction) {
         return state.with(FACING, direction.rotate(state.get(FACING)));
     }
-
-
 
     @Override
     public boolean hasTileEntity(BlockState blockState) {
@@ -62,6 +64,14 @@ public class ModuleConfiguratorBlock extends Block {
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new ModuleConfiguratorTileEntity();
+    }
+
+    @Override
+    @Nonnull
+    @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return SHAPE;
     }
 
     @Override

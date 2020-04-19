@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "minecraft:block/crafting_table"
+      "model": "transport:block/modular_configurator"
     }
   }
 }

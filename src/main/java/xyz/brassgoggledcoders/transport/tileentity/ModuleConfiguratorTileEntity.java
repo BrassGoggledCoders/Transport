@@ -97,9 +97,11 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
     }
 
     public ActionResultType openScreen(PlayerEntity playerEntity) {
-        if (!playerEntity.isCrouching() && !this.getTheWorld().isRemote() && playerEntity instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) playerEntity, this, packetBuffer ->
-                    LocatorFactory.writePacketBuffer(packetBuffer, new TileEntityLocatorInstance(this.pos)));
+        if (!playerEntity.isCrouching()) {
+            if (!this.getTheWorld().isRemote() && playerEntity instanceof ServerPlayerEntity) {
+                NetworkHooks.openGui((ServerPlayerEntity) playerEntity, this, packetBuffer ->
+                        LocatorFactory.writePacketBuffer(packetBuffer, new TileEntityLocatorInstance(this.pos)));
+            }
             return ActionResultType.SUCCESS;
         } else {
             return ActionResultType.PASS;
