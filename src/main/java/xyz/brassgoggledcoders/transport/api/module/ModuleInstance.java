@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.api.module;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -69,5 +70,9 @@ public class ModuleInstance<MOD extends Module<MOD>>
 
     public ITextComponent getDisplayName() {
         return this.getModule().getDisplayName();
+    }
+
+    public ItemStack asItemStack() {
+        return new ItemStack(this.getModule().asItem());
     }
 }
