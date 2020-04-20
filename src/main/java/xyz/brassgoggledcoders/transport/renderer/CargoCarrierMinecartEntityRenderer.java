@@ -11,6 +11,13 @@ import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.TransportClientAPI;
+import xyz.brassgoggledcoders.transport.api.module.Module;
+import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
+import xyz.brassgoggledcoders.transport.api.renderer.IModuleRenderer;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -23,8 +30,8 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
     @Override
     @ParametersAreNonnullByDefault
     public void render(CargoCarrierMinecartEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack,
-                       IRenderTypeBuffer buffer, int packedLightIn) {
-        super.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLightIn);
+                       IRenderTypeBuffer buffer, int packedLight) {
+        super.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
         matrixStack.push();
         long i = (long) entity.getEntityId() * 493286711L;
         i = i * i * 4392167121L + i * 98761L;
@@ -70,21 +77,20 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
             matrixStack.rotate(Vector3f.XP.rotationDegrees(MathHelper.sin(f5) * f5 * f6 / 10.0F * (float) entity.getRollingDirection()));
         }
 
-        int j = entity.getDisplayTileOffset();
-        BlockState blockstate = entity.getDisplayTile();
-        if (blockstate.getRenderType() != BlockRenderType.INVISIBLE) {
-            matrixStack.push();
-            matrixStack.scale(0.75F, 0.75F, 0.75F);
-            matrixStack.translate(-0.5D, (float) (j - 8) / 16.0F, 0.5D);
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
-            this.renderBlockState(entity, partialTicks, blockstate, matrixStack, buffer, packedLightIn);
-            matrixStack.pop();
+        ModuleInstance<?> moduleInstance = entity.getModuleCase().getByModuleSlot(ModuleSlots.CARGO);
+        if (moduleInstance != null) {
+            IModuleRenderer moduleRenderer = TransportClientAPI.getModuleRenderer(moduleInstance.getModule());
+            if (moduleRenderer != null) {
+                matrixStack.push();
+                moduleRenderer.render(moduleInstance, entityYaw, partialTicks, matrixStack, buffer, packedLight);
+                matrixStack.pop();
+            }
         }
 
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
         this.modelMinecart.setRotationAngles(entity, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F);
         IVertexBuilder ivertexbuilder = buffer.getBuffer(this.modelMinecart.getRenderType(this.getEntityTexture(entity)));
-        this.modelMinecart.render(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.modelMinecart.render(matrixStack, ivertexbuilder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         matrixStack.pop();
     }
 }

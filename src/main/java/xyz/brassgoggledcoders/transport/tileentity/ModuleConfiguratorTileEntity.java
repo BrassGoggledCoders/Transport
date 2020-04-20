@@ -189,12 +189,4 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
         CompoundNBT compoundNBT = pkt.getNbtCompound();
         this.modularItemInventory.deserializeNBT(compoundNBT.getCompound("modularInventory"));
     }
-
-    @Override
-    public void onLoad() {
-        if (this.world != null) {
-            this.world.getWorldInfo().getScheduledEvents().func_227576_a_("configurator-" + this.pos.toString(),
-                    this.world.getGameTime() + 3, (obj, manager, gameTime) -> this.markComponentForUpdate(false));
-        }
-    }
 }
