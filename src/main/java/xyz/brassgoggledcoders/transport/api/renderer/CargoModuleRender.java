@@ -19,7 +19,7 @@ public class CargoModuleRender implements IModuleRenderer {
             BlockState blockState = ((CargoModuleInstance) moduleInstance).getBlockState();
             if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
                 matrixStack.scale(0.75F, 0.75F, 0.75F);
-                matrixStack.translate(-0.5D, (float) -8 / 16.0F, 0.5D);
+                matrixStack.translate(-0.5D, -0.125, 0.5D);
                 matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
                 this.renderBlockState(blockState, matrixStack, buffer, packedLight);
             }
