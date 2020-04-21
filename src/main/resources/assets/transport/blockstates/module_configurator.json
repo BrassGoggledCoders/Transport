@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "transport:block/modular_configurator"
+    }
+  }
+}

@@ -2,7 +2,7 @@ package xyz.brassgoggledcoders.transport.engine;
 
 import net.minecraft.particles.ParticleTypes;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
-import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 
 public class CreativeEngineModuleInstance extends EngineModuleInstance {

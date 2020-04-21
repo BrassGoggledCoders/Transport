@@ -2,10 +2,9 @@ package xyz.brassgoggledcoders.transport.api.engine;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.IParticleData;
-import net.minecraft.util.math.Vec3d;
 import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 
 import javax.annotation.Nonnull;
 

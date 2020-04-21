@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.item;
 
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.RailShape;
@@ -18,7 +19,9 @@ import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
+import xyz.brassgoggledcoders.transport.api.item.IModularItem;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 
@@ -30,7 +33,7 @@ import java.util.Optional;
 
 import static net.minecraft.entity.item.minecart.AbstractMinecartEntity.Type.CHEST;
 
-public class CargoCarrierMinecartItem extends MinecartItem {
+public class CargoCarrierMinecartItem extends MinecartItem implements IModularItem<CargoCarrierMinecartEntity> {
     public CargoCarrierMinecartItem() {
         this(new Item.Properties()
                 .containerItem(Items.MINECART)
@@ -45,15 +48,6 @@ public class CargoCarrierMinecartItem extends MinecartItem {
                         .map(TransportAPI.CARGO.get()::getID)
                         .map(id -> id / 1000F)
                         .orElse(0.000F));
-    }
-
-    public static ItemStack getCartStack(CargoModuleInstance cargoModuleInstance) {
-        ItemStack itemStack = new ItemStack(TransportEntities.CARGO_MINECART_ITEM
-                .map(Item::asItem)
-                .orElse(Items.MINECART));
-        itemStack.getOrCreateChildTag("cargo").putString("name", Objects.requireNonNull(
-                cargoModuleInstance.getModule().getRegistryName()).toString());
-        return itemStack;
     }
 
     public static CargoModule getCargo(@Nullable CompoundNBT cargo) {
@@ -96,11 +90,15 @@ public class CargoCarrierMinecartItem extends MinecartItem {
                 if (cargoNBT != null && cargoNBT.contains("name")) {
                     CargoModule cargoModule = TransportAPI.getCargo(cargoNBT.getString("name"));
                     if (cargoModule != null) {
-                        ModuleInstance<CargoModule> moduleInstance = cargoCarrierMinecartEntity.getModuleCase().addModule(cargoModule);
+                        ModuleInstance<CargoModule> moduleInstance = cargoCarrierMinecartEntity.getModuleCase().addModule(cargoModule, ModuleSlots.CARGO,false);
                         if (cargoNBT.contains("instance") && moduleInstance != null) {
                             moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
                         }
                     }
+                }
+
+                if (context.getPlayer() != null) {
+                    cargoCarrierMinecartEntity.setOriginalPushes(context.getPlayer());
                 }
 
                 world.addEntity(cargoCarrierMinecartEntity);
@@ -127,14 +125,27 @@ public class CargoCarrierMinecartItem extends MinecartItem {
                         return itemStack;
                     })
                     .forEach(items::add);
+            items.add(new ItemStack(this));
         }
     }
 
     @Override
     @Nonnull
     public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-        return new TranslationTextComponent("text.transport.with",
-                Items.MINECART.getDisplayName(stack),
-                getCargo(stack.getChildTag("cargo")).getDisplayName());
+        CargoModule cargoModule = getCargo(stack.getChildTag("cargo"));
+        if (cargoModule != null) {
+            return new TranslationTextComponent(
+                    "text.transport.with",
+                    Items.MINECART.getDisplayName(stack),
+                    cargoModule.getDisplayName()
+            );
+        } else {
+            return super.getDisplayName(stack);
+        }
+    }
+
+    @Override
+    public EntityType<CargoCarrierMinecartEntity> getEntityType() {
+        return TransportEntities.CARGO_MINECART.get();
     }
 }

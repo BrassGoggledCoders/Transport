@@ -34,11 +34,13 @@ import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 import xyz.brassgoggledcoders.transport.api.engine.PoweredState;
 import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
-import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleCase;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,7 +59,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
 
     public CargoCarrierMinecartEntity(EntityType<CargoCarrierMinecartEntity> entityType, World world) {
         super(entityType, world);
-        this.moduleCase = new ModuleCase(this);
+        this.moduleCase = new ModuleCase(this, ModuleSlots.CARGO, ModuleSlots.BACK);
     }
 
     public CargoCarrierMinecartEntity(World world, double x, double y, double z) {
@@ -67,7 +69,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     public CargoCarrierMinecartEntity(EntityType<CargoCarrierMinecartEntity> entityType, World world,
                                       double x, double y, double z) {
         super(entityType, world, x, y, z);
-        this.moduleCase = new ModuleCase(this);
+        this.moduleCase = new ModuleCase(this, ModuleSlots.CARGO, ModuleSlots.BACK);
     }
 
     @Override
@@ -86,22 +88,22 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @Nonnull
     @ParametersAreNonnullByDefault
     public ActionResultType applyPlayerInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
-        ItemStack playerHeldItem = player.getHeldItem(hand);
-        if (!playerHeldItem.isEmpty()) {
-            Module<?> module = TransportAPI.getModuleFromItem(playerHeldItem.getItem());
-            if (module != null) {
-                ModuleInstance<?> moduleInstance = this.moduleCase.addModule(module);
-                if (moduleInstance != null) {
-                    if (moduleInstance instanceof EngineModuleInstance) {
-                        originalPushX = this.getPosX() - player.getPosX();
-                        originalPushZ = this.getPosZ() - player.getPosZ();
-                    }
+        EngineModuleInstance engineModuleInstance = this.getModuleInstance(TransportObjects.ENGINE_TYPE);
+        if (engineModuleInstance != null) {
+            if (originalPushX == 0D && originalPushZ == 0D) {
+                originalPushX = this.getPosX() - player.getPosX();
+                originalPushZ = this.getPosZ() - player.getPosZ();
+            } else {
+                ItemStack itemStack = player.getHeldItem(hand);
+                if (!itemStack.isEmpty() && itemStack.getItem().isIn(TransportItemTags.WRENCHES)) {
+                    originalPushX = -originalPushX;
+                    originalPushZ = -originalPushZ;
+                    this.setMotion(this.getMotion().mul(-1, 0, -1));
+                    this.rotationYaw = this.rotationYaw - 180;
                     return ActionResultType.SUCCESS;
                 }
             }
         }
-
-        EngineModuleInstance engineModuleInstance = this.getModuleInstance(TransportObjects.ENGINE_TYPE);
         if (engineModuleInstance != null && vec.getY() < 0.5D) {
             ActionResultType engineResult = engineModuleInstance.applyInteraction(player, vec, hand);
             if (engineResult != ActionResultType.PASS) {
@@ -139,7 +141,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
             if (cargoNBT.contains("name")) {
                 CargoModule cargoModule = TransportAPI.getCargo(cargoNBT.getString("name"));
                 if (cargoModule != null) {
-                    ModuleInstance<CargoModule> moduleInstance = this.getModuleCase().addModule(cargoModule);
+                    ModuleInstance<CargoModule> moduleInstance = this.getModuleCase().addModule(cargoModule, ModuleSlots.CARGO, false);
                     if (cargoNBT.contains("instance") && moduleInstance != null) {
                         moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
                     }
@@ -176,8 +178,8 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     }
 
     @Override
-    public boolean canEquipComponent(Module<?> module) {
-        return this.getModuleInstances(module.getType()).isEmpty();
+    public boolean canEquipModule(Module<?> module) {
+        return this.getModuleInstance(module.getType()) == null;
     }
 
     @Override
@@ -222,7 +224,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @Override
     public void tick() {
         super.tick();
-        moduleCase.getComponents().forEach(ModuleInstance::tick);
+        moduleCase.getModules().forEach(ModuleInstance::tick);
         if (!this.world.isRemote()) {
             EngineModuleInstance engineModuleInstance = this.getModuleInstance(TransportObjects.ENGINE_TYPE);
             if (engineModuleInstance == null || engineModuleInstance.getPoweredState() != PoweredState.RUNNING ||
@@ -314,7 +316,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
 
     @Override
     public void onHeld() {
-        for (ModuleInstance<?> moduleInstance: this.getModuleCase().getComponents()) {
+        for (ModuleInstance<?> moduleInstance : this.getModuleCase().getModules()) {
             if (moduleInstance instanceof IHoldable) {
                 ((IHoldable) moduleInstance).onHeld();
             }
@@ -323,10 +325,19 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
 
     @Override
     public void onRelease() {
-        for (ModuleInstance<?> moduleInstance: this.getModuleCase().getComponents()) {
+        for (ModuleInstance<?> moduleInstance : this.getModuleCase().getModules()) {
             if (moduleInstance instanceof IHoldable) {
                 ((IHoldable) moduleInstance).onRelease();
             }
         }
+    }
+
+    public void setOriginalPushes(PlayerEntity playerEntity) {
+        this.setOriginalPushes(this.getPosX() - playerEntity.getPosX(), this.getPosZ() - playerEntity.getPosZ());
+    }
+
+    public void setOriginalPushes(double pushX, double pushZ) {
+        this.originalPushX = pushX;
+        this.originalPushZ = pushZ;
     }
 }

@@ -16,6 +16,7 @@ import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
+import xyz.brassgoggledcoders.transport.api.network.INetworkHandler;
 import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorage;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingDeserializer;
@@ -24,12 +25,15 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 public class TransportAPI {
     public static final Logger LOGGER = LogManager.getLogger("transport-api");
 
     @CapabilityInject(RoutingStorage.class)
     public static Capability<RoutingStorage> ROUTING_STORAGE;
+
+    private static INetworkHandler networkHandler;
 
     private static final Map<Block, IPointMachineBehavior> POINT_MACHINE_BEHAVIORS = Maps.newHashMap();
     private static final Map<String, RoutingDeserializer> ROUTING_DESERIALIZERS = Maps.newHashMap();
@@ -117,5 +121,17 @@ public class TransportAPI {
                 }
             }
         }
+    }
+
+    public static void setNetworkHandler(INetworkHandler newNetworkHandler) {
+        if (networkHandler != null) {
+            throw new IllegalStateException("Tried to start Network Handler again");
+        } else {
+            networkHandler = newNetworkHandler;
+        }
+    }
+
+    public static INetworkHandler getNetworkHandler() {
+        return Objects.requireNonNull(networkHandler, "Network Handler has not been set");
     }
 }

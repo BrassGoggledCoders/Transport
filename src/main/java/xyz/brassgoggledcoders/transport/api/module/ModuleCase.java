@@ -1,34 +1,51 @@
 package xyz.brassgoggledcoders.transport.api.module;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Objects;
+import java.util.List;
+import java.util.Map;
 
 public class ModuleCase implements INBTSerializable<CompoundNBT> {
     private final IModularEntity modularEntity;
-    private final Table<ModuleType<?>, Module<?>, ModuleInstance<?>> equippedModules;
+    private final Map<ModuleSlot, ModuleInstance<?>> byModuleSlot;
+    private final Map<ModuleType<?>, ModuleInstance<?>> byModuleType;
+    private final List<ModuleSlot> moduleSlots;
 
-    public ModuleCase(IModularEntity modularEntity) {
+    public ModuleCase(IModularEntity modularEntity, ModuleSlot... moduleSlots) {
         this.modularEntity = modularEntity;
-        this.equippedModules = HashBasedTable.create();
+        this.byModuleSlot = Maps.newHashMap();
+        this.byModuleType = Maps.newHashMap();
+        this.moduleSlots = Lists.newArrayList(moduleSlots);
     }
 
     @Nullable
-    public <T extends Module<T>> ModuleInstance<T> addModule(Module<T> module) {
-        if (modularEntity.canEquipComponent(module) && module.isValidFor(modularEntity)) {
+    public <T extends Module<T>> ModuleInstance<T> addModule(Module<T> module, ModuleSlot moduleSlot) {
+        return this.addModule(module, moduleSlot, true);
+    }
+
+    @Nullable
+    public <T extends Module<T>> ModuleInstance<T> addModule(Module<T> module, ModuleSlot moduleSlot, boolean sendUpdate) {
+        if (modularEntity.canEquipModule(module) && module.isValidFor(modularEntity) && !byModuleSlot.containsKey(moduleSlot)
+                && this.getModuleSlots().contains(moduleSlot)) {
             ModuleInstance<T> moduleInstance = module.createInstance(modularEntity);
-            equippedModules.put(module.getType(), module, moduleInstance);
+            byModuleSlot.put(moduleSlot, moduleInstance);
+            byModuleType.put(moduleInstance.getModuleType(), moduleInstance);
+            if (sendUpdate) {
+                TransportAPI.getNetworkHandler().sendAddModuleCase(this.modularEntity, moduleInstance, moduleSlot);
+            }
             return moduleInstance;
         } else {
             return null;
@@ -39,65 +56,94 @@ public class ModuleCase implements INBTSerializable<CompoundNBT> {
         return new ItemStack(modularEntity.asItem());
     }
 
-    public Collection<ModuleInstance<?>> getComponents() {
-        return equippedModules.values();
+    public Collection<ModuleInstance<?>> getModules() {
+        return byModuleSlot.values();
+    }
+
+    @Nullable
+    public ModuleInstance<?> getByModuleSlot(ModuleSlot moduleSlot) {
+        return byModuleSlot.get(moduleSlot);
+    }
+
+    public void removeByModuleSlot(ModuleSlot moduleSlot) {
+        ModuleInstance<?> moduleInstance = byModuleSlot.remove(moduleSlot);
+        if (moduleInstance != null) {
+            byModuleType.remove(moduleInstance.getModuleType());
+        }
     }
 
     @SuppressWarnings("unchecked")
-    public <U extends ModuleInstance<T>, T extends Module<T>> Collection<? extends U> getComponentInstances(ModuleType<T> moduleType) {
-        return (Collection<U>) equippedModules.row(moduleType)
-                .values();
+    public <U extends ModuleInstance<T>, T extends Module<T>> U getByModuleType(ModuleType<T> moduleType) {
+        return (U) byModuleType.get(moduleType);
     }
 
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT caseNBT = new CompoundNBT();
         ListNBT moduleNBT = new ListNBT();
-        for (Table.Cell<ModuleType<?>, Module<?>, ModuleInstance<?>> cell : equippedModules.cellSet()) {
-            CompoundNBT cellNBT = new CompoundNBT();
-            cellNBT.putString("type", String.valueOf(Objects.requireNonNull(cell.getRowKey()).getRegistryName()));
-            cellNBT.putString("module", String.valueOf(Objects.requireNonNull(cell.getColumnKey()).getRegistryName()));
-            cellNBT.put("instance", Objects.requireNonNull(cell.getValue()).serializeNBT());
-            moduleNBT.add(cellNBT);
+        for (Map.Entry<ModuleSlot, ModuleInstance<?>> entrySet: byModuleSlot.entrySet()) {
+            CompoundNBT moduleInstanceNBT = new CompoundNBT();
+            ModuleInstance<?> moduleInstance = entrySet.getValue();
+            Module.toCompoundNBT(moduleInstance.getModule(), moduleInstanceNBT);
+            CompoundNBT instanceNBT = moduleInstance.serializeNBT();
+            moduleInstanceNBT.put("instance", instanceNBT);
+            moduleInstanceNBT.putString("moduleSlot", entrySet.getKey().getName());
+            moduleNBT.add(moduleInstanceNBT);
         }
-        caseNBT.put("modules", moduleNBT);
+        caseNBT.put("moduleInstances", moduleNBT);
         return caseNBT;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        ListNBT moduleNBT = nbt.getList("modules", Constants.NBT.TAG_COMPOUND);
-        for (int x = 0; x < moduleNBT.size(); x++) {
-            CompoundNBT cellNBT = moduleNBT.getCompound(x);
-            ModuleType<?> moduleType = TransportAPI.getModuleType(cellNBT.getString("type"));
-            if (moduleType != null) {
-                Module<?> module = (Module<?>) moduleType.load(cellNBT.getString("module"));
-                if (module != null) {
-                    ModuleInstance<?> moduleInstance = module.createInstance(this.modularEntity);
-                    moduleInstance.deserializeNBT(cellNBT.getCompound("instance"));
-                    equippedModules.put(moduleType, module, moduleInstance);
+        ListNBT moduleInstancesNBT = nbt.getList("moduleInstances", Constants.NBT.TAG_COMPOUND);
+        for (int x = 0; x < moduleInstancesNBT.size(); x++) {
+            CompoundNBT moduleInstanceNBT = moduleInstancesNBT.getCompound(x);
+            Module<?> module = Module.fromCompoundNBT(moduleInstanceNBT);
+            ModuleSlot moduleSlot = ModuleSlots.MODULE_SLOT_MAP.get(moduleInstanceNBT.getString("moduleSlot"));
+            if (module != null && moduleSlot != null) {
+                CompoundNBT instanceNBT = moduleInstanceNBT.getCompound("instance");
+                ModuleInstance<?> moduleInstance = this.addModule(module, moduleSlot, false);
+                if (moduleInstance != null) {
+                    moduleInstance.deserializeNBT(instanceNBT);
                 }
             }
         }
     }
 
-    public void write(PacketBuffer buffer) {
-        buffer.writeInt(this.getComponents().size());
-        for (ModuleInstance<?> moduleInstance : this.getComponents()) {
-            buffer.writeResourceLocation(Objects.requireNonNull(moduleInstance.getModule().getType().getRegistryName()));
-            buffer.writeResourceLocation(Objects.requireNonNull(moduleInstance.getModule().getRegistryName()));
+    public void write(PacketBuffer packetBuffer) {
+        packetBuffer.writeInt(byModuleSlot.size());
+        for (Map.Entry<ModuleSlot, ModuleInstance<?>> entrySet: byModuleSlot.entrySet()) {
+            Module.toPacketBuffer(entrySet.getValue().getModule(), packetBuffer);
+            packetBuffer.writeString(entrySet.getKey().getName(), 64);
         }
     }
 
-    public void read(PacketBuffer buffer) {
-        equippedModules.clear();
-        int components = buffer.readInt();
+    public void read(PacketBuffer packetBuffer) {
+        byModuleSlot.clear();
+        byModuleType.clear();
+        int components = packetBuffer.readInt();
         for (int x = 0; x < components; x++) {
-            ModuleType<?> moduleType = TransportAPI.getModuleType(buffer.readResourceLocation());
-            ResourceLocation componentRegistryName = buffer.readResourceLocation();
-            if (moduleType != null) {
-                this.addModule((Module<?>) moduleType.load(componentRegistryName));
+            Module<?> module = Module.fromPacketBuffer(packetBuffer);
+            ModuleSlot moduleSlot = ModuleSlots.MODULE_SLOT_MAP.get(packetBuffer.readString(64));
+            if (module != null && moduleSlot != null) {
+                this.addModule(module, moduleSlot, false);
             }
         }
+    }
+
+    public void removeByModuleSlot(ModuleSlot moduleSlot, boolean sendUpdate) {
+        ModuleInstance<?> moduleInstance = this.byModuleSlot.remove(moduleSlot);
+        if (moduleInstance != null) {
+            byModuleType.remove(moduleInstance.getModuleType());
+            if (sendUpdate) {
+                //TODO need send?
+                //TransportAPI.getNetworkHandler().sendAddModuleCase(modularEntity, moduleInstance, false);
+            }
+        }
+    }
+
+    public List<ModuleSlot> getModuleSlots() {
+        return this.moduleSlots;
     }
 }

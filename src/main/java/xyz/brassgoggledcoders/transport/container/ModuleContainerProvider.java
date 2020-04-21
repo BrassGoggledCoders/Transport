@@ -6,7 +6,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.util.text.ITextComponent;
-import xyz.brassgoggledcoders.transport.api.module.IModularEntity;
+import net.minecraft.util.text.TextFormatting;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
 import xyz.brassgoggledcoders.transport.entity.EntityWorldPosCallable;
@@ -27,7 +28,9 @@ public class ModuleContainerProvider implements INamedContainerProvider {
     @Override
     @Nonnull
     public ITextComponent getDisplayName() {
-        return moduleInstance.getDisplayName();
+        return moduleInstance.getDisplayName()
+                .shallowCopy()
+                .applyTextStyle(TextFormatting.BLACK);
     }
 
     @Nullable

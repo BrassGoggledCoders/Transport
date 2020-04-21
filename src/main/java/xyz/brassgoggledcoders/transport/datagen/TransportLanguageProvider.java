@@ -4,6 +4,8 @@ import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.module.Module;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 import xyz.brassgoggledcoders.transport.content.*;
 
 import java.util.function.Supplier;
@@ -28,6 +30,7 @@ public class TransportLanguageProvider extends LanguageProvider {
         this.addBlock(TransportBlocks.SWITCH_RAIL, "Switch Rail");
         this.addBlock(TransportBlocks.WYE_SWITCH_RAIL, "Wye Switch Rail");
         this.addBlock(TransportBlocks.BUMPER_RAIL, "Bumper Rail");
+        this.addBlock(TransportBlocks.MODULE_CONFIGURATOR, "Module Configurator");
         //endregion
 
         //region Cargo
@@ -37,8 +40,8 @@ public class TransportLanguageProvider extends LanguageProvider {
         //endregion
 
         //region Entity
-        this.add(TransportEntities.CARGO_MINECART.get(), "Minecart");
-        this.add(TransportEntities.CARGO_MINECART_ITEM.get(), "Minecart");
+        this.add(TransportEntities.CARGO_MINECART.get(), "Modular Minecart");
+        this.add(TransportEntities.CARGO_MINECART_ITEM.get(), "Modular Minecart");
         //endregion
 
         //region Engine
@@ -49,6 +52,12 @@ public class TransportLanguageProvider extends LanguageProvider {
 
         //region Item
         this.add(TransportItems.RAIL_BREAKER.get(), "Rail Breaker");
+        //endregion
+
+        //region ModuleSlots
+        this.add(ModuleSlots.CARGO, "Cargo");
+        this.add(ModuleSlots.BACK, "Back");
+        this.add(ModuleSlots.NONE, "None");
         //endregion
 
         //region Text
@@ -65,5 +74,9 @@ public class TransportLanguageProvider extends LanguageProvider {
 
     public void add(Module<?> registryEntry, String name) {
         this.add(registryEntry.getTranslationKey(), name);
+    }
+
+    public void add(ModuleSlot moduleSlot, String name) {
+        this.add(moduleSlot.getTranslationKey(), name);
     }
 }

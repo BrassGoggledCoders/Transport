@@ -3,14 +3,11 @@ package xyz.brassgoggledcoders.transport;
 import com.hrznstudio.titanium.network.locator.LocatorType;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.nbt.INBT;
 import net.minecraft.tileentity.LecternTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -38,13 +35,13 @@ import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
+import xyz.brassgoggledcoders.transport.nbt.EmptyStorage;
+import xyz.brassgoggledcoders.transport.network.NetworkHandler;
 import xyz.brassgoggledcoders.transport.pointmachine.ComparatorPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RoutingPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.routing.instruction.*;
-
-import javax.annotation.Nullable;
 
 import static xyz.brassgoggledcoders.transport.Transport.ID;
 
@@ -58,6 +55,8 @@ public class Transport {
 
     public static Transport instance;
 
+    public final NetworkHandler networkHandler;
+
     public Transport() {
         instance = this;
 
@@ -68,6 +67,8 @@ public class Transport {
         modBus.addListener(this::commonSetup);
         modBus.addListener(this::newRegistry);
         MinecraftForge.EVENT_BUS.addGenericListener(TileEntity.class, this::attachCapability);
+        this.networkHandler = new NetworkHandler();
+        TransportAPI.setNetworkHandler(this.networkHandler);
     }
 
     public void attachCapability(AttachCapabilitiesEvent<TileEntity> attachCapabilitiesEvent) {
@@ -112,18 +113,7 @@ public class Transport {
         TransportAPI.addRoutingDeserializer("COMPARATOR", new SingleRoutingDeserializer<>(Number.class, ComparatorRouting::new));
         TransportAPI.addRoutingDeserializer("TIME", new ListValidatedRoutingDeserializer<>(String.class, TimeRouting::create));
 
-        CapabilityManager.INSTANCE.register(RoutingStorage.class, new Capability.IStorage<RoutingStorage>() {
-            @Nullable
-            @Override
-            public INBT writeNBT(Capability<RoutingStorage> capability, RoutingStorage instance, Direction side) {
-                return null;
-            }
-
-            @Override
-            public void readNBT(Capability<RoutingStorage> capability, RoutingStorage instance, Direction side, INBT nbt) {
-
-            }
-        }, RoutingStorage::new);
+        CapabilityManager.INSTANCE.register(RoutingStorage.class, new EmptyStorage<>(), RoutingStorage::new);
 
         TransportAPI.generateItemToModuleMap();
     }
