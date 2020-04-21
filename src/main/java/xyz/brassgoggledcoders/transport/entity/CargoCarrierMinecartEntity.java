@@ -40,6 +40,7 @@ import xyz.brassgoggledcoders.transport.api.module.ModuleCase;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -88,9 +89,20 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @ParametersAreNonnullByDefault
     public ActionResultType applyPlayerInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
         EngineModuleInstance engineModuleInstance = this.getModuleInstance(TransportObjects.ENGINE_TYPE);
-        if (engineModuleInstance != null && originalPushX == 0D && originalPushZ == 0D) {
-            originalPushX = this.getPosX() - player.getPosX();
-            originalPushZ = this.getPosZ() - player.getPosZ();
+        if (engineModuleInstance != null) {
+            if (originalPushX == 0D && originalPushZ == 0D) {
+                originalPushX = this.getPosX() - player.getPosX();
+                originalPushZ = this.getPosZ() - player.getPosZ();
+            } else {
+                ItemStack itemStack = player.getHeldItem(hand);
+                if (!itemStack.isEmpty() && itemStack.getItem().isIn(TransportItemTags.WRENCHES)) {
+                    originalPushX = -originalPushX;
+                    originalPushZ = -originalPushZ;
+                    this.setMotion(this.getMotion().mul(-1, 0, -1));
+                    this.rotationYaw = this.rotationYaw - 180;
+                    return ActionResultType.SUCCESS;
+                }
+            }
         }
         if (engineModuleInstance != null && vec.getY() < 0.5D) {
             ActionResultType engineResult = engineModuleInstance.applyInteraction(player, vec, hand);

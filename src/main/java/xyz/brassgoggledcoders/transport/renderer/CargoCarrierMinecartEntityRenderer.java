@@ -2,20 +2,16 @@ package xyz.brassgoggledcoders.transport.renderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.TransportClientAPI;
-import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 import xyz.brassgoggledcoders.transport.api.renderer.IModuleRenderer;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
@@ -31,7 +27,6 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
     @ParametersAreNonnullByDefault
     public void render(CargoCarrierMinecartEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack,
                        IRenderTypeBuffer buffer, int packedLight) {
-        super.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
         matrixStack.push();
         long i = (long) entity.getEntityId() * 493286711L;
         i = i * i * 4392167121L + i * 98761L;
@@ -43,7 +38,7 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
         double d1 = MathHelper.lerp(partialTicks, entity.lastTickPosY, entity.getPosY());
         double d2 = MathHelper.lerp(partialTicks, entity.lastTickPosZ, entity.getPosZ());
         Vec3d vec3d = entity.getPos(d0, d1, d2);
-        float f3 = MathHelper.lerp(partialTicks, entity.prevRotationPitch, entity.rotationPitch);
+        float pitch = MathHelper.lerp(partialTicks, entity.prevRotationPitch, entity.rotationPitch);
         if (vec3d != null) {
             Vec3d vec3d1 = entity.getPosOffset(d0, d1, d2, 0.3F);
             Vec3d vec3d2 = entity.getPosOffset(d0, d1, d2, -0.3F);
@@ -59,14 +54,31 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
             Vec3d vec3d3 = vec3d2.add(-vec3d1.x, -vec3d1.y, -vec3d1.z);
             if (vec3d3.length() != 0.0D) {
                 vec3d3 = vec3d3.normalize();
-                entityYaw = (float) (Math.atan2(vec3d3.z, vec3d3.x) * 180.0D / Math.PI);
-                f3 = (float) (Math.atan(vec3d3.y) * 73.0D);
+                entityYaw = (float) (Math.atan2(vec3d3.z, vec3d3.x) / Math.PI) * 180F;
+                pitch = (float) (Math.atan(vec3d3.y) * 73.0D);
             }
+        }
+
+        entityYaw = entityYaw % 360;
+        if (entityYaw < 0) {
+            entityYaw += 360;
+        }
+        entityYaw += 360;
+
+        double rotationYaw = (entity.rotationYaw + 180) % 360;
+        if (rotationYaw < 0) {
+            rotationYaw = rotationYaw + 360;
+        }
+        rotationYaw = rotationYaw + 360;
+
+        if (Math.abs(entityYaw - rotationYaw) > 90) {
+            entityYaw += 180;
+            pitch = -pitch;
         }
 
         matrixStack.translate(0.0D, 0.375D, 0.0D);
         matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F - entityYaw));
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(-f3));
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees(-pitch));
         float f5 = (float) entity.getRollingAmplitude() - partialTicks;
         float f6 = entity.getDamage() - partialTicks;
         if (f6 < 0.0F) {
