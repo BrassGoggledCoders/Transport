@@ -9,14 +9,11 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import sun.rmi.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportClientAPI;
 import xyz.brassgoggledcoders.transport.api.renderer.CargoModuleRender;
 import xyz.brassgoggledcoders.transport.api.renderer.IModuleRenderer;
-import xyz.brassgoggledcoders.transport.content.TransportBlocks;
-import xyz.brassgoggledcoders.transport.content.TransportCargoModules;
-import xyz.brassgoggledcoders.transport.content.TransportContainers;
-import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.api.renderer.ItemModuleRenderer;
+import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.renderer.CargoCarrierMinecartEntityRenderer;
 import xyz.brassgoggledcoders.transport.renderer.tileentity.ModuleConfiguratorTileEntityRenderer;
 
@@ -44,6 +41,11 @@ public class ClientEventHandler {
         TransportClientAPI.registerModuleRenderer(TransportCargoModules.ITEM.get(), cargoModuleRender);
         TransportClientAPI.registerModuleRenderer(TransportCargoModules.ENERGY.get(), cargoModuleRender);
         TransportClientAPI.registerModuleRenderer(TransportCargoModules.FLUID.get(), cargoModuleRender);
+
+        IModuleRenderer itemModuleRender = new ItemModuleRenderer();
+        TransportClientAPI.registerModuleRenderer(TransportEngineModules.BOOSTER.get(), itemModuleRender);
+        TransportClientAPI.registerModuleRenderer(TransportEngineModules.CREATIVE.get(), itemModuleRender);
+        TransportClientAPI.registerModuleRenderer(TransportEngineModules.SOLID_FUEL.get(), itemModuleRender);
     }
 
     public static World getWorld() {

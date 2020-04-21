@@ -77,12 +77,24 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
             matrixStack.rotate(Vector3f.XP.rotationDegrees(MathHelper.sin(f5) * f5 * f6 / 10.0F * (float) entity.getRollingDirection()));
         }
 
-        ModuleInstance<?> moduleInstance = entity.getModuleCase().getByModuleSlot(ModuleSlots.CARGO);
-        if (moduleInstance != null) {
-            IModuleRenderer moduleRenderer = TransportClientAPI.getModuleRenderer(moduleInstance.getModule());
+        ModuleInstance<?> cargoSlotModuleInstance = entity.getModuleCase().getByModuleSlot(ModuleSlots.CARGO);
+        if (cargoSlotModuleInstance != null) {
+            IModuleRenderer moduleRenderer = TransportClientAPI.getModuleRenderer(cargoSlotModuleInstance.getModule());
             if (moduleRenderer != null) {
                 matrixStack.push();
-                moduleRenderer.render(moduleInstance, entityYaw, partialTicks, matrixStack, buffer, packedLight);
+                moduleRenderer.render(cargoSlotModuleInstance, entityYaw, partialTicks, matrixStack, buffer, packedLight);
+                matrixStack.pop();
+            }
+        }
+
+        ModuleInstance<?> backSlotModuleInstance = entity.getModuleCase().getByModuleSlot(ModuleSlots.BACK);
+        if (backSlotModuleInstance != null) {
+            IModuleRenderer moduleRenderer = TransportClientAPI.getModuleRenderer(backSlotModuleInstance.getModule());
+            if (moduleRenderer != null) {
+                matrixStack.push();
+                matrixStack.translate(0.65F, 0F, -0.125F);
+                matrixStack.rotate(new Quaternion(90, 90, 0, true));
+                moduleRenderer.render(backSlotModuleInstance, entityYaw, partialTicks, matrixStack, buffer, packedLight);
                 matrixStack.pop();
             }
         }
