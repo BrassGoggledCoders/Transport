@@ -16,6 +16,8 @@ import xyz.brassgoggledcoders.transport.api.renderer.ItemModuleRenderer;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.renderer.CargoCarrierMinecartEntityRenderer;
 import xyz.brassgoggledcoders.transport.renderer.tileentity.ModuleConfiguratorTileEntityRenderer;
+import xyz.brassgoggledcoders.transport.screen.ModuleConfiguratorScreen;
+import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
 
 public class ClientEventHandler {
     public static void clientSetup(FMLClientSetupEvent event) {
@@ -30,6 +32,7 @@ public class ClientEventHandler {
         RenderTypeLookup.setRenderLayer(TransportBlocks.BUMPER_RAIL.getBlock(), RenderType.getCutout());
 
         ScreenManager.registerFactory(TransportContainers.MODULE.get(), BasicAddonScreen::new);
+        ScreenManager.registerFactory(TransportContainers.MODULE_CONFIGURATOR.get(), ModuleConfiguratorScreen::new);
 
         EntityRendererManager rendererManager = Minecraft.getInstance().getRenderManager();
         rendererManager.register(TransportEntities.CARGO_MINECART.get(), new CargoCarrierMinecartEntityRenderer(rendererManager));

@@ -36,6 +36,14 @@ public class ModuleCaseItemStackHandler implements IItemHandlerModifiable {
         }
     }
 
+    public ModuleSlot getModuleSlot(int slot) {
+        IModularEntity entity = this.modularEntity.get();
+        if (entity != null) {
+            return this.getModuleSlot(entity, slot);
+        }
+        return null;
+    }
+
     private ModuleSlot getModuleSlot(IModularEntity entity, int slot) {
         List<ModuleSlot> moduleSlots = entity.getModuleCase().getModuleSlots();
         if (slot >= 0 && slot < moduleSlots.size()) {

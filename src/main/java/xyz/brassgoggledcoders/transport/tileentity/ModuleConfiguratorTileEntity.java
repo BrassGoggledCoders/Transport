@@ -33,8 +33,10 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.item.IModularItem;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
 import xyz.brassgoggledcoders.transport.capability.ModuleCaseItemStackHandler;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.content.TransportContainers;
 import xyz.brassgoggledcoders.transport.screen.addon.BasicSlotsScreenAddon;
 
 import javax.annotation.Nonnull;
@@ -148,7 +150,8 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
     @ParametersAreNonnullByDefault
     public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity) {
         return new BasicAddonContainer(this, new TileEntityLocatorInstance(this.pos),
-                IWorldPosCallable.of(Objects.requireNonNull(this.world), this.pos), playerInventory, windowId);
+                TransportContainers.MODULE_CONFIGURATOR.get(), IWorldPosCallable.of(Objects.requireNonNull(this.world),
+                this.pos), playerInventory, windowId);
     }
 
     @Nullable
@@ -188,5 +191,9 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         CompoundNBT compoundNBT = pkt.getNbtCompound();
         this.modularItemInventory.deserializeNBT(compoundNBT.getCompound("modularInventory"));
+    }
+
+    public ModuleSlot getModuleSlot(int slotId) {
+        return this.moduleCaseItemStackHandler.getModuleSlot(slotId);
     }
 }
