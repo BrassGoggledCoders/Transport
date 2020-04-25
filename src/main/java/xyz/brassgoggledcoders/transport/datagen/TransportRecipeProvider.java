@@ -98,25 +98,16 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .build(consumer);
         //endregion
 
-        //region Cargo
-        TransportAPI.CARGO.get().getValues().forEach(cargo -> {
-            if (cargo.asItem() != Items.AIR && cargo.getRegistryName() != null) {
-                ResourceLocation registryName = cargo.getRegistryName();
-                CargoShapelessRecipeBuilder.start(TransportEntities.CARGO_MINECART_ITEM.get(), cargo)
-                        .addIngredient(Tags.Items.SLIMEBALLS)
-                        .addIngredient(Items.MINECART)
-                        .addIngredient(cargo.asItem())
-                        .addCriterion("has_item", hasItem(cargo.asItem()))
-                        .build(consumer, new ResourceLocation(registryName.getNamespace(), "cargo/minecart/" +
-                                registryName.getPath()));
-                ShapelessRecipeBuilder.shapelessRecipe(cargo.asItem())
-                        .addIngredient(Items.WATER_BUCKET)
-                        .addIngredient(new ActualNBTIngredient(cargo.createItemStack(TransportEntities.CARGO_MINECART_ITEM.get())))
-                        .addCriterion("has_item", hasItem(TransportEntities.CARGO_MINECART_ITEM.get()))
-                        .build(consumer, new ResourceLocation(registryName.getNamespace(), "cargo/minecart/" +
-                                registryName.getPath() + "_break"));
-            }
-        });
+        //region Entities
+        ShapedRecipeBuilder.shapedRecipe(TransportEntities.CARGO_MINECART_ITEM.get(), 1)
+                .patternLine("r")
+                .patternLine("s")
+                .patternLine("m")
+                .key('r', Tags.Items.DUSTS_REDSTONE)
+                .key('s', Tags.Items.SLIMEBALLS)
+                .key('m', Items.MINECART)
+                .addCriterion("has_item", this.hasItem(Items.MINECART))
+                .build(consumer);
         //endregion
 
         //region Engines
