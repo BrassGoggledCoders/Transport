@@ -12,6 +12,7 @@ import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.SlotContainerAddon;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -29,11 +30,12 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
 import org.apache.commons.lang3.tuple.Pair;
+import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.item.IModularItem;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
 import xyz.brassgoggledcoders.transport.capability.ModuleCaseItemStackHandler;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
@@ -50,7 +52,7 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
     private final InventoryComponent<IComponentHarness> modularItemInventory;
     private final ModuleCaseItemStackHandler moduleCaseItemStackHandler;
 
-    private IModularEntity entity;
+    private LazyOptional<IModularEntity> modularEntity;
 
     public ModuleConfiguratorTileEntity() {
         this(TransportBlocks.MODULE_CONFIGURATOR.getTileEntityType());
@@ -58,17 +60,16 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
 
     public ModuleConfiguratorTileEntity(TileEntityType<?> tileEntityType) {
         super(tileEntityType);
+        this.modularEntity = LazyOptional.empty();
         this.modularItemInventory = new InventoryComponent<>("modular_item", 116, 36, 1)
                 .setComponentHarness(this)
                 .setOnSlotChanged(this::handleEntity);
-        this.moduleCaseItemStackHandler = new ModuleCaseItemStackHandler(this::getEntity, this::saveItem);
+        this.moduleCaseItemStackHandler = new ModuleCaseItemStackHandler(this::getModularEntity, this::saveItem);
     }
 
     private void saveItem(Void aVoid) {
         ItemStack itemStack = this.modularItemInventory.getStackInSlot(0);
-        if (entity != null) {
-            itemStack.getOrCreateTag().put("modules", entity.getModuleCase().serializeNBT());
-        }
+        this.modularEntity.ifPresent(value -> itemStack.getOrCreateTag().put("modules", value.serializeNBT()));
     }
 
     public ActionResultType openScreen(PlayerEntity playerEntity) {
@@ -85,14 +86,15 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
 
     private void handleEntity(ItemStack itemStack, Integer integer) {
         if (itemStack.isEmpty()) {
-            entity = null;
+            modularEntity = LazyOptional.empty();
         } else {
             if (itemStack.getItem() instanceof IModularItem<?>) {
-                entity = ((IModularItem<?>) itemStack.getItem()).getEntityType().create(Objects.requireNonNull(this.world));
+                Entity entity = ((IModularItem<?>) itemStack.getItem()).getEntityType().create(Objects.requireNonNull(this.world));
                 CompoundNBT instanceNBT = itemStack.getChildTag("modules");
                 if (entity != null) {
+                    modularEntity = entity.getCapability(TransportAPI.MODULAR_ENTITY);
                     if (instanceNBT != null) {
-                        entity.getModuleCase().deserializeNBT(instanceNBT);
+                        modularEntity.ifPresent(value -> value.deserializeNBT(instanceNBT));
                     }
                 }
             }
@@ -154,9 +156,9 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
                 this.pos), playerInventory, windowId);
     }
 
-    @Nullable
-    public IModularEntity getEntity() {
-        return this.entity;
+    @Nonnull
+    public LazyOptional<IModularEntity> getModularEntity() {
+        return this.modularEntity;
     }
 
     @Override
@@ -191,9 +193,5 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         CompoundNBT compoundNBT = pkt.getNbtCompound();
         this.modularItemInventory.deserializeNBT(compoundNBT.getCompound("modularInventory"));
-    }
-
-    public ModuleSlot getModuleSlot(int slotId) {
-        return this.moduleCaseItemStackHandler.getModuleSlot(slotId);
     }
 }

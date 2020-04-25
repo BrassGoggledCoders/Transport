@@ -21,16 +21,20 @@ public class ModuleConfiguratorTileEntityRenderer extends TileEntityRenderer<Mod
     @ParametersAreNonnullByDefault
     public void render(ModuleConfiguratorTileEntity tileEntity, float partialTicks, MatrixStack matrixStack,
                        IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
-        IModularEntity modularEntity = tileEntity.getEntity();
-        if (modularEntity != null) {
-            matrixStack.push();
-            matrixStack.scale(0.75F, 0.75F, 0.75F);
-            matrixStack.translate(0.675F, 0.6F, 0.675F);
-            matrixStack.rotate(new Quaternion(0, tileEntity.getBlockState().get(ModuleConfiguratorBlock.FACING)
-                    .getHorizontalIndex() * 90, 0, true));
-            Minecraft.getInstance().getRenderManager().renderEntityStatic(modularEntity.getSelf(), 0, 0, 0,
-                    0, partialTicks, matrixStack, buffer, combinedLight);
-            matrixStack.pop();
-        }
+        tileEntity.getModularEntity().ifPresent(modularEntity -> this.renderModularEntity(tileEntity, modularEntity,
+                partialTicks, matrixStack, buffer, combinedLight));
+    }
+
+    private void renderModularEntity(ModuleConfiguratorTileEntity tileEntity, IModularEntity modularEntity,
+                                     float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer,
+                                     int combinedLight) {
+        matrixStack.push();
+        matrixStack.scale(0.75F, 0.75F, 0.75F);
+        matrixStack.translate(0.675F, 0.6F, 0.675F);
+        matrixStack.rotate(new Quaternion(0, tileEntity.getBlockState().get(ModuleConfiguratorBlock.FACING)
+                .getHorizontalIndex() * 90, 0, true));
+        Minecraft.getInstance().getRenderManager().renderEntityStatic(modularEntity.getSelf(), 0, 0, 0,
+                0, partialTicks, matrixStack, buffer, combinedLight);
+        matrixStack.pop();
     }
 }

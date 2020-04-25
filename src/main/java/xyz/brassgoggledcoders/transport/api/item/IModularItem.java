@@ -4,6 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 
-public interface IModularItem<T extends Entity & IModularEntity> {
+public interface IModularItem<T extends Entity> {
     EntityType<T> getEntityType();
 }

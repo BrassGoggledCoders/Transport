@@ -3,23 +3,27 @@ package xyz.brassgoggledcoders.transport.api.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IItemProvider;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.INBTSerializable;
 import xyz.brassgoggledcoders.transport.api.module.Module;
-import xyz.brassgoggledcoders.transport.api.module.ModuleCase;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public interface IModularEntity extends IItemProvider {
+public interface IModularEntity extends IItemProvider, INBTSerializable<CompoundNBT>, ICapabilityProvider {
     void openContainer(PlayerEntity playerEntity, INamedContainerProvider provider, Consumer<PacketBuffer> packetBufferConsumer);
 
     default boolean canInteractWith(PlayerEntity playerEntity) {
@@ -28,23 +32,27 @@ public interface IModularEntity extends IItemProvider {
 
     @Nonnull
     default World getTheWorld() {
-        return this.getSelf().world;
+        return this.getSelf().getEntityWorld();
     }
 
     @Nonnull
     Entity getSelf();
 
-    boolean canEquipModule(Module<?> module);
+    boolean canEquip(Module<?> module);
 
     @Nonnull
-    ITextComponent getCarrierDisplayName();
+    List<ModuleSlot> getModuleSlots();
 
-    ModuleCase getModuleCase();
+    void remove(ModuleSlot moduleSlot, boolean sendUpdate);
 
     @Nullable
-    default <T extends Module<T>, U extends ModuleInstance<T>> U getModuleInstance(ModuleType<T> moduleType) {
-        return this.getModuleCase().getByModuleType(moduleType);
-    }
+    <T extends Module<T>> ModuleInstance<T> add(Module<T> module, ModuleSlot moduleSlot, boolean sendUpdate);
+
+    @Nullable
+    ModuleInstance<?> getModuleInstance(ModuleSlot moduleSlot);
+
+    @Nullable
+    <T extends Module<T>, U extends ModuleInstance<T>> U getModuleInstance(ModuleType<T> moduleType);
 
     @Nullable
     default <T extends Module<T>, U extends ModuleInstance<T>> U getModuleInstance(Supplier<ModuleType<T>> moduleType) {
@@ -60,4 +68,12 @@ public interface IModularEntity extends IItemProvider {
             return defaultValue.get();
         }
     }
+
+    ItemStack asItemStack();
+
+    void read(PacketBuffer packetBuffer);
+
+    void write(PacketBuffer packetBuffer);
+
+    Collection<ModuleInstance<?>> getModuleInstances();
 }

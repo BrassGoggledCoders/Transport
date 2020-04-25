@@ -1,55 +1,56 @@
 package xyz.brassgoggledcoders.transport.capability;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ModuleCaseItemStackHandler implements IItemHandlerModifiable {
-    private final Supplier<IModularEntity> modularEntity;
+    private final Supplier<LazyOptional<IModularEntity>> modularEntity;
     private final Consumer<Void> onUpdate;
 
-    public ModuleCaseItemStackHandler(Supplier<IModularEntity> modularEntity, Consumer<Void> onUpdate) {
+    public ModuleCaseItemStackHandler(Supplier<LazyOptional<IModularEntity>> modularEntity, Consumer<Void> onUpdate) {
         this.modularEntity = modularEntity;
         this.onUpdate = onUpdate;
     }
 
     @Override
     public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-        IModularEntity entity = modularEntity.get();
-        if (!stack.isEmpty() && entity != null) {
+        LazyOptional<IModularEntity> entity = modularEntity.get();
+        if (!stack.isEmpty() && entity.isPresent()) {
             Module<?> module = TransportAPI.getModuleFromItem(stack.getItem());
             ModuleSlot moduleSlot = getModuleSlot(entity, slot);
-            if (moduleSlot != null && module != null) {
-                entity.getModuleCase().removeByModuleSlot(moduleSlot, false);
-                entity.getModuleCase().addModule(module, moduleSlot, false);
+            if (module != null) {
+                entity.ifPresent(value -> {
+                    value.remove(moduleSlot, false);
+                    value.add(module, moduleSlot, false);
+                });
+
                 this.onUpdate.accept(null);
             }
         }
     }
 
+    @Nonnull
     public ModuleSlot getModuleSlot(int slot) {
-        IModularEntity entity = this.modularEntity.get();
-        if (entity != null) {
-            return this.getModuleSlot(entity, slot);
-        }
-        return null;
+        return this.getModuleSlot(modularEntity.get(), slot);
     }
 
-    private ModuleSlot getModuleSlot(IModularEntity entity, int slot) {
-        List<ModuleSlot> moduleSlots = entity.getModuleCase().getModuleSlots();
-        if (slot >= 0 && slot < moduleSlots.size()) {
-            return moduleSlots.get(slot);
-        }
-        return null;
+    @Nonnull
+    private ModuleSlot getModuleSlot(LazyOptional<IModularEntity> entity, int slot) {
+        return entity.map(IModularEntity::getModuleSlots)
+                .filter(moduleSlots -> slot >= 0 && slot < moduleSlots.size())
+                .map(moduleSlots -> moduleSlots.get(slot))
+                .orElse(ModuleSlots.NONE);
     }
 
     @Override
@@ -60,58 +61,59 @@ public class ModuleCaseItemStackHandler implements IItemHandlerModifiable {
     @Nonnull
     @Override
     public ItemStack getStackInSlot(int slot) {
-        IModularEntity entity = modularEntity.get();
-        if (entity != null) {
-            ModuleSlot moduleSlot = this.getModuleSlot(entity, slot);
-            if (moduleSlot != null) {
-                ModuleInstance<?> moduleInstance = entity.getModuleCase().getByModuleSlot(moduleSlot);
-                if (moduleInstance != null) {
-                    return moduleInstance.asItemStack();
-                }
-            }
-        }
-        return ItemStack.EMPTY;
+        ModuleSlot moduleSlot = this.getModuleSlot(modularEntity.get(), slot);
+
+        return modularEntity.get()
+                .map(value -> {
+                    ModuleInstance<?> moduleInstance = value.getModuleInstance(moduleSlot);
+                    if (moduleInstance != null) {
+                        return moduleInstance.asItemStack();
+                    } else {
+                        return ItemStack.EMPTY;
+                    }
+                })
+                .orElse(ItemStack.EMPTY);
     }
 
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        IModularEntity entity = modularEntity.get();
-        if (entity != null && isItemValid(slot, stack)) {
-            ModuleSlot moduleSlot = this.getModuleSlot(entity, slot);
-            if (entity.getModuleCase().getByModuleSlot(moduleSlot) == null) {
-                ItemStack newStack = stack.copy();
-                newStack.shrink(1);
-                if (!simulate) {
-                    Module<?> module = TransportAPI.getModuleFromItem(stack.getItem());
-                    entity.getModuleCase().addModule(module, moduleSlot, false);
-                    this.onUpdate.accept(null);
-                }
-                return newStack;
-            }
-        }
-        return stack;
+        ModuleSlot moduleSlot = this.getModuleSlot(modularEntity.get(), slot);
+
+        return modularEntity.get()
+                .filter(value -> isItemValid(slot, stack))
+                .filter(value -> value.getModuleInstance(moduleSlot) == null)
+                .map(value -> {
+                    ItemStack newStack = stack.copy();
+                    newStack.shrink(1);
+                    if (!simulate) {
+                        Module<?> module = TransportAPI.getModuleFromItem(stack.getItem());
+                        value.add(module, moduleSlot, false);
+                        this.onUpdate.accept(null);
+                    }
+                    return newStack;
+                })
+                .orElse(stack);
     }
 
     @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        IModularEntity entity = modularEntity.get();
-        if (entity != null) {
-            ModuleSlot moduleSlot = this.getModuleSlot(entity, slot);
-            if (moduleSlot != null) {
-                ModuleInstance<?> moduleInstance = entity.getModuleCase().getByModuleSlot(moduleSlot);
-                if (moduleInstance != null) {
-                    ItemStack itemStack = moduleInstance.asItemStack();
-                    if (!simulate) {
-                        entity.getModuleCase().removeByModuleSlot(moduleSlot, false);
-                        this.onUpdate.accept(null);
+        ModuleSlot moduleSlot = this.getModuleSlot(modularEntity.get(), slot);
+        return modularEntity.get()
+                .map(value -> {
+                    ModuleInstance<?> moduleInstance = value.getModuleInstance(moduleSlot);
+                    if (moduleInstance != null) {
+                        ItemStack itemStack = moduleInstance.asItemStack();
+                        if (!simulate) {
+                            value.remove(moduleSlot, false);
+                            this.onUpdate.accept(null);
+                        }
+                        return itemStack;
                     }
-                    return itemStack;
-                }
-            }
-        }
-        return ItemStack.EMPTY;
+                    return ItemStack.EMPTY;
+                })
+                .orElse(ItemStack.EMPTY);
     }
 
     @Override
@@ -121,12 +123,14 @@ public class ModuleCaseItemStackHandler implements IItemHandlerModifiable {
 
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        IModularEntity entity = modularEntity.get();
-        if (!stack.isEmpty() && entity != null) {
+        if (!stack.isEmpty()) {
             Module<?> module = TransportAPI.getModuleFromItem(stack.getItem());
-            ModuleSlot moduleSlot = this.getModuleSlot(entity, slot);
-            if (moduleSlot != null && module != null) {
-                return entity.canEquipModule(module) && module.isValidFor(entity) && moduleSlot.isModuleValid(entity, module);
+            ModuleSlot moduleSlot = this.getModuleSlot(modularEntity.get(), slot);
+            if (module != null) {
+                return modularEntity.get()
+                        .map(value -> value.canEquip(module) && module.isValidFor(value) &&
+                                moduleSlot.isModuleValid(value, module))
+                        .orElse(false);
             }
         }
 

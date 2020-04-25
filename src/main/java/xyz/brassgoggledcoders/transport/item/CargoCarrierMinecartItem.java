@@ -14,13 +14,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.item.IModularItem;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
@@ -81,18 +84,24 @@ public class CargoCarrierMinecartItem extends MinecartItem implements IModularIt
                     cargoCarrierMinecartEntity.setCustomName(itemStack.getDisplayName());
                 }
 
+                LazyOptional<IModularEntity> modularEntity = cargoCarrierMinecartEntity.getCapability(TransportAPI.MODULAR_ENTITY);
                 CompoundNBT moduleNBT = itemStack.getChildTag("modules");
                 if (moduleNBT != null) {
-                    cargoCarrierMinecartEntity.getModuleCase().deserializeNBT(moduleNBT);
+                    modularEntity.ifPresent(value -> value.deserializeNBT(moduleNBT));
                 }
 
                 CompoundNBT cargoNBT = itemStack.getChildTag("cargo");
                 if (cargoNBT != null && cargoNBT.contains("name")) {
                     CargoModule cargoModule = TransportAPI.getCargo(cargoNBT.getString("name"));
                     if (cargoModule != null) {
-                        ModuleInstance<CargoModule> moduleInstance = cargoCarrierMinecartEntity.getModuleCase().addModule(cargoModule, ModuleSlots.CARGO,false);
-                        if (cargoNBT.contains("instance") && moduleInstance != null) {
-                            moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
+                        if (cargoNBT.contains("instance")) {
+                            modularEntity.ifPresent(value -> {
+                                ModuleInstance<?> moduleInstance = value.add(cargoModule, ModuleSlots.CARGO, false);
+                                if (moduleInstance != null) {
+                                    moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
+                                }
+                            });
+
                         }
                     }
                 }

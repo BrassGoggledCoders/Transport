@@ -1,25 +1,18 @@
 package xyz.brassgoggledcoders.transport.entity;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -35,8 +28,7 @@ import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 import xyz.brassgoggledcoders.transport.api.engine.PoweredState;
 import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.api.module.Module;
-import xyz.brassgoggledcoders.transport.api.module.ModuleCase;
+import xyz.brassgoggledcoders.transport.api.entity.ModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
@@ -45,11 +37,11 @@ import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.Consumer;
 
-public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implements IModularEntity, IHoldable,
-        IEntityAdditionalSpawnData {
-    private final ModuleCase moduleCase;
+public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implements IHoldable, IEntityAdditionalSpawnData,
+        IItemProvider {
+    private final LazyOptional<IModularEntity> modularEntityLazy;
+    private final ModularEntity<CargoCarrierMinecartEntity> modularEntity;
 
     private double originalPushX;
     private double originalPushZ;
@@ -59,7 +51,8 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
 
     public CargoCarrierMinecartEntity(EntityType<CargoCarrierMinecartEntity> entityType, World world) {
         super(entityType, world);
-        this.moduleCase = new ModuleCase(this, ModuleSlots.CARGO, ModuleSlots.BACK);
+        this.modularEntity = new ModularEntity<>(this, ModuleSlots.CARGO, ModuleSlots.BACK);
+        this.modularEntityLazy = LazyOptional.of(() -> this.modularEntity);
     }
 
     public CargoCarrierMinecartEntity(World world, double x, double y, double z) {
@@ -69,7 +62,8 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     public CargoCarrierMinecartEntity(EntityType<CargoCarrierMinecartEntity> entityType, World world,
                                       double x, double y, double z) {
         super(entityType, world, x, y, z);
-        this.moduleCase = new ModuleCase(this, ModuleSlots.CARGO, ModuleSlots.BACK);
+        this.modularEntity = new ModularEntity<>(this, ModuleSlots.CARGO, ModuleSlots.BACK);
+        this.modularEntityLazy = LazyOptional.of(() -> this.modularEntity);
     }
 
     @Override
@@ -88,7 +82,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @Nonnull
     @ParametersAreNonnullByDefault
     public ActionResultType applyPlayerInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
-        EngineModuleInstance engineModuleInstance = this.getModuleInstance(TransportObjects.ENGINE_TYPE);
+        EngineModuleInstance engineModuleInstance = this.modularEntity.getModuleInstance(TransportObjects.ENGINE_TYPE);
         if (engineModuleInstance != null) {
             if (originalPushX == 0D && originalPushZ == 0D) {
                 originalPushX = this.getPosX() - player.getPosX();
@@ -110,7 +104,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
                 return engineResult;
             }
         }
-        CargoModuleInstance cargoModuleInstance = this.getModuleInstance(TransportObjects.CARGO_TYPE);
+        CargoModuleInstance cargoModuleInstance = this.modularEntity.getModuleInstance(TransportObjects.CARGO_TYPE);
         if (cargoModuleInstance != null) {
             ActionResultType cargoResult = cargoModuleInstance.applyInteraction(player, vec, hand);
             if (cargoResult != ActionResultType.PASS) {
@@ -123,7 +117,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @Override
     @Nonnull
     public BlockState getDisplayTile() {
-        CargoModuleInstance cargoModuleInstance = this.getModuleInstance(TransportObjects.CARGO_TYPE);
+        CargoModuleInstance cargoModuleInstance = this.modularEntity.getModuleInstance(TransportObjects.CARGO_TYPE);
         return cargoModuleInstance != null ? cargoModuleInstance.getBlockState() : super.getDisplayTile();
     }
 
@@ -135,13 +129,13 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
         this.originalPushX = compound.getDouble("originalPushX");
         this.originalPushZ = compound.getDouble("originalPushZ");
         if (compound.contains("modules")) {
-            this.moduleCase.deserializeNBT(compound.getCompound("modules"));
+            this.modularEntity.deserializeNBT(compound.getCompound("modules"));
         } else if (compound.contains("cargo")) {
             CompoundNBT cargoNBT = compound.getCompound("cargo");
             if (cargoNBT.contains("name")) {
                 CargoModule cargoModule = TransportAPI.getCargo(cargoNBT.getString("name"));
                 if (cargoModule != null) {
-                    ModuleInstance<CargoModule> moduleInstance = this.getModuleCase().addModule(cargoModule, ModuleSlots.CARGO, false);
+                    ModuleInstance<CargoModule> moduleInstance = this.modularEntity.add(cargoModule, ModuleSlots.CARGO, false);
                     if (cargoNBT.contains("instance") && moduleInstance != null) {
                         moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
                     }
@@ -153,7 +147,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @Override
     protected void writeAdditional(@Nonnull CompoundNBT compound) {
         super.writeAdditional(compound);
-        compound.put("modules", this.getModuleCase().serializeNBT());
+        compound.put("modules", this.modularEntity.serializeNBT());
         compound.putDouble("pushX", this.pushX);
         compound.putDouble("pushZ", this.pushZ);
         compound.putDouble("originalPushX", this.originalPushX);
@@ -162,71 +156,30 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
 
     @Override
     public ItemStack getCartItem() {
-        return this.moduleCase.createItemStack();
-    }
-
-    @Override
-    @Nonnull
-    public World getTheWorld() {
-        return this.world;
-    }
-
-    @Nonnull
-    @Override
-    public Entity getSelf() {
-        return this;
-    }
-
-    @Override
-    public boolean canEquipModule(Module<?> module) {
-        return this.getModuleInstance(module.getType()) == null;
-    }
-
-    @Override
-    public void openContainer(PlayerEntity playerEntity, INamedContainerProvider provider, Consumer<PacketBuffer> packetBufferConsumer) {
-        if (playerEntity instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) playerEntity, provider, packetBuffer -> {
-                packetBuffer.writeInt(this.getEntityId());
-                packetBufferConsumer.accept(packetBuffer);
-            });
-        }
-    }
-
-    @Override
-    public boolean canInteractWith(PlayerEntity playerEntity) {
-        return this.isAlive();
-    }
-
-    @Override
-    @Nonnull
-    public ITextComponent getCarrierDisplayName() {
-        return super.getDisplayName();
-    }
-
-    @Override
-    public ModuleCase getModuleCase() {
-        return this.moduleCase;
+        return this.modularEntity.asItemStack();
     }
 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        CargoModuleInstance cargoModuleInstance = this.getModuleInstance(TransportObjects.CARGO_TYPE);
-        if (cargoModuleInstance != null) {
-            LazyOptional<T> lazyOptional = cargoModuleInstance.getCapability(cap, side);
-            if (lazyOptional.isPresent()) {
-                return lazyOptional;
-            }
+        if (cap == TransportAPI.MODULAR_ENTITY) {
+            return modularEntityLazy.cast();
         }
+
+        LazyOptional<T> moduleCapability = modularEntity.getCapability(cap, side);
+        if (moduleCapability.isPresent()) {
+            return moduleCapability;
+        }
+
         return super.getCapability(cap, side);
     }
 
     @Override
     public void tick() {
         super.tick();
-        moduleCase.getModules().forEach(ModuleInstance::tick);
+        modularEntity.getModuleInstances().forEach(ModuleInstance::tick);
         if (!this.world.isRemote()) {
-            EngineModuleInstance engineModuleInstance = this.getModuleInstance(TransportObjects.ENGINE_TYPE);
+            EngineModuleInstance engineModuleInstance = this.modularEntity.getModuleInstance(TransportObjects.ENGINE_TYPE);
             if (engineModuleInstance == null || engineModuleInstance.getPoweredState() != PoweredState.RUNNING ||
                     !engineModuleInstance.isRunning()) {
                 if (pushX != 0.0D && pushZ != 0.0D) {
@@ -276,7 +229,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     public void killMinecart(@Nonnull DamageSource source) {
         this.remove();
         if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-            ItemStack itemStack = this.getModuleCase().createItemStack();
+            ItemStack itemStack = this.modularEntity.asItemStack();
 
             if (this.hasCustomName()) {
                 itemStack.setDisplayName(this.getCustomName());
@@ -288,13 +241,13 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
 
     @Override
     public int getComparatorLevel() {
-        CargoModuleInstance cargoModuleInstance = this.getModuleInstance(TransportObjects.CARGO_TYPE);
+        CargoModuleInstance cargoModuleInstance = this.modularEntity.getModuleInstance(TransportObjects.CARGO_TYPE);
         return cargoModuleInstance != null ? cargoModuleInstance.getComparatorLevel() : -1;
     }
 
     @Override
     protected double getMaximumSpeed() {
-        return this.<EngineModule, EngineModuleInstance, Double>callModule(TransportObjects.ENGINE_TYPE,
+        return this.modularEntity.<EngineModule, EngineModuleInstance, Double>callModule(TransportObjects.ENGINE_TYPE,
                 EngineModuleInstance::getMaximumSpeed, () -> 0.4D);
     }
 
@@ -306,17 +259,17 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
 
     @Override
     public void writeSpawnData(PacketBuffer buffer) {
-        this.getModuleCase().write(buffer);
+        this.modularEntity.write(buffer);
     }
 
     @Override
     public void readSpawnData(PacketBuffer additionalData) {
-        this.getModuleCase().read(additionalData);
+        this.modularEntity.read(additionalData);
     }
 
     @Override
     public void onHeld() {
-        for (ModuleInstance<?> moduleInstance : this.getModuleCase().getModules()) {
+        for (ModuleInstance<?> moduleInstance : this.modularEntity.getModuleInstances()) {
             if (moduleInstance instanceof IHoldable) {
                 ((IHoldable) moduleInstance).onHeld();
             }
@@ -325,7 +278,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
 
     @Override
     public void onRelease() {
-        for (ModuleInstance<?> moduleInstance : this.getModuleCase().getModules()) {
+        for (ModuleInstance<?> moduleInstance : this.modularEntity.getModuleInstances()) {
             if (moduleInstance instanceof IHoldable) {
                 ((IHoldable) moduleInstance).onRelease();
             }

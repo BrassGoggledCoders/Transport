@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.network.INetworkHandler;
@@ -32,6 +33,9 @@ public class TransportAPI {
 
     @CapabilityInject(RoutingStorage.class)
     public static Capability<RoutingStorage> ROUTING_STORAGE;
+
+    @CapabilityInject(IModularEntity.class)
+    public static Capability<IModularEntity> MODULAR_ENTITY;
 
     private static INetworkHandler networkHandler;
 

@@ -6,6 +6,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
 import xyz.brassgoggledcoders.transport.ClientEventHandler;
+import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
@@ -43,8 +44,9 @@ public class AddModuleCaseMessage {
     public void consume(Supplier<NetworkEvent.Context> contextSupplier) {
         contextSupplier.get().enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             Entity entity = ClientEventHandler.getWorld().getEntityByID(entityId);
-            if (entity instanceof IModularEntity && module != null && moduleSlot != null) {
-                ((IModularEntity) entity).getModuleCase().addModule(module, moduleSlot, false);
+            if (entity != null && module != null && moduleSlot != null) {
+                entity.getCapability(TransportAPI.MODULAR_ENTITY)
+                        .ifPresent(modularEntity -> modularEntity.add(module, moduleSlot, false));
             }
         }));
         contextSupplier.get().setPacketHandled(true);

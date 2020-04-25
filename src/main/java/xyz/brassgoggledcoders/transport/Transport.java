@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorage;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorageProvider;
@@ -35,6 +36,7 @@ import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
+import xyz.brassgoggledcoders.transport.nbt.CompoundNBTStorage;
 import xyz.brassgoggledcoders.transport.nbt.EmptyStorage;
 import xyz.brassgoggledcoders.transport.network.NetworkHandler;
 import xyz.brassgoggledcoders.transport.pointmachine.ComparatorPointMachineBehavior;
@@ -114,6 +116,7 @@ public class Transport {
         TransportAPI.addRoutingDeserializer("TIME", new ListValidatedRoutingDeserializer<>(String.class, TimeRouting::create));
 
         CapabilityManager.INSTANCE.register(RoutingStorage.class, new EmptyStorage<>(), RoutingStorage::new);
+        CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () ->  null);
 
         TransportAPI.generateItemToModuleMap();
     }
