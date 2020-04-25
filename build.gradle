@@ -64,9 +64,20 @@ minecraft {
             environment 'target', 'fmluserdevdata'
             properties 'fml.earlyprogresswindow': 'false'
 
-            args '--all', '--output', file('src/datagen/resources/'),
+            args '--all', '--output', file('src/generated/resources/'),
                     '--mod', 'transport', '--reports',
                     '--existing', sourceSets.main.resources.srcDirs[0]
+        }
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = [
+                    "$rootDir/src/main/resources",
+                    "$rootDir/src/generated/resources"
+            ]
         }
     }
 }

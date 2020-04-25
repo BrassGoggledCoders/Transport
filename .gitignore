@@ -15,4 +15,4 @@ hs_err_pid*
 /run/
 /logs
 /.gradle
-/src/datagen/
+/src/generated/
