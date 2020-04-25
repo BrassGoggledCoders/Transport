@@ -115,6 +115,11 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     }
 
     @Override
+    public boolean isPoweredCart() {
+        return this.modularEntity.getModuleInstance(TransportObjects.ENGINE_TYPE) != null;
+    }
+
+    @Override
     @Nonnull
     public BlockState getDisplayTile() {
         CargoModuleInstance cargoModuleInstance = this.modularEntity.getModuleInstance(TransportObjects.CARGO_TYPE);

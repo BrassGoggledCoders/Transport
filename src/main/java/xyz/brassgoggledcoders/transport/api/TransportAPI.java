@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.api;
 
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -13,6 +14,8 @@ import net.minecraftforge.registries.RegistryManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
+import xyz.brassgoggledcoders.transport.api.connection.IConnectionChecker;
+import xyz.brassgoggledcoders.transport.api.connection.NoConnectionChecker;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
@@ -22,6 +25,7 @@ import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorage;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingDeserializer;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Locale;
@@ -37,6 +41,7 @@ public class TransportAPI {
     @CapabilityInject(IModularEntity.class)
     public static Capability<IModularEntity> MODULAR_ENTITY;
 
+    private static IConnectionChecker connectionChecker = new NoConnectionChecker();
     private static INetworkHandler networkHandler;
 
     private static final Map<Block, IPointMachineBehavior> POINT_MACHINE_BEHAVIORS = Maps.newHashMap();
@@ -137,5 +142,14 @@ public class TransportAPI {
 
     public static INetworkHandler getNetworkHandler() {
         return Objects.requireNonNull(networkHandler, "Network Handler has not been set");
+    }
+
+    @Nonnull
+    public static IConnectionChecker getConnectionChecker() {
+        return connectionChecker;
+    }
+
+    public static void setConnectionChecker(@Nonnull IConnectionChecker connectionChecker) {
+        TransportAPI.connectionChecker = connectionChecker;
     }
 }

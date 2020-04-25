@@ -13,6 +13,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -32,6 +33,7 @@ import xyz.brassgoggledcoders.transport.api.routing.serializer.ListRoutingDeseri
 import xyz.brassgoggledcoders.transport.api.routing.serializer.ListValidatedRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.SingleRoutingDeserializer;
+import xyz.brassgoggledcoders.transport.connection.QuarkConnectionChecker;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
@@ -119,6 +121,10 @@ public class Transport {
         CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () ->  null);
 
         TransportAPI.generateItemToModuleMap();
+
+        if (ModList.get().isLoaded("quark")) {
+            TransportAPI.setConnectionChecker(new QuarkConnectionChecker());
+        }
     }
 
     private static <T extends IForgeRegistryEntry<T>> void makeRegistry(String name, Class<T> type) {

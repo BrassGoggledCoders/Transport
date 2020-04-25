@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -15,13 +16,13 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.TransportBlockStateProperties;
 import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
 import xyz.brassgoggledcoders.transport.content.TransportItemTags;
@@ -58,7 +59,9 @@ public class HoldingRailBlock extends AbstractRailBlock {
     @Override
     @Nonnull
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+    @ParametersAreNonnullByDefault
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
+                                             BlockRayTraceResult rayTraceResult) {
         if (TransportItemTags.WRENCHES.contains(player.getHeldItem(hand).getItem())) {
             state = state.with(NORTH_WEST, !state.get(NORTH_WEST));
             world.setBlockState(pos, state, 3);
@@ -76,10 +79,14 @@ public class HoldingRailBlock extends AbstractRailBlock {
                 speedIncrease *= -1;
             }
             Vec3d motion = cart.getMotion();
-            if (state.get(SHAPE) == RailShape.NORTH_SOUTH) {
-                cart.setMotion(motion.add(0, 0, speedIncrease));
-            } else {
-                cart.setMotion(motion.add(speedIncrease, 0, 0));
+            Entity leader = TransportAPI.getConnectionChecker().getLeader(cart);
+            if (leader == null || (leader instanceof AbstractMinecartEntity &&
+                    !((AbstractMinecartEntity) leader).isPoweredCart())) {
+                if (state.get(SHAPE) == RailShape.NORTH_SOUTH) {
+                    cart.setMotion(motion.add(0, 0, speedIncrease));
+                } else {
+                    cart.setMotion(motion.add(speedIncrease, 0, 0));
+                }
             }
             if (cart instanceof IHoldable) {
                 ((IHoldable) cart).onRelease();
