@@ -2,26 +2,30 @@ package xyz.brassgoggledcoders.transport.item;
 
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
-import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.item.IModularItem;
+import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
@@ -31,7 +35,7 @@ import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Objects;
+import java.util.List;
 import java.util.Optional;
 
 import static net.minecraft.entity.item.minecart.AbstractMinecartEntity.Type.CHEST;
@@ -101,7 +105,6 @@ public class CargoCarrierMinecartItem extends MinecartItem implements IModularIt
                                     moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
                                 }
                             });
-
                         }
                     }
                 }
@@ -119,22 +122,24 @@ public class CargoCarrierMinecartItem extends MinecartItem implements IModularIt
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if (this.isInGroup(group)) {
-            TransportAPI.CARGO.get().getValues()
-                    .stream()
-                    .filter(cargo -> !cargo.isEmpty())
-                    .map(CargoModule::getRegistryName)
-                    .filter(Objects::nonNull)
-                    .map(ResourceLocation::toString)
-                    .map(resourceLocation -> {
-                        ItemStack itemStack = new ItemStack(this);
-                        itemStack.getOrCreateChildTag("cargo").putString("name", resourceLocation);
-                        return itemStack;
-                    })
-                    .forEach(items::add);
-            items.add(new ItemStack(this));
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        CompoundNBT modulesNBT = stack.getChildTag("modules");
+        if (modulesNBT != null) {
+            ListNBT moduleInstancesNBT = modulesNBT.getList("moduleInstances", Constants.NBT.TAG_COMPOUND);
+            if (moduleInstancesNBT.size() > 0) {
+                tooltip.add(new TranslationTextComponent("text.transport.installed_modules"));
+                for (int x = 0; x < moduleInstancesNBT.size(); x++) {
+                    CompoundNBT moduleInstanceNBT = moduleInstancesNBT.getCompound(x);
+                    Module<?> module = Module.fromCompoundNBT(moduleInstanceNBT);
+                    ModuleSlot moduleSlot = ModuleSlots.MODULE_SLOT_MAP.get(moduleInstanceNBT.getString("moduleSlot"));
+                    if (module != null && moduleSlot != null) {
+                        tooltip.add(new TranslationTextComponent("text.transport.installed_module",
+                                moduleSlot.getDisplayName(), module.getDisplayName()));
+                    }
+                }
+            }
         }
     }
 

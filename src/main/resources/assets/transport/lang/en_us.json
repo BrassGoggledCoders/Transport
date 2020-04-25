@@ -27,6 +27,8 @@
   "module_slot.transport.back": "Back",
   "module_slot.transport.cargo": "Cargo",
   "module_slot.transport.none": "Not a",
+  "text.transport.installed_module": " * %s - %s",
+  "text.transport.installed_modules": "Installed Modules",
   "text.transport.module_slot": "%s Module Slot",
   "text.transport.with": "%s With %s"
 }
