@@ -20,7 +20,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
@@ -34,12 +33,20 @@ public class TransportContainers {
             () -> IForgeContainerType.create((windowId, inv, data) -> {
                 Entity entity = inv.player.getEntityWorld().getEntityByID(data.readInt());
                 ModuleType moduleType = TransportAPI.getModuleType(data.readResourceLocation());
-                if (entity instanceof IModularEntity && moduleType != null) {
-                    ModuleInstance<?> moduleInstance = ((IModularEntity) entity).getModuleInstance(moduleType);
-                    if (moduleInstance != null) {
-                        return new BasicAddonContainer(moduleInstance, new EntityLocatorInstance(entity),
-                                IWorldPosCallable.DUMMY, inv, windowId);
-                    }
+
+                if (entity != null && moduleType != null) {
+                    return entity.getCapability(TransportAPI.MODULAR_ENTITY)
+                            .map(modularEntity -> {
+                                ModuleInstance<?> moduleInstance = modularEntity.getModuleInstance(moduleType);
+                                if (moduleInstance != null) {
+                                    return new BasicAddonContainer(moduleInstance, new EntityLocatorInstance(entity),
+                                            IWorldPosCallable.DUMMY, inv, windowId);
+                                } else {
+                                    return new BasicAddonContainer(new Object(), new EmptyLocatorInstance(), IWorldPosCallable.DUMMY, inv,
+                                            windowId);
+                                }
+                            }).orElseGet(() -> new BasicAddonContainer(new Object(), new EmptyLocatorInstance(),
+                                    IWorldPosCallable.DUMMY, inv, windowId));
                 }
 
                 Transport.LOGGER.warn("Failed to find Module for Container");
