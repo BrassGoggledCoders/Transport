@@ -26,6 +26,7 @@
   "itemGroup.transport": "Transport",
   "module_slot.transport.back": "Back",
   "module_slot.transport.cargo": "Cargo",
-  "module_slot.transport.none": "None",
+  "module_slot.transport.none": "Not a",
+  "text.transport.module_slot": "%s Module Slot",
   "text.transport.with": "%s With %s"
 }

@@ -57,7 +57,8 @@ public class TransportLanguageProvider extends LanguageProvider {
         //region ModuleSlots
         this.add(ModuleSlots.CARGO, "Cargo");
         this.add(ModuleSlots.BACK, "Back");
-        this.add(ModuleSlots.NONE, "None");
+        this.add(ModuleSlots.NONE, "Not a");
+        this.add("text.transport.module_slot", "%s Module Slot");
         //endregion
 
         //region Text
