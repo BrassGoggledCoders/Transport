@@ -11,8 +11,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -165,6 +168,12 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     @Override
     public Collection<ModuleInstance<?>> getModuleInstances() {
         return byModuleType.values();
+    }
+
+    @Override
+    public ActionResultType applyPlayerInteraction(ModuleSlot moduleSlot, PlayerEntity player, Vec3d vec, Hand hand) {
+        ModuleInstance<?> moduleInstance = this.getModuleInstance(moduleSlot);
+        return moduleInstance != null ? moduleInstance.applyInteraction(player, vec, hand) : ActionResultType.PASS;
     }
 
     @Override

@@ -19,6 +19,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
+import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
@@ -30,6 +31,7 @@ import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.entity.ModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
+import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.content.TransportItemTags;
@@ -98,20 +100,39 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
                 }
             }
         }
-        if (engineModuleInstance != null && vec.getY() < 0.5D) {
-            ActionResultType engineResult = engineModuleInstance.applyInteraction(player, vec, hand);
-            if (engineResult != ActionResultType.PASS) {
-                return engineResult;
+
+        Transport.LOGGER.info("Facing {}, Hand: {}, Remote: {}", this.getHorizontalFacing(), hand, this.world.isRemote);
+        Transport.LOGGER.info("X {}, Y {}, Z {}", vec.x, vec.y, vec.z);
+
+        if (vec.y < 0.7) {
+            switch (this.getHorizontalFacing()) {
+                case NORTH:
+                    if (vec.x <= -0.3) {
+                        return modularEntity.applyPlayerInteraction(ModuleSlots.BACK, player, vec, hand);
+                    }
+                    break;
+                case SOUTH:
+                    if (vec.x >= 0.3) {
+                        return modularEntity.applyPlayerInteraction(ModuleSlots.BACK, player, vec, hand);
+                    }
+                    break;
+                case WEST:
+                    if (vec.z >= 0.3) {
+                        return modularEntity.applyPlayerInteraction(ModuleSlots.BACK, player, vec, hand);
+                    }
+                    break;
+                case EAST:
+                    if (vec.z <= -0.3) {
+                        return modularEntity.applyPlayerInteraction(ModuleSlots.BACK, player, vec, hand);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
-        CargoModuleInstance cargoModuleInstance = this.modularEntity.getModuleInstance(TransportObjects.CARGO_TYPE);
-        if (cargoModuleInstance != null) {
-            ActionResultType cargoResult = cargoModuleInstance.applyInteraction(player, vec, hand);
-            if (cargoResult != ActionResultType.PASS) {
-                return cargoResult;
-            }
-        }
-        return super.applyPlayerInteraction(player, vec, hand);
+
+
+        return modularEntity.applyPlayerInteraction(ModuleSlots.CARGO, player, vec, hand);
     }
 
     @Override

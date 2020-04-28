@@ -6,7 +6,10 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -76,4 +79,6 @@ public interface IModularEntity extends IItemProvider, INBTSerializable<Compound
     void write(PacketBuffer packetBuffer);
 
     Collection<ModuleInstance<?>> getModuleInstances();
+
+    ActionResultType applyPlayerInteraction(ModuleSlot moduleSlot, PlayerEntity player, Vec3d vec, Hand hand);
 }
