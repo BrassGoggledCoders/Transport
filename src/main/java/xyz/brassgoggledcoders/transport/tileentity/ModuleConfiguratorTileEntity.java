@@ -63,6 +63,7 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
         this.modularEntity = LazyOptional.empty();
         this.modularItemInventory = new InventoryComponent<>("modular_item", 116, 36, 1)
                 .setComponentHarness(this)
+                .setSlotLimit(1)
                 .setOnSlotChanged(this::handleEntity);
         this.moduleCaseItemStackHandler = new ModuleCaseItemStackHandler(this::getModularEntity, this::saveItem);
     }
