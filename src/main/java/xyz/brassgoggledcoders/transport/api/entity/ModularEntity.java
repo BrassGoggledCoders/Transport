@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.api.entity;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,6 +35,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 public class ModularEntity<ENT extends Entity & IItemProvider> implements IModularEntity {
@@ -126,7 +128,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     public CompoundNBT serializeNBT() {
         CompoundNBT caseNBT = new CompoundNBT();
         ListNBT moduleNBT = new ListNBT();
-        for (Map.Entry<ModuleSlot, ModuleInstance<?>> entrySet : byModuleSlot.entrySet()) {
+        for (Entry<ModuleSlot, ModuleInstance<?>> entrySet : byModuleSlot.entrySet()) {
             CompoundNBT moduleInstanceNBT = new CompoundNBT();
             ModuleInstance<?> moduleInstance = entrySet.getValue();
             Module.toCompoundNBT(moduleInstance.getModule(), moduleInstanceNBT);
@@ -159,7 +161,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     @Override
     public void write(PacketBuffer packetBuffer) {
         packetBuffer.writeInt(byModuleSlot.size());
-        for (Map.Entry<ModuleSlot, ModuleInstance<?>> entrySet : byModuleSlot.entrySet()) {
+        for (Entry<ModuleSlot, ModuleInstance<?>> entrySet : byModuleSlot.entrySet()) {
             Module.toPacketBuffer(entrySet.getValue().getModule(), packetBuffer);
             packetBuffer.writeString(entrySet.getKey().getName(), 64);
         }
@@ -212,6 +214,27 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
                 return lazyOptional;
             }
         }
+        for (ModuleInstance<?> moduleInstance : this.byModuleSlot.values()) {
+            LazyOptional<T> lazyOptional = moduleInstance.getCapability(cap, side);
+            if (lazyOptional.isPresent()) {
+                return lazyOptional;
+            }
+        }
         return LazyOptional.empty();
+    }
+
+    @Nonnull
+    public <T> List<LazyOptional<T>> getCapabilities(@Nonnull Capability<T> cap, @Nullable Direction side,
+                                                     @Nullable ModuleSlot priority) {
+        List<LazyOptional<T>> lazyOptionals = Lists.newArrayList();
+
+        for (Entry<ModuleSlot, ModuleInstance<?>> entry : this.byModuleSlot.entrySet()) {
+            if (entry.getKey() == priority) {
+                lazyOptionals.add(0, entry.getValue().getCapability(cap, side));
+            } else {
+                lazyOptionals.add(entry.getValue().getCapability(cap, side));
+            }
+        }
+        return lazyOptionals;
     }
 }
