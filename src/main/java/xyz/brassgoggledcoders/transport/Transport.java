@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport;
 
 import com.hrznstudio.titanium.network.locator.LocatorType;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.tileentity.LecternTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -37,6 +38,8 @@ import xyz.brassgoggledcoders.transport.connection.QuarkConnectionChecker;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
+import xyz.brassgoggledcoders.transport.event.ClientEventHandler;
+import xyz.brassgoggledcoders.transport.event.EventHandler;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
 import xyz.brassgoggledcoders.transport.nbt.CompoundNBTStorage;
 import xyz.brassgoggledcoders.transport.nbt.EmptyStorage;
@@ -70,16 +73,11 @@ public class Transport {
         modBus.addListener(TransportDataGenerator::gather);
         modBus.addListener(this::commonSetup);
         modBus.addListener(this::newRegistry);
-        MinecraftForge.EVENT_BUS.addGenericListener(TileEntity.class, this::attachCapability);
+        MinecraftForge.EVENT_BUS.addGenericListener(TileEntity.class, EventHandler::onAttachTileEntityCapabilities);
+        MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, EventHandler::onAttachEntityCapabilities);
+
         this.networkHandler = new NetworkHandler();
         TransportAPI.setNetworkHandler(this.networkHandler);
-    }
-
-    public void attachCapability(AttachCapabilitiesEvent<TileEntity> attachCapabilitiesEvent) {
-        if (attachCapabilitiesEvent.getObject() instanceof LecternTileEntity) {
-            attachCapabilitiesEvent.addCapability(new ResourceLocation(ID, "routing_storage"),
-                    new RoutingStorageProvider());
-        }
     }
 
     @SuppressWarnings("unchecked")

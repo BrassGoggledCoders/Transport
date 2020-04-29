@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport;
+package xyz.brassgoggledcoders.transport.event;
 
 import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
 import net.minecraft.client.Minecraft;

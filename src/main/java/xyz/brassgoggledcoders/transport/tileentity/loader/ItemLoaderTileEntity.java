@@ -12,7 +12,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import xyz.brassgoggledcoders.transport.capability.ItemHandlerDirectional;
+import xyz.brassgoggledcoders.transport.capability.itemhandler.ItemHandlerDirectional;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import java.util.List;
@@ -35,13 +35,10 @@ public class ItemLoaderTileEntity extends BasicLoaderTileEntity<IItemHandler>
     @Override
     protected void transfer(IItemHandler from, IItemHandler to) {
         for (int fromIndex = 0; fromIndex < from.getSlots(); fromIndex++) {
-            ItemStack itemStackSimPulled = from.extractItem(fromIndex, 64, true);
-            if (!itemStackSimPulled.isEmpty()) {
-                ItemStack itemStackSimPushed = ItemHandlerHelper.insertItem(to, itemStackSimPulled, true);
-                if (itemStackSimPushed.isEmpty()) {
-                    ItemHandlerHelper.insertItem(to, from.extractItem(fromIndex, 64, false), false);
-                    break;
-                }
+            ItemStack itemStackPulled = from.extractItem(fromIndex, 64, false);
+            if (!itemStackPulled.isEmpty()) {
+                ItemStack itemStackPushed = ItemHandlerHelper.insertItem(to, itemStackPulled, false);
+                from.insertItem(fromIndex, itemStackPushed, false);
             }
         }
     }

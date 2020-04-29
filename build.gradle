@@ -69,6 +69,7 @@ minecraft {
                     '--existing', sourceSets.main.resources.srcDirs[0]
         }
     }
+    accessTransformer = file('src/main/resources/META-INF/access_transformer.cfg')
 }
 
 sourceSets {

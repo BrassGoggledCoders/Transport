@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.capability;
+package xyz.brassgoggledcoders.transport.capability.itemhandler;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
