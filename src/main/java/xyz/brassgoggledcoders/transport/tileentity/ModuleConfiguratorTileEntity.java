@@ -36,7 +36,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.item.IModularItem;
-import xyz.brassgoggledcoders.transport.capability.ModuleCaseItemStackHandler;
+import xyz.brassgoggledcoders.transport.capability.itemhandler.ModuleCaseItemStackHandler;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
 import xyz.brassgoggledcoders.transport.screen.addon.BasicSlotsScreenAddon;

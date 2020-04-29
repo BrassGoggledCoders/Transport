@@ -11,7 +11,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.items.SlotItemHandler;
 import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
-import xyz.brassgoggledcoders.transport.capability.ModuleCaseItemStackHandler;
+import xyz.brassgoggledcoders.transport.capability.itemhandler.ModuleCaseItemStackHandler;
 
 import java.util.List;
 
