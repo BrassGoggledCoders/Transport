@@ -5,7 +5,7 @@ package xyz.brassgoggledcoders.transport.api.entity;
  *
  * EngineModuleInstance implements it by default to allow it to change PoweredState
  *
- * @implNote this is called for every tick a Minecart is interacting with a Holding rail
+ * This is called for every tick a Minecart is interacting with a Holding rail
  */
 public interface IHoldable {
     void onHeld();
