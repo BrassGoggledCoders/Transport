@@ -98,14 +98,12 @@ public class CargoCarrierMinecartItem extends MinecartItem implements IModularIt
                 if (cargoNBT != null && cargoNBT.contains("name")) {
                     CargoModule cargoModule = TransportAPI.getCargo(cargoNBT.getString("name"));
                     if (cargoModule != null) {
-                        if (cargoNBT.contains("instance")) {
-                            modularEntity.ifPresent(value -> {
-                                ModuleInstance<?> moduleInstance = value.add(cargoModule, ModuleSlots.CARGO, false);
-                                if (moduleInstance != null) {
-                                    moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
-                                }
-                            });
-                        }
+                        modularEntity.ifPresent(value -> {
+                            ModuleInstance<?> moduleInstance = value.add(cargoModule, ModuleSlots.CARGO, false);
+                            if (moduleInstance != null && cargoNBT.contains("instance")) {
+                                moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
+                            }
+                        });
                     }
                 }
 
