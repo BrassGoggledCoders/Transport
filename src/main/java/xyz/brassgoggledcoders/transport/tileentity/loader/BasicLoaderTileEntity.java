@@ -4,6 +4,8 @@ import com.google.common.collect.Maps;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
+import com.hrznstudio.titanium.network.locator.LocatorFactory;
+import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -188,21 +190,20 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
 
     public void onActivated(PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
         if (player instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) player,
-                    new LoaderContainerProvider(this),
-                    packetBuffer -> packetBuffer.writeBlockPos(pos));
+            NetworkHooks.openGui((ServerPlayerEntity) player, new LoaderContainerProvider(this),
+                    packetBuffer -> LocatorFactory.writePacketBuffer(packetBuffer, new TileEntityLocatorInstance(this.getPos())));
         }
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void read(@Nonnull CompoundNBT nbt) {
         super.read(nbt);
         this.deserializeCap(nbt.getCompound("capability"));
     }
 
     @Override
     @Nonnull
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         CompoundNBT superNBT = super.write(nbt);
         superNBT.put("capability", this.serializeCap());
         return superNBT;
