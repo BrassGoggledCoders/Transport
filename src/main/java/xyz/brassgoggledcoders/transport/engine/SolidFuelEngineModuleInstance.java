@@ -128,4 +128,10 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
         this.burnTime = nbt.getInt("burnTime");
         this.itemStackHandler.deserializeNBT(nbt.getCompound("itemStackHandler"));
     }
+
+    @Override
+    public void invalidateCapabilities() {
+        super.invalidateCapabilities();
+        this.optionalItemHandler.invalidate();
+    }
 }

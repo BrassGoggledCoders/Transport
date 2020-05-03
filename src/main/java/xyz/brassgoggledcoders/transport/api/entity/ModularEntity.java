@@ -237,4 +237,9 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
         }
         return lazyOptionals;
     }
+
+    @Override
+    public void invalidateCapabilities() {
+        this.byModuleSlot.values().forEach(ModuleInstance::invalidateCapabilities);
+    }
 }

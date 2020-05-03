@@ -109,7 +109,7 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
         LazyOptional<CAP> capLazyOptional;
         Optional<Entity> entity = entitiesOnSide.findAny();
         if (entity.isPresent()) {
-            capLazyOptional = entity.map(value -> value.getCapability(this.capability))
+            capLazyOptional = entity.map(value -> value.getCapability(this.capability, side.getOpposite()))
                     .orElseGet(LazyOptional::empty);
         } else {
             capLazyOptional = Optional.ofNullable(this.getTheWorld().getTileEntity(neighborPos))
@@ -207,5 +207,12 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
         CompoundNBT superNBT = super.write(nbt);
         superNBT.put("capability", this.serializeCap());
         return superNBT;
+    }
+
+    @Override
+    protected void invalidateCaps() {
+        super.invalidateCaps();
+        this.getInternalCAP().invalidate();
+        this.lazyOptionals.forEach(((direction, capLazyOptional) -> capLazyOptional.invalidate()));
     }
 }

@@ -75,4 +75,7 @@ public class ModuleInstance<MOD extends Module<MOD>>
     public ItemStack asItemStack() {
         return new ItemStack(this.getModule().asItem());
     }
+
+    public void invalidateCapabilities() {
+    }
 }

@@ -197,6 +197,11 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
             }
         }
 
+        LazyOptional<T> capability = this.modularEntity.getCapability(cap, side);
+        if (capability.isPresent()) {
+            return capability;
+        }
+
         return super.getCapability(cap, side);
     }
 
@@ -308,6 +313,14 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
             if (moduleInstance instanceof IHoldable) {
                 ((IHoldable) moduleInstance).onRelease();
             }
+        }
+    }
+
+    public void remove(boolean keepData) {
+        super.remove(keepData);
+        if (!keepData) {
+            this.modularEntityLazy.invalidate();
+            this.modularEntity.invalidateCapabilities();
         }
     }
 

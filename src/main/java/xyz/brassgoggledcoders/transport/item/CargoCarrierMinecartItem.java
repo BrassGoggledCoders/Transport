@@ -10,6 +10,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -36,6 +37,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static net.minecraft.entity.item.minecart.AbstractMinecartEntity.Type.CHEST;
@@ -153,6 +155,26 @@ public class CargoCarrierMinecartItem extends MinecartItem implements IModularIt
             );
         } else {
             return super.getDisplayName(stack);
+        }
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        if (this.isInGroup(group)) {
+            TransportAPI.CARGO.get().getValues()
+                    .stream()
+                    .filter(cargo -> !cargo.isEmpty())
+                    .map(CargoModule::getRegistryName)
+                    .filter(Objects::nonNull)
+                    .map(ResourceLocation::toString)
+                    .map(resourceLocation -> {
+                        ItemStack itemStack = new ItemStack(this);
+                        itemStack.getOrCreateChildTag("cargo").putString("name", resourceLocation);
+                        return itemStack;
+                    })
+                    .forEach(items::add);
+            items.add(new ItemStack(this));
         }
     }
 

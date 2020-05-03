@@ -68,4 +68,10 @@ public abstract class CapabilityCargoModuleInstance<CAP> extends CargoModuleInst
     protected abstract CompoundNBT serializeCapability();
 
     protected abstract void deserializeCapability(CompoundNBT nbt);
+
+    @Override
+    public void invalidateCapabilities() {
+        super.invalidateCapabilities();
+        this.getLazyOptional().invalidate();
+    }
 }
