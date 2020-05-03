@@ -103,23 +103,39 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
         if (vec.y < 0.7) {
             switch (this.getHorizontalFacing()) {
                 case NORTH:
-                    if (vec.x <= -0.3) {
-                        return modularEntity.applyPlayerInteraction(TransportModuleSlots.BACK, player, vec, hand);
+                    if (vec.x <= -0.49) {
+                        ActionResultType actionResultType = modularEntity.applyPlayerInteraction(
+                                TransportModuleSlots.BACK, player, vec, hand);
+                        if (actionResultType != ActionResultType.PASS) {
+                            return actionResultType;
+                        }
                     }
                     break;
                 case SOUTH:
-                    if (vec.x >= 0.3) {
-                        return modularEntity.applyPlayerInteraction(TransportModuleSlots.BACK, player, vec, hand);
+                    if (vec.x >= 0.49) {
+                        ActionResultType actionResultType = modularEntity.applyPlayerInteraction(
+                                TransportModuleSlots.BACK, player, vec, hand);
+                        if (actionResultType != ActionResultType.PASS) {
+                            return actionResultType;
+                        }
                     }
                     break;
                 case WEST:
-                    if (vec.z >= 0.3) {
-                        return modularEntity.applyPlayerInteraction(TransportModuleSlots.BACK, player, vec, hand);
+                    if (vec.z >= 0.49) {
+                        ActionResultType actionResultType = modularEntity.applyPlayerInteraction(
+                                TransportModuleSlots.BACK, player, vec, hand);
+                        if (actionResultType != ActionResultType.PASS) {
+                            return actionResultType;
+                        }
                     }
                     break;
                 case EAST:
-                    if (vec.z <= -0.3) {
-                        return modularEntity.applyPlayerInteraction(TransportModuleSlots.BACK, player, vec, hand);
+                    if (vec.z <= -0.49) {
+                        ActionResultType actionResultType = modularEntity.applyPlayerInteraction(
+                                TransportModuleSlots.BACK, player, vec, hand);
+                        if (actionResultType != ActionResultType.PASS) {
+                            return actionResultType;
+                        }
                     }
                     break;
                 default:
