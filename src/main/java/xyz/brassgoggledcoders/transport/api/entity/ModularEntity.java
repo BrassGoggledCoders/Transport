@@ -26,23 +26,28 @@ import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
+import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class ModularEntity<ENT extends Entity & IItemProvider> implements IModularEntity {
     private final ENT entity;
     private final ImmutableList<ModuleSlot> moduleSlots;
     private final Map<ModuleSlot, ModuleInstance<?>> byModuleSlot;
     private final Map<ModuleType<?>, ModuleInstance<?>> byModuleType;
+
+    @SafeVarargs
+    public ModularEntity(ENT entity, Supplier<ModuleSlot>... moduleSlots) {
+        this(entity, Arrays.stream(moduleSlots)
+                .map(Supplier::get)
+                .toArray(ModuleSlot[]::new));
+    }
 
     public ModularEntity(ENT entity, ModuleSlot... moduleSlots) {
         this.entity = entity;
@@ -134,7 +139,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
             Module.toCompoundNBT(moduleInstance.getModule(), moduleInstanceNBT);
             CompoundNBT instanceNBT = moduleInstance.serializeNBT();
             moduleInstanceNBT.put("instance", instanceNBT);
-            moduleInstanceNBT.putString("moduleSlot", entrySet.getKey().getName());
+            moduleInstanceNBT.putString("moduleSlot", String.valueOf(entrySet.getKey().getRegistryName()));
             moduleNBT.add(moduleInstanceNBT);
         }
         caseNBT.put("moduleInstances", moduleNBT);
@@ -147,7 +152,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
         for (int x = 0; x < moduleInstancesNBT.size(); x++) {
             CompoundNBT moduleInstanceNBT = moduleInstancesNBT.getCompound(x);
             Module<?> module = Module.fromCompoundNBT(moduleInstanceNBT);
-            ModuleSlot moduleSlot = ModuleSlots.MODULE_SLOT_MAP.get(moduleInstanceNBT.getString("moduleSlot"));
+            ModuleSlot moduleSlot = TransportAPI.getModuleSlot(moduleInstanceNBT.getString("moduleSlot"));
             if (module != null && moduleSlot != null) {
                 CompoundNBT instanceNBT = moduleInstanceNBT.getCompound("instance");
                 ModuleInstance<?> moduleInstance = this.add(module, moduleSlot, false);
@@ -163,7 +168,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
         packetBuffer.writeInt(byModuleSlot.size());
         for (Entry<ModuleSlot, ModuleInstance<?>> entrySet : byModuleSlot.entrySet()) {
             Module.toPacketBuffer(entrySet.getValue().getModule(), packetBuffer);
-            packetBuffer.writeString(entrySet.getKey().getName(), 64);
+            packetBuffer.writeResourceLocation(Objects.requireNonNull(entrySet.getKey().getRegistryName()));
         }
     }
 
@@ -185,7 +190,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
         int components = packetBuffer.readInt();
         for (int x = 0; x < components; x++) {
             Module<?> module = Module.fromPacketBuffer(packetBuffer);
-            ModuleSlot moduleSlot = ModuleSlots.MODULE_SLOT_MAP.get(packetBuffer.readString(64));
+            ModuleSlot moduleSlot = TransportAPI.getModuleSlot(packetBuffer.readResourceLocation());
             if (module != null && moduleSlot != null) {
                 this.add(module, moduleSlot, false);
             }

@@ -30,9 +30,9 @@ import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.entity.ModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.content.TransportItemTags;
+import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,7 +52,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
 
     public CargoCarrierMinecartEntity(EntityType<CargoCarrierMinecartEntity> entityType, World world) {
         super(entityType, world);
-        this.modularEntity = new ModularEntity<>(this, ModuleSlots.CARGO, ModuleSlots.BACK);
+        this.modularEntity = new ModularEntity<>(this, TransportModuleSlots.CARGO, TransportModuleSlots.BACK);
         this.modularEntityLazy = LazyOptional.of(() -> this.modularEntity);
     }
 
@@ -63,7 +63,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     public CargoCarrierMinecartEntity(EntityType<CargoCarrierMinecartEntity> entityType, World world,
                                       double x, double y, double z) {
         super(entityType, world, x, y, z);
-        this.modularEntity = new ModularEntity<>(this, ModuleSlots.CARGO, ModuleSlots.BACK);
+        this.modularEntity = new ModularEntity<>(this, TransportModuleSlots.CARGO, TransportModuleSlots.BACK);
         this.modularEntityLazy = LazyOptional.of(() -> this.modularEntity);
     }
 
@@ -104,22 +104,22 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
             switch (this.getHorizontalFacing()) {
                 case NORTH:
                     if (vec.x <= -0.3) {
-                        return modularEntity.applyPlayerInteraction(ModuleSlots.BACK, player, vec, hand);
+                        return modularEntity.applyPlayerInteraction(TransportModuleSlots.BACK, player, vec, hand);
                     }
                     break;
                 case SOUTH:
                     if (vec.x >= 0.3) {
-                        return modularEntity.applyPlayerInteraction(ModuleSlots.BACK, player, vec, hand);
+                        return modularEntity.applyPlayerInteraction(TransportModuleSlots.BACK, player, vec, hand);
                     }
                     break;
                 case WEST:
                     if (vec.z >= 0.3) {
-                        return modularEntity.applyPlayerInteraction(ModuleSlots.BACK, player, vec, hand);
+                        return modularEntity.applyPlayerInteraction(TransportModuleSlots.BACK, player, vec, hand);
                     }
                     break;
                 case EAST:
                     if (vec.z <= -0.3) {
-                        return modularEntity.applyPlayerInteraction(ModuleSlots.BACK, player, vec, hand);
+                        return modularEntity.applyPlayerInteraction(TransportModuleSlots.BACK, player, vec, hand);
                     }
                     break;
                 default:
@@ -128,7 +128,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
         }
 
 
-        return modularEntity.applyPlayerInteraction(ModuleSlots.CARGO, player, vec, hand);
+        return modularEntity.applyPlayerInteraction(TransportModuleSlots.CARGO, player, vec, hand);
     }
 
     @Override
@@ -157,7 +157,8 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
             if (cargoNBT.contains("name")) {
                 CargoModule cargoModule = TransportAPI.getCargo(cargoNBT.getString("name"));
                 if (cargoModule != null) {
-                    ModuleInstance<CargoModule> moduleInstance = this.modularEntity.add(cargoModule, ModuleSlots.CARGO, false);
+                    ModuleInstance<CargoModule> moduleInstance = this.modularEntity.add(cargoModule,
+                            TransportModuleSlots.CARGO.get(), false);
                     if (cargoNBT.contains("instance") && moduleInstance != null) {
                         moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
                     }
@@ -189,7 +190,8 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
         }
 
         if (side == Direction.DOWN || this.getHorizontalFacing().getOpposite() == side) {
-            List<LazyOptional<T>> preferredCapabilities = modularEntity.getCapabilities(cap, side, ModuleSlots.BACK);
+            List<LazyOptional<T>> preferredCapabilities = modularEntity.getCapabilities(cap, side,
+                    TransportModuleSlots.BACK.get());
             for (LazyOptional<T> lazyOptional : preferredCapabilities) {
                 if (lazyOptional.isPresent()) {
                     return lazyOptional;

@@ -26,6 +26,7 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorage;
 import xyz.brassgoggledcoders.transport.api.routing.RoutingStorageProvider;
@@ -85,6 +86,7 @@ public class Transport {
         makeRegistry("module_type", ModuleType.class);
         makeRegistry("cargo", CargoModule.class);
         makeRegistry("engine", EngineModule.class);
+        makeRegistry("module_slot", ModuleSlot.class);
 
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         TransportBlocks.register(modBus);
@@ -96,6 +98,7 @@ public class Transport {
         TransportModuleTypes.register(modBus);
         TransportCargoModules.register(modBus);
         TransportEngineModules.register(modBus);
+        TransportModuleSlots.register(modBus);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {

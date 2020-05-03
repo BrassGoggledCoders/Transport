@@ -15,7 +15,7 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.TransportClientAPI;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
+import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 import xyz.brassgoggledcoders.transport.api.renderer.IModuleRenderer;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 
@@ -106,7 +106,7 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
 
     private void renderModules(IModularEntity modularEntity, float entityYaw, float partialTicks, MatrixStack matrixStack,
                                IRenderTypeBuffer buffer, int packedLight) {
-        ModuleInstance<?> cargoSlotModuleInstance = modularEntity.getModuleInstance(ModuleSlots.CARGO);
+        ModuleInstance<?> cargoSlotModuleInstance = modularEntity.getModuleInstance(TransportModuleSlots.CARGO.get());
         if (cargoSlotModuleInstance != null) {
             IModuleRenderer moduleRenderer = TransportClientAPI.getModuleRenderer(cargoSlotModuleInstance.getModule());
             if (moduleRenderer != null) {
@@ -116,7 +116,7 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
             }
         }
 
-        ModuleInstance<?> backSlotModuleInstance = modularEntity.getModuleInstance(ModuleSlots.BACK);
+        ModuleInstance<?> backSlotModuleInstance = modularEntity.getModuleInstance(TransportModuleSlots.BACK.get());
         if (backSlotModuleInstance != null) {
             IModuleRenderer moduleRenderer = TransportClientAPI.getModuleRenderer(backSlotModuleInstance.getModule());
             if (moduleRenderer != null) {

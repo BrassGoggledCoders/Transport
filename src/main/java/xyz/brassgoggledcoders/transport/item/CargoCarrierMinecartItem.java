@@ -28,9 +28,9 @@ import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.item.IModularItem;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
+import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 
 import javax.annotation.Nonnull;
@@ -101,7 +101,8 @@ public class CargoCarrierMinecartItem extends MinecartItem implements IModularIt
                     CargoModule cargoModule = TransportAPI.getCargo(cargoNBT.getString("name"));
                     if (cargoModule != null) {
                         modularEntity.ifPresent(value -> {
-                            ModuleInstance<?> moduleInstance = value.add(cargoModule, ModuleSlots.CARGO, false);
+                            ModuleInstance<?> moduleInstance = value.add(cargoModule, TransportModuleSlots.CARGO.get(),
+                                    false);
                             if (moduleInstance != null && cargoNBT.contains("instance")) {
                                 moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
                             }
@@ -133,7 +134,7 @@ public class CargoCarrierMinecartItem extends MinecartItem implements IModularIt
                 for (int x = 0; x < moduleInstancesNBT.size(); x++) {
                     CompoundNBT moduleInstanceNBT = moduleInstancesNBT.getCompound(x);
                     Module<?> module = Module.fromCompoundNBT(moduleInstanceNBT);
-                    ModuleSlot moduleSlot = ModuleSlots.MODULE_SLOT_MAP.get(moduleInstanceNBT.getString("moduleSlot"));
+                    ModuleSlot moduleSlot = TransportAPI.getModuleSlot(moduleInstanceNBT.getString("moduleSlot"));
                     if (module != null && moduleSlot != null) {
                         tooltip.add(new TranslationTextComponent("text.transport.installed_module",
                                 moduleSlot.getDisplayName(), module.getDisplayName()));

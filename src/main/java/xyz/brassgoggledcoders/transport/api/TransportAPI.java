@@ -19,6 +19,7 @@ import xyz.brassgoggledcoders.transport.api.connection.NoConnectionChecker;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
+import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.network.INetworkHandler;
 import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
@@ -51,6 +52,7 @@ public class TransportAPI {
     public static Lazy<ForgeRegistry<CargoModule>> CARGO = Lazy.of(() -> (ForgeRegistry<CargoModule>) RegistryManager.ACTIVE.getRegistry(CargoModule.class));
     public static Lazy<IForgeRegistry<EngineModule>> ENGINES = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(EngineModule.class));
     public static Lazy<IForgeRegistry<ModuleType<?>>> MODULE_TYPE = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(ModuleType.class));
+    public static Lazy<IForgeRegistry<ModuleSlot>> MODULE_SLOT = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(ModuleSlot.class));
 
     public static CargoModule getCargo(String name) {
         return getCargo(new ResourceLocation(name));
@@ -151,5 +153,13 @@ public class TransportAPI {
 
     public static void setConnectionChecker(@Nonnull IConnectionChecker connectionChecker) {
         TransportAPI.connectionChecker = connectionChecker;
+    }
+
+    public static ModuleSlot getModuleSlot(String moduleSlot) {
+        return TransportAPI.getModuleSlot(new ResourceLocation(moduleSlot));
+    }
+
+    public static ModuleSlot getModuleSlot(ResourceLocation resourceLocation) {
+        return TransportAPI.MODULE_SLOT.get().getValue(resourceLocation);
     }
 }

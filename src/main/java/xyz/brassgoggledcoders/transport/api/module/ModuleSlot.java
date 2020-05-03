@@ -1,30 +1,27 @@
-package xyz.brassgoggledcoders.transport.api.module.slot;
+package xyz.brassgoggledcoders.transport.api.module;
 
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.api.module.Module;
 
 import java.util.function.BiFunction;
 
-public class ModuleSlot {
-    private final String name;
-    private final String translationKey;
+public class ModuleSlot extends ForgeRegistryEntry<ModuleSlot> {
+    private String translationKey = null;
+    private ITextComponent displayName = null;
     private final BiFunction<IModularEntity, Module<?>, Boolean> isModuleValidFor;
 
-    private ITextComponent displayName;
 
-    public ModuleSlot(String name, String translationKey, BiFunction<IModularEntity, Module<?>, Boolean> isModuleValidFor) {
-        this.name = name;
-        this.translationKey = translationKey;
+    public ModuleSlot(BiFunction<IModularEntity, Module<?>, Boolean> isModuleValidFor) {
         this.isModuleValidFor = isModuleValidFor;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
     public String getTranslationKey() {
+        if (this.translationKey == null) {
+            this.translationKey = Util.makeTranslationKey("module_slot", this.getRegistryName());
+        }
         return this.translationKey;
     }
 

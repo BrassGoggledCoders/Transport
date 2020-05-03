@@ -18,8 +18,8 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
+import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -82,6 +82,10 @@ public interface IModularEntity extends IItemProvider, INBTSerializable<Compound
     void write(PacketBuffer packetBuffer);
 
     Collection<ModuleInstance<?>> getModuleInstances();
+
+    default ActionResultType applyPlayerInteraction(Supplier<ModuleSlot> moduleSlot, PlayerEntity player, Vec3d vec, Hand hand) {
+        return this.applyPlayerInteraction(moduleSlot.get(), player, vec, hand);
+    }
 
     ActionResultType applyPlayerInteraction(ModuleSlot moduleSlot, PlayerEntity player, Vec3d vec, Hand hand);
 

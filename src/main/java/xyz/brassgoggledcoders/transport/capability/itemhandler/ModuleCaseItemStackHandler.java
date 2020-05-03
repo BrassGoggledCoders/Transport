@@ -7,8 +7,8 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
+import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
+import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -50,7 +50,7 @@ public class ModuleCaseItemStackHandler implements IItemHandlerModifiable {
         return entity.map(IModularEntity::getModuleSlots)
                 .filter(moduleSlots -> slot >= 0 && slot < moduleSlots.size())
                 .map(moduleSlots -> moduleSlots.get(slot))
-                .orElse(ModuleSlots.NONE);
+                .orElseGet(TransportModuleSlots.NONE::get);
     }
 
     @Override

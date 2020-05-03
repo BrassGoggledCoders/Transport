@@ -9,8 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.items.SlotItemHandler;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
+import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
+import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.ModuleCaseItemStackHandler;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public class ModuleConfiguratorScreen extends BasicAddonScreen {
                     }
                 } else {
                     this.renderTooltip(Lists.newArrayList(new TranslationTextComponent("text.transport.module_slot",
-                            ModuleSlots.NONE.getDisplayName()).getUnformattedComponentText()), mouseX, mouseY);
+                            TransportModuleSlots.NONE.get().getDisplayName()).getUnformattedComponentText()), mouseX, mouseY);
                 }
             } else {
                 super.renderHoveredToolTip(mouseX, mouseY);

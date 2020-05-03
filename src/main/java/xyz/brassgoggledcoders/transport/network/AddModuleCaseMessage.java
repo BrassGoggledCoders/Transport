@@ -5,14 +5,16 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
+import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.event.ClientEventHandler;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
+import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
+import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class AddModuleCaseMessage {
@@ -32,13 +34,13 @@ public class AddModuleCaseMessage {
 
     public static AddModuleCaseMessage decode(PacketBuffer packetBuffer) {
         return new AddModuleCaseMessage(packetBuffer.readInt(), Module.fromPacketBuffer(packetBuffer),
-                ModuleSlots.MODULE_SLOT_MAP.get(packetBuffer.readString(64)));
+                TransportAPI.getModuleSlot(packetBuffer.readResourceLocation()));
     }
 
     public void encode(PacketBuffer packetBuffer) {
         packetBuffer.writeInt(entityId);
         Module.toPacketBuffer(module, packetBuffer);
-        packetBuffer.writeString(moduleSlot.getName());
+        packetBuffer.writeResourceLocation(Objects.requireNonNull(moduleSlot.getRegistryName()));
     }
 
     public void consume(Supplier<NetworkEvent.Context> contextSupplier) {

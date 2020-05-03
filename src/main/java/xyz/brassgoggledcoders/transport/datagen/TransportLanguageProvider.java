@@ -4,8 +4,8 @@ import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.module.Module;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlot;
-import xyz.brassgoggledcoders.transport.api.module.slot.ModuleSlots;
+import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
+import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 import xyz.brassgoggledcoders.transport.content.*;
 
 import java.util.function.Supplier;
@@ -55,9 +55,9 @@ public class TransportLanguageProvider extends LanguageProvider {
         //endregion
 
         //region ModuleSlots
-        this.add(ModuleSlots.CARGO, "Cargo");
-        this.add(ModuleSlots.BACK, "Back");
-        this.add(ModuleSlots.NONE, "Not a");
+        this.add(TransportModuleSlots.CARGO.get(), "Cargo");
+        this.add(TransportModuleSlots.BACK.get(), "Back");
+        this.add(TransportModuleSlots.NONE.get(), "Not a");
         this.add("text.transport.module_slot", "%s Module Slot");
         //endregion
 
