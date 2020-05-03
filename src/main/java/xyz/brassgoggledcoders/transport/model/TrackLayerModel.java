@@ -165,9 +165,6 @@ public class TrackLayerModel<T extends Entity> extends SegmentedModel<T> {
         );
     }
 
-    /**
-     * This is a helper function from Tabula to set the rotation of model parts
-     */
     public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
