@@ -88,7 +88,7 @@ dependencies {
     if (findProject(':Titanium') != null) {
         compile project(':Titanium')
     } else {
-        compile fg.deobf (project.dependencies.create("com.hrznstudio:titanium:${minecraft_version}-${titanium_version}") {
+        compile fg.deobf(project.dependencies.create("com.hrznstudio:titanium:${minecraft_version}-${titanium_version}") {
             transitive = false
         })
     }
@@ -118,7 +118,8 @@ jar {
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : "${version}",
                 "Implementation-Vendor"   : "${team}",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "FMLAT"                   : "access_transformer.cfg"
         ])
     }
 }
