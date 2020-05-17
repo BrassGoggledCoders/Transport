@@ -1,22 +1,55 @@
 package xyz.brassgoggledcoders.transport;
 
+import com.hrznstudio.titanium.network.locator.LocatorType;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.tileentity.LecternTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.RegistryBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.pointmachine.ComparatorPointMachineBehavior;
-import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
-import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
+import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
+import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
+import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
+import xyz.brassgoggledcoders.transport.api.module.ModuleType;
+import xyz.brassgoggledcoders.transport.api.routing.RoutingStorage;
+import xyz.brassgoggledcoders.transport.api.routing.RoutingStorageProvider;
+import xyz.brassgoggledcoders.transport.api.routing.instruction.Routing;
+import xyz.brassgoggledcoders.transport.api.routing.serializer.ListRoutingDeserializer;
+import xyz.brassgoggledcoders.transport.api.routing.serializer.ListValidatedRoutingDeserializer;
+import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingDeserializer;
+import xyz.brassgoggledcoders.transport.api.routing.serializer.SingleRoutingDeserializer;
+import xyz.brassgoggledcoders.transport.connection.QuarkConnectionChecker;
+import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
-import xyz.brassgoggledcoders.transport.entity.ResourceLocationDataSerializer;
+import xyz.brassgoggledcoders.transport.event.ClientEventHandler;
+import xyz.brassgoggledcoders.transport.event.EventHandler;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
+import xyz.brassgoggledcoders.transport.nbt.CompoundNBTStorage;
+import xyz.brassgoggledcoders.transport.nbt.EmptyStorage;
+import xyz.brassgoggledcoders.transport.network.NetworkHandler;
+import xyz.brassgoggledcoders.transport.pointmachine.ComparatorPointMachineBehavior;
+import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
+import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
+import xyz.brassgoggledcoders.transport.pointmachine.RoutingPointMachineBehavior;
+import xyz.brassgoggledcoders.transport.routing.instruction.*;
 
 import static xyz.brassgoggledcoders.transport.Transport.ID;
 
@@ -24,9 +57,13 @@ import static xyz.brassgoggledcoders.transport.Transport.ID;
 public class Transport {
     public static final String ID = "transport";
     public static final ItemGroup ITEM_GROUP = new TransportItemGroup(ID, TransportBlocks.HOLDING_RAIL::getItem);
-    public static final ResourceLocationDataSerializer RESOURCE_LOCATION_DATA_SERIALIZER = createDataSerializer();
+    public static final Logger LOGGER = LogManager.getLogger(ID);
+
+    public static final LocatorType ENTITY = new LocatorType("entity", EntityLocatorInstance::new);
 
     public static Transport instance;
+
+    public final NetworkHandler networkHandler;
 
     public Transport() {
         instance = this;
@@ -36,24 +73,65 @@ public class Transport {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modBus.addListener(ClientEventHandler::clientSetup));
         modBus.addListener(TransportDataGenerator::gather);
         modBus.addListener(this::commonSetup);
+        modBus.addListener(this::newRegistry);
+        MinecraftForge.EVENT_BUS.addGenericListener(TileEntity.class, EventHandler::onAttachTileEntityCapabilities);
+        MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, EventHandler::onAttachEntityCapabilities);
 
+        this.networkHandler = new NetworkHandler();
+        TransportAPI.setNetworkHandler(this.networkHandler);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
+        makeRegistry("module_type", ModuleType.class);
+        makeRegistry("cargo", CargoModule.class);
+        makeRegistry("engine", EngineModule.class);
+        makeRegistry("module_slot", ModuleSlot.class);
+
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         TransportBlocks.register(modBus);
-        TransportCargoes.register(modBus);
         TransportContainers.register(modBus);
         TransportEntities.register(modBus);
         TransportRecipes.register(modBus);
         TransportItems.register(modBus);
+
+        TransportModuleTypes.register(modBus);
+        TransportCargoModules.register(modBus);
+        TransportEngineModules.register(modBus);
+        TransportModuleSlots.register(modBus);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
-        TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.LEVER, new LeverPointMachineBehavior());
-        TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.REPEATER, new RedstonePointMachineBehavior());
-        TransportAPI.POINT_MACHINE_BEHAVIORS.put(Blocks.COMPARATOR, new ComparatorPointMachineBehavior());
+        TransportAPI.addPointMachineBehavior(Blocks.LEVER, new LeverPointMachineBehavior());
+        TransportAPI.addPointMachineBehavior(Blocks.REPEATER, new RedstonePointMachineBehavior());
+        TransportAPI.addPointMachineBehavior(Blocks.COMPARATOR, new ComparatorPointMachineBehavior());
+        TransportAPI.addPointMachineBehavior(Blocks.LECTERN, new RoutingPointMachineBehavior());
+
+        TransportAPI.addRoutingDeserializer("TRUE", new NoInputRoutingDeserializer(TrueRouting::new));
+        TransportAPI.addRoutingDeserializer("FALSE", new NoInputRoutingDeserializer(FalseRouting::new));
+        TransportAPI.addRoutingDeserializer("NAME", new ListRoutingDeserializer<>(String.class, NameRouting::new));
+        TransportAPI.addRoutingDeserializer("AND", new ListRoutingDeserializer<>(Routing.class, AndRouting::new));
+        TransportAPI.addRoutingDeserializer("OR", new ListRoutingDeserializer<>(Routing.class, OrRouting::new));
+        TransportAPI.addRoutingDeserializer("NOT", new SingleRoutingDeserializer<>(Routing.class, NotRouting::new));
+        TransportAPI.addRoutingDeserializer("RIDERS", new SingleRoutingDeserializer<>(Number.class, RiderRouting::new));
+        TransportAPI.addRoutingDeserializer("POWERED", new NoInputRoutingDeserializer(PoweredRouting::new));
+        TransportAPI.addRoutingDeserializer("COMPARATOR", new SingleRoutingDeserializer<>(Number.class, ComparatorRouting::new));
+        TransportAPI.addRoutingDeserializer("TIME", new ListValidatedRoutingDeserializer<>(String.class, TimeRouting::create));
+
+        CapabilityManager.INSTANCE.register(RoutingStorage.class, new EmptyStorage<>(), RoutingStorage::new);
+        CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () ->  null);
+
+        TransportAPI.generateItemToModuleMap();
+
+        if (ModList.get().isLoaded("quark")) {
+            TransportAPI.setConnectionChecker(new QuarkConnectionChecker());
+        }
     }
 
-    private static ResourceLocationDataSerializer createDataSerializer() {
-        ResourceLocationDataSerializer dataSerializer = new ResourceLocationDataSerializer();
-        DataSerializers.registerSerializer(dataSerializer);
-        return dataSerializer;
+    private static <T extends IForgeRegistryEntry<T>> void makeRegistry(String name, Class<T> type) {
+        new RegistryBuilder<T>()
+                .setName(new ResourceLocation("transport", name))
+                .setType(type)
+                .create();
     }
 }

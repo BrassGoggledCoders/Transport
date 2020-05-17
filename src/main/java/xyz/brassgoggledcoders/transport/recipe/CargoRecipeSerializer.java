@@ -11,7 +11,7 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.cargo.Cargo;
+import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -41,11 +41,11 @@ public class CargoRecipeSerializer extends ShapelessRecipe.Serializer {
             throw new JsonParseException("Too many ingredients for shapeless recipe the max is 9");
         } else {
             JsonObject result = JSONUtils.getJsonObject(json, "result");
-            Cargo cargo;
+            CargoModule cargoModule;
             if (result.has("cargo")) {
                 ResourceLocation cargoName = new ResourceLocation(result.get("cargo").getAsString());
-                cargo = TransportAPI.CARGO.getValue(cargoName);
-                if (cargo == null) {
+                cargoModule = TransportAPI.getCargo(cargoName);
+                if (cargoModule == null) {
                     throw new JsonParseException("Failed to find Cargo for name: " + cargoName);
                 }
             } else {
@@ -53,7 +53,7 @@ public class CargoRecipeSerializer extends ShapelessRecipe.Serializer {
             }
             ItemStack itemStack = ShapedRecipe.deserializeItem(result);
             itemStack.getOrCreateChildTag("cargo").putString("name", Objects.requireNonNull(
-                    cargo.getRegistryName()).toString());
+                    cargoModule.getRegistryName()).toString());
             return new ShapelessRecipe(recipeId, s, itemStack, ingredients);
         }
     }

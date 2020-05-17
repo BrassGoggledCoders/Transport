@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.block.rail.turnout;
 
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.properties.RailShape;
@@ -14,6 +15,7 @@ import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public abstract class AbstractSwitchRailBlock extends AbstractRailBlock {
     public static final BooleanProperty DIVERGE = BooleanProperty.create("diverge");
@@ -25,9 +27,14 @@ public abstract class AbstractSwitchRailBlock extends AbstractRailBlock {
     protected boolean shouldDivert(IBlockReader blockReader, BlockPos motorLocation, BlockPos switchLocation,
                                    @Nullable AbstractMinecartEntity cart) {
         BlockState motorState = blockReader.getBlockState(motorLocation);
-        IPointMachineBehavior motorBehavior = TransportAPI.POINT_MACHINE_BEHAVIORS.get(motorState.getBlock());
+        IPointMachineBehavior motorBehavior = TransportAPI.getPointMachineBehavior(motorState.getBlock());
         if (motorBehavior != null) {
-            return motorBehavior.shouldDiverge(motorState, blockReader, motorLocation, switchLocation, cart);
+            Entity leader = TransportAPI.getConnectionChecker().getLeader(cart);
+            if (leader instanceof AbstractMinecartEntity) {
+                return motorBehavior.shouldDiverge(motorState, blockReader, motorLocation, switchLocation, (AbstractMinecartEntity) leader);
+            } else {
+                return motorBehavior.shouldDiverge(motorState, blockReader, motorLocation, switchLocation, cart);
+            }
         } else {
             return false;
         }
@@ -36,17 +43,25 @@ public abstract class AbstractSwitchRailBlock extends AbstractRailBlock {
     @Override
     @Nonnull
     @SuppressWarnings("deprecation")
-    public BlockState updatePostPlacement(@Nonnull BlockState state, Direction facing, BlockState facingState,
-                                          IWorld world, BlockPos currentPos, BlockPos facingPos) {
+    @ParametersAreNonnullByDefault
+    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world,
+                                          BlockPos currentPos, BlockPos facingPos) {
         SwitchConfiguration configuration = this.getSwitchConfiguration(state);
         if (this.getMotorDirection(configuration) == facing) {
-            state = state.with(DIVERGE, this.shouldDivert(world, currentPos.offset(facing), currentPos, null));
+            BlockPos motorPos = currentPos.offset(facing);
+            BlockState motorState = world.getBlockState(motorPos);
+            IPointMachineBehavior motorBehavior = TransportAPI.getPointMachineBehavior(motorState.getBlock());
+            if (motorBehavior != null) {
+                motorBehavior.onBlockStateUpdate(motorState, world, motorPos);
+                state = state.with(DIVERGE, motorBehavior.shouldDiverge(motorState, world, motorPos, currentPos, null));
+            }
         }
         return state;
     }
 
     @Override
     @Nonnull
+    @ParametersAreNonnullByDefault
     public RailShape getRailDirection(BlockState state, IBlockReader blockReader, BlockPos pos,
                                       @Nullable AbstractMinecartEntity minecartEntity) {
         SwitchConfiguration switchConfiguration = getSwitchConfiguration(state);

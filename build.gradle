@@ -8,7 +8,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.0.159", changing: true
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
     }
 }
 
@@ -40,6 +40,9 @@ repositories {
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
 
 minecraft {
@@ -61,9 +64,21 @@ minecraft {
             environment 'target', 'fmluserdevdata'
             properties 'fml.earlyprogresswindow': 'false'
 
-            args '--all', '--output', file('src/datagen/resources/'),
+            args '--all', '--output', file('src/generated/resources/'),
                     '--mod', 'transport', '--reports',
                     '--existing', sourceSets.main.resources.srcDirs[0]
+        }
+    }
+    accessTransformer = file('src/main/resources/META-INF/access_transformer.cfg')
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = [
+                    "$rootDir/src/main/resources",
+                    "$rootDir/src/generated/resources"
+            ]
         }
     }
 }
@@ -73,12 +88,15 @@ dependencies {
     if (findProject(':Titanium') != null) {
         compile project(':Titanium')
     } else {
-        compile fg.deobf (project.dependencies.create("com.hrznstudio:titanium:${minecraft_version}-${titanium_version}") {
+        compile fg.deobf(project.dependencies.create("com.hrznstudio:titanium:${minecraft_version}-${titanium_version}") {
             transitive = false
         })
     }
     compile fg.deobf("com.teamacronymcoders:theloader:1.15.2-1.1.0")
     compile fg.deobf("vazkii.patchouli:Patchouli:${minecraft_version}-${patchouli_version}")
+    compile fg.deobf("vazkii.autoreglib:AutoRegLib:1.5-40.79")
+    compile fg.deobf("vazkii.quark:Quark:r2.1-234.1082")
+    testImplementation('org.junit.jupiter:junit-jupiter:5.6.1')
 }
 
 task srcJar(type: Jar) {
@@ -100,7 +118,8 @@ jar {
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : "${version}",
                 "Implementation-Vendor"   : "${team}",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "FMLAT"                   : "access_transformer.cfg"
         ])
     }
 }

@@ -7,15 +7,11 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.crafting.NBTIngredient;
-import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.recipe.CargoShapelessRecipeBuilder;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.content.TransportEngineModules;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.content.TransportItems;
-import xyz.brassgoggledcoders.transport.recipe.ActualNBTIngredient;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -97,25 +93,34 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .build(consumer);
         //endregion
 
-        //region Cargo
-        TransportAPI.CARGO.getValues().forEach(cargo -> {
-            if (cargo.asItem() != Items.AIR && cargo.getRegistryName() != null) {
-                ResourceLocation registryName = cargo.getRegistryName();
-                CargoShapelessRecipeBuilder.start(TransportEntities.CARGO_MINECART_ITEM.get(), cargo)
-                        .addIngredient(Tags.Items.SLIMEBALLS)
-                        .addIngredient(Items.MINECART)
-                        .addIngredient(cargo.asItem())
-                        .addCriterion("has_item", hasItem(cargo.asItem()))
-                        .build(consumer, new ResourceLocation(registryName.getNamespace(), "cargo/minecart/" +
-                                registryName.getPath()));
-                ShapelessRecipeBuilder.shapelessRecipe(cargo.asItem())
-                        .addIngredient(Items.WATER_BUCKET)
-                        .addIngredient(new ActualNBTIngredient(cargo.createItemStack(TransportEntities.CARGO_MINECART_ITEM.get())))
-                        .addCriterion("has_item", hasItem(TransportEntities.CARGO_MINECART_ITEM.get()))
-                        .build(consumer, new ResourceLocation(registryName.getNamespace(), "cargo/minecart/" +
-                                registryName.getPath() + "_break"));
-            }
-        });
+        //region Entities
+        ShapedRecipeBuilder.shapedRecipe(TransportEntities.CARGO_MINECART_ITEM.get())
+                .patternLine(" S ")
+                .patternLine("RMR")
+                .patternLine(" S ")
+                .key('S', Ingredient.fromTag(Tags.Items.SLIMEBALLS))
+                .key('R', Ingredient.fromTag(Tags.Items.DUSTS_REDSTONE))
+                .key('M', Ingredient.fromItems(Items.MINECART))
+                .addCriterion("has_item", this.hasItem(Items.MINECART))
+                .build(consumer);
+        //endregion
+
+        //region Engines
+        ShapedRecipeBuilder.shapedRecipe(TransportEngineModules.BOOSTER_ITEM::get)
+                .patternLine("G G")
+                .patternLine("RGR")
+                .patternLine("G G")
+                .key('G', Tags.Items.INGOTS_GOLD)
+                .key('R', Tags.Items.DUSTS_REDSTONE)
+                .addCriterion("has_item", this.hasItem(Tags.Items.INGOTS_GOLD))
+                .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(TransportEngineModules.SOLID_FUEL_ITEM::get)
+                .patternLine("F")
+                .patternLine("F")
+                .key('F', Items.FURNACE)
+                .addCriterion("has_item", this.hasItem(Items.FURNACE))
+                .build(consumer);
         //endregion
 
         //region Items
@@ -134,6 +139,14 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .patternLine("SSS")
                 .key('S', Ingredient.fromItems(Items.SCAFFOLDING))
                 .addCriterion("has_item", this.hasItem(Items.SCAFFOLDING))
+                .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.MODULE_CONFIGURATOR.getItem())
+                .patternLine("CCC")
+                .patternLine("III")
+                .key('C', Ingredient.fromItems(Items.CRAFTING_TABLE))
+                .key('I', Ingredient.fromTag(Tags.Items.INGOTS_IRON))
+                .addCriterion("has_item", this.hasItem(Items.MINECART))
                 .build(consumer);
         //endregion
     }

@@ -23,6 +23,7 @@ import xyz.brassgoggledcoders.transport.tileentity.loader.BasicLoaderTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.EnumMap;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -64,11 +65,17 @@ public class LoaderBlock extends Block {
     @Override
     @Nonnull
     @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
                                              Hand hand, BlockRayTraceResult rayTraceResult) {
         ItemStack heldItemStack = player.getHeldItem(hand);
         if (heldItemStack.getItem().isIn(TransportItemTags.WRENCHES)) {
-            world.setBlockState(pos, state.cycle(PROPERTIES.get(rayTraceResult.getFace())));
+            if (player.isCrouching()) {
+                state = state.cycle(PROPERTIES.get(rayTraceResult.getFace().getOpposite()));
+            } else {
+                state = state.cycle(PROPERTIES.get(rayTraceResult.getFace()));
+            }
+            world.setBlockState(pos, state);
             handleTileEntity(world, pos, basicLoaderTileEntity -> basicLoaderTileEntity.updateSide(rayTraceResult.getFace()));
             return ActionResultType.SUCCESS;
         } else if (!player.isCrouching()) {

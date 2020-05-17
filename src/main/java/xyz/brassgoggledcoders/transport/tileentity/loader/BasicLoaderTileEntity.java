@@ -3,6 +3,9 @@ package xyz.brassgoggledcoders.transport.tileentity.loader;
 import com.google.common.collect.Maps;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
+import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
+import com.hrznstudio.titanium.network.locator.LocatorFactory;
+import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,8 +26,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.block.loader.LoadType;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
-import xyz.brassgoggledcoders.transport.container.containeraddon.IContainerAddonProvider;
-import xyz.brassgoggledcoders.transport.container.loader.LoaderContainerProvider;
+import xyz.brassgoggledcoders.transport.container.LoaderContainerProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -107,7 +109,7 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
         LazyOptional<CAP> capLazyOptional;
         Optional<Entity> entity = entitiesOnSide.findAny();
         if (entity.isPresent()) {
-            capLazyOptional = entity.map(value -> value.getCapability(this.capability))
+            capLazyOptional = entity.map(value -> value.getCapability(this.capability, side.getOpposite()))
                     .orElseGet(LazyOptional::empty);
         } else {
             capLazyOptional = Optional.ofNullable(this.getTheWorld().getTileEntity(neighborPos))
@@ -146,7 +148,7 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
     }
 
     @Override
-    public void markComponentForUpdate() {
+    public void markComponentForUpdate(boolean referenced) {
 
     }
 
@@ -188,23 +190,29 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
 
     public void onActivated(PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
         if (player instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) player,
-                    new LoaderContainerProvider(this),
-                    packetBuffer -> packetBuffer.writeBlockPos(pos));
+            NetworkHooks.openGui((ServerPlayerEntity) player, new LoaderContainerProvider(this),
+                    packetBuffer -> LocatorFactory.writePacketBuffer(packetBuffer, new TileEntityLocatorInstance(this.getPos())));
         }
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void read(@Nonnull CompoundNBT nbt) {
         super.read(nbt);
         this.deserializeCap(nbt.getCompound("capability"));
     }
 
     @Override
     @Nonnull
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         CompoundNBT superNBT = super.write(nbt);
         superNBT.put("capability", this.serializeCap());
         return superNBT;
+    }
+
+    @Override
+    protected void invalidateCaps() {
+        super.invalidateCaps();
+        this.getInternalCAP().invalidate();
+        this.lazyOptionals.forEach(((direction, capLazyOptional) -> capLazyOptional.invalidate()));
     }
 }
