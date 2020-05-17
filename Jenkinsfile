@@ -10,14 +10,6 @@ pipeline {
                 sh './gradlew clean'
             }
         }
-        stage('Run Generators') {
-            steps {
-                echo 'Building and Deploying to Maven'
-                script {
-                    sh './gradlew runData'
-                }
-            }
-        }
         stage('Build and Deploy') {
             steps {
                 echo 'Building and Deploying to Maven'
