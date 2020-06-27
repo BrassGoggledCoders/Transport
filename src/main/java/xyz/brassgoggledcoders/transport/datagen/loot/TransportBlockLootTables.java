@@ -8,6 +8,7 @@ import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.Direction;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.BlockStateProperty;
+import net.minecraft.world.storage.loot.conditions.SurvivesExplosion;
 import net.minecraft.world.storage.loot.functions.CopyBlockState;
 import net.minecraft.world.storage.loot.functions.CopyNbt;
 import net.minecraft.world.storage.loot.functions.SetCount;
@@ -49,7 +50,16 @@ public class TransportBlockLootTables extends BlockLootTables {
         this.registerDropSelfLootTable(TransportBlocks.SWITCH_RAIL.getBlock());
         this.registerDropSelfLootTable(TransportBlocks.WYE_SWITCH_RAIL.getBlock());
         this.registerDropSelfLootTable(TransportBlocks.BUMPER_RAIL.getBlock());
-        this.registerDropSelfLootTable(TransportBlocks.MODULE_CONFIGURATOR.getBlock());
+        this.registerLootTable(TransportBlocks.MODULE_CONFIGURATOR.getBlock(), block -> LootTable.builder()
+                .addLootPool(LootPool.builder()
+                        .rolls(ConstantRange.of(1))
+                        .acceptCondition(SurvivesExplosion.builder())
+                        .acceptFunction(CopyNbt.builder(CopyNbt.Source.BLOCK_ENTITY)
+                                .replaceOperation("modularInventory", "BlockEntityTag.modularInventory")
+                        )
+                        .addEntry(ItemLootEntry.builder(block))
+                )
+        );
         this.registerLootTable(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getBlock(), block -> LootTable.builder()
                 .addLootPool(LootPool.builder()
                         .rolls(ConstantRange.of(1))

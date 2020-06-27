@@ -26,18 +26,20 @@ public class ModuleCaseItemStackHandler implements IItemHandlerModifiable {
     @Override
     public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
         LazyOptional<IModularEntity> entity = modularEntity.get();
-        if (!stack.isEmpty() && entity.isPresent()) {
-            Module<?> module = TransportAPI.getModuleFromItem(stack.getItem());
+        entity.ifPresent(value -> {
             ModuleSlot moduleSlot = getModuleSlot(entity, slot);
-            if (module != null) {
-                entity.ifPresent(value -> {
+
+            if (!stack.isEmpty()) {
+                Module<?> module = TransportAPI.getModuleFromItem(stack.getItem());
+                if (module != null) {
                     value.remove(moduleSlot, false);
                     value.add(module, moduleSlot, false);
-                });
-
-                this.onUpdate.accept(null);
+                }
+            } else {
+                value.remove(moduleSlot, false);
             }
-        }
+            this.onUpdate.accept(null);
+        });
     }
 
     @Nonnull

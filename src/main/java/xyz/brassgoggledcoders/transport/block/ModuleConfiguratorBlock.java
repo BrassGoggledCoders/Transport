@@ -20,6 +20,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
 
 import javax.annotation.Nonnull;
@@ -32,7 +33,9 @@ public class ModuleConfiguratorBlock extends Block {
     private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
 
     public ModuleConfiguratorBlock() {
-        this(Properties.create(Material.IRON).notSolid());
+        this(Properties.create(Material.IRON)
+                .harvestTool(ToolType.PICKAXE)
+                .notSolid());
     }
 
     public ModuleConfiguratorBlock(Properties properties) {

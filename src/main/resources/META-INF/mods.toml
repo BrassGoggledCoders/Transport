@@ -9,3 +9,22 @@ issueTrackerURL="https://github.com/Brass-Goggled-Coders/Transport/issues"
     authors="SkySom"
     description='''
     '''
+
+[[dependencies.transport]]
+    modId="forge"
+    mandatory=true
+    versionRange="[31.1.18,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.transport]]
+    modId="patchouli"
+    mandatory=true
+    versionRange="[1.15.2-1.2-29.147,)"
+    side="BOTH"
+
+[[dependencies.transport]]
+    modId="titanium"
+    mandatory=true
+    versionRange="[1.15.2-2.4.0,)"
+    side="BOTH"

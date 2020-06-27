@@ -27,23 +27,18 @@ public class ModuleConfiguratorScreen extends BasicAddonScreen {
                     ((SlotItemHandler) this.hoveredSlot).getItemHandler() instanceof ModuleCaseItemStackHandler) {
                 ModuleSlot moduleSlot = ((ModuleCaseItemStackHandler) ((SlotItemHandler) this.hoveredSlot).getItemHandler())
                         .getModuleSlot(this.hoveredSlot.getSlotIndex());
-                if (moduleSlot != null) {
-                    if (this.hoveredSlot.getHasStack()) {
-                        ItemStack hoveredStack = hoveredSlot.getStack();
-                        FontRenderer itemFontRenderer = hoveredStack.getItem().getFontRenderer(hoveredStack);
-                        net.minecraftforge.fml.client.gui.GuiUtils.preItemToolTip(hoveredStack);
-                        List<String> tooltips = this.getTooltipFromItem(hoveredStack);
-                        tooltips.add(0, new TranslationTextComponent("text.transport.module_slot",
-                                moduleSlot.getDisplayName()).getUnformattedComponentText());
-                        this.renderTooltip(tooltips, mouseX, mouseY, (itemFontRenderer == null ? this.font : itemFontRenderer));
-                        net.minecraftforge.fml.client.gui.GuiUtils.postItemToolTip();
-                    } else {
-                        this.renderTooltip(Lists.newArrayList(new TranslationTextComponent("text.transport.module_slot",
-                                moduleSlot.getDisplayName()).getUnformattedComponentText()), mouseX, mouseY);
-                    }
+                if (this.hoveredSlot.getHasStack()) {
+                    ItemStack hoveredStack = hoveredSlot.getStack();
+                    FontRenderer itemFontRenderer = hoveredStack.getItem().getFontRenderer(hoveredStack);
+                    net.minecraftforge.fml.client.gui.GuiUtils.preItemToolTip(hoveredStack);
+                    List<String> tooltips = this.getTooltipFromItem(hoveredStack);
+                    tooltips.add(0, new TranslationTextComponent("text.transport.module_slot",
+                            moduleSlot.getDisplayName()).getUnformattedComponentText());
+                    this.renderTooltip(tooltips, mouseX, mouseY, (itemFontRenderer == null ? this.font : itemFontRenderer));
+                    net.minecraftforge.fml.client.gui.GuiUtils.postItemToolTip();
                 } else {
                     this.renderTooltip(Lists.newArrayList(new TranslationTextComponent("text.transport.module_slot",
-                            TransportModuleSlots.NONE.get().getDisplayName()).getUnformattedComponentText()), mouseX, mouseY);
+                            moduleSlot.getDisplayName()).getUnformattedComponentText()), mouseX, mouseY);
                 }
             } else {
                 super.renderHoveredToolTip(mouseX, mouseY);

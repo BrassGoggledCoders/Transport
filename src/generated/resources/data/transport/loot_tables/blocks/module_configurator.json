@@ -13,6 +13,19 @@
         {
           "condition": "minecraft:survives_explosion"
         }
+      ],
+      "functions": [
+        {
+          "function": "minecraft:copy_nbt",
+          "source": "block_entity",
+          "ops": [
+            {
+              "source": "modularInventory",
+              "target": "BlockEntityTag.modularInventory",
+              "op": "replace"
+            }
+          ]
+        }
       ]
     }
   ]

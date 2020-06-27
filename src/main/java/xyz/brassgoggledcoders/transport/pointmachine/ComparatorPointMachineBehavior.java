@@ -2,6 +2,9 @@ package xyz.brassgoggledcoders.transport.pointmachine;
 
 import net.minecraft.block.*;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
+import net.minecraft.entity.item.minecart.MinecartCommandBlockEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.ComparatorMode;
 import net.minecraft.util.Direction;
@@ -23,6 +26,13 @@ public class ComparatorPointMachineBehavior implements IPointMachineBehavior {
                     power = this.getPowerOnSides((IWorldReader) blockReader, motorPos, direction);
                 }
                 int comparatorLevel = minecartEntity.getComparatorLevel();
+                if (comparatorLevel < 0) {
+                    if (minecartEntity instanceof MinecartCommandBlockEntity) {
+                        comparatorLevel = ((MinecartCommandBlockEntity) minecartEntity).getCommandBlockLogic().getSuccessCount();
+                    } else if (minecartEntity instanceof IInventory) {
+                        comparatorLevel = Container.calcRedstoneFromInventory((IInventory)minecartEntity);
+                    }
+                }
                 return (motorState.get(ComparatorBlock.MODE) == ComparatorMode.COMPARE) == (comparatorLevel >= power);
             }
         }
