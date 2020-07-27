@@ -29,8 +29,8 @@ public class ModuleContainerProvider implements INamedContainerProvider {
     @Nonnull
     public ITextComponent getDisplayName() {
         return moduleInstance.getDisplayName()
-                .shallowCopy()
-                .applyTextStyle(TextFormatting.BLACK);
+                .copyRaw()
+                .mergeStyle(TextFormatting.BLACK);
     }
 
     @Nullable

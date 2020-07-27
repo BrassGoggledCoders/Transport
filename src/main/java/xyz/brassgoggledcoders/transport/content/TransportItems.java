@@ -10,7 +10,7 @@ import xyz.brassgoggledcoders.transport.item.RailBreakerItem;
 
 @SuppressWarnings("unused")
 public class TransportItems {
-    private static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, Transport.ID);
+    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Transport.ID);
 
     public static final RegistryObject<RailBreakerItem> RAIL_BREAKER = ITEMS.register("rail_breaker",
             RailBreakerItem::new);

@@ -11,7 +11,7 @@ public enum LoadType implements IStringSerializable {
 
     @Override
     @Nonnull
-    public String getName() {
+    public String getString() {
         return this.name().toLowerCase();
     }
 }

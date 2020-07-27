@@ -6,6 +6,7 @@ import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -30,6 +31,7 @@ import xyz.brassgoggledcoders.transport.container.LoaderContainerProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Objects;
@@ -196,8 +198,9 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbt) {
-        super.read(nbt);
+    @ParametersAreNonnullByDefault
+    public void read(BlockState blockState, CompoundNBT nbt) {
+        super.read(blockState, nbt);
         this.deserializeCap(nbt.getCompound("capability"));
     }
 

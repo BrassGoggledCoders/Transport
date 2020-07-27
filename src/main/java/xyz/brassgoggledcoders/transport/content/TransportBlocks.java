@@ -30,10 +30,10 @@ import java.util.function.Function;
 
 @SuppressWarnings("unused")
 public class TransportBlocks {
-    private static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, Transport.ID);
+    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Transport.ID);
     private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES =
-            new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, Transport.ID);
-    private static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, Transport.ID);
+            DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Transport.ID);
+    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Transport.ID);
 
     //region Rails
     public static final BlockRegistryObjectGroup<HoldingRailBlock, BlockItem, ?> HOLDING_RAIL =

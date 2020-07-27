@@ -7,7 +7,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.Direction;
@@ -75,7 +75,7 @@ public class WyeSwitchRailBlock extends AbstractSwitchRailBlock {
 
     @Override
     @Nonnull
-    public IProperty<RailShape> getShapeProperty() {
+    public Property<RailShape> getShapeProperty() {
         return SHAPE;
     }
 }

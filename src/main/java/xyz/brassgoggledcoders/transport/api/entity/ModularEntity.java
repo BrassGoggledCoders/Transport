@@ -16,7 +16,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IItemProvider;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -178,7 +178,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     }
 
     @Override
-    public ActionResultType applyPlayerInteraction(ModuleSlot moduleSlot, PlayerEntity player, Vec3d vec, Hand hand) {
+    public ActionResultType applyPlayerInteraction(ModuleSlot moduleSlot, PlayerEntity player, Vector3d vec, Hand hand) {
         ModuleInstance<?> moduleInstance = this.getModuleInstance(moduleSlot);
         return moduleInstance != null ? moduleInstance.applyInteraction(player, vec, hand) : ActionResultType.PASS;
     }

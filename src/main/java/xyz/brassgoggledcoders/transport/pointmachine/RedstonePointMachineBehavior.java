@@ -13,7 +13,7 @@ public class RedstonePointMachineBehavior implements IPointMachineBehavior {
     @Override
     public boolean shouldDiverge(BlockState motorState, IBlockReader blockReader, BlockPos motorPos, BlockPos switchPos,
                                  @Nullable AbstractMinecartEntity minecartEntity) {
-        return motorState.get(BlockStateProperties.POWERED) && (!motorState.has(BlockStateProperties.HORIZONTAL_FACING)
+        return motorState.get(BlockStateProperties.POWERED) && (!motorState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)
                 || (motorPos.offset(motorState.get(BlockStateProperties.HORIZONTAL_FACING).getOpposite()).equals(switchPos)));
     }
 }

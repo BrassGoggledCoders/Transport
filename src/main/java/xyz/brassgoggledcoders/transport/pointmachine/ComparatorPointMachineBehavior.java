@@ -2,7 +2,7 @@ package xyz.brassgoggledcoders.transport.pointmachine;
 
 import net.minecraft.block.*;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.item.minecart.MinecartCommandBlockEntity;
+import net.minecraft.entity.item.minecart.CommandBlockMinecartEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -27,8 +27,8 @@ public class ComparatorPointMachineBehavior implements IPointMachineBehavior {
                 }
                 int comparatorLevel = minecartEntity.getComparatorLevel();
                 if (comparatorLevel < 0) {
-                    if (minecartEntity instanceof MinecartCommandBlockEntity) {
-                        comparatorLevel = ((MinecartCommandBlockEntity) minecartEntity).getCommandBlockLogic().getSuccessCount();
+                    if (minecartEntity instanceof CommandBlockMinecartEntity) {
+                        comparatorLevel = ((CommandBlockMinecartEntity) minecartEntity).getCommandBlockLogic().getSuccessCount();
                     } else if (minecartEntity instanceof IInventory) {
                         comparatorLevel = Container.calcRedstoneFromInventory((IInventory)minecartEntity);
                     }

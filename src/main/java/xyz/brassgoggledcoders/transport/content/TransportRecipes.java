@@ -10,7 +10,7 @@ import xyz.brassgoggledcoders.transport.recipe.CargoRecipeSerializer;
 
 @SuppressWarnings("unused")
 public class TransportRecipes {
-    private static final DeferredRegister<IRecipeSerializer<?>> RECIPES = new DeferredRegister<>(
+    private static final DeferredRegister<IRecipeSerializer<?>> RECIPES = DeferredRegister.create(
             ForgeRegistries.RECIPE_SERIALIZERS, Transport.ID);
 
     public static final RegistryObject<CargoRecipeSerializer> CARGO_SERIALIZER = RECIPES.register("cargo",

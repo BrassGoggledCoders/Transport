@@ -12,6 +12,7 @@ import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.SlotContainerAddon;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -125,14 +126,17 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         List<IFactory<? extends IScreenAddon>> screenAddons = Lists.newArrayList();
         screenAddons.addAll(modularItemInventory.getScreenAddons());
-        screenAddons.add(() -> new BasicSlotsScreenAddon(8, 72, 9, slotId -> Pair.of(slotId * 18, 0)));
+        screenAddons.add(() -> new BasicSlotsScreenAddon(8, 72, moduleCaseItemStackHandler,
+                slotId -> Pair.of(slotId * 18, 0)));
         return screenAddons;
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
         List<IFactory<? extends IContainerAddon>> containerAddon = Lists.newArrayList();
         containerAddon.addAll(modularItemInventory.getContainerAddons());
@@ -145,7 +149,7 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
     @Nonnull
     public ITextComponent getDisplayName() {
         return new TranslationTextComponent(this.getBlockState().getBlock().getTranslationKey())
-                .applyTextStyle(TextFormatting.BLACK);
+                .mergeStyle(TextFormatting.BLACK);
     }
 
     @Nullable
@@ -171,8 +175,9 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT compound) {
-        super.read(compound);
+    @ParametersAreNonnullByDefault
+    public void read(BlockState blockState, CompoundNBT compound) {
+        super.read(blockState, compound);
         this.modularItemInventory.deserializeNBT(compound.getCompound("modularInventory"));
     }
 

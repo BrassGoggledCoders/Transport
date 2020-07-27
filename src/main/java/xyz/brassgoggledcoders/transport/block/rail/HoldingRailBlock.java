@@ -19,7 +19,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
@@ -78,7 +78,7 @@ public class HoldingRailBlock extends AbstractRailBlock {
             if (state.get(NORTH_WEST)) {
                 speedIncrease *= -1;
             }
-            Vec3d motion = cart.getMotion();
+            Vector3d motion = cart.getMotion();
             Entity leader = TransportAPI.getConnectionChecker().getLeader(cart);
             if (leader == null || (leader instanceof AbstractMinecartEntity &&
                     !((AbstractMinecartEntity) leader).isPoweredCart())) {
@@ -92,7 +92,7 @@ public class HoldingRailBlock extends AbstractRailBlock {
                 ((IHoldable) cart).onRelease();
             }
         } else {
-            cart.setMotion(Vec3d.ZERO);
+            cart.setMotion(Vector3d.ZERO);
             if (cart instanceof IHoldable) {
                 ((IHoldable) cart).onHeld();
             }
@@ -100,6 +100,7 @@ public class HoldingRailBlock extends AbstractRailBlock {
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     protected void updateState(BlockState state, World world, BlockPos pos, Block block) {
         boolean isStatePowered = state.get(POWERED);
         boolean isWorldPowered = world.isBlockPowered(pos);
@@ -124,7 +125,7 @@ public class HoldingRailBlock extends AbstractRailBlock {
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
         return RailUtils.setRailStateWithFacing(this.getDefaultState(), context);
     }
 }

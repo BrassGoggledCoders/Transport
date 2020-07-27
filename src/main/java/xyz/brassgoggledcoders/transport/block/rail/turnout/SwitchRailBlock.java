@@ -6,9 +6,8 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.ActionResultType;
@@ -20,6 +19,7 @@ import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class SwitchRailBlock extends AbstractSwitchRailBlock {
     public static final EnumProperty<RailShape> DIVERGE_SHAPE = EnumProperty.create("diverge_shape", RailShape.class,
@@ -97,9 +97,10 @@ public class SwitchRailBlock extends AbstractSwitchRailBlock {
     @Override
     @Nonnull
     @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
         if (TransportItemTags.WRENCHES.contains(player.getHeldItem(hand).getItem())) {
-            world.setBlockState(pos, state.cycle(DIVERGE_SHAPE), 3);
+            world.setBlockState(pos, state.func_235896_a_(DIVERGE_SHAPE), 3);
             return ActionResultType.SUCCESS;
         }
         return super.onBlockActivated(state, world, pos, player, hand, rayTraceResult);
@@ -107,7 +108,7 @@ public class SwitchRailBlock extends AbstractSwitchRailBlock {
 
     @Override
     @Nonnull
-    public IProperty<RailShape> getShapeProperty() {
+    public Property<RailShape> getShapeProperty() {
         return STRAIGHT_SHAPE;
     }
 

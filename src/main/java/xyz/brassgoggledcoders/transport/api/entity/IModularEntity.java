@@ -10,7 +10,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IItemProvider;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -83,11 +83,11 @@ public interface IModularEntity extends IItemProvider, INBTSerializable<Compound
 
     Collection<ModuleInstance<?>> getModuleInstances();
 
-    default ActionResultType applyPlayerInteraction(Supplier<ModuleSlot> moduleSlot, PlayerEntity player, Vec3d vec, Hand hand) {
+    default ActionResultType applyPlayerInteraction(Supplier<ModuleSlot> moduleSlot, PlayerEntity player, Vector3d vec, Hand hand) {
         return this.applyPlayerInteraction(moduleSlot.get(), player, vec, hand);
     }
 
-    ActionResultType applyPlayerInteraction(ModuleSlot moduleSlot, PlayerEntity player, Vec3d vec, Hand hand);
+    ActionResultType applyPlayerInteraction(ModuleSlot moduleSlot, PlayerEntity player, Vector3d vec, Hand hand);
 
     <T> List<LazyOptional<T>> getCapabilities(@Nonnull Capability<T> cap, @Nullable Direction side, @Nullable ModuleSlot priority);
 

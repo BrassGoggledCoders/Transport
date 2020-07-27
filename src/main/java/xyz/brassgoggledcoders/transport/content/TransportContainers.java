@@ -26,7 +26,7 @@ import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 
 public class TransportContainers {
     private static final DeferredRegister<ContainerType<?>> CONTAINERS =
-            new DeferredRegister<>(ForgeRegistries.CONTAINERS, Transport.ID);
+            DeferredRegister.create(ForgeRegistries.CONTAINERS, Transport.ID);
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static final RegistryObject<ContainerType<BasicAddonContainer>> MODULE = CONTAINERS.register("module",

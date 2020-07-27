@@ -6,7 +6,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -16,7 +16,6 @@ import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class ModuleInstance<MOD extends Module<MOD>>
         implements INBTSerializable<CompoundNBT>, ICapabilityProvider {
@@ -32,7 +31,7 @@ public class ModuleInstance<MOD extends Module<MOD>>
 
     }
 
-    public ActionResultType applyInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
+    public ActionResultType applyInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
         return ActionResultType.PASS;
     }
 

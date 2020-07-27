@@ -11,7 +11,7 @@ import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 
 @SuppressWarnings("unused")
 public class TransportModuleTypes {
-    private static final DeferredRegister<ModuleType<?>> COMPONENTS = new DeferredRegister<>(
+    private static final DeferredRegister<ModuleType<?>> COMPONENTS = DeferredRegister.create(
             TransportAPI.MODULE_TYPE.get(), Transport.ID);
 
     public static final RegistryObject<ModuleType<EngineModule>> ENGINE = COMPONENTS.register("engine",

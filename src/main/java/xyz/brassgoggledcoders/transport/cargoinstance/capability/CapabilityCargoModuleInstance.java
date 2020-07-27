@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
@@ -39,7 +39,7 @@ public abstract class CapabilityCargoModuleInstance<CAP> extends CargoModuleInst
     }
 
     @Override
-    public ActionResultType applyInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
+    public ActionResultType applyInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
         if (!player.isCrouching()) {
             this.getModularEntity().openContainer(player, new ModuleContainerProvider(this,
                     this.getModularEntity()), packetBuffer -> packetBuffer.writeResourceLocation(Objects.requireNonNull(

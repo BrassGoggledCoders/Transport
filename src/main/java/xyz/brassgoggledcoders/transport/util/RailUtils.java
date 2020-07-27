@@ -8,8 +8,8 @@ import xyz.brassgoggledcoders.transport.api.TransportBlockStateProperties;
 
 public class RailUtils {
     public static BlockState setRailStateWithFacing(BlockState blockState, BlockItemUseContext context) {
-        if (blockState.has(TransportBlockStateProperties.STRAIGHT_RAIL_SHAPE) &&
-                blockState.has(TransportBlockStateProperties.NORTH_WEST)) {
+        if (blockState.hasProperty(TransportBlockStateProperties.STRAIGHT_RAIL_SHAPE) &&
+                blockState.hasProperty(TransportBlockStateProperties.NORTH_WEST)) {
             Direction direction = context.getPlacementHorizontalFacing();
             switch (direction) {
                 case NORTH:

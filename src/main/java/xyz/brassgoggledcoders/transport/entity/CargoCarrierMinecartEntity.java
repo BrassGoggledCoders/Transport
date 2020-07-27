@@ -12,7 +12,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -82,7 +82,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @Override
     @Nonnull
     @ParametersAreNonnullByDefault
-    public ActionResultType applyPlayerInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
+    public ActionResultType applyPlayerInteraction(PlayerEntity player, Vector3d vector3d, Hand hand) {
         EngineModuleInstance engineModuleInstance = this.modularEntity.getModuleInstance(TransportObjects.ENGINE_TYPE);
         if (engineModuleInstance != null) {
             if (originalPushX == 0D && originalPushZ == 0D) {
@@ -100,39 +100,39 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
             }
         }
 
-        if (vec.y < 0.7) {
+        if (vector3d.y < 0.7) {
             switch (this.getHorizontalFacing()) {
                 case NORTH:
-                    if (vec.x <= -0.49) {
+                    if (vector3d.x <= -0.49) {
                         ActionResultType actionResultType = modularEntity.applyPlayerInteraction(
-                                TransportModuleSlots.BACK, player, vec, hand);
+                                TransportModuleSlots.BACK, player, vector3d, hand);
                         if (actionResultType != ActionResultType.PASS) {
                             return actionResultType;
                         }
                     }
                     break;
                 case SOUTH:
-                    if (vec.x >= 0.49) {
+                    if (vector3d.x >= 0.49) {
                         ActionResultType actionResultType = modularEntity.applyPlayerInteraction(
-                                TransportModuleSlots.BACK, player, vec, hand);
+                                TransportModuleSlots.BACK, player, vector3d, hand);
                         if (actionResultType != ActionResultType.PASS) {
                             return actionResultType;
                         }
                     }
                     break;
                 case WEST:
-                    if (vec.z >= 0.49) {
+                    if (vector3d.z >= 0.49) {
                         ActionResultType actionResultType = modularEntity.applyPlayerInteraction(
-                                TransportModuleSlots.BACK, player, vec, hand);
+                                TransportModuleSlots.BACK, player, vector3d, hand);
                         if (actionResultType != ActionResultType.PASS) {
                             return actionResultType;
                         }
                     }
                     break;
                 case EAST:
-                    if (vec.z <= -0.49) {
+                    if (vector3d.z <= -0.49) {
                         ActionResultType actionResultType = modularEntity.applyPlayerInteraction(
-                                TransportModuleSlots.BACK, player, vec, hand);
+                                TransportModuleSlots.BACK, player, vector3d, hand);
                         if (actionResultType != ActionResultType.PASS) {
                             return actionResultType;
                         }
@@ -144,7 +144,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
         }
 
 
-        return modularEntity.applyPlayerInteraction(TransportModuleSlots.CARGO, player, vec, hand);
+        return modularEntity.applyPlayerInteraction(TransportModuleSlots.CARGO, player, vector3d, hand);
     }
 
     @Override
@@ -248,7 +248,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @ParametersAreNonnullByDefault
     protected void moveAlongTrack(BlockPos pos, BlockState state) {
         super.moveAlongTrack(pos, state);
-        Vec3d vec3d = this.getMotion();
+        Vector3d vec3d = this.getMotion();
         double d2 = horizontalMag(vec3d);
         double d3 = this.pushX * this.pushX + this.pushZ * this.pushZ;
         if (d3 > 1.0E-4D && d2 > 0.001D) {

@@ -57,13 +57,13 @@ public class ScaffoldingSlabBlock extends SlabBlock {
     }
 
     public static int getDistance(IBlockReader blockReader, BlockPos blockPos) {
-        BlockPos.Mutable mutableBlockPos = new BlockPos.Mutable(blockPos).move(Direction.DOWN);
+        BlockPos.Mutable mutableBlockPos = blockPos.toMutable().move(Direction.DOWN);
         BlockState blockState = blockReader.getBlockState(mutableBlockPos);
         int i = 7;
         if (blockState.getBlock() instanceof ScaffoldingSlabBlock) {
             i = blockState.get(DISTANCE_07);
         } else if (blockState.getBlock() instanceof ScaffoldingBlock) {
-            i = blockState.get(ScaffoldingBlock.field_220118_a);
+            i = blockState.get(ScaffoldingBlock.DISTANCE);
         } else if (blockState.isSolidSide(blockReader, mutableBlockPos, Direction.UP)) {
             return 0;
         }
@@ -71,7 +71,7 @@ public class ScaffoldingSlabBlock extends SlabBlock {
         for (Direction direction : Direction.Plane.HORIZONTAL) {
             BlockState nextCheckedState = blockReader.getBlockState(mutableBlockPos.setPos(blockPos).move(direction));
             if (nextCheckedState.getBlock() instanceof ScaffoldingBlock) {
-                i = Math.min(i, nextCheckedState.get(ScaffoldingBlock.field_220118_a) + 1);
+                i = Math.min(i, nextCheckedState.get(ScaffoldingBlock.DISTANCE) + 1);
                 if (i == 1) {
                     break;
                 }
@@ -87,7 +87,7 @@ public class ScaffoldingSlabBlock extends SlabBlock {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void fillStateContainer(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
         builder.add(DISTANCE_07, RAILED);
     }
@@ -110,8 +110,9 @@ public class ScaffoldingSlabBlock extends SlabBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-        return getDistance(worldIn, pos) < 7;
+    @ParametersAreNonnullByDefault
+    public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos) {
+        return getDistance(world, pos) < 7;
     }
 
     @Override
@@ -124,7 +125,7 @@ public class ScaffoldingSlabBlock extends SlabBlock {
         } else {
             switch (state.get(TYPE)) {
                 case DOUBLE:
-                    if (context.func_216378_a(VoxelShapes.fullCube(), pos, true) && !context.func_225581_b_()) {
+                    if (context.func_216378_a(VoxelShapes.fullCube(), pos, true)) {
                         return field_220121_d;
                     } else {
                         return state.get(DISTANCE_07) != 0 && context.func_216378_a(field_220124_g, pos, true) ?
@@ -141,6 +142,7 @@ public class ScaffoldingSlabBlock extends SlabBlock {
 
     @Override
     @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
     public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!worldIn.isRemote) {
             worldIn.getPendingBlockTicks().scheduleTick(pos, this, 1);
@@ -149,18 +151,19 @@ public class ScaffoldingSlabBlock extends SlabBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
-        int i = getDistance(worldIn, pos);
+    @ParametersAreNonnullByDefault
+    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
+        int i = getDistance(world, pos);
         BlockState blockstate = state.with(DISTANCE_07, i);
         if (blockstate.get(DISTANCE_07) == 7) {
             if (state.get(DISTANCE_07) == 7) {
-                worldIn.addEntity(new FallingBlockEntity(worldIn, (double) pos.getX() + 0.5D, pos.getY(),
+                world.addEntity(new FallingBlockEntity(world, (double) pos.getX() + 0.5D, pos.getY(),
                         (double) pos.getZ() + 0.5D, blockstate.with(WATERLOGGED, Boolean.FALSE)));
             } else {
-                worldIn.destroyBlock(pos, true);
+                world.destroyBlock(pos, true);
             }
         } else if (state != blockstate) {
-            worldIn.setBlockState(pos, blockstate, 3);
+            world.setBlockState(pos, blockstate, 3);
         }
 
     }

@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.ActionResultType;
@@ -22,6 +22,7 @@ import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 import xyz.brassgoggledcoders.transport.util.RailUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class BumperRailBlock extends AbstractRailBlock {
     public static final BooleanProperty NORTH_WEST = TransportBlockStateProperties.NORTH_WEST;
@@ -43,14 +44,16 @@ public class BumperRailBlock extends AbstractRailBlock {
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
         return RailUtils.setRailStateWithFacing(this.getDefaultState(), context);
     }
 
     @Override
     @Nonnull
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+    @ParametersAreNonnullByDefault
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
+                                             Hand hand, BlockRayTraceResult rayTraceResult) {
         if (TransportItemTags.WRENCHES.contains(player.getHeldItem(hand).getItem())) {
             state = state.with(NORTH_WEST, !state.get(NORTH_WEST));
             world.setBlockState(pos, state, 3);
@@ -66,7 +69,7 @@ public class BumperRailBlock extends AbstractRailBlock {
 
     @Override
     @Nonnull
-    public IProperty<RailShape> getShapeProperty() {
+    public Property<RailShape> getShapeProperty() {
         return SHAPE;
     }
 }

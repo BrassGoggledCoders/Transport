@@ -1,7 +1,7 @@
 package xyz.brassgoggledcoders.transport.routing.instruction;
 
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.item.minecart.MinecartCommandBlockEntity;
+import net.minecraft.entity.item.minecart.CommandBlockMinecartEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import xyz.brassgoggledcoders.transport.api.routing.instruction.Routing;
@@ -19,8 +19,8 @@ public class ComparatorRouting extends Routing {
     public boolean matches(@Nonnull AbstractMinecartEntity minecartEntity) {
         int comparatorLevel = minecartEntity.getComparatorLevel();
         if (comparatorLevel < 0) {
-            if (minecartEntity instanceof MinecartCommandBlockEntity) {
-                comparatorLevel = ((MinecartCommandBlockEntity) minecartEntity).getCommandBlockLogic().getSuccessCount();
+            if (minecartEntity instanceof CommandBlockMinecartEntity) {
+                comparatorLevel = ((CommandBlockMinecartEntity) minecartEntity).getCommandBlockLogic().getSuccessCount();
             } else if (minecartEntity instanceof IInventory) {
                 comparatorLevel = Container.calcRedstoneFromInventory((IInventory)minecartEntity);
             }

@@ -15,8 +15,8 @@ import xyz.brassgoggledcoders.transport.engine.SolidFuelEngineModuleInstance;
 
 @SuppressWarnings("unused")
 public class TransportEngineModules {
-    private static final DeferredRegister<EngineModule> ENGINES = new DeferredRegister<>(TransportAPI.ENGINES.get(), Transport.ID);
-    private static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, Transport.ID);
+    private static final DeferredRegister<EngineModule> ENGINES = DeferredRegister.create(EngineModule.class, Transport.ID);
+    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Transport.ID);
 
     public static RegistryObject<EngineModule> CREATIVE = ENGINES.register("creative", () -> new EngineModule(CreativeEngineModuleInstance::new));
     public static RegistryObject<ModuleItem<EngineModule>> CREATIVE_ITEM = ITEMS.register("creative_engine",

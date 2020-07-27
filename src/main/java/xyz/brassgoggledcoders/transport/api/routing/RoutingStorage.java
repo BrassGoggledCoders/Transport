@@ -30,7 +30,7 @@ public class RoutingStorage {
                         CompoundNBT bookNBT = book.getTag();
                         ListNBT pagesNBT = bookNBT.getList("pages", Constants.NBT.TAG_STRING);
                         String currentPage = pagesNBT.getString(lecternTileEntity.getPage());
-                        ITextComponent textComponent = TextComponent.Serializer.fromJson(currentPage);
+                        ITextComponent textComponent = TextComponent.Serializer.func_240643_a_(currentPage);
                         if (textComponent != null) {
                             routingString = textComponent.getString();
                         }

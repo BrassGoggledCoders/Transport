@@ -71,9 +71,9 @@ public class LoaderBlock extends Block {
         ItemStack heldItemStack = player.getHeldItem(hand);
         if (heldItemStack.getItem().isIn(TransportItemTags.WRENCHES)) {
             if (player.isCrouching()) {
-                state = state.cycle(PROPERTIES.get(rayTraceResult.getFace().getOpposite()));
+                state = state.func_235896_a_(PROPERTIES.get(rayTraceResult.getFace().getOpposite()));
             } else {
-                state = state.cycle(PROPERTIES.get(rayTraceResult.getFace()));
+                state = state.func_235896_a_(PROPERTIES.get(rayTraceResult.getFace()));
             }
             world.setBlockState(pos, state);
             handleTileEntity(world, pos, basicLoaderTileEntity -> basicLoaderTileEntity.updateSide(rayTraceResult.getFace()));

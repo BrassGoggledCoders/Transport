@@ -4,8 +4,8 @@ import net.minecraft.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.common.Tags;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
@@ -27,7 +27,7 @@ public class TransportRecipeProvider extends RecipeProvider {
         ShapelessRecipeBuilder.shapelessRecipe(TransportBlocks.HOLDING_RAIL.getItem(), 2)
                 .addIngredient(Items.RAIL)
                 .addIngredient(Items.POWERED_RAIL)
-                .addCriterion("has_rail", this.hasItem(ItemTags.RAILS))
+                .addCriterion("has_rail", hasItem(ItemTags.RAILS))
                 .build(consumer);
 
         ShapedRecipeBuilder.shapedRecipe(TransportBlocks.DIAMOND_CROSSING_RAIL.getItem(), 5)
@@ -35,7 +35,7 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .patternLine("RRR")
                 .patternLine(" R ")
                 .key('R', Ingredient.fromItems(Items.RAIL))
-                .addCriterion("has_rail", this.hasItem(ItemTags.RAILS))
+                .addCriterion("has_rail", hasItem(ItemTags.RAILS))
                 .build(consumer);
 
         ShapedRecipeBuilder.shapedRecipe(TransportBlocks.ELEVATOR_SWITCH_RAIL.getItem())
@@ -45,7 +45,7 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .key('R', Ingredient.fromItems(Items.RAIL))
                 .key('P', Tags.Items.DUSTS_REDSTONE)
                 .key('S', Ingredient.fromItems(Items.SCAFFOLDING))
-                .addCriterion("has_item", this.hasItem(Items.SCAFFOLDING))
+                .addCriterion("has_item", hasItem(Items.SCAFFOLDING))
                 .build(consumer);
 
         ShapedRecipeBuilder.shapedRecipe(TransportBlocks.SCAFFOLDING_RAIL.getItem(), 3)
@@ -53,7 +53,7 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .patternLine("SSS")
                 .key('R', Ingredient.fromItems(Items.RAIL))
                 .key('S', Ingredient.fromItems(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getItem()))
-                .addCriterion("has_item", this.hasItem(Items.SCAFFOLDING))
+                .addCriterion("has_item", hasItem(Items.SCAFFOLDING))
                 .build(consumer);
 
         ShapedRecipeBuilder.shapedRecipe(TransportBlocks.SWITCH_RAIL.getItem(), 4)
@@ -61,14 +61,14 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .patternLine("RR")
                 .patternLine("R ")
                 .key('R', Items.RAIL)
-                .addCriterion("has_item", this.hasItem(Items.RAIL))
+                .addCriterion("has_item", hasItem(Items.RAIL))
                 .build(consumer);
 
         ShapedRecipeBuilder.shapedRecipe(TransportBlocks.WYE_SWITCH_RAIL.getItem(), 4)
                 .patternLine("RRR")
                 .patternLine(" R ")
                 .key('R', Items.RAIL)
-                .addCriterion("has_item", this.hasItem(Items.RAIL))
+                .addCriterion("has_item", hasItem(Items.RAIL))
                 .build(consumer);
 
         ShapedRecipeBuilder.shapedRecipe(TransportBlocks.BUMPER_RAIL.getItem(), 3)
@@ -79,7 +79,7 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .key('R', Tags.Items.DYES_RED)
                 .key('I', Tags.Items.INGOTS_IRON)
                 .key('T', Items.RAIL)
-                .addCriterion("has_item", this.hasItem(Items.RAIL))
+                .addCriterion("has_item", hasItem(Items.RAIL))
                 .build(consumer);
         //endregion
 
@@ -89,7 +89,7 @@ public class TransportRecipeProvider extends RecipeProvider {
         createLoader(TransportBlocks.ENERGY_LOADER.getItem(), Tags.Items.DUSTS_REDSTONE)
                 .build(consumer);
         createLoader(TransportBlocks.FLUID_LOADER.getItem(), Ingredient.fromItems(Items.BUCKET))
-                .addCriterion("has_item", this.hasItem(Items.BUCKET))
+                .addCriterion("has_item", hasItem(Items.BUCKET))
                 .build(consumer);
         //endregion
 
@@ -101,7 +101,7 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .key('S', Ingredient.fromTag(Tags.Items.SLIMEBALLS))
                 .key('R', Ingredient.fromTag(Tags.Items.DUSTS_REDSTONE))
                 .key('M', Ingredient.fromItems(Items.MINECART))
-                .addCriterion("has_item", this.hasItem(Items.MINECART))
+                .addCriterion("has_item", hasItem(Items.MINECART))
                 .build(consumer);
         //endregion
 
@@ -112,14 +112,14 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .patternLine("G G")
                 .key('G', Tags.Items.INGOTS_GOLD)
                 .key('R', Tags.Items.DUSTS_REDSTONE)
-                .addCriterion("has_item", this.hasItem(Tags.Items.INGOTS_GOLD))
+                .addCriterion("has_item", hasItem(Tags.Items.INGOTS_GOLD))
                 .build(consumer);
 
         ShapedRecipeBuilder.shapedRecipe(TransportEngineModules.SOLID_FUEL_ITEM::get)
                 .patternLine("F")
                 .patternLine("F")
                 .key('F', Items.FURNACE)
-                .addCriterion("has_item", this.hasItem(Items.FURNACE))
+                .addCriterion("has_item", hasItem(Items.FURNACE))
                 .build(consumer);
         //endregion
 
@@ -130,7 +130,7 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .patternLine("IR ")
                 .key('R', Tags.Items.DYES_RED)
                 .key('I', Tags.Items.INGOTS_IRON)
-                .addCriterion("has_item", this.hasItem(Tags.Items.INGOTS_IRON))
+                .addCriterion("has_item", hasItem(Tags.Items.INGOTS_IRON))
                 .build(consumer);
         //endregion
 
@@ -138,7 +138,7 @@ public class TransportRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shapedRecipe(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getItem(), 6)
                 .patternLine("SSS")
                 .key('S', Ingredient.fromItems(Items.SCAFFOLDING))
-                .addCriterion("has_item", this.hasItem(Items.SCAFFOLDING))
+                .addCriterion("has_item", hasItem(Items.SCAFFOLDING))
                 .build(consumer);
 
         ShapedRecipeBuilder.shapedRecipe(TransportBlocks.MODULE_CONFIGURATOR.getItem())
@@ -146,7 +146,7 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .patternLine("III")
                 .key('C', Ingredient.fromItems(Items.CRAFTING_TABLE))
                 .key('I', Ingredient.fromTag(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_item", this.hasItem(Items.MINECART))
+                .addCriterion("has_item", hasItem(Items.MINECART))
                 .build(consumer);
         //endregion
     }
@@ -157,9 +157,9 @@ public class TransportRecipeProvider extends RecipeProvider {
         return "Transport Recipes";
     }
 
-    public ShapedRecipeBuilder createLoader(IItemProvider loader, Tag<Item> center) {
+    public ShapedRecipeBuilder createLoader(IItemProvider loader, ITag.INamedTag<Item> center) {
         return createLoader(loader, Ingredient.fromTag(center))
-                .addCriterion("has_item", this.hasItem(center));
+                .addCriterion("has_item", hasItem(center));
     }
 
     public ShapedRecipeBuilder createLoader(IItemProvider loader, Ingredient center) {

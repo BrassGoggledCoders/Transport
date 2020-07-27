@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.datagen.tags;
 
+import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
@@ -10,15 +11,15 @@ import xyz.brassgoggledcoders.transport.content.TransportItems;
 import javax.annotation.Nonnull;
 
 public class TransportItemTagsProvider extends ItemTagsProvider {
-    public TransportItemTagsProvider(DataGenerator generator) {
-        super(generator);
+    public TransportItemTagsProvider(DataGenerator generator, BlockTagsProvider blockTagProvider) {
+        super(generator, blockTagProvider);
     }
 
     @Override
     protected void registerTags() {
-        this.getBuilder(TransportItemTags.WRENCHES).add(TransportItems.RAIL_BREAKER.get());
+        this.getOrCreateBuilder(TransportItemTags.WRENCHES).add(TransportItems.RAIL_BREAKER.get());
 
-        this.getBuilder(ItemTags.RAILS)
+        this.getOrCreateBuilder(ItemTags.RAILS)
                 .add(
                         TransportBlocks.BUMPER_RAIL.getItem(),
                         TransportBlocks.DIAMOND_CROSSING_RAIL.getItem(),

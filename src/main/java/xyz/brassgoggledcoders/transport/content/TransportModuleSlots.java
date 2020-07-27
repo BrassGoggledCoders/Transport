@@ -9,7 +9,7 @@ import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 
 public class TransportModuleSlots {
-    private static final DeferredRegister<ModuleSlot> MODULE_SLOTS = new DeferredRegister<>(TransportAPI.MODULE_SLOT.get(),
+    private static final DeferredRegister<ModuleSlot> MODULE_SLOTS = DeferredRegister.create(ModuleSlot.class,
             Transport.ID);
 
     public static final RegistryObject<ModuleSlot> NONE = MODULE_SLOTS.register("none", () -> new ModuleSlot(

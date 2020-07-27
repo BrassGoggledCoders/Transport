@@ -29,7 +29,7 @@ public class LoaderContainerProvider implements INamedContainerProvider {
         return new TranslationTextComponent(loaderTileEntity.getBlockState()
                 .getBlock()
                 .getTranslationKey())
-                .applyTextStyle(TextFormatting.BLACK);
+                .mergeStyle(TextFormatting.BLACK);
     }
 
     @Nullable

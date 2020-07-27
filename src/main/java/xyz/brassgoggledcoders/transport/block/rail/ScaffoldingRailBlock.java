@@ -3,7 +3,7 @@ package xyz.brassgoggledcoders.transport.block.rail;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.state.properties.SlabType;
@@ -37,7 +37,7 @@ public class ScaffoldingRailBlock extends AbstractRailBlock {
 
     @Override
     @Nonnull
-    public IProperty<RailShape> getShapeProperty() {
+    public Property<RailShape> getShapeProperty() {
         return SHAPE;
     }
 
@@ -52,7 +52,7 @@ public class ScaffoldingRailBlock extends AbstractRailBlock {
     }
 
     @Override
-    public boolean isValidPosition(BlockState state, @Nonnull IWorldReader world, BlockPos pos) {
+    public boolean isValidPosition(@Nonnull BlockState state, @Nonnull IWorldReader world, BlockPos pos) {
         return hasSolidSideOnTop(world, pos.down()) || world.isAirBlock(pos.down());
     }
 }

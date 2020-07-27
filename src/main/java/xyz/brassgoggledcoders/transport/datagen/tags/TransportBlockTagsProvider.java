@@ -18,7 +18,7 @@ public class TransportBlockTagsProvider extends BlockTagsProvider {
 
     @Override
     protected void registerTags() {
-        this.getBuilder(BlockTags.RAILS)
+        this.getOrCreateBuilder(BlockTags.RAILS)
                 .add(
                         TransportBlocks.BUMPER_RAIL.getBlock(),
                         TransportBlocks.DIAMOND_CROSSING_RAIL.getBlock(),

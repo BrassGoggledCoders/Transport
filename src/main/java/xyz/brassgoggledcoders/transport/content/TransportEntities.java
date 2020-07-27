@@ -12,8 +12,8 @@ import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 import xyz.brassgoggledcoders.transport.item.CargoCarrierMinecartItem;
 
 public class TransportEntities {
-    private static final DeferredRegister<EntityType<?>> ENTITIES = new DeferredRegister<>(ForgeRegistries.ENTITIES, Transport.ID);
-    private static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, Transport.ID);
+    private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Transport.ID);
+    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Transport.ID);
 
     public static RegistryObject<EntityType<CargoCarrierMinecartEntity>> CARGO_MINECART = ENTITIES.register("cargo_minecart",
             () -> EntityType.Builder.<CargoCarrierMinecartEntity>create(CargoCarrierMinecartEntity::new, EntityClassification.MISC)

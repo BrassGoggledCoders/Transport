@@ -20,7 +20,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
@@ -51,12 +50,6 @@ public class CargoCarrierMinecartItem extends MinecartItem implements IModularIt
 
     public CargoCarrierMinecartItem(Properties properties) {
         super(CHEST, properties);
-        this.addPropertyOverride(new ResourceLocation(Transport.ID, "cargo"),
-                (itemStack, world, livingEntity) -> Optional.ofNullable(getCargo(itemStack.getChildTag("cargo")))
-                        .map(ForgeRegistryEntry::getRegistryName)
-                        .map(TransportAPI.CARGO.get()::getID)
-                        .map(id -> id / 1000F)
-                        .orElse(0.000F));
     }
 
     public static CargoModule getCargo(@Nullable CompoundNBT cargo) {
@@ -156,26 +149,6 @@ public class CargoCarrierMinecartItem extends MinecartItem implements IModularIt
             );
         } else {
             return super.getDisplayName(stack);
-        }
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if (this.isInGroup(group)) {
-            TransportAPI.CARGO.get().getValues()
-                    .stream()
-                    .filter(cargo -> !cargo.isEmpty())
-                    .map(CargoModule::getRegistryName)
-                    .filter(Objects::nonNull)
-                    .map(ResourceLocation::toString)
-                    .map(resourceLocation -> {
-                        ItemStack itemStack = new ItemStack(this);
-                        itemStack.getOrCreateChildTag("cargo").putString("name", resourceLocation);
-                        return itemStack;
-                    })
-                    .forEach(items::add);
-            items.add(new ItemStack(this));
         }
     }
 
