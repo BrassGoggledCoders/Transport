@@ -13,18 +13,18 @@ issueTrackerURL="https://github.com/Brass-Goggled-Coders/Transport/issues"
 [[dependencies.transport]]
     modId="forge"
     mandatory=true
-    versionRange="[31.1.18,)"
+    versionRange="[32.0.68,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.transport]]
     modId="patchouli"
     mandatory=true
-    versionRange="[1.15.2-1.2-29.147,)"
+    versionRange="[1.16-30,)"
     side="BOTH"
 
 [[dependencies.transport]]
     modId="titanium"
     mandatory=true
-    versionRange="[1.15.2-2.4.0,)"
+    versionRange="[1.16.1-3.0.0,)"
     side="BOTH"
