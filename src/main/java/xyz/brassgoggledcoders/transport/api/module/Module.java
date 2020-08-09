@@ -6,6 +6,7 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
@@ -18,11 +19,11 @@ import java.util.function.Supplier;
 
 public abstract class Module<MOD extends Module<MOD>> extends ForgeRegistryEntry<MOD> implements IItemProvider {
     private final BiFunction<MOD, IModularEntity, ? extends ModuleInstance<MOD>> instanceCreator;
-    private final Supplier<ModuleType<MOD>> componentType;
+    private final Supplier<ModuleType> componentType;
     private String translationKey;
     private ITextComponent name;
 
-    public Module(Supplier<ModuleType<MOD>> componentType, BiFunction<MOD, IModularEntity, ? extends ModuleInstance<MOD>> instanceCreator) {
+    public Module(Supplier<ModuleType> componentType, BiFunction<MOD, IModularEntity, ? extends ModuleInstance<MOD>> instanceCreator) {
         this.componentType = componentType;
         this.instanceCreator = instanceCreator;
     }
@@ -47,10 +48,13 @@ public abstract class Module<MOD extends Module<MOD>> extends ForgeRegistryEntry
         return true;
     }
 
-    public ModuleType<MOD> getType() {
+    public ModuleType getType() {
         return componentType.get();
     }
 
+    public boolean isActive() {
+        return true;
+    }
 
     @SuppressWarnings("unchecked")
     @Nonnull
@@ -60,9 +64,9 @@ public abstract class Module<MOD extends Module<MOD>> extends ForgeRegistryEntry
 
     @Nullable
     public static Module<?> fromPacketBuffer(PacketBuffer packetBuffer) {
-        ModuleType<?> moduleType = TransportAPI.getModuleType(packetBuffer.readResourceLocation());
+        ModuleType moduleType = TransportAPI.getModuleType(packetBuffer.readResourceLocation());
         if (moduleType != null) {
-            return (Module<?>) moduleType.load(packetBuffer.readResourceLocation());
+            return moduleType.load(packetBuffer.readResourceLocation());
         } else {
             return null;
         }
@@ -74,9 +78,9 @@ public abstract class Module<MOD extends Module<MOD>> extends ForgeRegistryEntry
     }
 
     public static Module<?> fromCompoundNBT(CompoundNBT compoundNBT) {
-        ModuleType<?> moduleType = TransportAPI.getModuleType(compoundNBT.getString("type"));
+        ModuleType moduleType = TransportAPI.getModuleType(compoundNBT.getString("type"));
         if (moduleType != null) {
-            return (Module<?>) moduleType.load(compoundNBT.getString("module"));
+            return moduleType.load(compoundNBT.getString("module"));
         } else {
             return null;
         }

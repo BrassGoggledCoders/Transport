@@ -59,7 +59,7 @@ public class ModuleInstance<MOD extends Module<MOD>>
     }
 
 
-    public ModuleType<MOD> getModuleType() {
+    public ModuleType getModuleType() {
         return this.getModule().getType();
     }
 

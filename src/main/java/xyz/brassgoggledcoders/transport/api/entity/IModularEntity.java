@@ -58,14 +58,14 @@ public interface IModularEntity extends IItemProvider, INBTSerializable<Compound
     ModuleInstance<?> getModuleInstance(ModuleSlot moduleSlot);
 
     @Nullable
-    <T extends Module<T>, U extends ModuleInstance<T>> U getModuleInstance(ModuleType<T> moduleType);
+    <T extends Module<T>, U extends ModuleInstance<T>> U getModuleInstance(ModuleType moduleType);
 
     @Nullable
-    default <T extends Module<T>, U extends ModuleInstance<T>> U getModuleInstance(Supplier<ModuleType<T>> moduleType) {
+    default <T extends Module<T>, U extends ModuleInstance<T>> U getModuleInstance(Supplier<ModuleType> moduleType) {
         return getModuleInstance(moduleType.get());
     }
 
-    default <T extends Module<T>, U extends ModuleInstance<T>, V> V callModule(Supplier<ModuleType<T>> moduleType,
+    default <T extends Module<T>, U extends ModuleInstance<T>, V> V callModule(Supplier<ModuleType> moduleType,
                                                                                Function<U, V> calling, Supplier<V> defaultValue) {
         U moduleInstance = this.getModuleInstance(moduleType);
         if (moduleInstance != null) {

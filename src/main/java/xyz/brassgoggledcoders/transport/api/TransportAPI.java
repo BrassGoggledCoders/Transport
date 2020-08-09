@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.transport.api;
 
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -51,7 +50,7 @@ public class TransportAPI {
 
     public static Lazy<ForgeRegistry<CargoModule>> CARGO = Lazy.of(() -> (ForgeRegistry<CargoModule>) RegistryManager.ACTIVE.getRegistry(CargoModule.class));
     public static Lazy<IForgeRegistry<EngineModule>> ENGINES = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(EngineModule.class));
-    public static Lazy<IForgeRegistry<ModuleType<?>>> MODULE_TYPE = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(ModuleType.class));
+    public static Lazy<IForgeRegistry<ModuleType>> MODULE_TYPE = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(ModuleType.class));
     public static Lazy<IForgeRegistry<ModuleSlot>> MODULE_SLOT = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(ModuleSlot.class));
 
     public static CargoModule getCargo(String name) {
@@ -78,11 +77,11 @@ public class TransportAPI {
         return ENGINES.get().getValues();
     }
 
-    public static ModuleType<?> getModuleType(String name) {
+    public static ModuleType getModuleType(String name) {
         return getModuleType(new ResourceLocation(name));
     }
 
-    public static ModuleType<?> getModuleType(ResourceLocation resourceLocation) {
+    public static ModuleType getModuleType(ResourceLocation resourceLocation) {
         return MODULE_TYPE.get().getValue(resourceLocation);
     }
 
@@ -117,18 +116,19 @@ public class TransportAPI {
         return ITEM_TO_MODULE.get(item);
     }
 
-    @SuppressWarnings("unchecked")
     public static void generateItemToModuleMap() {
-        for (ModuleType<?> type : MODULE_TYPE.get().getValues()) {
-            Collection<Module<?>> modules = (Collection<Module<?>>) type.getValues();
+        for (ModuleType type : MODULE_TYPE.get().getValues()) {
+            Collection<Module<?>> modules = type.getValues();
             for (Module<?> module : modules) {
-                Item item = module.asItem();
-                Module<?> originalModule = ITEM_TO_MODULE.get(item);
-                if (originalModule == null) {
-                    ITEM_TO_MODULE.put(module.asItem(), module);
-                } else {
-                    LOGGER.warn("Found multiple modules using same item: {}, new module: {}, old module: {}",
-                            item.getRegistryName(), module.getRegistryName(), originalModule.getRegistryName());
+                if (module.isActive()) {
+                    Item item = module.asItem();
+                    Module<?> originalModule = ITEM_TO_MODULE.get(item);
+                    if (originalModule == null) {
+                        ITEM_TO_MODULE.put(module.asItem(), module);
+                    } else {
+                        LOGGER.warn("Found multiple modules using same item: {}, new module: {}, old module: {}",
+                                item.getRegistryName(), module.getRegistryName(), originalModule.getRegistryName());
+                    }
                 }
             }
         }

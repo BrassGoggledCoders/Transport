@@ -4,6 +4,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.util.NonNullLazy;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
@@ -12,16 +14,16 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class ModuleType<T> extends ForgeRegistryEntry<ModuleType<?>> {
-    private final Function<ResourceLocation, T> loadValue;
-    private final Supplier<Collection<T>> getValues;
+public class ModuleType extends ForgeRegistryEntry<ModuleType> {
+    private final Function<ResourceLocation, Module<?>> loadValue;
+    private final NonNullLazy<Collection<Module<?>>> getValues;
 
     private String translationKey;
     private ITextComponent name;
 
-    public ModuleType(Function<ResourceLocation, T> loadValue, Supplier<Collection<T>> getValues) {
+    public ModuleType(Function<ResourceLocation, Module<?>> loadValue, NonNullSupplier<Collection<Module<?>>> getValues) {
         this.loadValue = loadValue;
-        this.getValues = getValues;
+        this.getValues = NonNullLazy.of(getValues);
     }
 
     @Nonnull
@@ -46,15 +48,15 @@ public class ModuleType<T> extends ForgeRegistryEntry<ModuleType<?>> {
                 .orElseThrow(() -> new IllegalStateException("No Registry Name Found"));
     }
 
-    public T load(String registryName) {
+    public Module<?> load(String registryName) {
         return load(new ResourceLocation(registryName));
     }
 
-    public T load(ResourceLocation registryName) {
+    public Module<?> load(ResourceLocation registryName) {
         return loadValue.apply(registryName);
     }
 
-    public Collection<T> getValues() {
+    public Collection<Module<?>> getValues() {
         return getValues.get();
     }
 }

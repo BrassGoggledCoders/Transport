@@ -40,7 +40,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     private final ENT entity;
     private final ImmutableList<ModuleSlot> moduleSlots;
     private final Map<ModuleSlot, ModuleInstance<?>> byModuleSlot;
-    private final Map<ModuleType<?>, ModuleInstance<?>> byModuleType;
+    private final Map<ModuleType, ModuleInstance<?>> byModuleType;
 
     @SafeVarargs
     public ModularEntity(ENT entity, Supplier<ModuleSlot>... moduleSlots) {
@@ -110,7 +110,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     @Nullable
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Module<T>, U extends ModuleInstance<T>> U getModuleInstance(ModuleType<T> moduleType) {
+    public <T extends Module<T>, U extends ModuleInstance<T>> U getModuleInstance(ModuleType moduleType) {
         return (U) byModuleType.get(moduleType);
     }
 
