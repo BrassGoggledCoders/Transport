@@ -2,9 +2,11 @@ package xyz.brassgoggledcoders.transport.api.cargo;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.common.util.NonNullLazy;
 import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
@@ -18,6 +20,8 @@ public class CargoModule extends Module<CargoModule> {
     private final Supplier<? extends Block> blockSupplier;
     private BlockState blockState;
 
+    private final NonNullLazy<Boolean> isActive;
+
     public CargoModule(Supplier<? extends Block> blockSupplier) {
         this(blockSupplier, CargoModuleInstance::new);
     }
@@ -25,6 +29,7 @@ public class CargoModule extends Module<CargoModule> {
     public CargoModule(Supplier<? extends Block> blockSupplier, BiFunction<CargoModule, IModularEntity, ? extends CargoModuleInstance> cargoInstanceCreator) {
         super(TransportObjects.CARGO_TYPE, cargoInstanceCreator);
         this.blockSupplier = blockSupplier;
+        this.isActive = NonNullLazy.of(() -> blockSupplier.get() != Blocks.AIR);
     }
 
     @Nonnull
@@ -35,8 +40,8 @@ public class CargoModule extends Module<CargoModule> {
         return blockState;
     }
 
-    public boolean isEmpty() {
-        return false;
+    public boolean isActive() {
+        return this.isActive.get();
     }
 
     public ItemStack createItemStack(Item item) {

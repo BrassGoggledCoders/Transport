@@ -11,15 +11,16 @@ import net.minecraftforge.energy.IEnergyStorage;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class EnergyCargoModuleInstance extends CapabilityCargoModuleInstance<IEnergyStorage> {
-    private final EnergyStorageComponent energy;
+    private final EnergyStorageComponent<?> energy;
     private final LazyOptional<IEnergyStorage> lazyEnergy;
 
     public EnergyCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity) {
         super(cargoModule, modularEntity, CapabilityEnergy.ENERGY);
-        this.energy = new EnergyStorageComponent(10000, 79, 24);
+        this.energy = new EnergyStorageComponent<>(10000, 79, 24);
         this.lazyEnergy = LazyOptional.of(() -> energy);
     }
 
@@ -39,11 +40,13 @@ public class EnergyCargoModuleInstance extends CapabilityCargoModuleInstance<IEn
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         return energy.getScreenAddons();
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
         return energy.getContainerAddons();
     }

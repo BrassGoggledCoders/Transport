@@ -70,7 +70,6 @@ public class Transport {
 
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modBus.addListener(ClientEventHandler::clientSetup));
         modBus.addListener(TransportDataGenerator::gather);
         modBus.addListener(this::commonSetup);
         modBus.addListener(this::newRegistry);
@@ -79,16 +78,7 @@ public class Transport {
 
         this.networkHandler = new NetworkHandler();
         TransportAPI.setNetworkHandler(this.networkHandler);
-    }
 
-    @SuppressWarnings("unchecked")
-    public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
-        makeRegistry("module_type", ModuleType.class);
-        makeRegistry("cargo", CargoModule.class);
-        makeRegistry("engine", EngineModule.class);
-        makeRegistry("module_slot", ModuleSlot.class);
-
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         TransportBlocks.register(modBus);
         TransportContainers.register(modBus);
         TransportEntities.register(modBus);
@@ -99,6 +89,15 @@ public class Transport {
         TransportCargoModules.register(modBus);
         TransportEngineModules.register(modBus);
         TransportModuleSlots.register(modBus);
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
+        makeRegistry("module_type", ModuleType.class);
+        makeRegistry("cargo", CargoModule.class);
+        makeRegistry("engine", EngineModule.class);
+        makeRegistry("module_slot", ModuleSlot.class);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {

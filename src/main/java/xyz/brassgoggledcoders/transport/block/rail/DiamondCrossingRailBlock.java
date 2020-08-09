@@ -16,6 +16,7 @@ import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class DiamondCrossingRailBlock extends AbstractRailBlock {
     public static final EnumProperty<RailShape> SHAPE = EnumProperty.create("shape", RailShape.class,
@@ -40,6 +41,7 @@ public class DiamondCrossingRailBlock extends AbstractRailBlock {
 
     @Override
     @Nonnull
+    @ParametersAreNonnullByDefault
     public RailShape getRailDirection(BlockState state, IBlockReader world, BlockPos pos, @Nullable AbstractMinecartEntity cart) {
         if (cart != null) {
             Direction cartFacing = cart.getHorizontalFacing();

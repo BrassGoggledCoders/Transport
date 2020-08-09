@@ -14,12 +14,12 @@ import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import java.util.List;
 
 public class EnergyLoaderTileEntity extends BasicLoaderTileEntity<IEnergyStorage> {
-    private final EnergyStorageComponent energyComponent;
+    private final EnergyStorageComponent<?> energyComponent;
     private final LazyOptional<IEnergyStorage> lazyEnergy;
 
     public EnergyLoaderTileEntity() {
         super(TransportBlocks.ENERGY_LOADER.getTileEntityType(), CapabilityEnergy.ENERGY);
-        this.energyComponent = new EnergyStorageComponent(10000, 79, 24);
+        this.energyComponent = new EnergyStorageComponent<>(10000, 79, 24);
         this.lazyEnergy = LazyOptional.of(() -> energyComponent);
 
     }

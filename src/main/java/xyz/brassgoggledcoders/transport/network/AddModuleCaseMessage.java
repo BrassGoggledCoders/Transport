@@ -2,19 +2,18 @@ package xyz.brassgoggledcoders.transport.network;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.LogicalSidedProvider;
 import net.minecraftforge.fml.network.NetworkEvent;
-import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.event.ClientEventHandler;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
-import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class AddModuleCaseMessage {
@@ -44,13 +43,15 @@ public class AddModuleCaseMessage {
     }
 
     public void consume(Supplier<NetworkEvent.Context> contextSupplier) {
-        contextSupplier.get().enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            Entity entity = ClientEventHandler.getWorld().getEntityByID(entityId);
-            if (entity != null && module != null && moduleSlot != null) {
-                entity.getCapability(TransportAPI.MODULAR_ENTITY)
-                        .ifPresent(modularEntity -> modularEntity.add(module, moduleSlot, false));
+        LogicalSide side = contextSupplier.get().getDirection().getReceptionSide();
+        contextSupplier.get().enqueueWork(() -> {
+            if (module != null && moduleSlot != null) {
+                Optional<Entity> entity = LogicalSidedProvider.CLIENTWORLD.<Optional<World>>get(side)
+                    .map(world -> world.getEntityByID(entityId));
+                entity.ifPresent(value -> value.getCapability(TransportAPI.MODULAR_ENTITY)
+                        .ifPresent(modularEntity -> modularEntity.add(module, moduleSlot, false)));
             }
-        }));
+        });
         contextSupplier.get().setPacketHandled(true);
     }
 }

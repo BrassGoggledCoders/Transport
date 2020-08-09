@@ -12,6 +12,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemCargoModuleInstance extends CapabilityCargoModuleInstance<IItemHandler> {
@@ -45,11 +46,13 @@ public class ItemCargoModuleInstance extends CapabilityCargoModuleInstance<IItem
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         return inventory.getScreenAddons();
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
         return inventory.getContainerAddons();
     }
