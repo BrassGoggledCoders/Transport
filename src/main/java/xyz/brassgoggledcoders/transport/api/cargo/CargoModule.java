@@ -21,15 +21,21 @@ public class CargoModule extends Module<CargoModule> {
     private BlockState blockState;
 
     private final NonNullLazy<Boolean> isActive;
+    private final boolean useBlockTranslation;
 
     public CargoModule(Supplier<? extends Block> blockSupplier) {
         this(blockSupplier, CargoModuleInstance::new);
     }
 
     public CargoModule(Supplier<? extends Block> blockSupplier, BiFunction<CargoModule, IModularEntity, ? extends CargoModuleInstance> cargoInstanceCreator) {
+        this(blockSupplier, cargoInstanceCreator, false);
+    }
+
+    public CargoModule(Supplier<? extends Block> blockSupplier, BiFunction<CargoModule, IModularEntity, ? extends CargoModuleInstance> cargoInstanceCreator, boolean useBlockTranslation) {
         super(TransportObjects.CARGO_TYPE, cargoInstanceCreator);
         this.blockSupplier = blockSupplier;
         this.isActive = NonNullLazy.of(() -> blockSupplier.get() != Blocks.AIR);
+        this.useBlockTranslation = useBlockTranslation;
     }
 
     @Nonnull
@@ -42,6 +48,12 @@ public class CargoModule extends Module<CargoModule> {
 
     public boolean isActive() {
         return this.isActive.get();
+    }
+
+    @Nonnull
+    @Override
+    public String getTranslationKey() {
+        return useBlockTranslation ? this.blockSupplier.get().getTranslationKey() : super.getTranslationKey();
     }
 
     public ItemStack createItemStack(Item item) {
