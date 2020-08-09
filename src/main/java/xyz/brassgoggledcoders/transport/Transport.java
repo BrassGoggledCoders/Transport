@@ -38,6 +38,7 @@ import xyz.brassgoggledcoders.transport.api.routing.serializer.SingleRoutingDese
 import xyz.brassgoggledcoders.transport.connection.QuarkConnectionChecker;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
+import xyz.brassgoggledcoders.transport.content.compat.QuarkCargoModules;
 import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
 import xyz.brassgoggledcoders.transport.event.ClientEventHandler;
 import xyz.brassgoggledcoders.transport.event.EventHandler;
@@ -90,6 +91,7 @@ public class Transport {
         TransportEngineModules.register(modBus);
         TransportModuleSlots.register(modBus);
 
+        QuarkCargoModules.register(modBus);
     }
 
     @SuppressWarnings("unchecked")
