@@ -4,6 +4,7 @@ import net.minecraft.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.IItemProvider;
@@ -148,6 +149,15 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .key('I', Ingredient.fromTag(Tags.Items.INGOTS_IRON))
                 .addCriterion("has_item", hasItem(Items.MINECART))
                 .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.BUOY.get())
+                .patternLine(" P ")
+                .patternLine(" I ")
+                .patternLine("IRI")
+                .key('P', Tags.Items.GEMS_PRISMARINE)
+                .key('I', Tags.Items.INGOTS_IRON)
+                .key('R', Tags.Items.DYES_RED)
+                .addCriterion("has_item", hasItem(Items.OAK_BOAT));
         //endregion
     }
 

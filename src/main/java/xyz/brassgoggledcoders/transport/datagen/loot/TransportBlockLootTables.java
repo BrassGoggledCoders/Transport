@@ -10,10 +10,12 @@ import net.minecraft.loot.conditions.SurvivesExplosion;
 import net.minecraft.loot.functions.CopyBlockState;
 import net.minecraft.loot.functions.CopyNbt;
 import net.minecraft.loot.functions.SetCount;
+import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.block.BuoyBlock;
 import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
@@ -75,6 +77,17 @@ public class TransportBlockLootTables extends BlockLootTables {
                                         )
                                 ))
                         )
+                )
+        );
+        this.registerLootTable(TransportBlocks.BUOY.getBlock(), block -> LootTable.builder()
+                .addLootPool(LootPool.builder()
+                        .rolls(ConstantRange.of(1))
+                        .acceptCondition(BlockStateProperty.builder(block)
+                                .fromProperties(StatePropertiesPredicate.Builder.newBuilder()
+                                        .withProp(BuoyBlock.HALF, DoubleBlockHalf.LOWER)
+                                )
+                        )
+                        .addEntry(withExplosionDecay(block, ItemLootEntry.builder(block)))
                 )
         );
     }
