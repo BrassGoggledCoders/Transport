@@ -10,6 +10,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.block.BuoyBlock;
 import xyz.brassgoggledcoders.transport.block.ModuleConfiguratorBlock;
 import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
@@ -84,16 +85,13 @@ public class TransportBlocks {
             BLOCKS.register("elevator_switch_support", ElevatorSwitchSupportBlock::new);
 
     public static final BlockRegistryObjectGroup<ModuleConfiguratorBlock, BlockItem, ModuleConfiguratorTileEntity> MODULE_CONFIGURATOR =
-            new BlockRegistryObjectGroup<>(
-                    "module_configurator",
-                    ModuleConfiguratorBlock::new,
-                    blockItemCreator(),
-                    ModuleConfiguratorTileEntity::new
-            ).register(
-                    BLOCKS,
-                    ITEMS,
-                    TILE_ENTITIES
-            );
+            new BlockRegistryObjectGroup<>("module_configurator", ModuleConfiguratorBlock::new, blockItemCreator(),
+                    ModuleConfiguratorTileEntity::new)
+                    .register(BLOCKS, ITEMS, TILE_ENTITIES);
+
+    public static final BlockRegistryObjectGroup<BuoyBlock, BlockItem, ?> BUOY = new BlockRegistryObjectGroup<>("buoy",
+            BuoyBlock::new, blockItemCreator())
+            .register(BLOCKS, ITEMS);
     //endregion
 
     public static void register(IEventBus modBus) {

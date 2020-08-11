@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.BoatRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -21,6 +22,7 @@ import xyz.brassgoggledcoders.transport.entity.ModularBoatEntity;
 import javax.annotation.Nonnull;
 
 public class ModularBoatRenderer extends EntityRenderer<ModularBoatEntity> {
+    private static final ResourceLocation DEFAULT_BOAT = new ResourceLocation("textures/entity/boat/oak.png");
     private final PaddlelessBoatModel boatModel = new PaddlelessBoatModel();
 
     public ModularBoatRenderer(EntityRendererManager renderManagerIn) {
@@ -67,7 +69,8 @@ public class ModularBoatRenderer extends EntityRenderer<ModularBoatEntity> {
     @Override
     @Nonnull
     public ResourceLocation getEntityTexture(ModularBoatEntity entity) {
-        return entity.getHullType().getEntityTexture(entity);
+        ResourceLocation textureLocation = entity.getHullType().getEntityTexture(entity);
+        return textureLocation != null ? textureLocation : DEFAULT_BOAT;
     }
 
     private void renderModules(IModularEntity modularEntity, float entityYaw, float partialTicks, MatrixStack matrixStack,

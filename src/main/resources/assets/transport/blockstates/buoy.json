@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "top=true": {
+      "model": "transport:block/buoy/buoy_top"
+    },
+    "top=false": {
+      "model": "transport:block/buoy/buoy_bottom"
+    }
+  }
+}
