@@ -350,4 +350,8 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
         this.originalPushX = pushX;
         this.originalPushZ = pushZ;
     }
+
+    public IModularEntity getModularEntity() {
+        return this.modularEntity;
+    }
 }

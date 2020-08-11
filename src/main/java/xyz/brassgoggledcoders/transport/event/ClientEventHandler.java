@@ -14,10 +14,13 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportClientAPI;
 import xyz.brassgoggledcoders.transport.api.renderer.CargoModuleRender;
-import xyz.brassgoggledcoders.transport.api.renderer.IModuleRenderer;
 import xyz.brassgoggledcoders.transport.api.renderer.ItemModuleRenderer;
-import xyz.brassgoggledcoders.transport.content.*;
+import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.content.TransportContainers;
+import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.content.TransportModuleTypes;
 import xyz.brassgoggledcoders.transport.renderer.CargoCarrierMinecartEntityRenderer;
+import xyz.brassgoggledcoders.transport.renderer.boat.ModularBoatRenderer;
 import xyz.brassgoggledcoders.transport.renderer.tileentity.ModuleConfiguratorTileEntityRenderer;
 import xyz.brassgoggledcoders.transport.screen.ModuleConfiguratorScreen;
 
@@ -40,6 +43,7 @@ public class ClientEventHandler {
 
         EntityRendererManager rendererManager = Minecraft.getInstance().getRenderManager();
         rendererManager.register(TransportEntities.CARGO_MINECART.get(), new CargoCarrierMinecartEntityRenderer(rendererManager));
+        rendererManager.register(TransportEntities.MODULAR_BOAT.get(), new ModularBoatRenderer(rendererManager));
 
         ClientRegistry.bindTileEntityRenderer(TransportBlocks.MODULE_CONFIGURATOR.getTileEntityType(),
                 ModuleConfiguratorTileEntityRenderer::new);

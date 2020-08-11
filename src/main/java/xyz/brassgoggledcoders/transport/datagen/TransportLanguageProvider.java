@@ -42,6 +42,8 @@ public class TransportLanguageProvider extends LanguageProvider {
         //region Entity
         this.add(TransportEntities.CARGO_MINECART.get(), "Modular Minecart");
         this.add(TransportEntities.CARGO_MINECART_ITEM.get(), "Modular Minecart");
+        this.add(TransportEntities.MODULAR_BOAT.get(), "Modular Boat");
+        this.add(TransportEntities.MODULAR_BOAT_ITEM.get(), "Modular Boat");
         //endregion
 
         //region Engine

@@ -44,7 +44,6 @@ import static net.minecraft.entity.item.minecart.AbstractMinecartEntity.Type.CHE
 public class CargoCarrierMinecartItem extends MinecartItem implements IModularItem<CargoCarrierMinecartEntity> {
     public CargoCarrierMinecartItem() {
         this(new Item.Properties()
-                .containerItem(Items.MINECART)
                 .group(Transport.ITEM_GROUP));
     }
 
@@ -119,22 +118,7 @@ public class CargoCarrierMinecartItem extends MinecartItem implements IModularIt
     @OnlyIn(Dist.CLIENT)
     @ParametersAreNonnullByDefault
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        CompoundNBT modulesNBT = stack.getChildTag("modules");
-        if (modulesNBT != null) {
-            ListNBT moduleInstancesNBT = modulesNBT.getList("moduleInstances", Constants.NBT.TAG_COMPOUND);
-            if (moduleInstancesNBT.size() > 0) {
-                tooltip.add(new TranslationTextComponent("text.transport.installed_modules"));
-                for (int x = 0; x < moduleInstancesNBT.size(); x++) {
-                    CompoundNBT moduleInstanceNBT = moduleInstancesNBT.getCompound(x);
-                    Module<?> module = Module.fromCompoundNBT(moduleInstanceNBT);
-                    ModuleSlot moduleSlot = TransportAPI.getModuleSlot(moduleInstanceNBT.getString("moduleSlot"));
-                    if (module != null && moduleSlot != null) {
-                        tooltip.add(new TranslationTextComponent("text.transport.installed_module",
-                                moduleSlot.getDisplayName(), module.getDisplayName()));
-                    }
-                }
-            }
-        }
+        tooltip.addAll(this.getModuleListToolTip(stack.getChildTag("modules")));
     }
 
     @Override
