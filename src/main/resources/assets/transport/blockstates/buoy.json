@@ -1,9 +1,9 @@
 {
   "variants": {
-    "top=true": {
+    "half=upper": {
       "model": "transport:block/buoy/buoy_top"
     },
-    "top=false": {
+    "half=lower": {
       "model": "transport:block/buoy/buoy_bottom"
     }
   }

@@ -22,6 +22,7 @@ import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitch
 import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitchSupportBlock;
 import xyz.brassgoggledcoders.transport.block.rail.turnout.SwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.turnout.WyeSwitchRailBlock;
+import xyz.brassgoggledcoders.transport.item.BuoyBlockItem;
 import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
@@ -89,8 +90,8 @@ public class TransportBlocks {
                     ModuleConfiguratorTileEntity::new)
                     .register(BLOCKS, ITEMS, TILE_ENTITIES);
 
-    public static final BlockRegistryObjectGroup<BuoyBlock, BlockItem, ?> BUOY = new BlockRegistryObjectGroup<>("buoy",
-            BuoyBlock::new, blockItemCreator())
+    public static final BlockRegistryObjectGroup<BuoyBlock, BuoyBlockItem, ?> BUOY = new BlockRegistryObjectGroup<>("buoy",
+            BuoyBlock::new, buoyBlock -> new BuoyBlockItem(buoyBlock, new Item.Properties().group(Transport.ITEM_GROUP)))
             .register(BLOCKS, ITEMS);
     //endregion
 

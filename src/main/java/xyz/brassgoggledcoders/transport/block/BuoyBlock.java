@@ -11,7 +11,6 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoubleBlockHalf;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -28,7 +27,9 @@ public class BuoyBlock extends Block {
 
     public BuoyBlock() {
         this(Properties.create(Material.IRON)
-                .notSolid());
+                .notSolid()
+                .setLightLevel(blockState -> blockState.get(HALF) == DoubleBlockHalf.UPPER ? 5 : 0)
+        );
         this.setDefaultState(this.getStateContainer().getBaseState().with(HALF, DoubleBlockHalf.LOWER));
     }
 
