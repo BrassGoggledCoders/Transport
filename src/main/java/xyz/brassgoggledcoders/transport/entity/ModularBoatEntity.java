@@ -21,13 +21,10 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
-import xyz.brassgoggledcoders.transport.api.entity.IComparatorEntity;
-import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
-import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.api.entity.ModularEntity;
-import xyz.brassgoggledcoders.transport.api.entity.HullType;
+import xyz.brassgoggledcoders.transport.api.entity.*;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.content.TransportHullTypes;
 import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 
 import javax.annotation.Nonnull;
@@ -40,7 +37,7 @@ public class ModularBoatEntity extends BoatEntity implements IHoldable, IEntityA
     private final LazyOptional<IModularEntity> modularEntityLazy;
     private final ModularEntity<ModularBoatEntity> modularEntity;
 
-    private final HullType hullType = new HullType(() -> Items.OAK_BOAT);
+    private final HullType hullType = TransportHullTypes.OAK_BOAT.get();
 
     public ModularBoatEntity(EntityType<? extends ModularBoatEntity> type, World world) {
         super(type, world);

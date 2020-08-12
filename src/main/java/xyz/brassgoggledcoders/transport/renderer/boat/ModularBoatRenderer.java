@@ -53,9 +53,10 @@ public class ModularBoatRenderer extends EntityRenderer<ModularBoatEntity> {
 
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
         matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
-        this.boatModel.setRotationAngles(entity, partialTicks, 0.0F, -0.1F, 0.0F, 0.0F);
+
         this.renderModules(entity.getModularEntity(), entityYaw, partialTicks, matrixStack, buffer, packedLight);
         IVertexBuilder ivertexbuilder = buffer.getBuffer(this.boatModel.getRenderType(this.getEntityTexture(entity)));
+        this.boatModel.setRotationAngles(entity, partialTicks, 0.0F, -0.1F, 0.0F, 0.0F);
         this.boatModel.render(matrixStack, ivertexbuilder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         if (!entity.canSwim()) {
             IVertexBuilder vertexBuilder = buffer.getBuffer(RenderType.getWaterMask());

@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.datagen;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
@@ -64,6 +65,10 @@ public class TransportLanguageProvider extends LanguageProvider {
         this.add("text.transport.module_slot", "%s Module Slot");
         //endregion
 
+        //region HullType
+        this.addHullType(TransportHullTypes.OAK_BOAT, "Oak Boat");
+        //
+
         //region Text
         this.add("itemGroup.transport", "Transport");
         this.add("text.transport.with", "%s With %s");
@@ -84,5 +89,9 @@ public class TransportLanguageProvider extends LanguageProvider {
 
     public void add(ModuleSlot moduleSlot, String name) {
         this.add(moduleSlot.getTranslationKey(), name);
+    }
+
+    public void addHullType(Supplier<? extends HullType> hullType, String name) {
+        this.add(hullType.get().getTranslationKey(), name);
     }
 }

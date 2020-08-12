@@ -1,38 +1,73 @@
 package xyz.brassgoggledcoders.transport.api.entity;
 
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.Item;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.common.util.NonNullLazy;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
-import java.util.function.Supplier;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
 
 public class HullType extends ForgeRegistryEntry<HullType> implements IItemProvider {
-    private final static ResourceLocation OAK_BOAT_DEFAULT = new ResourceLocation("textures/entity/boat/oak.png");
-    private final Supplier<Item> itemSupplier;
-    private ResourceLocation entityTexture;
+    private final NonNullSupplier<Item> itemSupplier;
+    private final Lazy<ResourceLocation> entityTexture;
+    private String translationKey;
+    private ITextComponent displayName;
 
-    public HullType(Supplier<Item> itemSupplier) {
+    public HullType(NonNullSupplier<Item> itemSupplier) {
         this.itemSupplier = itemSupplier;
+        this.entityTexture = Lazy.of(this::getEntityTexture);
     }
 
-    public HullType(Supplier<Item> itemSupplier, ResourceLocation entityTexture) {
-        this(itemSupplier);
+    public HullType(NonNullSupplier<Item> itemSupplier, Lazy<ResourceLocation> entityTexture) {
+        this.itemSupplier = itemSupplier;
         this.entityTexture = entityTexture;
     }
 
-    public ResourceLocation getEntityTexture(Entity entity) {
-        if (entityTexture == null) {
-            ResourceLocation registryName = this.getRegistryName();
-            if (registryName != null) {
-                entityTexture = new ResourceLocation(registryName.getNamespace(), "textures/entity/hull/" +
-                        registryName.getPath() + ".png");
-            }
+    @Nullable
+    public ResourceLocation getEntityTexture(@Nonnull Entity entity) {
+        return entityTexture.get();
+    }
+
+    @Nullable
+    private ResourceLocation getEntityTexture() {
+        ResourceLocation registryName = this.getRegistryName();
+        if (registryName != null) {
+            return new ResourceLocation(registryName.getNamespace(), "textures/entity/hull/" +
+                    registryName.getPath() + ".png");
+        } else {
+            return null;
         }
-        return entityTexture;
+    }
+
+    public ITextComponent getDisplayName() {
+        if (this.displayName == null) {
+            this.displayName = new TranslationTextComponent(this.getTranslationKey());
+        }
+        return this.displayName;
+    }
+
+    public String getTranslationKey() {
+        if (this.translationKey == null) {
+            this.translationKey = Util.makeTranslationKey("hull_type", this.getRegistryName());
+        }
+        return this.translationKey;
+    }
+
+    public Collection<RenderMaterial> getRenderMaterials() {
+        return Collections.singleton(new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE,
+                this.entityTexture.get()));
     }
 
     @Override

@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
+import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
@@ -83,16 +84,17 @@ public class Transport {
         TransportCargoModules.register(modBus);
         TransportEngineModules.register(modBus);
         TransportModuleSlots.register(modBus);
+        TransportHullTypes.register(modBus);
 
         QuarkCargoModules.register(modBus);
     }
 
-    @SuppressWarnings("unchecked")
     public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
         makeRegistry("module_type", ModuleType.class);
         makeRegistry("cargo", CargoModule.class);
         makeRegistry("engine", EngineModule.class);
         makeRegistry("module_slot", ModuleSlot.class);
+        makeRegistry("hull_type", HullType.class);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
