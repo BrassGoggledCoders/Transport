@@ -9,6 +9,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
+import xyz.brassgoggledcoders.transport.entity.HulledBoatEntity;
 import xyz.brassgoggledcoders.transport.entity.ModularBoatEntity;
 import xyz.brassgoggledcoders.transport.item.CargoCarrierMinecartItem;
 import xyz.brassgoggledcoders.transport.item.ModularBoatItem;
@@ -36,6 +37,12 @@ public class TransportEntities {
             () -> new ModularBoatItem(new Item.Properties()
                     .group(Transport.ITEM_GROUP))
     );
+
+    public static RegistryObject<EntityType<HulledBoatEntity>> HULLED_BOAT = ENTITIES.register("hulled_boat",
+            () -> EntityType.Builder.<HulledBoatEntity>create(HulledBoatEntity::new, EntityClassification.MISC)
+                    .size(1.375F, 0.5625F)
+                    .func_233606_a_(10)
+                    .build("hulled_boat"));
 
     public static void register(IEventBus modBus) {
         ENTITIES.register(modBus);
