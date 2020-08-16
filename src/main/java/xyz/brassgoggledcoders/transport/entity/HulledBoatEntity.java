@@ -39,7 +39,7 @@ public class HulledBoatEntity extends BoatEntity implements IEntityAdditionalSpa
     @Override
     protected void readAdditional(@Nonnull CompoundNBT compound) {
         super.readAdditional(compound);
-        this.hullType = TransportAPI.HULL_TYPE.get().getValue(new ResourceLocation(compound.getString("hull_type")));
+        this.setHullType(TransportAPI.HULL_TYPE.get().getValue(new ResourceLocation(compound.getString("hull_type"))));
 
     }
 
@@ -75,5 +75,9 @@ public class HulledBoatEntity extends BoatEntity implements IEntityAdditionalSpa
 
     public HullType getHullType() {
         return this.hullType;
+    }
+
+    public boolean showPaddles() {
+        return true;
     }
 }

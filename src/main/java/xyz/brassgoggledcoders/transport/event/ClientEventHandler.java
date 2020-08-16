@@ -20,6 +20,7 @@ import xyz.brassgoggledcoders.transport.content.TransportContainers;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.content.TransportModuleTypes;
 import xyz.brassgoggledcoders.transport.renderer.CargoCarrierMinecartEntityRenderer;
+import xyz.brassgoggledcoders.transport.renderer.boat.HulledBoatRender;
 import xyz.brassgoggledcoders.transport.renderer.boat.ModularBoatRenderer;
 import xyz.brassgoggledcoders.transport.renderer.tileentity.ModuleConfiguratorTileEntityRenderer;
 import xyz.brassgoggledcoders.transport.screen.ModuleConfiguratorScreen;
@@ -43,6 +44,7 @@ public class ClientEventHandler {
 
         EntityRendererManager rendererManager = Minecraft.getInstance().getRenderManager();
         rendererManager.register(TransportEntities.CARGO_MINECART.get(), new CargoCarrierMinecartEntityRenderer(rendererManager));
+        rendererManager.register(TransportEntities.HULLED_BOAT.get(), new HulledBoatRender<>(rendererManager));
         rendererManager.register(TransportEntities.MODULAR_BOAT.get(), new ModularBoatRenderer(rendererManager));
 
         ClientRegistry.bindTileEntityRenderer(TransportBlocks.MODULE_CONFIGURATOR.getTileEntityType(),

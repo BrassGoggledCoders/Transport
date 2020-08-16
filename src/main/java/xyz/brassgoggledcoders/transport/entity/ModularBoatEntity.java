@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.transport.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,7 +22,6 @@ import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.entity.*;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
-import xyz.brassgoggledcoders.transport.content.TransportHullTypes;
 import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 
 import javax.annotation.Nonnull;
@@ -31,12 +29,10 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-public class ModularBoatEntity extends BoatEntity implements IHoldable, IEntityAdditionalSpawnData, IItemProvider,
+public class ModularBoatEntity extends HulledBoatEntity implements IHoldable, IEntityAdditionalSpawnData, IItemProvider,
         IComparatorEntity {
     private final LazyOptional<IModularEntity> modularEntityLazy;
     private final ModularEntity<ModularBoatEntity> modularEntity;
-
-    private final HullType hullType = TransportHullTypes.OAK_BOAT.get();
 
     public ModularBoatEntity(EntityType<? extends ModularBoatEntity> type, World world) {
         super(type, world);
@@ -154,13 +150,15 @@ public class ModularBoatEntity extends BoatEntity implements IHoldable, IEntityA
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer buffer) {
-        this.modularEntity.write(buffer);
+    public void writeSpawnData(PacketBuffer spawnData) {
+        super.writeSpawnData(spawnData);
+        this.modularEntity.write(spawnData);
     }
 
     @Override
-    public void readSpawnData(PacketBuffer additionalData) {
-        this.modularEntity.read(additionalData);
+    public void readSpawnData(PacketBuffer spawnData) {
+        super.readSpawnData(spawnData);
+        this.modularEntity.read(spawnData);
     }
 
     @Override
@@ -191,10 +189,6 @@ public class ModularBoatEntity extends BoatEntity implements IHoldable, IEntityA
     public int getComparatorLevel() {
         CargoModuleInstance cargoModuleInstance = this.modularEntity.getModuleInstance(TransportObjects.CARGO_TYPE);
         return cargoModuleInstance != null ? cargoModuleInstance.getComparatorLevel() : -1;
-    }
-
-    public HullType getHullType() {
-        return this.hullType;
     }
 
     public ModularEntity<ModularBoatEntity> getModularEntity() {
