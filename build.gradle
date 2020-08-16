@@ -237,6 +237,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 jar {
+    from sourceSets.main.output
     manifest {
         attributes([
                 "Specification-Title"     : "${title}",

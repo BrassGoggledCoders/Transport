@@ -23,7 +23,6 @@ public class TransportBlockTagsProvider extends BlockTagsProvider {
                         TransportBlocks.BUMPER_RAIL.getBlock(),
                         TransportBlocks.DIAMOND_CROSSING_RAIL.getBlock(),
                         TransportBlocks.ELEVATOR_SWITCH_RAIL.getBlock(),
-                        TransportBlocks.HOLDING_RAIL.getBlock(),
                         TransportBlocks.SCAFFOLDING_RAIL.getBlock(),
                         TransportBlocks.SWITCH_RAIL.getBlock(),
                         TransportBlocks.WYE_SWITCH_RAIL.getBlock()

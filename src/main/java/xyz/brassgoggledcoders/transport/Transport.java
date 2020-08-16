@@ -53,7 +53,7 @@ import static xyz.brassgoggledcoders.transport.Transport.ID;
 @Mod(ID)
 public class Transport {
     public static final String ID = "transport";
-    public static final ItemGroup ITEM_GROUP = new TransportItemGroup(ID, TransportBlocks.HOLDING_RAIL::getItem);
+    public static final Lazy<ItemGroup> ITEM_GROUP = Lazy.of(() -> new TransportItemGroup(ID, TransportBlocks.HOLDING_RAIL::get));
     public static final Logger LOGGER = LogManager.getLogger(ID);
 
     public static final LocatorType ENTITY = new LocatorType("entity", EntityLocatorInstance::new);
@@ -85,7 +85,7 @@ public class Transport {
         TransportBlocks.register(modBus);
         TransportContainers.register(modBus);
         TransportEntities.register(modBus);
-        TransportItems.register(modBus);
+        TransportItems.setup();
 
         TransportModuleTypes.register(modBus);
         TransportCargoModules.register(modBus);
@@ -130,7 +130,7 @@ public class Transport {
 
     @Nonnull
     public static ItemGroup getItemGroup() {
-        return ITEM_GROUP;
+        return ITEM_GROUP.get();
     }
 
     public static TransportRegistrate getRegistrate() {

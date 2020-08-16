@@ -1,9 +1,19 @@
 package xyz.brassgoggledcoders.transport.content;
 
 import com.hrznstudio.titanium.registry.BlockRegistryObjectGroup;
+import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.data.ShapelessRecipeBuilder;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
@@ -38,9 +48,25 @@ public class TransportBlocks {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Transport.ID);
 
     //region Rails
-    public static final BlockRegistryObjectGroup<HoldingRailBlock, BlockItem, ?> HOLDING_RAIL =
-            new BlockRegistryObjectGroup<>("holding_rail", HoldingRailBlock::new, blockItemCreator())
-                    .register(BLOCKS, ITEMS);
+    public static final BlockEntry<HoldingRailBlock> HOLDING_RAIL = Transport.getRegistrate()
+            .object("holding_rail")
+            .block(Material.MISCELLANEOUS, HoldingRailBlock::new)
+            .properties(railProperties())
+            .lang("Holding Rail")
+            .tag(BlockTags.RAILS)
+            .item()
+            .group(Transport::getItemGroup)
+            .recipe(((context, recipeProvider) ->
+                    ShapelessRecipeBuilder.shapelessRecipe(context.get(), 2)
+                            .addIngredient(Items.RAIL)
+                            .addIngredient(Items.POWERED_RAIL)
+                            .addCriterion("has_rail", RegistrateRecipeProvider.hasItem(ItemTags.RAILS))
+                            .build(recipeProvider)))
+            .tag(ItemTags.RAILS)
+            .build()
+            .register();
+
+
     public static final BlockRegistryObjectGroup<DiamondCrossingRailBlock, BlockItem, ?> DIAMOND_CROSSING_RAIL =
             new BlockRegistryObjectGroup<>("diamond_crossing_rail", DiamondCrossingRailBlock::new, blockItemCreator())
                     .register(BLOCKS, ITEMS);
@@ -103,5 +129,14 @@ public class TransportBlocks {
 
     private static <B extends Block> Function<B, BlockItem> blockItemCreator() {
         return block -> new BlockItem(block, new Item.Properties().group(Transport.ITEM_GROUP));
+    }
+
+    private static NonNullUnaryOperator<AbstractBlock.Properties> railProperties() {
+        return properties -> {
+            properties.hardnessAndResistance(0.7F);
+            properties.doesNotBlockMovement();
+            properties.sound(SoundType.METAL);
+            return properties;
+        };
     }
 }

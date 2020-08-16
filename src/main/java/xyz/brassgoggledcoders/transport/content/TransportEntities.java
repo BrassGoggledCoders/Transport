@@ -18,11 +18,12 @@ public class TransportEntities {
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Transport.ID);
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Transport.ID);
 
-    public static RegistryObject<EntityType<CargoCarrierMinecartEntity>> CARGO_MINECART = ENTITIES.register("cargo_minecart",
-            () -> EntityType.Builder.<CargoCarrierMinecartEntity>create(CargoCarrierMinecartEntity::new, EntityClassification.MISC)
-                    .func_233606_a_(8)
-                    .size(0.98F, 0.7F)
-                    .build("cargo_minecart"));
+    public static final EntityType<CargoCarrierMinecartEntity> CARGO_MINECART = Transport.getRegistrate()
+            .object("cargo_minecart")
+            .entity(CargoCarrierMinecartEntity::new, EntityClassification.MISC)
+            .lang("Modular Minecart")
+            .properties(properties -> properties.func_233606_a_(8).size(0.98F, 0.7F))
+            .register();
 
     public static RegistryObject<EntityType<ModularBoatEntity>> MODULAR_BOAT = ENTITIES.register("modular_boat",
             () -> EntityType.Builder.<ModularBoatEntity>create(ModularBoatEntity::new, EntityClassification.MISC)

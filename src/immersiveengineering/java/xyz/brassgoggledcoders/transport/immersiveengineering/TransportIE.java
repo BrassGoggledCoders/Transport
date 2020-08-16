@@ -27,11 +27,9 @@ public class TransportIE {
                         .model((context, modelProvider) -> modelProvider.generated(context))
                         .recipe(RegistrateRecipes.vehicleShape(TREATED_WOOD_TAG)))
                 .register();
-
     }
 
     public static ResourceLocation rl(String path) {
         return new ResourceLocation(ID, path);
     }
-
 }

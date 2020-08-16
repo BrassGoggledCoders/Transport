@@ -17,14 +17,11 @@ public class TransportItemTagsProvider extends ItemTagsProvider {
 
     @Override
     protected void registerTags() {
-        this.getOrCreateBuilder(TransportItemTags.WRENCHES).add(TransportItems.RAIL_BREAKER.get());
-
         this.getOrCreateBuilder(ItemTags.RAILS)
                 .add(
                         TransportBlocks.BUMPER_RAIL.getItem(),
                         TransportBlocks.DIAMOND_CROSSING_RAIL.getItem(),
                         TransportBlocks.ELEVATOR_SWITCH_RAIL.getItem(),
-                        TransportBlocks.HOLDING_RAIL.getItem(),
                         TransportBlocks.SCAFFOLDING_RAIL.getItem(),
                         TransportBlocks.SWITCH_RAIL.getItem(),
                         TransportBlocks.WYE_SWITCH_RAIL.getItem()

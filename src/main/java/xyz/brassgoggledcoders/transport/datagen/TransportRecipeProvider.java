@@ -25,12 +25,6 @@ public class TransportRecipeProvider extends RecipeProvider {
     @Override
     protected void registerRecipes(@Nonnull Consumer<IFinishedRecipe> consumer) {
         //region Rails
-        ShapelessRecipeBuilder.shapelessRecipe(TransportBlocks.HOLDING_RAIL.getItem(), 2)
-                .addIngredient(Items.RAIL)
-                .addIngredient(Items.POWERED_RAIL)
-                .addCriterion("has_rail", hasItem(ItemTags.RAILS))
-                .build(consumer);
-
         ShapedRecipeBuilder.shapedRecipe(TransportBlocks.DIAMOND_CROSSING_RAIL.getItem(), 5)
                 .patternLine(" R ")
                 .patternLine("RRR")
@@ -121,17 +115,6 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .patternLine("F")
                 .key('F', Items.FURNACE)
                 .addCriterion("has_item", hasItem(Items.FURNACE))
-                .build(consumer);
-        //endregion
-
-        //region Items
-        ShapedRecipeBuilder.shapedRecipe(TransportItems.RAIL_BREAKER.get())
-                .patternLine(" RI")
-                .patternLine("RIR")
-                .patternLine("IR ")
-                .key('R', Tags.Items.DYES_RED)
-                .key('I', Tags.Items.INGOTS_IRON)
-                .addCriterion("has_item", hasItem(Tags.Items.INGOTS_IRON))
                 .build(consumer);
         //endregion
 

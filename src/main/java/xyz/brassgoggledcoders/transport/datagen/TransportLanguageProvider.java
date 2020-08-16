@@ -21,7 +21,6 @@ public class TransportLanguageProvider extends LanguageProvider {
         //region Blocks
         this.addBlock(TransportBlocks.DIAMOND_CROSSING_RAIL, "Diamond Crossing Rail");
         this.addBlock(TransportBlocks.SCAFFOLDING_RAIL, "Scaffolding Rail");
-        this.addBlock(TransportBlocks.HOLDING_RAIL, "Holding Rail");
         this.addBlock(TransportBlocks.ELEVATOR_SWITCH_RAIL, "Elevator Switch Rail");
         this.addBlock(TransportBlocks.ELEVATOR_SWITCH_SUPPORT, "Elevator Switch Support");
         this.addBlock(TransportBlocks.ITEM_LOADER, "Item Loader");
@@ -42,7 +41,6 @@ public class TransportLanguageProvider extends LanguageProvider {
         //endregion
 
         //region Entity
-        this.add(TransportEntities.CARGO_MINECART.get(), "Modular Minecart");
         this.add(TransportEntities.CARGO_MINECART_ITEM.get(), "Modular Minecart");
         this.add(TransportEntities.MODULAR_BOAT.get(), "Modular Boat");
         this.add(TransportEntities.MODULAR_BOAT_ITEM.get(), "Modular Boat");
@@ -53,10 +51,6 @@ public class TransportLanguageProvider extends LanguageProvider {
         this.add(TransportEngineModules.CREATIVE, "Creative Engine");
         this.add(TransportEngineModules.SOLID_FUEL, "Solid Fuel Engine");
         this.add(TransportEngineModules.BOOSTER, "Booster Engine");
-        //endregion
-
-        //region Item
-        this.add(TransportItems.RAIL_BREAKER.get(), "Rail Breaker");
         //endregion
 
         //region ModuleSlots
