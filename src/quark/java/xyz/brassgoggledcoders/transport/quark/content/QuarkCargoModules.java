@@ -10,10 +10,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.cargoinstance.GenericChestCargoInstance;
+import xyz.brassgoggledcoders.transport.quark.TransportQuark;
 
 @SuppressWarnings("unused")
 public class QuarkCargoModules {
-    private static final DeferredRegister<CargoModule> CARGO = DeferredRegister.create(CargoModule.class, Transport.ID);
+    public static final DeferredRegister<CargoModule> CARGO = DeferredRegister.create(CargoModule.class, TransportQuark.ID);
 
     public static final RegistryObject<CargoModule> OAK_CHEST = createChestModule("oak_chest");
     public static final RegistryObject<CargoModule> SPRUCE_CHEST = createChestModule("spruce_chest");

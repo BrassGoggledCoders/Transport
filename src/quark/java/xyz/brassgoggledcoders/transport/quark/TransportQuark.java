@@ -15,8 +15,9 @@ public class TransportQuark {
     public TransportQuark() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+        QuarkCargoModules.register(modEventBus);
+
         if (ModList.get().isLoaded("quark")) {
-            QuarkCargoModules.register(modEventBus);
             TransportAPI.setConnectionChecker(new QuarkConnectionChecker());
         }
     }
