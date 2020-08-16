@@ -46,6 +46,7 @@ public class TransportLanguageProvider extends LanguageProvider {
         this.add(TransportEntities.CARGO_MINECART_ITEM.get(), "Modular Minecart");
         this.add(TransportEntities.MODULAR_BOAT.get(), "Modular Boat");
         this.add(TransportEntities.MODULAR_BOAT_ITEM.get(), "Modular Boat");
+        this.add(TransportEntities.HULLED_BOAT.get(), "%s Boat");
         //endregion
 
         //region Engine
@@ -67,6 +68,7 @@ public class TransportLanguageProvider extends LanguageProvider {
 
         //region HullType
         this.addHullType(TransportHullTypes.OAK_BOAT, "Oak Boat");
+        this.add("text.transport.hull_type", "Hull Type: %s");
         //
 
         //region Text

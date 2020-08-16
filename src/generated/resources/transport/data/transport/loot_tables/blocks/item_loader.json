@@ -6,19 +6,19 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "transport:fluid_loader"
+          "name": "transport:item_loader"
         }
       ],
       "functions": [
         {
           "function": "minecraft:copy_state",
-          "block": "transport:fluid_loader",
+          "block": "transport:item_loader",
           "properties": [
-            "west",
-            "east",
+            "south",
             "down",
             "north",
-            "south",
+            "east",
+            "west",
             "up"
           ]
         },
