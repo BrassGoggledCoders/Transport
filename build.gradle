@@ -12,6 +12,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
 apply plugin: "net.minecraftforge.gradle"
 apply plugin: "maven"
 apply plugin: "java"
@@ -35,6 +39,10 @@ repositories {
     maven {
         name = "Titanium"
         url = "https://cdn.hrzn.studio/maven/"
+    }
+    maven {
+        name = "Registrate"
+        url = "http://maven.tterrag.com/"
     }
 }
 
@@ -150,19 +158,21 @@ configurations {
     for (def runtimeOnlyExtender : runtimeOnlyExtenders) {
         runtimeOnlyExtender.extendsFrom(runtimeOnly)
     }
+
+    shade
 }
 
 def version_properties = [
-        "version"        : mod_version,
-        "mc_version"     : minecraft_version,
-        "forge_version"  : min_forge_version,
-        "loader_version" : loader_version
+        "version"       : mod_version,
+        "mc_version"    : minecraft_version,
+        "forge_version" : min_forge_version,
+        "loader_version": loader_version
 ]
 
 ext {
     replaceResourcesInfo = [
-            "main"  : sourceSets.main,
-            "quark" : sourceSets.quark,
+            "main"                : sourceSets.main,
+            "quark"               : sourceSets.quark,
             "immersiveengineering": sourceSets.immersiveengineering
     ]
 }
@@ -178,6 +188,11 @@ replaceResourcesInfo.each { output, sourceSet ->
     }
 }
 
+shadowJar {
+    configurations = [project.configurations.shade]
+    relocate 'com.tterrag.registrate', 'com.mymod.repack.registrate'
+}
+
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
@@ -188,6 +203,10 @@ dependencies {
             transitive = false
         })
     }
+    def registrate = "com.tterrag.registrate:Registrate:MC${minecraft_version}-${registrate_version}"
+    implementation fg.deobf(registrate)
+    shade registrate
+
     compile fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
 
     quarkCompile fg.deobf("vazkii.autoreglib:AutoRegLib:${auto_reg_lib_version}")
@@ -266,4 +285,8 @@ gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {
         options.compilerArgs << "-Xmaxerrs" << "10000"
     }
+}
+
+wrapper {
+    version('5.1.0')
 }
