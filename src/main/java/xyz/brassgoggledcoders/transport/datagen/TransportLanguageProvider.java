@@ -67,7 +67,7 @@ public class TransportLanguageProvider extends LanguageProvider {
         //endregion
 
         //region HullType
-        this.addHullType(TransportHullTypes.OAK_BOAT, "Oak Boat");
+        this.addHullType(TransportHullTypes.OAK, "Oak Boat");
         this.add("text.transport.hull_type", "Hull Type: %s");
         //
 

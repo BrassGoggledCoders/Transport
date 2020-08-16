@@ -4,43 +4,66 @@ import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.AbstractBuilder;
 import com.tterrag.registrate.builders.BuilderCallback;
 import com.tterrag.registrate.builders.ItemBuilder;
+import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiFunction;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.util.NonNullFunction;
+import net.minecraftforge.common.util.NonNullSupplier;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class HullTypeBuilder<T extends HullType, P> extends AbstractBuilder<HullType, T, P, HullTypeBuilder<T, P>> {
-    private final Supplier<T> hullTypeCreator;
+public class HullTypeBuilder<T extends HullType, I extends Item, P> extends AbstractBuilder<HullType, T, P, HullTypeBuilder<T, I, P>> {
+    private final Function<NonNullSupplier<I>, T> hullTypeCreator;
+    private NonNullSupplier<I> hullItemSupplier;
 
-    public static <T extends HullType, P> HullTypeBuilder<T, P> create(AbstractRegistrate<?> owner, P parent,
-                                                                       String name, BuilderCallback builderCallback,
-                                                                       Supplier<T> hullCreator) {
+    public static <T extends HullType, I extends Item, P> HullTypeBuilder<T, I, P> create(AbstractRegistrate<?> owner, P parent,
+                                                                                          String name, BuilderCallback builderCallback,
+                                                                                          Function<NonNullSupplier<I>, T> hullCreator) {
         return new HullTypeBuilder<>(owner, parent, name, builderCallback, hullCreator);
     }
 
     private HullTypeBuilder(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback,
-                              Supplier<T> hullTypeCreator) {
+                            Function<NonNullSupplier<I>, T> hullTypeCreator) {
         super(owner, parent, name, callback, HullType.class);
         this.hullTypeCreator = hullTypeCreator;
     }
 
-    public HullTypeBuilder<T, P> lang(String name) {
+    public HullTypeBuilder<T, I, P> lang(String name) {
         return this.lang(HullType::getTranslationKey, name);
     }
 
-    public <I extends Item> ItemBuilder<I, HullTypeBuilder<T, P>> item(NonNullBiFunction<Supplier<? extends T>, Item.Properties, ? extends I> factory) {
-        return getOwner().item(this, getName(), p -> factory.apply(this::getEntry, p));
+    public HullTypeBuilder<T, I, P> item(NonNullSupplier<I> item) {
+        this.hullItemSupplier = item;
+        return this;
     }
 
-    public <I extends Item> ItemBuilder<I, HullTypeBuilder<T, P>> item(String name, NonNullBiFunction<Supplier<? extends T>, Item.Properties, ? extends I> factory) {
-        return getOwner().item(this, this.getName() + "_" + name, p -> factory.apply(this::getEntry, p));
+    public HullTypeBuilder<T, I, P> item(NonNullBiFunction<Supplier<? extends T>, Item.Properties, ? extends I> factory,
+                                         NonNullFunction<ItemBuilder<I, HullTypeBuilder<T, I, P>>,
+                                                 ItemBuilder<I, HullTypeBuilder<T, I, P>>> itemBuilder) {
+        ItemEntry<I> entry = itemBuilder.apply(getOwner().item(this, getName(),
+                p -> factory.apply(this::getEntry, p))).register();
+        this.hullItemSupplier = entry::get;
+        return this;
+    }
+
+    public HullTypeBuilder<T, I, P> item(String name,
+                                         NonNullBiFunction<Supplier<? extends T>, Item.Properties, ? extends I> factory,
+                                         NonNullFunction<ItemBuilder<I, HullTypeBuilder<T, I, P>>,
+                                                 ItemBuilder<I, HullTypeBuilder<T, I, P>>> itemBuilder) {
+        ItemEntry<I> entry = itemBuilder.apply(getOwner().item(this, getName() + "_" + name,
+                p -> factory.apply(this::getEntry, p))).register();
+        this.hullItemSupplier = entry::get;
+        return this;
     }
 
     @Override
     @Nonnull
     protected T createEntry() {
-        return hullTypeCreator.get();
+        Objects.requireNonNull(hullItemSupplier, "Item is required for HullTypes");
+        return hullTypeCreator.apply(hullItemSupplier);
     }
 }

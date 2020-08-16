@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Supplier;
 
 public class HullType extends ForgeRegistryEntry<HullType> implements IItemProvider {
     private final NonNullSupplier<Item> itemSupplier;
@@ -27,13 +28,29 @@ public class HullType extends ForgeRegistryEntry<HullType> implements IItemProvi
     private String translationKey;
     private ITextComponent displayName;
 
-    public HullType(NonNullSupplier<Item> itemSupplier) {
-        this.itemSupplier = itemSupplier;
+    public HullType(Supplier<Item> itemSupplier) {
+        this.itemSupplier = () -> {
+            if (itemSupplier.get() == null) {
+                return itemSupplier.get();
+            } else {
+                return Items.AIR;
+            }
+        };
         this.entityTexture = Lazy.of(this::getEntityTexture);
     }
 
     public HullType(RegistryObject<Item> registryObject, Lazy<ResourceLocation> entityTexture) {
         this(() -> registryObject.orElse(Items.AIR), entityTexture);
+    }
+
+    public HullType(NonNullSupplier<Item> itemSupplier, ResourceLocation entityTexture) {
+        this(itemSupplier, Lazy.of(() -> {
+            if (entityTexture != null) {
+                return new ResourceLocation(entityTexture.getNamespace(), "textures/entity/" + entityTexture.getPath());
+            } else {
+                return null;
+            }
+        }));
     }
 
     public HullType(NonNullSupplier<Item> itemSupplier, Lazy<ResourceLocation> entityTexture) {
