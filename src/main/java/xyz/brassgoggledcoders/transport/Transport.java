@@ -44,6 +44,8 @@ import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavio
 import xyz.brassgoggledcoders.transport.pointmachine.RoutingPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.routing.instruction.*;
 
+import javax.annotation.Nonnull;
+
 import static xyz.brassgoggledcoders.transport.Transport.ID;
 
 @Mod(ID)
@@ -82,14 +84,16 @@ public class Transport {
         TransportEngineModules.register(modBus);
         TransportModuleSlots.register(modBus);
         TransportHullTypes.register(modBus);
-    }
 
-    public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
         makeRegistry("module_type", ModuleType.class);
         makeRegistry("cargo", CargoModule.class);
         makeRegistry("engine", EngineModule.class);
         makeRegistry("module_slot", ModuleSlot.class);
         makeRegistry("hull_type", HullType.class);
+    }
+
+    public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
+
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
@@ -120,5 +124,10 @@ public class Transport {
                 .setName(new ResourceLocation("transport", name))
                 .setType(type)
                 .create();
+    }
+
+    @Nonnull
+    public static ItemGroup getItemGroup() {
+        return ITEM_GROUP;
     }
 }
