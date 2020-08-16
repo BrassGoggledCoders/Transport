@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
@@ -12,6 +13,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.common.util.NonNullSupplier;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
@@ -28,6 +30,10 @@ public class HullType extends ForgeRegistryEntry<HullType> implements IItemProvi
     public HullType(NonNullSupplier<Item> itemSupplier) {
         this.itemSupplier = itemSupplier;
         this.entityTexture = Lazy.of(this::getEntityTexture);
+    }
+
+    public HullType(RegistryObject<Item> registryObject, Lazy<ResourceLocation> entityTexture) {
+        this(() -> registryObject.orElse(Items.AIR), entityTexture);
     }
 
     public HullType(NonNullSupplier<Item> itemSupplier, Lazy<ResourceLocation> entityTexture) {
@@ -51,6 +57,7 @@ public class HullType extends ForgeRegistryEntry<HullType> implements IItemProvi
         }
     }
 
+    @Nonnull
     public ITextComponent getDisplayName() {
         if (this.displayName == null) {
             this.displayName = new TranslationTextComponent(this.getTranslationKey());
@@ -58,6 +65,7 @@ public class HullType extends ForgeRegistryEntry<HullType> implements IItemProvi
         return this.displayName;
     }
 
+    @Nonnull
     public String getTranslationKey() {
         if (this.translationKey == null) {
             this.translationKey = Util.makeTranslationKey("hull_type", this.getRegistryName());

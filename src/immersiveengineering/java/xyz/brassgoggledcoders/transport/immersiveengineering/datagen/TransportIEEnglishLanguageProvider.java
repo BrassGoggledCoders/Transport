@@ -2,12 +2,12 @@ package xyz.brassgoggledcoders.transport.immersiveengineering.datagen;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
-import xyz.brassgoggledcoders.transport.immersiveengineering.TransportImmersiveEngineering;
+import xyz.brassgoggledcoders.transport.immersiveengineering.TransportIE;
 import xyz.brassgoggledcoders.transport.immersiveengineering.compat.ImmersiveEngineeringHullTypes;
 
 public class TransportIEEnglishLanguageProvider extends LanguageProvider {
     public TransportIEEnglishLanguageProvider(DataGenerator gen) {
-        super(gen, TransportImmersiveEngineering.ID, "en_us");
+        super(gen, TransportIE.ID, "en_us");
     }
 
     @Override

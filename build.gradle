@@ -144,11 +144,16 @@ minecraft {
 }
 
 configurations {
+
+    shade
     //Make sure all our sub source set stuff extends the proper base methods so that
     // they can see all the dependencies we have in dependencies including forge
     def compileExtenders = [quarkCompile, immersiveengineeringCompile]
     def compileOnlyExtenders = [quarkCompileOnly, immersiveengineeringCompileOnly]
     def runtimeOnlyExtenders = [quarkRuntimeOnly, immersiveengineeringRuntimeOnly]
+    def implementationExtenders = [quarkImplementation, immersiveengineeringImplementation]
+    def shadeExtenders = [quarkShade, immersiveengineeringShade]
+
     for (def compileExtender : compileExtenders) {
         compileExtender.extendsFrom(compile)
     }
@@ -158,8 +163,12 @@ configurations {
     for (def runtimeOnlyExtender : runtimeOnlyExtenders) {
         runtimeOnlyExtender.extendsFrom(runtimeOnly)
     }
-
-    shade
+    for (def implementationExtender: implementationExtenders) {
+        implementationExtender.extendsFrom(implementation)
+    }
+    for (def shadeExtender : shadeExtenders) {
+        shadeExtender.extendsFrom(shade)
+    }
 }
 
 def version_properties = [
@@ -190,7 +199,7 @@ replaceResourcesInfo.each { output, sourceSet ->
 
 shadowJar {
     configurations = [project.configurations.shade]
-    relocate 'com.tterrag.registrate', 'com.mymod.repack.registrate'
+    relocate 'com.tterrag.registrate', 'xyz.brassgoggledcoders.transport.repack.registrate'
 }
 
 

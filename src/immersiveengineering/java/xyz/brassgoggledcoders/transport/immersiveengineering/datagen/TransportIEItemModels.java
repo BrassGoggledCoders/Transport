@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
-import xyz.brassgoggledcoders.transport.immersiveengineering.TransportImmersiveEngineering;
+import xyz.brassgoggledcoders.transport.immersiveengineering.TransportIE;
 import xyz.brassgoggledcoders.transport.immersiveengineering.compat.ImmersiveEngineeringHullTypes;
 
 import java.util.Optional;
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public class TransportIEItemModels extends ItemModelProvider {
     public TransportIEItemModels(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, TransportImmersiveEngineering.ID, existingFileHelper);
+        super(generator, TransportIE.ID, existingFileHelper);
     }
 
     @Override
