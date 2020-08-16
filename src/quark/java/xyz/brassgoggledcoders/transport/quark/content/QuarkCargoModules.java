@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.content.compat;
+package xyz.brassgoggledcoders.transport.quark.content;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;

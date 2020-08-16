@@ -45,18 +45,62 @@ test {
     }
 }
 
+sourceSets {
+    main {
+        resources {
+            include '**/**'
+            // copy everything else, but blender files.
+            exclude '**/*.bbmodel'
+            //Add the generated main module resources
+            srcDirs += 'src/generated/transport'
+            //But exclude the cache of the generated data from what gets built
+            exclude '.cache'
+        }
+    }
+    quark {
+        setupSourceSet(sourceSets.quark, 'quark')
+    }
+}
+
+def setupSourceSet(SourceSet sourceSet, String name) {
+    sourceSet.java {
+        srcDir 'src/' + name + '/java'
+    }
+    sourceSet.resources {
+        //Add the generated module resources
+        srcDirs += 'src/generated/' + name
+        //But exclude the cache of the generated data from what gets built
+        exclude '.cache'
+    }
+    sourceSet.compileClasspath += sourceSets.main.output
+}
+
 minecraft {
     mappings channel: "snapshot", version: "${mappings_version}"
 
     runs {
         client {
             workingDirectory project.file("run")
-            source sourceSets.main
+            mods {
+                transport {
+                    source(sourceSets.main)
+                }
+                transport_quark {
+                    source(sourceSets.quark)
+                }
+            }
         }
 
         server {
             workingDirectory project.file("run")
-            source sourceSets.main
+            mods {
+                transport {
+                    source(sourceSets.main)
+                }
+                transport_quark {
+                    source(sourceSets.quark)
+                }
+            }
         }
 
         data {
@@ -65,23 +109,61 @@ minecraft {
             properties 'fml.earlyprogresswindow': 'false'
 
             args '--all', '--output', file('src/generated/resources/'),
-                    '--mod', 'transport', '--reports',
-                    '--existing', sourceSets.main.resources.srcDirs[0]
+                    '--reports',
+                    '--mod', 'transport', '--existing', sourceSets.main.resources.srcDirs[0]
+
+            mods {
+                transport {
+                    source(sourceSets.main)
+                }
+            }
         }
     }
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDirs = [
-                    "$rootDir/src/main/resources",
-                    "$rootDir/src/generated/resources"
-            ]
-        }
+configurations {
+    //Make sure all our sub source set stuff extends the proper base methods so that
+    // they can see all the dependencies we have in dependencies including forge
+    def compileExtenders = [quarkCompile]
+    def compileOnlyExtenders = [quarkCompileOnly]
+    def runtimeOnlyExtenders = [quarkRuntimeOnly]
+    for (def compileExtender : compileExtenders) {
+        compileExtender.extendsFrom(compile)
+    }
+    for (def compileOnlyExtender : compileOnlyExtenders) {
+        compileOnlyExtender.extendsFrom(compileOnly)
+    }
+    for (def runtimeOnlyExtender : runtimeOnlyExtenders) {
+        runtimeOnlyExtender.extendsFrom(runtimeOnly)
     }
 }
+
+def version_properties = [
+        "version"        : mod_version,
+        "mc_version"     : minecraft_version,
+        "forge_version"  : min_forge_version,
+        "loader_version" : loader_version
+]
+
+ext {
+    replaceResourcesInfo = [
+            "main"  : sourceSets.main,
+            "quark" : sourceSets.quark
+    ]
+}
+
+replaceResourcesInfo.each { output, sourceSet ->
+    return tasks.create("${output}ReplaceResources", Copy) {
+        outputs.upToDateWhen { false }
+        from(sourceSet.resources) {
+            include "META-INF/mods.toml"
+            expand version_properties
+        }
+        into "$buildDir/resources/${output}/"
+    }
+}
+
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
@@ -92,10 +174,10 @@ dependencies {
             transitive = false
         })
     }
-
-    compile fg.deobf("vazkii.autoreglib:AutoRegLib:${auto_reg_lib_version}")
     compile fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
-    compile fg.deobf("vazkii.quark:Quark:${quark_version}")
+
+    quarkCompile fg.deobf("vazkii.autoreglib:AutoRegLib:${auto_reg_lib_version}")
+    quarkCompile fg.deobf("vazkii.quark:Quark:${quark_version}")
     testImplementation('org.junit.jupiter:junit-jupiter:5.6.1')
 }
 

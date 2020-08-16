@@ -10,7 +10,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -31,10 +30,8 @@ import xyz.brassgoggledcoders.transport.api.routing.serializer.ListRoutingDeseri
 import xyz.brassgoggledcoders.transport.api.routing.serializer.ListValidatedRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.SingleRoutingDeserializer;
-import xyz.brassgoggledcoders.transport.connection.QuarkConnectionChecker;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
-import xyz.brassgoggledcoders.transport.content.compat.QuarkCargoModules;
 import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
 import xyz.brassgoggledcoders.transport.event.EventHandler;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
@@ -85,8 +82,6 @@ public class Transport {
         TransportEngineModules.register(modBus);
         TransportModuleSlots.register(modBus);
         TransportHullTypes.register(modBus);
-
-        QuarkCargoModules.register(modBus);
     }
 
     public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
@@ -115,13 +110,9 @@ public class Transport {
         TransportAPI.addRoutingDeserializer("TIME", new ListValidatedRoutingDeserializer<>(String.class, TimeRouting::create));
 
         CapabilityManager.INSTANCE.register(RoutingStorage.class, new EmptyStorage<>(), RoutingStorage::new);
-        CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () ->  null);
+        CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () -> null);
 
         TransportAPI.generateItemToModuleMap();
-
-        if (ModList.get().isLoaded("quark")) {
-            TransportAPI.setConnectionChecker(new QuarkConnectionChecker());
-        }
     }
 
     private static <T extends IForgeRegistryEntry<T>> void makeRegistry(String name, Class<T> type) {
