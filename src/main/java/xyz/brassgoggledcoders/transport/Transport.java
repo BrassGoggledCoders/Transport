@@ -84,7 +84,7 @@ public class Transport {
 
         TransportBlocks.register(modBus);
         TransportContainers.register(modBus);
-        TransportEntities.register(modBus);
+        TransportEntities.setup();
         TransportItems.setup();
 
         TransportModuleTypes.register(modBus);
