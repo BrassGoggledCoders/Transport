@@ -81,6 +81,12 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .key('T', Items.RAIL)
                 .addCriterion("has_item", hasItem(Items.RAIL))
                 .build(consumer);
+
+        ShapelessRecipeBuilder.shapelessRecipe(TransportBlocks.TIMED_HOLDING_RAIL.getItem(), 2)
+                .addIngredient(Items.RAIL)
+                .addIngredient(Items.REPEATER)
+                .addCriterion("has_rail", hasItem(ItemTags.RAILS))
+                .build(consumer);
         //endregion
 
         //region Loaders
