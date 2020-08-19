@@ -34,4 +34,15 @@ public class RailUtils {
         }
         return blockState;
     }
+
+    public static Direction getFacingFromBlockState(BlockState blockState) {
+        RailShape railShape = blockState.get(TransportBlockStateProperties.STRAIGHT_RAIL_SHAPE);
+        boolean northWest = blockState.get(TransportBlockStateProperties.NORTH_WEST);
+
+        if (railShape == RailShape.NORTH_SOUTH) {
+            return northWest ? Direction.NORTH : Direction.SOUTH;
+        } else {
+            return northWest ? Direction.WEST : Direction.EAST;
+        }
+    }
 }

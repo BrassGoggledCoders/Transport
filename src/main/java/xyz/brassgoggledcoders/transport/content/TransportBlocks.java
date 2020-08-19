@@ -1,7 +1,10 @@
 package xyz.brassgoggledcoders.transport.content;
 
 import com.hrznstudio.titanium.registry.BlockRegistryObjectGroup;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
@@ -13,10 +16,7 @@ import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.ModuleConfiguratorBlock;
 import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
-import xyz.brassgoggledcoders.transport.block.rail.BumperRailBlock;
-import xyz.brassgoggledcoders.transport.block.rail.DiamondCrossingRailBlock;
-import xyz.brassgoggledcoders.transport.block.rail.HoldingRailBlock;
-import xyz.brassgoggledcoders.transport.block.rail.ScaffoldingRailBlock;
+import xyz.brassgoggledcoders.transport.block.rail.*;
 import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitchSupportBlock;
 import xyz.brassgoggledcoders.transport.block.rail.turnout.SwitchRailBlock;
@@ -25,6 +25,7 @@ import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
+import xyz.brassgoggledcoders.transport.tileentity.rail.TimedHoldingRailTileEntity;
 
 import java.util.function.Function;
 
@@ -57,7 +58,19 @@ public class TransportBlocks {
     public static final BlockRegistryObjectGroup<BumperRailBlock, BlockItem, ?> BUMPER_RAIL =
             new BlockRegistryObjectGroup<>("bumper_rail", BumperRailBlock::new, blockItemCreator())
                     .register(BLOCKS, ITEMS);
+    public static final BlockRegistryObjectGroup<TimedHoldingRailBlock, BlockItem, TimedHoldingRailTileEntity> TIMED_HOLDING_RAIL =
+            new BlockRegistryObjectGroup<>("timed_holding_rail", () ->
+                    new TimedHoldingRailBlock(railProperties()),
+                    blockItemCreator(), TimedHoldingRailTileEntity::new)
+                    .register(BLOCKS, ITEMS, TILE_ENTITIES);
     //endregion
+
+    public static AbstractBlock.Properties railProperties() {
+        return AbstractBlock.Properties.create(Material.MISCELLANEOUS)
+                .doesNotBlockMovement()
+                .hardnessAndResistance(0.7F)
+                .sound(SoundType.METAL);
+    }
 
     //region Loaders
     public static final BlockRegistryObjectGroup<LoaderBlock, BlockItem, ItemLoaderTileEntity> ITEM_LOADER =
