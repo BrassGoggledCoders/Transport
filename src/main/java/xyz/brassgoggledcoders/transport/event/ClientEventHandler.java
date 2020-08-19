@@ -30,6 +30,7 @@ public class ClientEventHandler {
         RenderTypeLookup.setRenderLayer(TransportBlocks.SWITCH_RAIL.getBlock(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.WYE_SWITCH_RAIL.getBlock(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.BUMPER_RAIL.getBlock(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.TIMED_HOLDING_RAIL.getBlock(), RenderType.getCutout());
 
         ScreenManager.registerFactory(TransportContainers.MODULE.get(), BasicAddonScreen::new);
         ScreenManager.registerFactory(TransportContainers.MODULE_CONFIGURATOR.get(), ModuleConfiguratorScreen::new);
