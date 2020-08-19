@@ -7,6 +7,7 @@
     "transport:holding_rail",
     "transport:scaffolding_rail",
     "transport:switch_rail",
-    "transport:wye_switch_rail"
+    "transport:wye_switch_rail",
+    "transport:timed_holding_rail"
   ]
 }

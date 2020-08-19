@@ -50,6 +50,7 @@ public class TransportBlockLootTables extends BlockLootTables {
         this.registerDropSelfLootTable(TransportBlocks.SWITCH_RAIL.getBlock());
         this.registerDropSelfLootTable(TransportBlocks.WYE_SWITCH_RAIL.getBlock());
         this.registerDropSelfLootTable(TransportBlocks.BUMPER_RAIL.getBlock());
+        this.registerDropSelfLootTable(TransportBlocks.TIMED_HOLDING_RAIL.getBlock());
         this.registerLootTable(TransportBlocks.MODULE_CONFIGURATOR.getBlock(), block -> LootTable.builder()
                 .addLootPool(LootPool.builder()
                         .rolls(ConstantRange.of(1))

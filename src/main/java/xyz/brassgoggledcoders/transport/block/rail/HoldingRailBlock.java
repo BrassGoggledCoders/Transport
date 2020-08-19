@@ -74,28 +74,36 @@ public class HoldingRailBlock extends AbstractRailBlock {
     @ParametersAreNonnullByDefault
     public void onMinecartPass(BlockState state, World world, BlockPos pos, AbstractMinecartEntity cart) {
         if (state.get(POWERED)) {
-            float speedIncrease = .5f;
-            if (state.get(NORTH_WEST)) {
-                speedIncrease *= -1;
-            }
-            Vec3d motion = cart.getMotion();
-            Entity leader = TransportAPI.getConnectionChecker().getLeader(cart);
-            if (leader == null || (leader instanceof AbstractMinecartEntity &&
-                    !((AbstractMinecartEntity) leader).isPoweredCart())) {
-                if (state.get(SHAPE) == RailShape.NORTH_SOUTH) {
-                    cart.setMotion(motion.add(0, 0, speedIncrease));
-                } else {
-                    cart.setMotion(motion.add(speedIncrease, 0, 0));
-                }
-            }
-            if (cart instanceof IHoldable) {
-                ((IHoldable) cart).onRelease();
-            }
+            handleGo(state, cart);
         } else {
-            cart.setMotion(Vec3d.ZERO);
-            if (cart instanceof IHoldable) {
-                ((IHoldable) cart).onHeld();
+            handleStop(cart);
+        }
+    }
+
+    public static void handleGo(BlockState blockState, AbstractMinecartEntity minecartEntity) {
+        float speedIncrease = .5f;
+        if (blockState.get(NORTH_WEST)) {
+            speedIncrease *= -1;
+        }
+        Vec3d motion = minecartEntity.getMotion();
+        Entity leader = TransportAPI.getConnectionChecker().getLeader(minecartEntity);
+        if (leader == null || (leader instanceof AbstractMinecartEntity &&
+                !((AbstractMinecartEntity) leader).isPoweredCart())) {
+            if (blockState.get(SHAPE) == RailShape.NORTH_SOUTH) {
+                minecartEntity.setMotion(motion.add(0, 0, speedIncrease));
+            } else {
+                minecartEntity.setMotion(motion.add(speedIncrease, 0, 0));
             }
+        }
+        if (minecartEntity instanceof IHoldable) {
+            ((IHoldable) minecartEntity).onRelease();
+        }
+    }
+
+    public static void handleStop(AbstractMinecartEntity minecartEntity) {
+        minecartEntity.setMotion(Vec3d.ZERO);
+        if (minecartEntity instanceof IHoldable) {
+            ((IHoldable) minecartEntity).onHeld();
         }
     }
 

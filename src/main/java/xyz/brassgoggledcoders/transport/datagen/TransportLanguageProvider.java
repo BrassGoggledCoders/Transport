@@ -31,6 +31,7 @@ public class TransportLanguageProvider extends LanguageProvider {
         this.addBlock(TransportBlocks.WYE_SWITCH_RAIL, "Wye Switch Rail");
         this.addBlock(TransportBlocks.BUMPER_RAIL, "Bumper Rail");
         this.addBlock(TransportBlocks.MODULE_CONFIGURATOR, "Module Configurator");
+        this.addBlock(TransportBlocks.TIMED_HOLDING_RAIL, "Timed Holding Rail");
         //endregion
 
         //region Cargo
