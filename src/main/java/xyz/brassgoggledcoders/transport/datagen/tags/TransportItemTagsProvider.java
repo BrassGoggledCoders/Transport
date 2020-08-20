@@ -24,7 +24,8 @@ public class TransportItemTagsProvider extends ItemTagsProvider {
                         TransportBlocks.ELEVATOR_SWITCH_RAIL.getItem(),
                         TransportBlocks.SCAFFOLDING_RAIL.getItem(),
                         TransportBlocks.SWITCH_RAIL.getItem(),
-                        TransportBlocks.WYE_SWITCH_RAIL.getItem()
+                        TransportBlocks.WYE_SWITCH_RAIL.getItem(),
+                        TransportBlocks.TIMED_HOLDING_RAIL.getItem()
                 );
     }
 

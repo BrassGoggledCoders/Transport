@@ -5,6 +5,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 import xyz.brassgoggledcoders.transport.content.TransportItems;
@@ -25,7 +26,8 @@ public class TransportBlockTagsProvider extends BlockTagsProvider {
                         TransportBlocks.ELEVATOR_SWITCH_RAIL.getBlock(),
                         TransportBlocks.SCAFFOLDING_RAIL.getBlock(),
                         TransportBlocks.SWITCH_RAIL.getBlock(),
-                        TransportBlocks.WYE_SWITCH_RAIL.getBlock()
+                        TransportBlocks.WYE_SWITCH_RAIL.getBlock(),
+                        TransportBlocks.TIMED_HOLDING_RAIL.getBlock()
                 );
     }
 
