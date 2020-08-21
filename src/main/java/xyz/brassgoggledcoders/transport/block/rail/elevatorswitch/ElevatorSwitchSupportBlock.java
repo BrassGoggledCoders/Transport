@@ -83,7 +83,7 @@ public class ElevatorSwitchSupportBlock extends Block {
     private void updateState(World world, BlockPos pos, boolean doRemoval) {
         boolean powered = world.isBlockPowered(pos);
         BlockState blockState = world.getBlockState(pos.up());
-        if (blockState.getBlock() == TransportBlocks.ELEVATOR_SWITCH_RAIL.getBlock()) {
+        if (blockState.getBlock() == TransportBlocks.ELEVATOR_SWITCH_RAIL.get()) {
             if (!powered) {
                 BlockState railState = ElevatorSwitchRailBlock.oppositeAscend(blockState)
                         .with(ElevatorSwitchRailBlock.TOP, false);

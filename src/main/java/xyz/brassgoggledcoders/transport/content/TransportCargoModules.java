@@ -17,11 +17,11 @@ public class TransportCargoModules {
     public static final RegistryObject<CargoModule> EMPTY = CARGO.register("empty", () -> new CargoModule(
             () -> Blocks.AIR));
     public static final RegistryObject<CargoModule> ITEM = CARGO.register("item", () -> new CargoModule(
-            TransportBlocks.ITEM_LOADER::getBlock, ItemCargoModuleInstance::new));
+            TransportBlocks.ITEM_LOADER, ItemCargoModuleInstance::new));
     public static final RegistryObject<CargoModule> ENERGY = CARGO.register("energy", () -> new CargoModule(
-            TransportBlocks.ENERGY_LOADER::getBlock, EnergyCargoModuleInstance::new));
+            TransportBlocks.ENERGY_LOADER, EnergyCargoModuleInstance::new));
     public static final RegistryObject<CargoModule> FLUID = CARGO.register("fluid", () -> new CargoModule(
-            TransportBlocks.FLUID_LOADER::getBlock, FluidCargoModuleInstance::new));
+            TransportBlocks.FLUID_LOADER, FluidCargoModuleInstance::new));
 
     public static void register(IEventBus eventBus) {
         CARGO.register(eventBus);

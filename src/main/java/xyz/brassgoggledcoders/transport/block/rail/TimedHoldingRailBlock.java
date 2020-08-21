@@ -71,7 +71,7 @@ public class TimedHoldingRailBlock extends HoldingRailBlock {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TimedHoldingRailTileEntity();
+        return TimedHoldingRailTileEntity.construct();
     }
 
     @Override

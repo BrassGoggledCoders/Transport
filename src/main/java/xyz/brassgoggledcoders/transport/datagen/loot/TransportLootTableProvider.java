@@ -19,7 +19,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class TransportLootTableProvider extends LootTableProvider {
+public class  TransportLootTableProvider extends LootTableProvider {
     public TransportLootTableProvider(DataGenerator dataGenerator) {
         super(dataGenerator);
     }

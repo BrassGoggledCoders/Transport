@@ -19,32 +19,13 @@ public class TransportLanguageProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         //region Blocks
-        this.addBlock(TransportBlocks.DIAMOND_CROSSING_RAIL, "Diamond Crossing Rail");
-        this.addBlock(TransportBlocks.SCAFFOLDING_RAIL, "Scaffolding Rail");
-        this.addBlock(TransportBlocks.ELEVATOR_SWITCH_RAIL, "Elevator Switch Rail");
-        this.addBlock(TransportBlocks.ELEVATOR_SWITCH_SUPPORT, "Elevator Switch Support");
-        this.addBlock(TransportBlocks.ITEM_LOADER, "Item Loader");
-        this.addBlock(TransportBlocks.ENERGY_LOADER, "Energy Loader");
-        this.addBlock(TransportBlocks.FLUID_LOADER, "Fluid Loader");
-        this.addBlock(TransportBlocks.SCAFFOLDING_SLAB_BLOCK, "Scaffolding Slab");
-        this.addBlock(TransportBlocks.SWITCH_RAIL, "Switch Rail");
-        this.addBlock(TransportBlocks.WYE_SWITCH_RAIL, "Wye Switch Rail");
-        this.addBlock(TransportBlocks.BUMPER_RAIL, "Bumper Rail");
         this.addBlock(TransportBlocks.MODULE_CONFIGURATOR, "Module Configurator");
-        this.addBlock(TransportBlocks.BUOY, "Buoy");
         //endregion
 
         //region Cargo
         this.add(TransportCargoModules.ITEM, "Inventory");
         this.add(TransportCargoModules.FLUID, "Fluid Tank");
         this.add(TransportCargoModules.ENERGY, "Energy Storage");
-        //endregion
-
-        //region Entity
-        this.add(TransportEntities.CARGO_MINECART_ITEM.get(), "Modular Minecart");
-        this.add(TransportEntities.MODULAR_BOAT.get(), "Modular Boat");
-        this.add(TransportEntities.MODULAR_BOAT_ITEM.get(), "Modular Boat");
-        this.add(TransportEntities.HULLED_BOAT.get(), "%s Boat");
         //endregion
 
         //region Engine

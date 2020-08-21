@@ -6,6 +6,7 @@ import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.common.util.LazyOptional;
@@ -23,8 +24,8 @@ public class FluidLoaderTileEntity extends BasicLoaderTileEntity<IFluidHandler> 
     private final FluidTankComponent<FluidLoaderTileEntity> fluidTankComponent;
     private final LazyOptional<IFluidHandler> lazyFluid;
 
-    public FluidLoaderTileEntity() {
-        super(TransportBlocks.FLUID_LOADER.getTileEntityType(), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+    public FluidLoaderTileEntity(TileEntityType<? extends FluidLoaderTileEntity> tileEntityType) {
+        super(tileEntityType, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
         this.fluidTankComponent = new FluidTankComponent<>("Loader", 10000, 80, 28);
         this.lazyFluid = LazyOptional.of(() -> fluidTankComponent);
     }

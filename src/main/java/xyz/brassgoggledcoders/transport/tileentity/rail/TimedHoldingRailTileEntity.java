@@ -9,6 +9,9 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.NonNullFunction;
+import net.minecraftforge.registries.ForgeRegistries;
+import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.rail.HoldingRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.TimedHoldingRailBlock;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
@@ -23,9 +26,6 @@ public class TimedHoldingRailTileEntity extends TileEntity implements ITickableT
 
     private final Map<UUID, TickTimer> timers;
 
-    public TimedHoldingRailTileEntity() {
-        this(TransportBlocks.TIMED_HOLDING_RAIL.getTileEntityType());
-    }
 
     public TimedHoldingRailTileEntity(TileEntityType<?> tileEntityType) {
         super(tileEntityType);
@@ -80,5 +80,9 @@ public class TimedHoldingRailTileEntity extends TileEntity implements ITickableT
             CompoundNBT timerNBT = timerListNBT.getCompound(i);
             this.timers.put(timerNBT.getUniqueId("uuid"), new TickTimer(timerNBT));
         }
+    }
+
+    public static TimedHoldingRailTileEntity construct() {
+        return new TimedHoldingRailTileEntity(TransportBlocks.TIMED_HOLDING_RAIL.getSibling(ForgeRegistries.TILE_ENTITIES).get());
     }
 }

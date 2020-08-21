@@ -24,22 +24,6 @@ public class TransportRegistrate extends AbstractRegistrate<TransportRegistrate>
         super(modid);
     }
 
-    @Override
-    @Nonnull
-    protected TransportRegistrate registerEventListeners(IEventBus bus) {
-        EventDispatcher onRegister = new EventDispatcher(this::onRegister);
-        EventDispatcher onRegisterLate = new EventDispatcher(this::onRegisterLate);
-        bus.register(onRegister);
-        bus.register(onRegisterLate);
-        OneTimeEventReceiver.addListener(bus, FMLCommonSetupEvent.class, ($) -> {
-            bus.unregister(onRegister);
-            bus.unregister(onRegisterLate);
-        });
-        OneTimeEventReceiver.addListener(bus, GatherDataEvent.class, this::onData);
-
-        return this.self();
-    }
-
     public <T extends HullType, I extends Item> HullTypeBuilder<T, I, TransportRegistrate> hullType(Function<NonNullSupplier<I>, T> hullTypeCreator) {
         return this.hullType(this, hullTypeCreator);
     }
