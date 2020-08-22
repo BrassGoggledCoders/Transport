@@ -1,29 +1,43 @@
 package xyz.brassgoggledcoders.transport.content;
 
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
+import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.cargoinstance.capability.EnergyCargoModuleInstance;
 import xyz.brassgoggledcoders.transport.cargoinstance.capability.FluidCargoModuleInstance;
 import xyz.brassgoggledcoders.transport.cargoinstance.capability.ItemCargoModuleInstance;
 
 @SuppressWarnings("unused")
 public class TransportCargoModules {
-    private static final DeferredRegister<CargoModule> CARGO = DeferredRegister.create(CargoModule.class, Transport.ID);
+    public static final RegistryEntry<CargoModule> EMPTY = Transport.getRegistrate()
+            .object("empty")
+            .cargoModule(() -> Blocks.AIR, CargoModuleInstance::new)
+            .lang("Empty")
+            .register();
 
-    public static final RegistryObject<CargoModule> EMPTY = CARGO.register("empty", () -> new CargoModule(
-            () -> Blocks.AIR));
-    public static final RegistryObject<CargoModule> ITEM = CARGO.register("item", () -> new CargoModule(
-            TransportBlocks.ITEM_LOADER, ItemCargoModuleInstance::new));
-    public static final RegistryObject<CargoModule> ENERGY = CARGO.register("energy", () -> new CargoModule(
-            TransportBlocks.ENERGY_LOADER, EnergyCargoModuleInstance::new));
-    public static final RegistryObject<CargoModule> FLUID = CARGO.register("fluid", () -> new CargoModule(
-            TransportBlocks.FLUID_LOADER, FluidCargoModuleInstance::new));
+    public static final RegistryEntry<CargoModule> ITEM = Transport.getRegistrate()
+            .object("item")
+            .cargoModule(TransportBlocks.ITEM_LOADER, ItemCargoModuleInstance::new)
+            .lang("Inventory")
+            .register();
 
-    public static void register(IEventBus eventBus) {
-        CARGO.register(eventBus);
+    public static final RegistryEntry<CargoModule> ENERGY = Transport.getRegistrate()
+            .object("energy")
+            .cargoModule(TransportBlocks.ENERGY_LOADER, EnergyCargoModuleInstance::new)
+            .lang("Energy Storage")
+            .register();
+
+    public static final RegistryEntry<CargoModule> FLUID = Transport.getRegistrate()
+            .object("fluid")
+            .cargoModule(TransportBlocks.FLUID_LOADER, FluidCargoModuleInstance::new)
+            .lang("Fluid Tank")
+            .register();
+
+    public static void setup() {
     }
 }

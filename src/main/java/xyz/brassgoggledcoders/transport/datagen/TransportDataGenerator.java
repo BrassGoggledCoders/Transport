@@ -11,9 +11,5 @@ public class TransportDataGenerator {
         if (event.includeServer()) {
             dataGenerator.addProvider(new TransportRecipeProvider(dataGenerator));
         }
-
-        if (event.includeClient()) {
-            dataGenerator.addProvider(new TransportLanguageProvider(dataGenerator));
-        }
     }
 }

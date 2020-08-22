@@ -2,12 +2,19 @@ package xyz.brassgoggledcoders.transport.registrate;
 
 import com.google.common.base.Preconditions;
 import com.tterrag.registrate.AbstractRegistrate;
+import com.tterrag.registrate.util.nullness.NonNullBiFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
+import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
+import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
+import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.item.ModuleItem;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
@@ -62,5 +69,38 @@ public class TransportRegistrate extends AbstractRegistrate<TransportRegistrate>
     public <M extends ModuleType, P> ModuleTypeBuilder<M, P> moduleType(P parent, NonNullSupplier<M> moduleTypeBuilder) {
         return this.entry((name, builderCallback) -> new ModuleTypeBuilder<>(this, parent, this.currentName(),
                 builderCallback, moduleTypeBuilder));
+    }
+
+    public CargoModuleBuilder<CargoModule, TransportRegistrate> cargoModule(NonNullSupplier<? extends Block> block,
+                                                                            NonNullBiFunction<CargoModule, IModularEntity,
+                                                                                    ? extends CargoModuleInstance> cargoInstanceCreator) {
+        return this.cargoModule(() -> new CargoModule(block, cargoInstanceCreator));
+    }
+
+    public <C extends CargoModule> CargoModuleBuilder<C, TransportRegistrate> cargoModule(NonNullSupplier<C> cargoModuleSupplier) {
+        return this.entry((name, builderCallback) -> new CargoModuleBuilder<>(this, this, this.currentName(),
+                builderCallback, cargoModuleSupplier));
+    }
+
+    public <C extends CargoModule, P> CargoModuleBuilder<C, P> cargoModule(P parent, NonNullSupplier<C> cargoModuleSupplier) {
+        return this.entry((name, builderCallback) -> new CargoModuleBuilder<>(this, parent, this.currentName(),
+                builderCallback, cargoModuleSupplier));
+    }
+
+    public EngineModuleBuilder<EngineModule, ModuleItem<EngineModule>, TransportRegistrate> engineModule(
+            NonNullBiFunction<EngineModule, IModularEntity, ? extends EngineModuleInstance> engineModuleCreator) {
+        return this.engineModule(() -> new EngineModule(engineModuleCreator));
+    }
+
+    public <E extends EngineModule, I extends Item> EngineModuleBuilder<E, I, TransportRegistrate> engineModule(
+            NonNullSupplier<E> engineModuleSupplier) {
+        return this.entry((name, builderCallback) -> new EngineModuleBuilder<>(this, this, this.currentName(),
+                builderCallback, engineModuleSupplier));
+    }
+
+    public <E extends EngineModule, I extends Item, P> EngineModuleBuilder<E, I, P> engineModule(
+            P parent, NonNullSupplier<E> engineModuleSupplier) {
+        return this.entry((name, builderCallback) -> new EngineModuleBuilder<>(this, parent, this.currentName(),
+                builderCallback, engineModuleSupplier));
     }
 }

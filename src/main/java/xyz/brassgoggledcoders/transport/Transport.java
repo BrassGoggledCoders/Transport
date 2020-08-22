@@ -87,9 +87,9 @@ public class Transport {
         TransportEntities.setup();
         TransportItems.setup();
 
-        TransportModuleTypes.register(modBus);
-        TransportCargoModules.register(modBus);
-        TransportEngineModules.register(modBus);
+        TransportModuleTypes.setup();
+        TransportCargoModules.setup();
+        TransportEngineModules.setup();
         TransportModuleSlots.setup();
         TransportHullTypes.setup();
         TransportText.setup();

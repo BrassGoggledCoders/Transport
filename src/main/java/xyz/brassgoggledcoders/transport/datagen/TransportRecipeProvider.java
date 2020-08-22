@@ -33,24 +33,6 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .addCriterion("has_item", hasItem(Items.MINECART))
                 .build(consumer);
         //endregion
-
-        //region Engines
-        ShapedRecipeBuilder.shapedRecipe(TransportEngineModules.BOOSTER_ITEM::get)
-                .patternLine("G G")
-                .patternLine("RGR")
-                .patternLine("G G")
-                .key('G', Tags.Items.INGOTS_GOLD)
-                .key('R', Tags.Items.DUSTS_REDSTONE)
-                .addCriterion("has_item", hasItem(Tags.Items.INGOTS_GOLD))
-                .build(consumer);
-
-        ShapedRecipeBuilder.shapedRecipe(TransportEngineModules.SOLID_FUEL_ITEM::get)
-                .patternLine("F")
-                .patternLine("F")
-                .key('F', Items.FURNACE)
-                .addCriterion("has_item", hasItem(Items.FURNACE))
-                .build(consumer);
-        //endregion
     }
 
     @Override
