@@ -167,10 +167,12 @@ public class TransportBlocks {
                             .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.RAIL))
                             .build(provider)
                     )
+                    .model((context, provider) -> provider.blockItem(context))
                     .build()
                     .blockstate((context, provider) -> {
                     })
                     .register();
+
     public static final BlockEntry<TimedHoldingRailBlock> TIMED_HOLDING_RAIL =
             createRail("timed_holding_rail", "Timed Holding Rail", TimedHoldingRailBlock::new)
                     .recipe((context, provider) -> ShapelessRecipeBuilder.shapelessRecipe(context.get(), 2)
@@ -288,8 +290,7 @@ public class TransportBlocks {
                             )
             ))
             .item()
-            .model((context, provider) -> {
-            })
+            .model((context, provider) -> provider.blockItem(context, "_bottom"))
             .recipe(TransportRegistrateRecipes.slab(Items.SCAFFOLDING))
             .group(Transport::getItemGroup)
             .build()
@@ -332,8 +333,6 @@ public class TransportBlocks {
                             )
             ))
             .item()
-            .model((context, provider) -> {
-            })
             .group(Transport::getItemGroup)
             .recipe(TransportRegistrateRecipes.dualSlab(Tags.Items.INGOTS_IRON, Ingredient.fromItems(Items.CRAFTING_TABLE)))
             .build()

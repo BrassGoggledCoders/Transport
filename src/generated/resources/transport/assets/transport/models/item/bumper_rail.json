@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "transport:block/rail/bumper_rail"
-  }
+  "parent": "transport:block/bumper_rail"
 }

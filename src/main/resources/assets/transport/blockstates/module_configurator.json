@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "transport:block/modular_configurator"
+      "model": "transport:block/module_configurator"
     }
   }
 }
