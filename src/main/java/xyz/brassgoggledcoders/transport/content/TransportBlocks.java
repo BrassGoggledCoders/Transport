@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.transport.content;
 
-import com.hrznstudio.titanium.registry.BlockRegistryObjectGroup;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
@@ -11,8 +10,10 @@ import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.ShapelessRecipeBuilder;
 import net.minecraft.item.BlockItem;
@@ -24,13 +25,17 @@ import net.minecraft.loot.ItemLootEntry;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.conditions.BlockStateProperty;
+import net.minecraft.loot.conditions.SurvivesExplosion;
+import net.minecraft.loot.functions.CopyNbt;
+import net.minecraft.loot.functions.SetCount;
 import net.minecraft.state.properties.DoubleBlockHalf;
+import net.minecraft.state.properties.SlabType;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
@@ -110,7 +115,7 @@ public class TransportBlocks {
                             .patternLine("RRR")
                             .patternLine("SSS")
                             .key('R', Ingredient.fromItems(Items.RAIL))
-                            .key('S', Ingredient.fromItems(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getItem()))
+                            .key('S', Ingredient.fromItems(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.get()))
                             .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.SCAFFOLDING))
                             .build(provider)
                     )
@@ -216,16 +221,84 @@ public class TransportBlocks {
     //endregion
 
     //region Assorted
-    public static final BlockRegistryObjectGroup<ScaffoldingSlabBlock, BlockItem, ?> SCAFFOLDING_SLAB_BLOCK =
-            new BlockRegistryObjectGroup<>("scaffolding_slab", ScaffoldingSlabBlock::new, blockItemCreator())
-                    .register(BLOCKS, ITEMS);
-    public static final RegistryObject<ElevatorSwitchSupportBlock> ELEVATOR_SWITCH_SUPPORT =
-            BLOCKS.register("elevator_switch_support", ElevatorSwitchSupportBlock::new);
+    public static final BlockEntry<ScaffoldingSlabBlock> SCAFFOLDING_SLAB_BLOCK = Transport.getRegistrate()
+            .object("scaffolding_slab")
+            .block(ScaffoldingSlabBlock::new)
+            .initialProperties(Material.MISCELLANEOUS, MaterialColor.SAND)
+            .properties(properties -> properties.doesNotBlockMovement()
+                    .sound(SoundType.SCAFFOLDING)
+                    .variableOpacity()
+            )
+            .lang("Scaffolding Slab")
+            .loot((blockLootTables, scaffoldingSlabBlock) -> blockLootTables.registerLootTable(scaffoldingSlabBlock,
+                    LootTable.builder()
+                            .addLootPool(LootPool.builder()
+                                    .rolls(ConstantRange.of(1))
+                                    .acceptCondition(BlockStateProperty.builder(scaffoldingSlabBlock)
+                                            .fromProperties(StatePropertiesPredicate.Builder.newBuilder()
+                                                    .withBoolProp(ScaffoldingSlabBlock.RAILED, false)))
+                                    .addEntry(TransportRegistrateBlockLootTables.withExplosionDecay(
+                                            scaffoldingSlabBlock, ItemLootEntry.builder(scaffoldingSlabBlock)
+                                                    .acceptFunction(SetCount.builder(ConstantRange.of(2))
+                                                            .acceptCondition(BlockStateProperty.builder(scaffoldingSlabBlock)
+                                                                    .fromProperties(StatePropertiesPredicate.Builder.newBuilder()
+                                                                            .withProp(SlabBlock.TYPE, SlabType.DOUBLE)
+                                                                    )
+                                                            )
+                                                    ))
+                                    )
+                            )
+            ))
+            .item()
+            .group(Transport::getItemGroup)
+            .build()
+            .register();
 
-    public static final BlockRegistryObjectGroup<ModuleConfiguratorBlock, BlockItem, ModuleConfiguratorTileEntity> MODULE_CONFIGURATOR =
-            new BlockRegistryObjectGroup<>("module_configurator", ModuleConfiguratorBlock::new, blockItemCreator(),
-                    ModuleConfiguratorTileEntity::new)
-                    .register(BLOCKS, ITEMS, TILE_ENTITIES);
+    public static final BlockEntry<ElevatorSwitchSupportBlock> ELEVATOR_SWITCH_SUPPORT = Transport.getRegistrate()
+            .object("elevator_switch_support")
+            .block(ElevatorSwitchSupportBlock::new)
+            .initialProperties(Material.MISCELLANEOUS, MaterialColor.SAND)
+            .properties(properties -> properties.doesNotBlockMovement()
+                    .sound(SoundType.SCAFFOLDING)
+                    .tickRandomly()
+                    .variableOpacity()
+            )
+            .lang("Elevator Switch Support")
+            .item()
+            .recipe(RegistrateRecipes.slab(Items.SCAFFOLDING))
+            .group(Transport::getItemGroup)
+            .build()
+            .register();
+
+    public static final BlockEntry<ModuleConfiguratorBlock> MODULE_CONFIGURATOR = Transport.getRegistrate()
+            .object("module_configurator")
+            .block(ModuleConfiguratorBlock::new)
+            .initialProperties(Material.IRON, MaterialColor.IRON)
+            .properties(properties -> properties.harvestTool(ToolType.PICKAXE)
+                    .notSolid()
+            )
+            .lang("Module Configurator")
+            .loot((blockLootTables, moduleConfiguratorBlock) -> blockLootTables.registerLootTable(moduleConfiguratorBlock,
+                    LootTable.builder()
+                            .addLootPool(LootPool.builder()
+                                    .rolls(ConstantRange.of(1))
+                                    .acceptCondition(SurvivesExplosion.builder())
+                                    .acceptFunction(CopyNbt.builder(CopyNbt.Source.BLOCK_ENTITY)
+                                            .replaceOperation("modularInventory", "BlockEntityTag.modularInventory")
+                                    )
+                                    .addEntry(ItemLootEntry.builder(moduleConfiguratorBlock))
+                            )
+            ))
+            .item()
+            .group(Transport::getItemGroup)
+            .recipe(RegistrateRecipes.dualSlab(Tags.Items.INGOTS_IRON, Ingredient.fromItems(Items.CRAFTING_TABLE)))
+            .build()
+            .tileEntity(ModuleConfiguratorTileEntity::new)
+            .build()
+            .register();
+
+    public static final RegistryEntry<TileEntityType<ModuleConfiguratorTileEntity>> MODULE_CONFIGURATOR_TILE_ENTITY =
+            MODULE_CONFIGURATOR.getSibling(ForgeRegistries.TILE_ENTITIES);
 
     public static final BlockEntry<BuoyBlock> BUOY = Transport.getRegistrate()
             .object("buoy")
@@ -254,6 +327,7 @@ public class TransportBlocks {
                     .key('R', Tags.Items.DYES_RED)
                     .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.OAK_BOAT)))
             .item(BuoyBlockItem::new)
+            .group(Transport::getItemGroup)
             .build()
             .register();
     //endregion
@@ -269,12 +343,9 @@ public class TransportBlocks {
     }
 
     private static NonNullUnaryOperator<AbstractBlock.Properties> railProperties() {
-        return properties -> {
-            properties.hardnessAndResistance(0.7F);
-            properties.doesNotBlockMovement();
-            properties.sound(SoundType.METAL);
-            return properties;
-        };
+        return properties -> properties.hardnessAndResistance(0.7F)
+                .doesNotBlockMovement()
+                .sound(SoundType.METAL);
     }
 
     private static <B extends Block> ItemBuilder<BlockItem, BlockBuilder<B, TransportRegistrate>> createRail(

@@ -55,10 +55,6 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
 
     private LazyOptional<IModularEntity> modularEntity;
 
-    public ModuleConfiguratorTileEntity() {
-        this(TransportBlocks.MODULE_CONFIGURATOR.getTileEntityType());
-    }
-
     public ModuleConfiguratorTileEntity(TileEntityType<?> tileEntityType) {
         super(tileEntityType);
         this.modularEntity = LazyOptional.empty();

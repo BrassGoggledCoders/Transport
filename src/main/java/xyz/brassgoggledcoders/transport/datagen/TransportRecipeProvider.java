@@ -51,42 +51,11 @@ public class TransportRecipeProvider extends RecipeProvider {
                 .addCriterion("has_item", hasItem(Items.FURNACE))
                 .build(consumer);
         //endregion
-
-        //region Blocks
-        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getItem(), 6)
-                .patternLine("SSS")
-                .key('S', Ingredient.fromItems(Items.SCAFFOLDING))
-                .addCriterion("has_item", hasItem(Items.SCAFFOLDING))
-                .build(consumer);
-
-        ShapedRecipeBuilder.shapedRecipe(TransportBlocks.MODULE_CONFIGURATOR.getItem())
-                .patternLine("CCC")
-                .patternLine("III")
-                .key('C', Ingredient.fromItems(Items.CRAFTING_TABLE))
-                .key('I', Ingredient.fromTag(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_item", hasItem(Items.MINECART))
-                .build(consumer);
-        //endregion
     }
 
     @Override
     @Nonnull
     public String getName() {
         return "Transport Recipes";
-    }
-
-    public ShapedRecipeBuilder createLoader(IItemProvider loader, ITag.INamedTag<Item> center) {
-        return createLoader(loader, Ingredient.fromTag(center))
-                .addCriterion("has_item", hasItem(center));
-    }
-
-    public ShapedRecipeBuilder createLoader(IItemProvider loader, Ingredient center) {
-        return ShapedRecipeBuilder.shapedRecipe(loader)
-                .patternLine("III")
-                .patternLine("PCP")
-                .patternLine("III")
-                .key('I', Tags.Items.INGOTS_IRON)
-                .key('P', ItemTags.PLANKS)
-                .key('C', center);
     }
 }

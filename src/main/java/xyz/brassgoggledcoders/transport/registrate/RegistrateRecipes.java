@@ -46,4 +46,24 @@ public class RegistrateRecipes {
                 .key('P', ItemTags.PLANKS)
                 .key('C', center);
     }
+
+    public static <T extends IItemProvider & IForgeRegistryEntry<T>, I extends T> NonNullBiConsumer<DataGenContext<T, I>,
+            RegistrateRecipeProvider> slab(IItemProvider item) {
+        return (context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
+                .patternLine("SSS")
+                .key('S', Ingredient.fromItems(item))
+                .addCriterion("has_item", RegistrateRecipeProvider.hasItem(item))
+                .build(provider);
+    }
+
+    public static <T extends IItemProvider & IForgeRegistryEntry<T>, I extends T> NonNullBiConsumer<DataGenContext<T, I>,
+            RegistrateRecipeProvider> dualSlab(ITag<Item> bottom, Ingredient top) {
+        return (context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
+                .patternLine("TTT")
+                .patternLine("BBB")
+                .key('T', top)
+                .key('B', bottom)
+                .addCriterion("has_item", RegistrateRecipeProvider.hasItem(bottom))
+                .build(provider);
+    }
 }

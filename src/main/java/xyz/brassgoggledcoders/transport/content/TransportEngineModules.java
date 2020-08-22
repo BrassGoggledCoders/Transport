@@ -21,17 +21,17 @@ public class TransportEngineModules {
     public static RegistryObject<EngineModule> CREATIVE = ENGINES.register("creative", () -> new EngineModule(CreativeEngineModuleInstance::new));
     public static RegistryObject<ModuleItem<EngineModule>> CREATIVE_ITEM = ITEMS.register("creative_engine",
             () -> new ModuleItem<>(CREATIVE, new Item.Properties()
-                    .group(Transport.ITEM_GROUP)));
+                    .group(Transport.ITEM_GROUP.get())));
 
     public static RegistryObject<EngineModule> SOLID_FUEL = ENGINES.register("solid_fuel", () -> new EngineModule(SolidFuelEngineModuleInstance::new));
     public static RegistryObject<ModuleItem<EngineModule>> SOLID_FUEL_ITEM = ITEMS.register("solid_fuel_engine",
             () -> new ModuleItem<>(SOLID_FUEL, new Item.Properties()
-                    .group(Transport.ITEM_GROUP)));
+                    .group(Transport.ITEM_GROUP.get())));
 
     public static RegistryObject<EngineModule> BOOSTER = ENGINES.register("booster", () -> new EngineModule(BoosterEngineModuleInstance::new));
     public static RegistryObject<ModuleItem<EngineModule>> BOOSTER_ITEM = ITEMS.register("booster_engine",
             () -> new ModuleItem<>(BOOSTER, new Item.Properties()
-                    .group(Transport.ITEM_GROUP)));
+                    .group(Transport.ITEM_GROUP.get())));
 
     public static void register(IEventBus modBus) {
         ENGINES.register(modBus);

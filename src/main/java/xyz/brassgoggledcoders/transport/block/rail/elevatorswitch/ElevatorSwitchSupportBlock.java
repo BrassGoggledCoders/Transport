@@ -28,17 +28,9 @@ import java.util.Random;
 public class ElevatorSwitchSupportBlock extends Block {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public ElevatorSwitchSupportBlock() {
-        this(Properties.create(Material.MISCELLANEOUS, MaterialColor.SAND)
-                .doesNotBlockMovement()
-                .sound(SoundType.SCAFFOLDING)
-                .tickRandomly()
-                .variableOpacity());
-        this.setDefaultState(this.getDefaultState().with(WATERLOGGED, false));
-    }
-
     public ElevatorSwitchSupportBlock(Properties properties) {
         super(properties);
+        this.setDefaultState(this.getDefaultState().with(WATERLOGGED, false));
     }
 
     @Override

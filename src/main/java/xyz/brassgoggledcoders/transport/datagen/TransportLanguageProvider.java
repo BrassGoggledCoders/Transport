@@ -18,10 +18,6 @@ public class TransportLanguageProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        //region Blocks
-        this.addBlock(TransportBlocks.MODULE_CONFIGURATOR, "Module Configurator");
-        //endregion
-
         //region Cargo
         this.add(TransportCargoModules.ITEM, "Inventory");
         this.add(TransportCargoModules.FLUID, "Fluid Tank");

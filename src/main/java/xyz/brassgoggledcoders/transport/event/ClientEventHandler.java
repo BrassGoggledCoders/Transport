@@ -34,7 +34,7 @@ public class ClientEventHandler {
         RenderTypeLookup.setRenderLayer(TransportBlocks.ELEVATOR_SWITCH_RAIL.get(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.ELEVATOR_SWITCH_SUPPORT.get(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.SCAFFOLDING_RAIL.get(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getBlock(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.get(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.SWITCH_RAIL.get(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.WYE_SWITCH_RAIL.get(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.BUMPER_RAIL.get(), RenderType.getCutout());
@@ -48,7 +48,7 @@ public class ClientEventHandler {
         rendererManager.register(TransportEntities.HULLED_BOAT.get(), new HulledBoatRender<>(rendererManager));
         rendererManager.register(TransportEntities.MODULAR_BOAT.get(), new ModularBoatRenderer(rendererManager));
 
-        ClientRegistry.bindTileEntityRenderer(TransportBlocks.MODULE_CONFIGURATOR.getTileEntityType(),
+        ClientRegistry.bindTileEntityRenderer(TransportBlocks.MODULE_CONFIGURATOR_TILE_ENTITY.get(),
                 ModuleConfiguratorTileEntityRenderer::new);
 
         TransportClientAPI.setModuleTypeDefault(TransportModuleTypes.CARGO.get(), new CargoModuleRender());
