@@ -24,6 +24,7 @@ import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
+import xyz.brassgoggledcoders.transport.tileentity.rail.SwitchRailTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.rail.TimedHoldingRailTileEntity;
 
 import java.util.function.Function;
@@ -62,6 +63,11 @@ public class TransportBlocks {
                     new TimedHoldingRailBlock(railProperties()),
                     blockItemCreator(), TimedHoldingRailTileEntity::new)
                     .register(BLOCKS, ITEMS, TILE_ENTITIES);
+
+    public static final RegistryObject<TileEntityType<SwitchRailTileEntity>> SWITCH_RAIL_TILE_ENTITY = TILE_ENTITIES
+            .register("switch_rail", () -> TileEntityType.Builder.create(SwitchRailTileEntity::new,
+                    SWITCH_RAIL.get(), WYE_SWITCH_RAIL.get())
+                    .build(null));
     //endregion
 
     public static Block.Properties railProperties() {

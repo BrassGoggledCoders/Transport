@@ -6,12 +6,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.properties.RailShape;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
+import xyz.brassgoggledcoders.transport.tileentity.rail.SwitchRailTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -69,17 +71,21 @@ public abstract class AbstractSwitchRailBlock extends AbstractRailBlock {
         RailShape divergeShape = getDivergeShape(switchConfiguration);
 
         if (minecartEntity != null) {
-            Direction entrance = minecartEntity.getAdjustedHorizontalFacing().getOpposite();
-            if (entrance == switchConfiguration.getNarrowSide()) {
-                if (shouldDivert(blockReader, pos.offset(this.getMotorDirection(switchConfiguration)), pos, minecartEntity)) {
-                    return switchConfiguration.getDiverge();
+            TileEntity tileEntity = blockReader.getTileEntity(pos);
+            if (tileEntity instanceof SwitchRailTileEntity) {
+                SwitchRailTileEntity switchRailTileEntity = (SwitchRailTileEntity) tileEntity;
+                RailShape cachedRailShape = switchRailTileEntity.getCachedRailShape(minecartEntity);
+                if (cachedRailShape == null) {
+                    RailShape railShape = this.getSwitchShape(switchConfiguration, straightShape, divergeShape,
+                            blockReader, pos, minecartEntity);
+                    switchRailTileEntity.setCachedRailShape(minecartEntity, railShape);
+                    return railShape;
                 } else {
-                    return straightShape;
+                    return cachedRailShape;
                 }
-            } else if (entrance == switchConfiguration.getDivergentSide()) {
-                return divergeShape;
             } else {
-                return straightShape;
+                return this.getSwitchShape(switchConfiguration, straightShape, divergeShape, blockReader, pos,
+                        minecartEntity);
             }
         } else {
             return shouldDivert(blockReader, pos.offset(this.getMotorDirection(switchConfiguration)), pos, null) ?
@@ -87,9 +93,36 @@ public abstract class AbstractSwitchRailBlock extends AbstractRailBlock {
         }
     }
 
+    public RailShape getSwitchShape(SwitchConfiguration switchConfiguration, RailShape straightShape, RailShape divergeShape,
+                                    IBlockReader blockReader, BlockPos pos, AbstractMinecartEntity minecartEntity) {
+        Direction entrance = minecartEntity.getAdjustedHorizontalFacing().getOpposite();
+        if (entrance == switchConfiguration.getNarrowSide()) {
+            if (shouldDivert(blockReader, pos.offset(this.getMotorDirection(switchConfiguration)), pos, minecartEntity)) {
+                return switchConfiguration.getDiverge();
+            } else {
+                return straightShape;
+            }
+        } else if (entrance == switchConfiguration.getDivergentSide()) {
+            return divergeShape;
+        } else {
+            return straightShape;
+        }
+    }
+
     @Override
     public boolean canMakeSlopes(BlockState state, IBlockReader world, BlockPos pos) {
         return false;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new SwitchRailTileEntity();
+    }
+
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
     }
 
     protected RailShape getDivergeShape(SwitchConfiguration switchConfiguration) {
