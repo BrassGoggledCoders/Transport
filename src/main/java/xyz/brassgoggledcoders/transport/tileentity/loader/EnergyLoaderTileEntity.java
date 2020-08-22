@@ -5,6 +5,7 @@ import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -17,8 +18,8 @@ public class EnergyLoaderTileEntity extends BasicLoaderTileEntity<IEnergyStorage
     private final EnergyStorageComponent<?> energyComponent;
     private final LazyOptional<IEnergyStorage> lazyEnergy;
 
-    public EnergyLoaderTileEntity() {
-        super(TransportBlocks.ENERGY_LOADER.getTileEntityType(), CapabilityEnergy.ENERGY);
+    public EnergyLoaderTileEntity(TileEntityType<? extends EnergyLoaderTileEntity> tileEntityType) {
+        super(tileEntityType, CapabilityEnergy.ENERGY);
         this.energyComponent = new EnergyStorageComponent<>(10000, 79, 24);
         this.lazyEnergy = LazyOptional.of(() -> energyComponent);
 

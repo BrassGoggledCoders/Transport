@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class HulledBoatEntity extends BoatEntity implements IEntityAdditionalSpawnData {
-    private HullType hullType = TransportHullTypes.OAK_BOAT.get();
+    private HullType hullType = TransportHullTypes.OAK.get();
 
     public HulledBoatEntity(EntityType<? extends BoatEntity> entityType, World world) {
         super(entityType, world);
@@ -69,7 +69,7 @@ public class HulledBoatEntity extends BoatEntity implements IEntityAdditionalSpa
         if (hullType != null) {
             this.hullType = hullType;
         } else {
-            this.hullType = TransportHullTypes.OAK_BOAT.get();
+            this.hullType = TransportHullTypes.OAK.get();
         }
     }
 

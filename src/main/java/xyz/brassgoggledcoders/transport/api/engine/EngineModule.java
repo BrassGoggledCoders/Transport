@@ -16,7 +16,7 @@ public class EngineModule extends Module<EngineModule> {
     private Item item;
 
     public EngineModule(BiFunction<EngineModule, IModularEntity, ? extends EngineModuleInstance> engineCreator) {
-        super(TransportObjects.ENGINE_TYPE, engineCreator);
+        super(TransportObjects.ENGINE_TYPE::get, engineCreator);
     }
 
     @Override

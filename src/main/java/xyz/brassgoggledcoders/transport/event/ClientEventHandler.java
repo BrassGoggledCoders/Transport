@@ -29,15 +29,16 @@ import xyz.brassgoggledcoders.transport.screen.ModuleConfiguratorScreen;
 public class ClientEventHandler {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        RenderTypeLookup.setRenderLayer(TransportBlocks.HOLDING_RAIL.getBlock(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(TransportBlocks.DIAMOND_CROSSING_RAIL.getBlock(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(TransportBlocks.ELEVATOR_SWITCH_RAIL.getBlock(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.HOLDING_RAIL.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.DIAMOND_CROSSING_RAIL.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.ELEVATOR_SWITCH_RAIL.get(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(TransportBlocks.ELEVATOR_SWITCH_SUPPORT.get(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(TransportBlocks.SCAFFOLDING_RAIL.getBlock(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.getBlock(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(TransportBlocks.SWITCH_RAIL.getBlock(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(TransportBlocks.WYE_SWITCH_RAIL.getBlock(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(TransportBlocks.BUMPER_RAIL.getBlock(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.SCAFFOLDING_RAIL.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.SCAFFOLDING_SLAB_BLOCK.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.SWITCH_RAIL.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.WYE_SWITCH_RAIL.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.BUMPER_RAIL.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(TransportBlocks.TIMED_HOLDING_RAIL.get(), RenderType.getCutout());
 
         ScreenManager.registerFactory(TransportContainers.MODULE.get(), BasicAddonScreen::new);
         ScreenManager.registerFactory(TransportContainers.MODULE_CONFIGURATOR.get(), ModuleConfiguratorScreen::new);
@@ -47,7 +48,7 @@ public class ClientEventHandler {
         rendererManager.register(TransportEntities.HULLED_BOAT.get(), new HulledBoatRender<>(rendererManager));
         rendererManager.register(TransportEntities.MODULAR_BOAT.get(), new ModularBoatRenderer(rendererManager));
 
-        ClientRegistry.bindTileEntityRenderer(TransportBlocks.MODULE_CONFIGURATOR.getTileEntityType(),
+        ClientRegistry.bindTileEntityRenderer(TransportBlocks.MODULE_CONFIGURATOR_TILE_ENTITY.get(),
                 ModuleConfiguratorTileEntityRenderer::new);
 
         TransportClientAPI.setModuleTypeDefault(TransportModuleTypes.CARGO.get(), new CargoModuleRender());

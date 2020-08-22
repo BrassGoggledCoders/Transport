@@ -42,11 +42,6 @@ import java.util.Optional;
 import static net.minecraft.entity.item.minecart.AbstractMinecartEntity.Type.CHEST;
 
 public class CargoCarrierMinecartItem extends MinecartItem implements IModularItem<CargoCarrierMinecartEntity> {
-    public CargoCarrierMinecartItem() {
-        this(new Item.Properties()
-                .group(Transport.ITEM_GROUP));
-    }
-
     public CargoCarrierMinecartItem(Properties properties) {
         super(CHEST, properties);
     }

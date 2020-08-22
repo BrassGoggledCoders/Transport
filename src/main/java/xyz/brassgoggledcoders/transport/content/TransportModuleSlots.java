@@ -1,27 +1,31 @@
 package xyz.brassgoggledcoders.transport.content;
 
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
+import com.tterrag.registrate.util.entry.RegistryEntry;
+import net.minecraft.util.text.ITextComponent;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 
 public class TransportModuleSlots {
-    private static final DeferredRegister<ModuleSlot> MODULE_SLOTS = DeferredRegister.create(ModuleSlot.class,
-            Transport.ID);
+    public static final RegistryEntry<ModuleSlot> NONE = Transport.getRegistrate()
+            .object("none")
+            .moduleSlot((modularEntity, module) -> false)
+            .lang("Not a")
+            .register();
 
-    public static final RegistryObject<ModuleSlot> NONE = MODULE_SLOTS.register("none", () -> new ModuleSlot(
-            ((modularEntity, module) -> false)));
+    public static final RegistryEntry<ModuleSlot> CARGO = Transport.getRegistrate()
+            .object("cargo")
+            .moduleSlot((modularEntity, module) -> module.getType() == TransportObjects.CARGO_TYPE.get())
+            .lang("Cargo")
+            .register();
 
-    public static final RegistryObject<ModuleSlot> CARGO = MODULE_SLOTS.register("cargo", () -> new ModuleSlot(
-            ((modularEntity, module) -> module.getType() == TransportObjects.CARGO_TYPE.get())));
+    public static final RegistryEntry<ModuleSlot> BACK = Transport.getRegistrate()
+            .object("back")
+            .moduleSlot((modularEntity, module) -> module.getType() != TransportObjects.CARGO_TYPE.get())
+            .lang("Back")
+            .register();
 
-    public static final RegistryObject<ModuleSlot> BACK = MODULE_SLOTS.register("back", () -> new ModuleSlot(
-            ((modularEntity, module) -> module.getType() != TransportObjects.CARGO_TYPE.get())));
+    public static void setup() {
 
-    public static void register(IEventBus modBus) {
-        MODULE_SLOTS.register(modBus);
     }
 }

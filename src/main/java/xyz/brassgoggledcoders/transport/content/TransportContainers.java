@@ -28,7 +28,6 @@ public class TransportContainers {
     private static final DeferredRegister<ContainerType<?>> CONTAINERS =
             DeferredRegister.create(ForgeRegistries.CONTAINERS, Transport.ID);
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public static final RegistryObject<ContainerType<BasicAddonContainer>> MODULE = CONTAINERS.register("module",
             () -> IForgeContainerType.create((windowId, inv, data) -> {
                 Entity entity = inv.player.getEntityWorld().getEntityByID(data.readInt());

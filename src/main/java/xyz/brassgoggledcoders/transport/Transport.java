@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -42,18 +43,21 @@ import xyz.brassgoggledcoders.transport.pointmachine.ComparatorPointMachineBehav
 import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RoutingPointMachineBehavior;
+import xyz.brassgoggledcoders.transport.registrate.TransportRegistrate;
 import xyz.brassgoggledcoders.transport.routing.instruction.*;
+
+import javax.annotation.Nonnull;
 
 import static xyz.brassgoggledcoders.transport.Transport.ID;
 
 @Mod(ID)
 public class Transport {
     public static final String ID = "transport";
-    public static final ItemGroup ITEM_GROUP = new TransportItemGroup(ID, TransportBlocks.HOLDING_RAIL::getItem);
+    public static final Lazy<ItemGroup> ITEM_GROUP = Lazy.of(() -> new TransportItemGroup(ID, TransportBlocks.HOLDING_RAIL::get));
     public static final Logger LOGGER = LogManager.getLogger(ID);
 
     public static final LocatorType ENTITY = new LocatorType("entity", EntityLocatorInstance::new);
-
+    public static final Lazy<TransportRegistrate> TRANSPORT_REGISTRATE = Lazy.of(() -> TransportRegistrate.create(ID));
     public static Transport instance;
 
     public final NetworkHandler networkHandler;
@@ -72,24 +76,27 @@ public class Transport {
         this.networkHandler = new NetworkHandler();
         TransportAPI.setNetworkHandler(this.networkHandler);
 
-        TransportBlocks.register(modBus);
-        TransportContainers.register(modBus);
-        TransportEntities.register(modBus);
-        TransportItems.register(modBus);
-
-        TransportModuleTypes.register(modBus);
-        TransportCargoModules.register(modBus);
-        TransportEngineModules.register(modBus);
-        TransportModuleSlots.register(modBus);
-        TransportHullTypes.register(modBus);
-    }
-
-    public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
         makeRegistry("module_type", ModuleType.class);
         makeRegistry("cargo", CargoModule.class);
         makeRegistry("engine", EngineModule.class);
         makeRegistry("module_slot", ModuleSlot.class);
         makeRegistry("hull_type", HullType.class);
+
+        TransportBlocks.setup();
+        TransportContainers.register(modBus);
+        TransportEntities.setup();
+        TransportItems.setup();
+
+        TransportModuleTypes.setup();
+        TransportCargoModules.setup();
+        TransportEngineModules.setup();
+        TransportModuleSlots.setup();
+        TransportHullTypes.setup();
+        TransportText.setup();
+    }
+
+    public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
+
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
@@ -120,5 +127,14 @@ public class Transport {
                 .setName(new ResourceLocation("transport", name))
                 .setType(type)
                 .create();
+    }
+
+    @Nonnull
+    public static ItemGroup getItemGroup() {
+        return ITEM_GROUP.get();
+    }
+
+    public static TransportRegistrate getRegistrate() {
+        return TRANSPORT_REGISTRATE.get();
     }
 }

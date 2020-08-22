@@ -77,4 +77,8 @@ public class BuoyBlock extends Block {
             return worldReader.getBlockState(downBlockPos).getBlock() == this;
         }
     }
+
+    public static int getLightLevel(BlockState blockState) {
+        return blockState.get(BuoyBlock.HALF) == DoubleBlockHalf.UPPER ? 5 : 0;
+    }
 }

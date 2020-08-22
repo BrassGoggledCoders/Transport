@@ -11,9 +11,9 @@ import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
 public class HulledBoatItem extends GenericBoatItem {
-    private final Supplier<HullType> hullType;
+    private final Supplier<? extends HullType> hullType;
 
-    public HulledBoatItem(Supplier<HullType> hullType, Properties properties) {
+    public HulledBoatItem(Supplier<? extends HullType> hullType, Properties properties) {
         super(properties);
         this.hullType = hullType;
     }

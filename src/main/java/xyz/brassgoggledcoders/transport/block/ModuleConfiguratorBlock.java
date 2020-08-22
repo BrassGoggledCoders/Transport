@@ -21,6 +21,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
+import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
 
 import javax.annotation.Nonnull;
@@ -31,12 +32,6 @@ public class ModuleConfiguratorBlock extends Block {
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
-
-    public ModuleConfiguratorBlock() {
-        this(Properties.create(Material.IRON)
-                .harvestTool(ToolType.PICKAXE)
-                .notSolid());
-    }
 
     public ModuleConfiguratorBlock(Properties properties) {
         super(properties);
@@ -66,7 +61,7 @@ public class ModuleConfiguratorBlock extends Block {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new ModuleConfiguratorTileEntity();
+        return new ModuleConfiguratorTileEntity(TransportBlocks.MODULE_CONFIGURATOR_TILE_ENTITY.get());
     }
 
     @Override

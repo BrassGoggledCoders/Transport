@@ -14,12 +14,12 @@
           "function": "minecraft:copy_state",
           "block": "transport:fluid_loader",
           "properties": [
+            "up",
             "south",
-            "down",
             "north",
+            "down",
             "east",
-            "west",
-            "up"
+            "west"
           ]
         },
         {
