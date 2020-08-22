@@ -20,6 +20,7 @@
   "cargo.transport.item": "\u028E\u0279o\u0287u\u01DD\u028CuI",
   "component_type.transport.cargo": "ob\u0279\u0250\u0186",
   "component_type.transport.engine": "\u01DDu\u0131bu\u018E",
+  "engine.transport.booster": "\u01DDu\u0131bu\u018E \u0279\u01DD\u0287soo\u15FA",
   "engine.transport.creative": "\u01DDu\u0131bu\u018E \u01DD\u028C\u0131\u0287\u0250\u01DD\u0279\u0186",
   "engine.transport.solid_fuel": "\u01DDu\u0131bu\u018E \u05DF\u01DDn\u2132 p\u0131\u05DFoS",
   "entity.transport.cargo_minecart": "\u0287\u0279\u0250\u0254\u01DDu\u0131W \u0279\u0250\u05DFnpoW",

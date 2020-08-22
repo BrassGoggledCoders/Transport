@@ -20,6 +20,7 @@
   "cargo.transport.item": "Inventory",
   "component_type.transport.cargo": "Cargo",
   "component_type.transport.engine": "Engine",
+  "engine.transport.booster": "Booster Engine",
   "engine.transport.creative": "Creative Engine",
   "engine.transport.solid_fuel": "Solid Fuel Engine",
   "entity.transport.cargo_minecart": "Modular Minecart",

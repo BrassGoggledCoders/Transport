@@ -42,6 +42,7 @@ public class TransportEngineModules {
     public static RegistryEntry<EngineModule> BOOSTER = Transport.getRegistrate()
             .object("booster")
             .engineModule(BoosterEngineModuleInstance::new)
+            .lang("Booster Engine")
             .item("booster_engine")
             .group(Transport::getItemGroup)
             .recipe((context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
