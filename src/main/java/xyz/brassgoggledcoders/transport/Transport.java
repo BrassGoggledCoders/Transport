@@ -82,7 +82,7 @@ public class Transport {
         makeRegistry("module_slot", ModuleSlot.class);
         makeRegistry("hull_type", HullType.class);
 
-        TransportBlocks.register(modBus);
+        TransportBlocks.setup();
         TransportContainers.register(modBus);
         TransportEntities.setup();
         TransportItems.setup();
@@ -90,7 +90,7 @@ public class Transport {
         TransportModuleTypes.register(modBus);
         TransportCargoModules.register(modBus);
         TransportEngineModules.register(modBus);
-        TransportModuleSlots.register(modBus);
+        TransportModuleSlots.setup();
         TransportHullTypes.setup();
     }
 

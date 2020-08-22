@@ -17,7 +17,6 @@ import net.minecraft.block.material.MaterialColor;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.ShapelessRecipeBuilder;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.loot.ConstantRange;
@@ -35,8 +34,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.BuoyBlock;
@@ -60,15 +57,8 @@ import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.rail.TimedHoldingRailTileEntity;
 
-import java.util.function.Function;
-
 @SuppressWarnings("unused")
 public class TransportBlocks {
-    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Transport.ID);
-    private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES =
-            DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Transport.ID);
-    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Transport.ID);
-
     //region Rails
     public static final BlockEntry<HoldingRailBlock> HOLDING_RAIL =
             createRail("holding_rail", "Holding Rail", HoldingRailBlock::new)
@@ -332,16 +322,6 @@ public class TransportBlocks {
             .register();
     //endregion
 
-    public static void register(IEventBus modBus) {
-        BLOCKS.register(modBus);
-        TILE_ENTITIES.register(modBus);
-        ITEMS.register(modBus);
-    }
-
-    private static <B extends Block> Function<B, BlockItem> blockItemCreator() {
-        return block -> new BlockItem(block, new Item.Properties().group(Transport.ITEM_GROUP.get()));
-    }
-
     private static NonNullUnaryOperator<AbstractBlock.Properties> railProperties() {
         return properties -> properties.hardnessAndResistance(0.7F)
                 .doesNotBlockMovement()
@@ -359,6 +339,10 @@ public class TransportBlocks {
                 .item()
                 .tag(ItemTags.RAILS)
                 .group(Transport::getItemGroup);
+
+    }
+
+    public static void setup() {
 
     }
 }

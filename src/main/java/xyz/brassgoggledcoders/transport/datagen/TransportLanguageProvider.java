@@ -29,27 +29,6 @@ public class TransportLanguageProvider extends LanguageProvider {
         this.add(TransportEngineModules.SOLID_FUEL, "Solid Fuel Engine");
         this.add(TransportEngineModules.BOOSTER, "Booster Engine");
         //endregion
-
-        //region ModuleSlots
-        this.add(TransportModuleSlots.CARGO.get(), "Cargo");
-        this.add(TransportModuleSlots.BACK.get(), "Back");
-        this.add(TransportModuleSlots.NONE.get(), "Not a");
-        this.add("text.transport.module_slot", "%s Module Slot");
-        //endregion
-
-        //region HullType
-        this.addHullType(TransportHullTypes.OAK, "Oak Boat");
-        this.add("text.transport.hull_type", "Hull Type: %s");
-        //
-
-        //region Text
-        this.add("itemGroup.transport", "Transport");
-        this.add("text.transport.with", "%s With %s");
-        this.add("text.transport.installed_modules", "Installed Modules");
-        this.add("text.transport.installed_module", " * %s - %s");
-        this.add("guide.transport.name", "Advanced Transport");
-        this.add("guide.transport.landing_text", "Importing the Transportation of Goods");
-        //endregion
     }
 
     public void add(Supplier<? extends Module<?>> registryEntry, String name) {

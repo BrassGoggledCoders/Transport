@@ -6,9 +6,9 @@ import com.tterrag.registrate.builders.BuilderCallback;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiFunction;
+import com.tterrag.registrate.util.nullness.NonNullFunction;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.item.Item;
-import net.minecraftforge.common.util.NonNullFunction;
-import net.minecraftforge.common.util.NonNullSupplier;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 
 import javax.annotation.Nonnull;
@@ -44,9 +44,8 @@ public class HullTypeBuilder<T extends HullType, I extends Item, P> extends Abst
     public HullTypeBuilder<T, I, P> item(NonNullBiFunction<Supplier<? extends T>, Item.Properties, ? extends I> factory,
                                          NonNullFunction<ItemBuilder<I, HullTypeBuilder<T, I, P>>,
                                                  ItemBuilder<I, HullTypeBuilder<T, I, P>>> itemBuilder) {
-        ItemEntry<I> entry = itemBuilder.apply(getOwner().item(this, getName(),
+        this.hullItemSupplier = itemBuilder.apply(getOwner().item(this, getName(),
                 p -> factory.apply(this::getEntry, p))).register();
-        this.hullItemSupplier = entry::get;
         return this;
     }
 
@@ -54,9 +53,8 @@ public class HullTypeBuilder<T extends HullType, I extends Item, P> extends Abst
                                          NonNullBiFunction<Supplier<? extends T>, Item.Properties, ? extends I> factory,
                                          NonNullFunction<ItemBuilder<I, HullTypeBuilder<T, I, P>>,
                                                  ItemBuilder<I, HullTypeBuilder<T, I, P>>> itemBuilder) {
-        ItemEntry<I> entry = itemBuilder.apply(getOwner().item(this, getName() + "_" + name,
+        this.hullItemSupplier = itemBuilder.apply(getOwner().item(this, getName() + "_" + name,
                 p -> factory.apply(this::getEntry, p))).register();
-        this.hullItemSupplier = entry::get;
         return this;
     }
 
