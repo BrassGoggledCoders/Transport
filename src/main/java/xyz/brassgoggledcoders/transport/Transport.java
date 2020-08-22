@@ -92,6 +92,7 @@ public class Transport {
         TransportEngineModules.register(modBus);
         TransportModuleSlots.setup();
         TransportHullTypes.setup();
+        TransportText.setup();
     }
 
     public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {

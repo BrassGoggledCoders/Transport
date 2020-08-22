@@ -1,18 +1,17 @@
 package xyz.brassgoggledcoders.transport.api.module;
 
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.NonNullLazy;
-import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class ModuleType extends ForgeRegistryEntry<ModuleType> {
     private final Function<ResourceLocation, Module<?>> loadValue;
@@ -23,7 +22,7 @@ public class ModuleType extends ForgeRegistryEntry<ModuleType> {
 
     public ModuleType(Function<ResourceLocation, Module<?>> loadValue, NonNullSupplier<Collection<Module<?>>> getValues) {
         this.loadValue = loadValue;
-        this.getValues = NonNullLazy.of(getValues);
+        this.getValues = NonNullLazy.of(getValues::get);
     }
 
     @Nonnull

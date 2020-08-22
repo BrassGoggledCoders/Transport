@@ -3,7 +3,7 @@ package xyz.brassgoggledcoders.transport.content;
 import net.minecraft.util.text.ITextComponent;
 import xyz.brassgoggledcoders.transport.Transport;
 
-@SuppressWarnings("used")
+@SuppressWarnings("unused")
 public class TransportText {
     public static final ITextComponent HULL_TYPE_INFO = Transport.getRegistrate()
             .addRawLang("text.transport.hull_type", "Hull Type: %s");
