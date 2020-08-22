@@ -12,7 +12,7 @@ import net.minecraft.util.IItemProvider;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public class RegistrateRecipes {
+public class TransportRegistrateRecipes {
     public static <T extends Item> NonNullBiConsumer<DataGenContext<Item, T>, RegistrateRecipeProvider> vehicleShape(ITag.INamedTag<Item> material) {
         return (context, recipeProvider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
                 .patternLine("M M")

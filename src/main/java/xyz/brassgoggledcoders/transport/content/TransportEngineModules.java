@@ -18,6 +18,7 @@ public class TransportEngineModules {
             .engineModule(CreativeEngineModuleInstance::new)
             .lang("Creative Engine")
             .item("creative_engine")
+            .model((context, provider) -> provider.generated(context, provider.mcLoc("item/barrier")))
             .group(Transport::getItemGroup)
             .build()
             .register();

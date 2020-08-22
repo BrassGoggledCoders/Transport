@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.registrate;
+package xyz.brassgoggledcoders.transport.registrate.builder;
 
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.AbstractBuilder;

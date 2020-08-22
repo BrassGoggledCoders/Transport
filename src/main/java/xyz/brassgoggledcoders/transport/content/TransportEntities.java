@@ -31,6 +31,8 @@ public class TransportEntities {
     public static ItemEntry<CargoCarrierMinecartItem> CARGO_MINECART_ITEM = Transport.getRegistrate()
             .object("cargo_minecart")
             .item(CargoCarrierMinecartItem::new)
+            .model((context, provider) -> {
+            })
             .group(Transport::getItemGroup)
             .lang("Modular Minecart")
             .register();
@@ -38,6 +40,8 @@ public class TransportEntities {
     public static ItemEntry<ModularBoatItem> MODULAR_BOAT_ITEM = Transport.getRegistrate()
             .object("modular_boat")
             .item(ModularBoatItem::new)
+            .model((context, provider) -> {
+            })
             .group(Transport::getItemGroup)
             .lang("Modular Boat")
             .register();

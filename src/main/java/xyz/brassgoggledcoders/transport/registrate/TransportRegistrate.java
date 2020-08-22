@@ -18,6 +18,7 @@ import xyz.brassgoggledcoders.transport.api.item.ModuleItem;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
+import xyz.brassgoggledcoders.transport.registrate.builder.*;
 
 import java.util.Collection;
 import java.util.function.BiPredicate;

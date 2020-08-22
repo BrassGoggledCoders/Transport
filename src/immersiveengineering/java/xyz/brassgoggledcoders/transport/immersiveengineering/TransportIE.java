@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.item.HulledBoatItem;
-import xyz.brassgoggledcoders.transport.registrate.RegistrateRecipes;
+import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateRecipes;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrate;
 
 @Mod(TransportIE.ID)
@@ -25,7 +25,7 @@ public class TransportIE {
                 .item("boat", HulledBoatItem::new, itemBuilder -> itemBuilder
                         .group(Transport::getItemGroup)
                         .model((context, modelProvider) -> modelProvider.generated(context))
-                        .recipe(RegistrateRecipes.vehicleShape(TREATED_WOOD_TAG)))
+                        .recipe(TransportRegistrateRecipes.vehicleShape(TREATED_WOOD_TAG)))
                 .register();
     }
 

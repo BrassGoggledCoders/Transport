@@ -48,9 +48,10 @@ import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitch
 import xyz.brassgoggledcoders.transport.block.rail.turnout.SwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.turnout.WyeSwitchRailBlock;
 import xyz.brassgoggledcoders.transport.item.BuoyBlockItem;
-import xyz.brassgoggledcoders.transport.registrate.RegistrateRecipes;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrate;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateBlockLootTables;
+import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateModels;
+import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateRecipes;
 import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
@@ -69,6 +70,8 @@ public class TransportBlocks {
                                     .addCriterion("has_rail", RegistrateRecipeProvider.hasItem(ItemTags.RAILS))
                                     .build(recipeProvider)))
                     .build()
+                    .blockstate((context, provider) -> {
+                    })
                     .register();
 
 
@@ -82,6 +85,8 @@ public class TransportBlocks {
                             .addCriterion("has_rail", RegistrateRecipeProvider.hasItem(ItemTags.RAILS))
                             .build(provider))
                     .build()
+                    .blockstate((context, provider) -> {
+                    })
                     .register();
 
     public static final BlockEntry<ElevatorSwitchRailBlock> ELEVATOR_SWITCH_RAIL =
@@ -96,7 +101,11 @@ public class TransportBlocks {
                             .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.SCAFFOLDING))
                             .build(provider)
                     )
+                    .model((context, provider) -> provider.generated(context, provider.mcLoc("block/scaffolding_top"),
+                            provider.mcLoc("block/rail")))
                     .build()
+                    .blockstate((context, provider) -> {
+                    })
                     .register();
 
     public static final BlockEntry<ScaffoldingRailBlock> SCAFFOLDING_RAIL =
@@ -109,7 +118,11 @@ public class TransportBlocks {
                             .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.SCAFFOLDING))
                             .build(provider)
                     )
+                    .model((context, provider) -> provider.generated(context, provider.mcLoc("block/scaffolding_top"),
+                            provider.mcLoc("block/rail")))
                     .build()
+                    .blockstate((context, provider) -> {
+                    })
                     .register();
     public static final BlockEntry<SwitchRailBlock> SWITCH_RAIL =
             createRail("switch_rail", "Switch Rail", SwitchRailBlock::new)
@@ -121,8 +134,12 @@ public class TransportBlocks {
                             .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.RAIL))
                             .build(provider)
                     )
+                    .model(TransportRegistrateModels.railItem("switch_rail_straight_right"))
                     .build()
+                    .blockstate((context, provider) -> {
+                    })
                     .register();
+
     public static final BlockEntry<WyeSwitchRailBlock> WYE_SWITCH_RAIL =
             createRail("wye_switch_rail", "Wye Switch Rail", WyeSwitchRailBlock::new)
                     .recipe((context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get(), 4)
@@ -133,7 +150,10 @@ public class TransportBlocks {
                             .build(provider)
                     )
                     .build()
+                    .blockstate((context, provider) -> {
+                    })
                     .register();
+
     public static final BlockEntry<BumperRailBlock> BUMPER_RAIL =
             createRail("bumper_rail", "Bumper Rail", BumperRailBlock::new)
                     .recipe((context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get(), 3)
@@ -148,6 +168,8 @@ public class TransportBlocks {
                             .build(provider)
                     )
                     .build()
+                    .blockstate((context, provider) -> {
+                    })
                     .register();
     public static final BlockEntry<TimedHoldingRailBlock> TIMED_HOLDING_RAIL =
             createRail("timed_holding_rail", "Timed Holding Rail", TimedHoldingRailBlock::new)
@@ -159,6 +181,8 @@ public class TransportBlocks {
                     .build()
                     .tileEntity(TimedHoldingRailTileEntity::new)
                     .build()
+                    .blockstate((context, provider) -> {
+                    })
                     .register();
     //endregion
 
@@ -168,9 +192,14 @@ public class TransportBlocks {
             .block(Material.IRON, ItemLoaderBlock::new)
             .lang("Item Loader")
             .properties(loaderProperties())
+            .blockstate((context, provider) -> {
+            })
+            .loot(TransportRegistrateBlockLootTables::registerLoader)
             .item()
+            .model((context, provider) -> {
+            })
             .group(Transport::getItemGroup)
-            .recipe(RegistrateRecipes.createLoader(Tags.Items.CHESTS))
+            .recipe(TransportRegistrateRecipes.createLoader(Tags.Items.CHESTS))
             .build()
             .tileEntity(ItemLoaderTileEntity::new)
             .build()
@@ -180,12 +209,18 @@ public class TransportBlocks {
             ITEM_LOADER.getSibling(ForgeRegistries.TILE_ENTITIES);
 
     public static final BlockEntry<FluidLoaderBlock> FLUID_LOADER = Transport.getRegistrate()
+            .object("fluid_loader")
             .block(Material.IRON, FluidLoaderBlock::new)
             .lang("Fluid Loader")
             .properties(loaderProperties())
+            .blockstate((context, provider) -> {
+            })
+            .loot(TransportRegistrateBlockLootTables::registerLoader)
             .item()
+            .model((context, provider) -> {
+            })
             .group(Transport::getItemGroup)
-            .recipe(RegistrateRecipes.createLoader(Items.BUCKET))
+            .recipe(TransportRegistrateRecipes.createLoader(Items.BUCKET))
             .build()
             .tileEntity(FluidLoaderTileEntity::new)
             .build()
@@ -199,9 +234,14 @@ public class TransportBlocks {
             .block(Material.IRON, EnergyLoaderBlock::new)
             .lang("Energy Loader")
             .properties(loaderProperties())
+            .loot(TransportRegistrateBlockLootTables::registerLoader)
+            .blockstate((context, provider) -> {
+            })
             .item()
+            .model((context, provider) -> {
+            })
             .group(Transport::getItemGroup)
-            .recipe(RegistrateRecipes.createLoader(Tags.Items.DUSTS_REDSTONE))
+            .recipe(TransportRegistrateRecipes.createLoader(Tags.Items.DUSTS_REDSTONE))
             .build()
             .tileEntity(EnergyLoaderTileEntity::new)
             .build()
@@ -225,6 +265,8 @@ public class TransportBlocks {
                     .sound(SoundType.SCAFFOLDING)
                     .variableOpacity()
             )
+            .blockstate((context, provider) -> {
+            })
             .lang("Scaffolding Slab")
             .loot((blockLootTables, scaffoldingSlabBlock) -> blockLootTables.registerLootTable(scaffoldingSlabBlock,
                     LootTable.builder()
@@ -246,6 +288,9 @@ public class TransportBlocks {
                             )
             ))
             .item()
+            .model((context, provider) -> {
+            })
+            .recipe(TransportRegistrateRecipes.slab(Items.SCAFFOLDING))
             .group(Transport::getItemGroup)
             .build()
             .register();
@@ -259,12 +304,10 @@ public class TransportBlocks {
                     .tickRandomly()
                     .variableOpacity()
             )
+            .blockstate((context, provider) -> {
+            })
             .lang("Elevator Switch Support")
             .loot(((blockLootTables, block) -> blockLootTables.registerLootTable(block, LootTable.builder())))
-            .item()
-            .recipe(RegistrateRecipes.slab(Items.SCAFFOLDING))
-            .group(Transport::getItemGroup)
-            .build()
             .register();
 
     public static final BlockEntry<ModuleConfiguratorBlock> MODULE_CONFIGURATOR = Transport.getRegistrate()
@@ -274,6 +317,8 @@ public class TransportBlocks {
             .properties(properties -> properties.harvestTool(ToolType.PICKAXE)
                     .notSolid()
             )
+            .blockstate((context, provider) -> {
+            })
             .lang("Module Configurator")
             .loot((blockLootTables, moduleConfiguratorBlock) -> blockLootTables.registerLootTable(moduleConfiguratorBlock,
                     LootTable.builder()
@@ -287,8 +332,10 @@ public class TransportBlocks {
                             )
             ))
             .item()
+            .model((context, provider) -> {
+            })
             .group(Transport::getItemGroup)
-            .recipe(RegistrateRecipes.dualSlab(Tags.Items.INGOTS_IRON, Ingredient.fromItems(Items.CRAFTING_TABLE)))
+            .recipe(TransportRegistrateRecipes.dualSlab(Tags.Items.INGOTS_IRON, Ingredient.fromItems(Items.CRAFTING_TABLE)))
             .build()
             .tileEntity(ModuleConfiguratorTileEntity::new)
             .build()
@@ -303,6 +350,8 @@ public class TransportBlocks {
             .lang("Buoy")
             .properties(AbstractBlock.Properties::doesNotBlockMovement)
             .properties(properties -> properties.setLightLevel(BuoyBlock::getLightLevel))
+            .blockstate((context, provider) -> {
+            })
             .loot((blockLootTables, buoyBlock) -> blockLootTables.registerLootTable(buoyBlock, LootTable.builder()
                     .addLootPool(LootPool.builder()
                             .rolls(ConstantRange.of(1))
@@ -324,6 +373,7 @@ public class TransportBlocks {
                     .key('R', Tags.Items.DYES_RED)
                     .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.OAK_BOAT)))
             .item(BuoyBlockItem::new)
+            .model((context, provider) -> provider.generated(context, provider.modLoc("item/buoy")))
             .group(Transport::getItemGroup)
             .build()
             .register();
@@ -345,7 +395,8 @@ public class TransportBlocks {
                 .tag(BlockTags.RAILS)
                 .item()
                 .tag(ItemTags.RAILS)
-                .group(Transport::getItemGroup);
+                .group(Transport::getItemGroup)
+                .model(TransportRegistrateModels.railItem());
 
     }
 
