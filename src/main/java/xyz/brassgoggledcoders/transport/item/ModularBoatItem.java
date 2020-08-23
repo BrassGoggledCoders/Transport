@@ -3,28 +3,30 @@ package xyz.brassgoggledcoders.transport.item;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
+import org.lwjgl.system.CallbackI;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.item.IModularItem;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.content.TransportHullTypes;
 import xyz.brassgoggledcoders.transport.entity.ModularBoatEntity;
 
 import javax.annotation.Nonnull;
@@ -57,7 +59,7 @@ public class ModularBoatItem extends Item implements IModularItem<ModularBoatEnt
                 Vector3d vector3d1 = player.getEyePosition(1.0F);
 
                 for (Entity entity : list) {
-                    AxisAlignedBB axisalignedbb = entity.getBoundingBox().grow((double) entity.getCollisionBorderSize());
+                    AxisAlignedBB axisalignedbb = entity.getBoundingBox().grow(entity.getCollisionBorderSize());
                     if (axisalignedbb.contains(vector3d1)) {
                         return ActionResult.resultPass(itemStack);
                     }
@@ -86,9 +88,21 @@ public class ModularBoatItem extends Item implements IModularItem<ModularBoatEnt
         }
     }
 
+    @Override
+    @ParametersAreNonnullByDefault
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        if (this.isInGroup(group)) {
+            CompoundNBT tagNBT = new CompoundNBT();
+            tagNBT.putString("hull_type", TransportHullTypes.OAK.getId().toString());
+            ItemStack itemStack = new ItemStack(this);
+            itemStack.setTag(tagNBT);
+            items.add(itemStack);
+        }
+    }
+
     @Nonnull
     private Entity createBoatEntity(ItemStack itemStack, World world, RayTraceResult rayTraceResult) {
-        ModularBoatEntity modularBoatEntity = new ModularBoatEntity(world,  rayTraceResult.getHitVec().x,
+        ModularBoatEntity modularBoatEntity = new ModularBoatEntity(world, rayTraceResult.getHitVec().x,
                 rayTraceResult.getHitVec().y, rayTraceResult.getHitVec().z);
         if (itemStack.hasDisplayName()) {
             modularBoatEntity.setCustomName(itemStack.getDisplayName());
@@ -105,7 +119,21 @@ public class ModularBoatItem extends Item implements IModularItem<ModularBoatEnt
     @OnlyIn(Dist.CLIENT)
     @ParametersAreNonnullByDefault
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        tooltip.add(new TranslationTextComponent("text.transport.hull_type", this.getHullType(stack.getTag())));
         tooltip.addAll(this.getModuleListToolTip(stack.getChildTag("modules")));
+    }
+
+    private ITextComponent getHullType(CompoundNBT compoundNBT) {
+        if (compoundNBT != null) {
+            String hullTypeName = compoundNBT.getString("hull_type");
+            if (!hullTypeName.isEmpty()) {
+                HullType hullType = TransportAPI.HULL_TYPE.get().getValue(new ResourceLocation(hullTypeName));
+                if (hullType != null) {
+                    return hullType.getDisplayName();
+                }
+            }
+        }
+        return TransportHullTypes.OAK.get().getDisplayName();
     }
 
     @Override

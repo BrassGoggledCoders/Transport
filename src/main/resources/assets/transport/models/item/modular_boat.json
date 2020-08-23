@@ -1,0 +1,4 @@
+{
+  "parent": "forge:item/default",
+  "loader": "transport:modular_item"
+}
