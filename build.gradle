@@ -57,11 +57,8 @@ sourceSets {
     main {
         resources {
             include '**/**'
-            // copy everything else, but blender files.
             exclude '**/*.bbmodel'
-            //Add the generated main module resources
-            srcDirs += 'src/generated/resources'
-            //But exclude the cache of the generated data from what gets built
+            srcDirs += '$rootDir/src/generated/resources'
             exclude '.cache'
         }
     }

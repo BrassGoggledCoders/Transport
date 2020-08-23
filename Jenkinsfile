@@ -19,7 +19,7 @@ pipeline {
                     } else if (env.BRANCH_NAME.contains("release")) {
                         sh './gradlew build uploadArchives'
                     } else {
-                        sh './gradlew build -Pbranch=' + env.BRANCH_NAME + ' uploadArchives'
+                        sh './gradlew build -Pbranch=' + env.BRANCH_NAME.replace('/', '_') + ' uploadArchives'
                     }
                 }
             }
@@ -27,7 +27,7 @@ pipeline {
     }
     post {
         always {
-            archive 'build/libs/**.jar'
+            archiveArtifacts 'build/libs/**.jar'
         }
     }
 }
