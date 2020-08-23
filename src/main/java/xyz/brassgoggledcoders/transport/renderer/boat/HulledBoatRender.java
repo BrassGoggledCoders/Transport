@@ -12,6 +12,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 import xyz.brassgoggledcoders.transport.entity.HulledBoatEntity;
+import xyz.brassgoggledcoders.transport.model.entity.HulledBoatModel;
 
 import javax.annotation.Nonnull;
 

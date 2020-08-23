@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.model;
+package xyz.brassgoggledcoders.transport.model.entity;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.entity.model.SegmentedModel;

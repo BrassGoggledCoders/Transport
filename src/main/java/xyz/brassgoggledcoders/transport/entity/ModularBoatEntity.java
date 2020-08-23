@@ -99,11 +99,6 @@ public class ModularBoatEntity extends HulledBoatEntity implements IHoldable, IE
         return this.getModularEntity().getModuleInstance(TransportModuleSlots.CARGO.get()) == null;
     }
 
-    @Override
-    public boolean canPassengerSteer() {
-        return true;
-    }
-
     public boolean attackEntityFrom(@Nonnull DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
