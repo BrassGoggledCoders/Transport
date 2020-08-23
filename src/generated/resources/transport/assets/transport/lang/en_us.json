@@ -2,6 +2,7 @@
   "block.transport.bumper_rail": "Bumper Rail",
   "block.transport.buoy": "Buoy",
   "block.transport.diamond_crossing_rail": "Diamond Crossing Rail",
+  "block.transport.dock": "Dock",
   "block.transport.elevator_switch_rail": "Elevator Switch Rail",
   "block.transport.elevator_switch_support": "Elevator Switch Support",
   "block.transport.energy_loader": "Energy Loader",

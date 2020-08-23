@@ -37,6 +37,7 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.BuoyBlock;
+import xyz.brassgoggledcoders.transport.block.DockBlock;
 import xyz.brassgoggledcoders.transport.block.ModuleConfiguratorBlock;
 import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
 import xyz.brassgoggledcoders.transport.block.loader.EnergyLoaderBlock;
@@ -379,6 +380,14 @@ public class TransportBlocks {
                     .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.OAK_BOAT)))
             .item(BuoyBlockItem::new)
             .model((context, provider) -> provider.generated(context, provider.modLoc("item/buoy")))
+            .group(Transport::getItemGroup)
+            .build()
+            .register();
+
+    public static final BlockEntry<DockBlock> DOCK = Transport.getRegistrate()
+            .object("dock")
+            .block(Material.IRON, DockBlock::new)
+            .item()
             .group(Transport::getItemGroup)
             .build()
             .register();
