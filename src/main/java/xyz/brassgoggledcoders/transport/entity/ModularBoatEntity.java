@@ -21,6 +21,7 @@ import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.entity.*;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
+import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 
@@ -89,12 +90,13 @@ public class ModularBoatEntity extends HulledBoatEntity implements IHoldable, IE
 
     @Override
     protected boolean canFitPassenger(@Nonnull Entity passenger) {
-        return false;
+        return this.modularEntity.getModuleInstance(TransportModuleSlots.CARGO.get()) == null &&
+                super.canFitPassenger(passenger);
     }
 
     @Override
-    public boolean isBeingRidden() {
-        return false;
+    public boolean showPaddles() {
+        return this.getModularEntity().getModuleInstance(TransportModuleSlots.CARGO.get()) == null;
     }
 
     @Override
