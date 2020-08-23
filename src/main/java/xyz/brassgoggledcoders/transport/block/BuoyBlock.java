@@ -3,8 +3,8 @@ package xyz.brassgoggledcoders.transport.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
@@ -14,6 +14,10 @@ import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -25,16 +29,20 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BuoyBlock extends Block {
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
 
-    public BuoyBlock() {
-        this(Properties.create(Material.IRON)
-                .notSolid()
-                .setLightLevel(blockState -> blockState.get(HALF) == DoubleBlockHalf.UPPER ? 5 : 0)
-        );
-        this.setDefaultState(this.getStateContainer().getBaseState().with(HALF, DoubleBlockHalf.LOWER));
-    }
+    public static final VoxelShape TOP = VoxelShapes.or(
+            VoxelShapes.create(0.375, 0.65625, 0.375, 0.625, 0.96875, 0.625),
+            VoxelShapes.create(0.21875, 0, 0.21875, 0.78125, 0.6875, 0.78125)
+    );
+
+    public static final VoxelShape BOTTOM = VoxelShapes.or(
+            VoxelShapes.create(0.21875, 0.375, 0.21875, 0.78125, 1, 0.78125),
+            VoxelShapes.create(0.1875, 0.25, 0.1875, 0.8125, 0.375, 0.8125),
+            VoxelShapes.create(0.03125, 0, 0.03125, 0.96875, 0.25, 0.96875)
+    );
 
     public BuoyBlock(Properties properties) {
         super(properties);
+        this.setDefaultState(this.getStateContainer().getBaseState().with(HALF, DoubleBlockHalf.LOWER));
     }
 
     @Override
@@ -55,6 +63,20 @@ public class BuoyBlock extends Block {
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
         world.setBlockState(pos.up(), state.with(HALF, DoubleBlockHalf.UPPER), 3);
+    }
+
+    @Override
+    @Nonnull
+    @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        if (context.getEntity() instanceof BoatEntity) {
+            return VoxelShapes.empty();
+        } else if (state.get(HALF) == DoubleBlockHalf.UPPER) {
+            return TOP;
+        } else {
+            return BOTTOM;
+        }
     }
 
     @Override
