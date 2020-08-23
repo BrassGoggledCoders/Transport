@@ -31,6 +31,8 @@ import xyz.brassgoggledcoders.transport.api.routing.serializer.ListRoutingDeseri
 import xyz.brassgoggledcoders.transport.api.routing.serializer.ListValidatedRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.api.routing.serializer.SingleRoutingDeserializer;
+import xyz.brassgoggledcoders.transport.compat.immersiveengineering.TransportIE;
+import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
@@ -93,6 +95,9 @@ public class Transport {
         TransportModuleSlots.setup();
         TransportHullTypes.setup();
         TransportText.setup();
+
+        TransportIE.setup();
+        TransportQuark.setup();
     }
 
     public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
@@ -136,5 +141,9 @@ public class Transport {
 
     public static TransportRegistrate getRegistrate() {
         return TRANSPORT_REGISTRATE.get();
+    }
+
+    public static ResourceLocation rl(String path) {
+        return new ResourceLocation(ID, path);
     }
 }

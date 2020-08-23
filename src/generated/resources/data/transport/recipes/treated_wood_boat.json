@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "M M",
+    "MMM"
+  ],
+  "key": {
+    "M": {
+      "tag": "forge:treated_wood"
+    }
+  },
+  "result": {
+    "item": "transport:treated_wood_boat"
+  }
+}

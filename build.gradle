@@ -60,30 +60,11 @@ sourceSets {
             // copy everything else, but blender files.
             exclude '**/*.bbmodel'
             //Add the generated main module resources
-            srcDirs += 'src/generated/resources/transport'
+            srcDirs += 'src/generated/resources'
             //But exclude the cache of the generated data from what gets built
             exclude '.cache'
         }
     }
-    quark {
-        setupSourceSet(sourceSets.quark, 'quark', 'transport_quark')
-    }
-    immersiveengineering {
-        setupSourceSet(sourceSets.immersiveengineering, 'immersiveengineering', 'transport_ie')
-    }
-}
-
-def setupSourceSet(SourceSet sourceSet, String name, String modid) {
-    sourceSet.java {
-        srcDir 'src/' + name + '/java'
-    }
-    sourceSet.resources {
-        //Add the generated module resources
-        srcDirs += 'src/generated/resources/' + modid
-        //But exclude the cache of the generated data from what gets built
-        exclude '.cache'
-    }
-    sourceSet.compileClasspath += sourceSets.main.output
 }
 
 minecraft {
@@ -96,12 +77,6 @@ minecraft {
                 transport {
                     source(sourceSets.main)
                 }
-                transport_quark {
-                    source(sourceSets.quark)
-                }
-                transport_ie {
-                    source(sourceSets.immersiveengineering)
-                }
             }
         }
 
@@ -110,12 +85,6 @@ minecraft {
             mods {
                 transport {
                     source(sourceSets.main)
-                }
-                transport_quark {
-                    source(sourceSets.quark)
-                }
-                transport_ie {
-                    source(sourceSets.immersiveengineering)
                 }
             }
         }
@@ -127,15 +96,11 @@ minecraft {
 
             args '--all', '--output', file('src/generated/resources/'),
                     '--reports',
-                    '--mod', 'transport', '--existing', sourceSets.main.resources.srcDirs[0],
-                    '--mod', 'transport_ie', '--existing', sourceSets.immersiveengineering.resources.srcDirs[0]
+                    '--mod', 'transport', '--existing', sourceSets.main.resources.srcDirs[0]
 
             mods {
                 transport {
                     source(sourceSets.main)
-                }
-                transport_ie {
-                    source(sourceSets.immersiveengineering)
                 }
             }
         }
@@ -144,64 +109,13 @@ minecraft {
 }
 
 configurations {
-
     shade
-    //Make sure all our sub source set stuff extends the proper base methods so that
-    // they can see all the dependencies we have in dependencies including forge
-    def compileExtenders = [quarkCompile, immersiveengineeringCompile]
-    def compileOnlyExtenders = [quarkCompileOnly, immersiveengineeringCompileOnly]
-    def runtimeOnlyExtenders = [quarkRuntimeOnly, immersiveengineeringRuntimeOnly]
-    def implementationExtenders = [quarkImplementation, immersiveengineeringImplementation]
-    def shadeExtenders = [quarkShade, immersiveengineeringShade]
-
-    for (def compileExtender : compileExtenders) {
-        compileExtender.extendsFrom(compile)
-    }
-    for (def compileOnlyExtender : compileOnlyExtenders) {
-        compileOnlyExtender.extendsFrom(compileOnly)
-    }
-    for (def runtimeOnlyExtender : runtimeOnlyExtenders) {
-        runtimeOnlyExtender.extendsFrom(runtimeOnly)
-    }
-    for (def implementationExtender: implementationExtenders) {
-        implementationExtender.extendsFrom(implementation)
-    }
-    for (def shadeExtender : shadeExtenders) {
-        shadeExtender.extendsFrom(shade)
-    }
-}
-
-def version_properties = [
-        "version"       : mod_version,
-        "mc_version"    : minecraft_version,
-        "forge_version" : min_forge_version,
-        "loader_version": loader_version
-]
-
-ext {
-    replaceResourcesInfo = [
-            "main"                : sourceSets.main,
-            "quark"               : sourceSets.quark,
-            "immersiveengineering": sourceSets.immersiveengineering
-    ]
-}
-
-replaceResourcesInfo.each { output, sourceSet ->
-    return tasks.create("${output}ReplaceResources", Copy) {
-        outputs.upToDateWhen { false }
-        from(sourceSet.resources) {
-            include "META-INF/mods.toml"
-            expand version_properties
-        }
-        into "$buildDir/resources/${output}/"
-    }
 }
 
 shadowJar {
     configurations = [project.configurations.shade]
     relocate 'com.tterrag.registrate', 'xyz.brassgoggledcoders.transport.repack.registrate'
 }
-
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
@@ -218,8 +132,8 @@ dependencies {
 
     compile fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
 
-    quarkCompile fg.deobf("vazkii.autoreglib:AutoRegLib:${auto_reg_lib_version}")
-    quarkCompile fg.deobf("vazkii.quark:Quark:${quark_version}")
+    compile fg.deobf("vazkii.autoreglib:AutoRegLib:${auto_reg_lib_version}")
+    compile fg.deobf("vazkii.quark:Quark:${quark_version}")
 
     compile fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.16.1-3.1.1-pre.53")
 
@@ -295,8 +209,4 @@ gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {
         options.compilerArgs << "-Xmaxerrs" << "10000"
     }
-}
-
-wrapper {
-    version('5.1.0')
 }

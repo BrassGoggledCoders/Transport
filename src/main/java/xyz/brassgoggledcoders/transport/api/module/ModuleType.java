@@ -28,7 +28,7 @@ public class ModuleType extends ForgeRegistryEntry<ModuleType> {
     @Nonnull
     public String getTranslationKey() {
         if (translationKey == null) {
-            translationKey = Util.makeTranslationKey("component_type", this.getRegistryName());
+            translationKey = Util.makeTranslationKey("module_type", this.getRegistryName());
         }
         return translationKey;
     }
