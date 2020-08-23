@@ -56,6 +56,7 @@ import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
+import xyz.brassgoggledcoders.transport.tileentity.rail.SwitchRailTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.rail.TimedHoldingRailTileEntity;
 
 @SuppressWarnings("unused")
@@ -153,6 +154,11 @@ public class TransportBlocks {
                     .blockstate((context, provider) -> {
                     })
                     .register();
+
+    public static final RegistryEntry<TileEntityType<SwitchRailTileEntity>> SWITCH_RAIL_TILE_ENTITY = Transport.getRegistrate()
+            .tileEntity(SwitchRailTileEntity::new)
+            .validBlocks(SWITCH_RAIL, WYE_SWITCH_RAIL)
+            .register();
 
     public static final BlockEntry<BumperRailBlock> BUMPER_RAIL =
             createRail("bumper_rail", "Bumper Rail", BumperRailBlock::new)

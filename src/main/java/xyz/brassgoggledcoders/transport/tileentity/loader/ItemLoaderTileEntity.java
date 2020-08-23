@@ -30,13 +30,19 @@ public class ItemLoaderTileEntity extends BasicLoaderTileEntity<IItemHandler>
 
     @Override
     protected void transfer(IItemHandler from, IItemHandler to) {
-        for (int fromIndex = 0; fromIndex < from.getSlots(); fromIndex++) {
-            ItemStack itemStackPulled = from.extractItem(fromIndex, 64, false);
-            if (!itemStackPulled.isEmpty()) {
-                ItemStack itemStackPushed = ItemHandlerHelper.insertItem(to, itemStackPulled, false);
-                from.insertItem(fromIndex, itemStackPushed, false);
+        int moved = 0;
+        int slotNumber = 0;
+        do {
+            ItemStack itemStack = from.extractItem(slotNumber, 16, true);
+            if (!itemStack.isEmpty()) {
+                if (ItemHandlerHelper.insertItem(to, itemStack, true).isEmpty()) {
+                    ItemStack movedItemStack = from.extractItem(slotNumber, 16, false);
+                    moved += movedItemStack.getCount();
+                    ItemHandlerHelper.insertItem(to, movedItemStack, false);
+                }
             }
-        }
+            slotNumber++;
+        } while (slotNumber < from.getSlots() && moved < 32);
     }
 
     @Override
