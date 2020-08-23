@@ -20,19 +20,20 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
-import org.lwjgl.system.CallbackI;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.item.IModularItem;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.content.TransportHullTypes;
+import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 import xyz.brassgoggledcoders.transport.entity.ModularBoatEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 public class ModularBoatItem extends Item implements IModularItem<ModularBoatEntity> {
@@ -92,11 +93,25 @@ public class ModularBoatItem extends Item implements IModularItem<ModularBoatEnt
     @ParametersAreNonnullByDefault
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
         if (this.isInGroup(group)) {
-            CompoundNBT tagNBT = new CompoundNBT();
-            tagNBT.putString("hull_type", TransportHullTypes.OAK.getId().toString());
-            ItemStack itemStack = new ItemStack(this);
-            itemStack.setTag(tagNBT);
-            items.add(itemStack);
+            if (group == ItemGroup.SEARCH) {
+                CompoundNBT tagNBT = new CompoundNBT();
+                tagNBT.putString("hull_type", TransportHullTypes.OAK.getId().toString());
+                ItemStack itemStack = new ItemStack(this);
+                itemStack.setTag(tagNBT);
+                items.add(itemStack);
+            } else {
+                for (Map.Entry<ResourceLocation, HullType> hullType : TransportAPI.HULL_TYPE.get().getEntries()) {
+                    Item hullItem = hullType.getValue().asItem();
+                    if (hullItem.isIn(TransportItemTags.BOAT_HULL)) {
+                        CompoundNBT tagNBT = new CompoundNBT();
+                        tagNBT.putString("hull_type", hullType.getKey().toString());
+                        ItemStack itemStack = new ItemStack(this);
+                        itemStack.setTag(tagNBT);
+                        items.add(itemStack);
+                    }
+                }
+            }
+
         }
     }
 
@@ -107,6 +122,7 @@ public class ModularBoatItem extends Item implements IModularItem<ModularBoatEnt
         if (itemStack.hasDisplayName()) {
             modularBoatEntity.setCustomName(itemStack.getDisplayName());
         }
+        modularBoatEntity.setHullType(this.getHullType(itemStack.getTag()));
         LazyOptional<IModularEntity> modularEntity = modularBoatEntity.getCapability(TransportAPI.MODULAR_ENTITY);
         CompoundNBT moduleNBT = itemStack.getChildTag("modules");
         if (moduleNBT != null) {
@@ -119,21 +135,22 @@ public class ModularBoatItem extends Item implements IModularItem<ModularBoatEnt
     @OnlyIn(Dist.CLIENT)
     @ParametersAreNonnullByDefault
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(new TranslationTextComponent("text.transport.hull_type", this.getHullType(stack.getTag())));
+        tooltip.add(new TranslationTextComponent("text.transport.hull_type", this.getHullType(stack.getTag())
+                .getDisplayName()));
         tooltip.addAll(this.getModuleListToolTip(stack.getChildTag("modules")));
     }
 
-    private ITextComponent getHullType(CompoundNBT compoundNBT) {
+    private HullType getHullType(CompoundNBT compoundNBT) {
         if (compoundNBT != null) {
             String hullTypeName = compoundNBT.getString("hull_type");
             if (!hullTypeName.isEmpty()) {
                 HullType hullType = TransportAPI.HULL_TYPE.get().getValue(new ResourceLocation(hullTypeName));
                 if (hullType != null) {
-                    return hullType.getDisplayName();
+                    return hullType;
                 }
             }
         }
-        return TransportHullTypes.OAK.get().getDisplayName();
+        return TransportHullTypes.OAK.get();
     }
 
     @Override
