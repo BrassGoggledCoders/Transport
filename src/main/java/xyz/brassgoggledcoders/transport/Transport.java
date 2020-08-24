@@ -35,7 +35,6 @@ import xyz.brassgoggledcoders.transport.compat.immersiveengineering.TransportIE;
 import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
-import xyz.brassgoggledcoders.transport.datagen.TransportDataGenerator;
 import xyz.brassgoggledcoders.transport.event.EventHandler;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
 import xyz.brassgoggledcoders.transport.nbt.CompoundNBTStorage;
@@ -69,7 +68,6 @@ public class Transport {
 
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        modBus.addListener(TransportDataGenerator::gather);
         modBus.addListener(this::commonSetup);
         modBus.addListener(this::newRegistry);
         MinecraftForge.EVENT_BUS.addGenericListener(TileEntity.class, EventHandler::onAttachTileEntityCapabilities);

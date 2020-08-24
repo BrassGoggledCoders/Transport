@@ -24,11 +24,13 @@ import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
+import xyz.brassgoggledcoders.transport.content.TransportModuleTypes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Objects;
 
 public class ModularBoatEntity extends HulledBoatEntity implements IHoldable, IEntityAdditionalSpawnData, IItemProvider,
         IComparatorEntity {
@@ -37,7 +39,7 @@ public class ModularBoatEntity extends HulledBoatEntity implements IHoldable, IE
 
     public ModularBoatEntity(EntityType<? extends ModularBoatEntity> type, World world) {
         super(type, world);
-        this.modularEntity = new ModularEntity<>(this, TransportModuleSlots.CARGO, TransportModuleSlots.BACK);
+        this.modularEntity = new ModularEntity<>(this, TransportModuleSlots.CARGO);
         this.modularEntityLazy = LazyOptional.of(() -> this.modularEntity);
     }
 
@@ -85,6 +87,13 @@ public class ModularBoatEntity extends HulledBoatEntity implements IHoldable, IE
     @Nonnull
     @ParametersAreNonnullByDefault
     public ActionResultType applyPlayerInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
+        CargoModuleInstance cargoModuleInstance = this.getModularEntity().getModuleInstance(TransportModuleTypes.CARGO);
+        if (cargoModuleInstance != null) {
+            ActionResultType actionResultType = cargoModuleInstance.applyInteraction(player, vec, hand);
+            if (actionResultType != ActionResultType.PASS) {
+                return actionResultType;
+            }
+        }
         return super.applyPlayerInteraction(player, vec, hand);
     }
 
@@ -115,6 +124,12 @@ public class ModularBoatEntity extends HulledBoatEntity implements IHoldable, IE
                     if (this.hasCustomName()) {
                         itemStack.setDisplayName(this.getCustomName());
                     }
+                    CompoundNBT tagNBT = itemStack.getTag();
+                    if (tagNBT == null) {
+                        tagNBT = new CompoundNBT();
+                    }
+                    tagNBT.putString("hull_type", Objects.requireNonNull(this.getHullType().getRegistryName()).toString());
+                    itemStack.setTag(tagNBT);
 
                     this.entityDropItem(itemStack);
                 }

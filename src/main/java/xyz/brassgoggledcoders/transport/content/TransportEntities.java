@@ -1,11 +1,16 @@
 package xyz.brassgoggledcoders.transport.content;
 
+import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraftforge.common.Tags;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 import xyz.brassgoggledcoders.transport.entity.HulledBoatEntity;
@@ -34,6 +39,16 @@ public class TransportEntities {
             .model((context, provider) -> {
             })
             .group(Transport::getItemGroup)
+            .recipe((context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
+                    .patternLine(" S ")
+                    .patternLine("RMR")
+                    .patternLine(" S ")
+                    .key('S', Ingredient.fromTag(Tags.Items.SLIMEBALLS))
+                    .key('R', Ingredient.fromTag(Tags.Items.DUSTS_REDSTONE))
+                    .key('M', Ingredient.fromItems(Items.MINECART))
+                    .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.MINECART))
+                    .build(provider)
+            )
             .lang("Modular Minecart")
             .register();
 

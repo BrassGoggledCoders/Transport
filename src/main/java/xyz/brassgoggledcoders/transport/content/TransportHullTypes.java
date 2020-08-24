@@ -18,6 +18,7 @@ public class TransportHullTypes {
             .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier, BoatEntity.Type.OAK))
             .lang("Oak Hull")
             .item(() -> Items.OAK_BOAT)
+            .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
             .itemTag(TransportItemTags.BOAT_HULL)
             .register();
 
@@ -25,6 +26,7 @@ public class TransportHullTypes {
             .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier, BoatEntity.Type.ACACIA))
             .lang("Acacia Hull")
             .item(() -> Items.ACACIA_BOAT)
+            .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
             .itemTag(TransportItemTags.BOAT_HULL)
             .register();
 
@@ -32,6 +34,7 @@ public class TransportHullTypes {
             .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier, BoatEntity.Type.BIRCH))
             .lang("Birch Hull")
             .item(() -> Items.BIRCH_BOAT)
+            .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
             .itemTag(TransportItemTags.BOAT_HULL)
             .register();
 
@@ -39,6 +42,7 @@ public class TransportHullTypes {
             .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier, BoatEntity.Type.DARK_OAK))
             .lang("Dark Oak Hull")
             .item(() -> Items.DARK_OAK_BOAT)
+            .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
             .itemTag(TransportItemTags.BOAT_HULL)
             .register();
 
@@ -46,6 +50,7 @@ public class TransportHullTypes {
             .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier, BoatEntity.Type.JUNGLE))
             .lang("Jungle Hull")
             .item(() -> Items.JUNGLE_BOAT)
+            .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
             .itemTag(TransportItemTags.BOAT_HULL)
             .register();
 
@@ -53,6 +58,7 @@ public class TransportHullTypes {
             .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier, BoatEntity.Type.SPRUCE))
             .lang("Spruce Hull")
             .item(() -> Items.SPRUCE_BOAT)
+            .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
             .itemTag(TransportItemTags.BOAT_HULL)
             .register();
 
@@ -60,6 +66,7 @@ public class TransportHullTypes {
             .hullType(itemSupplier -> new HullType(itemSupplier, new ResourceLocation("minecart.png")))
             .lang("Iron Hull")
             .item(() -> Items.MINECART)
+            .defaultRecipe(TransportEntities.CARGO_MINECART_ITEM::get)
             .itemTag(TransportItemTags.MINECART_HULL)
             .register();
 

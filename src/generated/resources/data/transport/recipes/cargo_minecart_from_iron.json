@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "RHR",
+    " S "
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:slimeballs"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "H": {
+      "item": "minecraft:minecart"
+    }
+  },
+  "result": {
+    "item": "transport:cargo_minecart",
+    "nbt": "{hull_type:\"transport:iron\"}"
+  }
+}
