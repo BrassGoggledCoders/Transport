@@ -17,7 +17,7 @@ public class TransportIE {
     public static RegistryEntry<HullType> TREATED_WOOD_HULL = Transport.getRegistrate()
             .object("treated_wood")
             .hullType(itemSupplier -> new HullType(itemSupplier, Transport.rl("treated_wood_boat.png")))
-            .lang("Treated Wood")
+            .lang("Treated Wood Hull")
             .item("boat", HulledBoatItem::new, itemBuilder -> itemBuilder
                     .group(Transport::getItemGroup)
                     .tag(TransportItemTags.BOAT_HULL)

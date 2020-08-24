@@ -4,10 +4,12 @@ import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.AbstractBuilder;
 import com.tterrag.registrate.builders.BuilderCallback;
 import com.tterrag.registrate.builders.ItemBuilder;
+import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.nullness.NonNullBiFunction;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.item.Item;
+import net.minecraft.tags.ITag;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 
 import javax.annotation.Nonnull;
@@ -55,6 +57,11 @@ public class HullTypeBuilder<T extends HullType, I extends Item, P> extends Abst
         this.hullItemSupplier = itemBuilder.apply(getOwner().item(this, getName() + "_" + name,
                 p -> factory.apply(this::getEntry, p))).register();
         return this;
+    }
+
+    public HullTypeBuilder<T, I, P> itemTag(ITag.INamedTag<Item> tag) {
+        return this.setData(ProviderType.ITEM_TAGS, (context, provider) -> provider.getOrCreateBuilder(tag)
+                .add(context.get().asItem()));
     }
 
     @Override
