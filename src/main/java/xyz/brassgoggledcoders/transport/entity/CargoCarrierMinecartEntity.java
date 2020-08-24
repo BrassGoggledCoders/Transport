@@ -31,10 +31,7 @@ import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.entity.ModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.content.TransportEntities;
-import xyz.brassgoggledcoders.transport.content.TransportHullTypes;
-import xyz.brassgoggledcoders.transport.content.TransportItemTags;
-import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
+import xyz.brassgoggledcoders.transport.content.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -81,7 +78,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @Override
     @Nonnull
     public Type getMinecartType() {
-        return Type.CHEST;
+        return this.getModularEntity().getModuleInstance(TransportModuleTypes.CARGO) != null ? Type.CHEST : Type.RIDEABLE;
     }
 
     @Override
@@ -148,8 +145,22 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
             }
         }
 
+        ActionResultType actionResultType = modularEntity.applyPlayerInteraction(TransportModuleSlots.CARGO, player, vector3d, hand);
+        if (actionResultType != ActionResultType.PASS) {
+            return actionResultType;
+        }
 
-        return modularEntity.applyPlayerInteraction(TransportModuleSlots.CARGO, player, vector3d, hand);
+        if (this.canBeRidden()) {
+            if (this.isBeingRidden()) {
+                return ActionResultType.PASS;
+            } else if (!this.world.isRemote) {
+                return player.startRiding(this) ? ActionResultType.CONSUME : ActionResultType.PASS;
+            } else {
+                return ActionResultType.SUCCESS;
+            }
+        } else {
+            return ActionResultType.PASS;
+        }
     }
 
     @Override
