@@ -1,30 +1,79 @@
 package xyz.brassgoggledcoders.transport.content;
 
+import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.entry.RegistryEntry;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import net.minecraft.data.ShapedRecipeBuilder;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraftforge.common.Tags;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
+import xyz.brassgoggledcoders.transport.entity.HulledBoatEntity;
+import xyz.brassgoggledcoders.transport.entity.ModularBoatEntity;
 import xyz.brassgoggledcoders.transport.item.CargoCarrierMinecartItem;
+import xyz.brassgoggledcoders.transport.item.ModularBoatItem;
 
 public class TransportEntities {
-    private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Transport.ID);
-    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Transport.ID);
+    public static final RegistryEntry<EntityType<CargoCarrierMinecartEntity>> CARGO_MINECART = Transport.getRegistrate()
+            .object("cargo_minecart")
+            .<CargoCarrierMinecartEntity>entity(CargoCarrierMinecartEntity::new, EntityClassification.MISC)
+            .lang("Modular Minecart")
+            .properties(properties -> properties.func_233606_a_(8).size(0.98F, 0.7F))
+            .register();
 
-    public static RegistryObject<EntityType<CargoCarrierMinecartEntity>> CARGO_MINECART = ENTITIES.register("cargo_minecart",
-            () -> EntityType.Builder.<CargoCarrierMinecartEntity>create(CargoCarrierMinecartEntity::new, EntityClassification.MISC)
-                    .size(0.98F, 0.7F)
-                    .build("cargo_minecart"));
+    public static RegistryEntry<EntityType<ModularBoatEntity>> MODULAR_BOAT = Transport.getRegistrate()
+            .object("modular_boat")
+            .<ModularBoatEntity>entity(ModularBoatEntity::new, EntityClassification.MISC)
+            .properties(boatSetup())
+            .lang("Modular Boat")
+            .register();
 
-    public static RegistryObject<CargoCarrierMinecartItem> CARGO_MINECART_ITEM = ITEMS.register("cargo_minecart",
-            CargoCarrierMinecartItem::new);
+    public static ItemEntry<CargoCarrierMinecartItem> CARGO_MINECART_ITEM = Transport.getRegistrate()
+            .object("cargo_minecart")
+            .item(CargoCarrierMinecartItem::new)
+            .model((context, provider) -> {
+            })
+            .group(Transport::getItemGroup)
+            .recipe((context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
+                    .patternLine(" S ")
+                    .patternLine("RMR")
+                    .patternLine(" S ")
+                    .key('S', Ingredient.fromTag(Tags.Items.SLIMEBALLS))
+                    .key('R', Ingredient.fromTag(Tags.Items.DUSTS_REDSTONE))
+                    .key('M', Ingredient.fromItems(Items.MINECART))
+                    .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.MINECART))
+                    .build(provider)
+            )
+            .lang("Modular Minecart")
+            .register();
 
-    public static void register(IEventBus modBus) {
-        ENTITIES.register(modBus);
-        ITEMS.register(modBus);
+    public static ItemEntry<ModularBoatItem> MODULAR_BOAT_ITEM = Transport.getRegistrate()
+            .object("modular_boat")
+            .item(ModularBoatItem::new)
+            .model((context, provider) -> {
+            })
+            .group(Transport::getItemGroup)
+            .lang("Modular Boat")
+            .register();
+
+
+    public static RegistryEntry<EntityType<HulledBoatEntity>> HULLED_BOAT = Transport.getRegistrate()
+            .object("hulled_boat")
+            .<HulledBoatEntity>entity(HulledBoatEntity::new, EntityClassification.MISC)
+            .lang("%s Boat")
+            .properties(boatSetup())
+            .register();
+
+    private static <T extends Entity> NonNullConsumer<EntityType.Builder<T>> boatSetup() {
+        return tBuilder -> tBuilder.func_233606_a_(10).size(1.375F, 0.5625F);
+    }
+
+    public static void setup() {
+
     }
 }

@@ -28,17 +28,9 @@ import java.util.Random;
 public class ElevatorSwitchSupportBlock extends Block {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public ElevatorSwitchSupportBlock() {
-        this(Properties.create(Material.MISCELLANEOUS, MaterialColor.SAND)
-                .doesNotBlockMovement()
-                .sound(SoundType.SCAFFOLDING)
-                .tickRandomly()
-                .variableOpacity());
-        this.setDefaultState(this.getDefaultState().with(WATERLOGGED, false));
-    }
-
     public ElevatorSwitchSupportBlock(Properties properties) {
         super(properties);
+        this.setDefaultState(this.getDefaultState().with(WATERLOGGED, false));
     }
 
     @Override
@@ -83,7 +75,7 @@ public class ElevatorSwitchSupportBlock extends Block {
     private void updateState(World world, BlockPos pos, boolean doRemoval) {
         boolean powered = world.isBlockPowered(pos);
         BlockState blockState = world.getBlockState(pos.up());
-        if (blockState.getBlock() == TransportBlocks.ELEVATOR_SWITCH_RAIL.getBlock()) {
+        if (blockState.getBlock() == TransportBlocks.ELEVATOR_SWITCH_RAIL.get()) {
             if (!powered) {
                 BlockState railState = ElevatorSwitchRailBlock.oppositeAscend(blockState)
                         .with(ElevatorSwitchRailBlock.TOP, false);

@@ -3,8 +3,8 @@ package xyz.brassgoggledcoders.transport.api.engine;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.IParticleData;
 import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
-import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 
 import javax.annotation.Nonnull;
 
@@ -34,8 +34,8 @@ public abstract class EngineModuleInstance extends ModuleInstance<EngineModule> 
         }
         if (this.isRunning() && this.getModularEntity().getTheWorld().rand.nextInt(runningAmount) == 0) {
             this.getModularEntity().getTheWorld().addParticle(particleData, this.getModularEntity().getSelf().getPosX(),
-                    this.getModularEntity().getSelf().getPosY() + 0.8D, this.getModularEntity().getSelf().getPosZ(),
-                    0.0D, 0.0D, 0.0D);
+                    this.getModularEntity().getSelf().getPosY() + this.getModularEntity().getSelf().getEyeHeight() + 0.6,
+                    this.getModularEntity().getSelf().getPosZ(), 0.0D, 0.0D, 0.0D);
         }
 
     }

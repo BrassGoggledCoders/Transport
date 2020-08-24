@@ -13,6 +13,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
+import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.tileentity.rail.SwitchRailTileEntity;
 
 import javax.annotation.Nonnull;
@@ -117,7 +118,7 @@ public abstract class AbstractSwitchRailBlock extends AbstractRailBlock {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new SwitchRailTileEntity();
+        return new SwitchRailTileEntity(TransportBlocks.SWITCH_RAIL_TILE_ENTITY.get());
     }
 
     @Override

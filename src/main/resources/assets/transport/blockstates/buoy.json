@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=upper": {
+      "model": "transport:block/buoy/buoy_top"
+    },
+    "half=lower": {
+      "model": "transport:block/buoy/buoy_bottom"
+    }
+  }
+}

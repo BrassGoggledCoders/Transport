@@ -22,11 +22,7 @@ public class ItemLoaderTileEntity extends BasicLoaderTileEntity<IItemHandler>
     private final InventoryComponent<ItemLoaderTileEntity> inventoryComponent;
     private final LazyOptional<IItemHandler> internalLazyOptional;
 
-    public ItemLoaderTileEntity() {
-        this(TransportBlocks.ITEM_LOADER.getTileEntityType());
-    }
-
-    public <T extends ItemLoaderTileEntity> ItemLoaderTileEntity(TileEntityType<T> tileEntityType) {
+    public ItemLoaderTileEntity(TileEntityType<ItemLoaderTileEntity> tileEntityType) {
         super(tileEntityType, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.inventoryComponent = new InventoryComponent<>("inventory", 44, 35, 5);
         this.internalLazyOptional = LazyOptional.of(() -> inventoryComponent);

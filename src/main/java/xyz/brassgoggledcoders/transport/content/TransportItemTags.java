@@ -7,4 +7,6 @@ import net.minecraft.util.ResourceLocation;
 
 public class TransportItemTags {
     public static final ITag.INamedTag<Item> WRENCHES = ItemTags.makeWrapperTag("forge:wrenches");
+    public static final ITag.INamedTag<Item> BOAT_HULL = ItemTags.makeWrapperTag("transport:hulls/boat");
+    public static final ITag.INamedTag<Item> MINECART_HULL = ItemTags.makeWrapperTag("transport:hulls/minecart");
 }

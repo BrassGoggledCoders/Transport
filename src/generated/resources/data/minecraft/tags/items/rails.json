@@ -1,13 +1,13 @@
 {
   "replace": false,
   "values": [
-    "transport:bumper_rail",
+    "transport:holding_rail",
     "transport:diamond_crossing_rail",
     "transport:elevator_switch_rail",
-    "transport:holding_rail",
     "transport:scaffolding_rail",
     "transport:switch_rail",
     "transport:wye_switch_rail",
+    "transport:bumper_rail",
     "transport:timed_holding_rail"
   ]
 }

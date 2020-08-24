@@ -6,7 +6,6 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
@@ -23,7 +22,8 @@ public abstract class Module<MOD extends Module<MOD>> extends ForgeRegistryEntry
     private String translationKey;
     private ITextComponent name;
 
-    public Module(Supplier<ModuleType> componentType, BiFunction<MOD, IModularEntity, ? extends ModuleInstance<MOD>> instanceCreator) {
+    public Module(Supplier<ModuleType> componentType, BiFunction<MOD, IModularEntity,
+            ? extends ModuleInstance<MOD>> instanceCreator) {
         this.componentType = componentType;
         this.instanceCreator = instanceCreator;
     }

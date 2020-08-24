@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.api.item;
 
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -9,9 +10,9 @@ import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
 public class ModuleItem<M extends Module<M>> extends Item {
-    private final Supplier<M> module;
+    private final NonNullSupplier<M> module;
 
-    public ModuleItem(Supplier<M> module, Properties properties) {
+    public ModuleItem(NonNullSupplier<M> module, Properties properties) {
         super(properties);
         this.module = module;
     }

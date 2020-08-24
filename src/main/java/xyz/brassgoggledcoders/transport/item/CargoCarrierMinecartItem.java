@@ -23,12 +23,14 @@ import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
+import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.item.IModularItem;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.content.TransportHullTypes;
 import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 
@@ -42,12 +44,6 @@ import java.util.Optional;
 import static net.minecraft.entity.item.minecart.AbstractMinecartEntity.Type.CHEST;
 
 public class CargoCarrierMinecartItem extends MinecartItem implements IModularItem<CargoCarrierMinecartEntity> {
-    public CargoCarrierMinecartItem() {
-        this(new Item.Properties()
-                .containerItem(Items.MINECART)
-                .group(Transport.ITEM_GROUP));
-    }
-
     public CargoCarrierMinecartItem(Properties properties) {
         super(CHEST, properties);
     }
@@ -82,6 +78,7 @@ public class CargoCarrierMinecartItem extends MinecartItem implements IModularIt
                 if (itemStack.hasDisplayName()) {
                     cargoCarrierMinecartEntity.setCustomName(itemStack.getDisplayName());
                 }
+                cargoCarrierMinecartEntity.setHullType(this.getHullType(itemStack.getTag()));
 
                 LazyOptional<IModularEntity> modularEntity = cargoCarrierMinecartEntity.getCapability(TransportAPI.MODULAR_ENTITY);
                 CompoundNBT moduleNBT = itemStack.getChildTag("modules");
@@ -119,22 +116,9 @@ public class CargoCarrierMinecartItem extends MinecartItem implements IModularIt
     @OnlyIn(Dist.CLIENT)
     @ParametersAreNonnullByDefault
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        CompoundNBT modulesNBT = stack.getChildTag("modules");
-        if (modulesNBT != null) {
-            ListNBT moduleInstancesNBT = modulesNBT.getList("moduleInstances", Constants.NBT.TAG_COMPOUND);
-            if (moduleInstancesNBT.size() > 0) {
-                tooltip.add(new TranslationTextComponent("text.transport.installed_modules"));
-                for (int x = 0; x < moduleInstancesNBT.size(); x++) {
-                    CompoundNBT moduleInstanceNBT = moduleInstancesNBT.getCompound(x);
-                    Module<?> module = Module.fromCompoundNBT(moduleInstanceNBT);
-                    ModuleSlot moduleSlot = TransportAPI.getModuleSlot(moduleInstanceNBT.getString("moduleSlot"));
-                    if (module != null && moduleSlot != null) {
-                        tooltip.add(new TranslationTextComponent("text.transport.installed_module",
-                                moduleSlot.getDisplayName(), module.getDisplayName()));
-                    }
-                }
-            }
-        }
+        tooltip.add(new TranslationTextComponent("text.transport.hull_type", this.getHullType(stack.getTag())
+                .getDisplayName()));
+        tooltip.addAll(this.getModuleListToolTip(stack.getChildTag("modules")));
     }
 
     @Override
@@ -150,6 +134,19 @@ public class CargoCarrierMinecartItem extends MinecartItem implements IModularIt
         } else {
             return super.getDisplayName(stack);
         }
+    }
+
+    private HullType getHullType(CompoundNBT compoundNBT) {
+        if (compoundNBT != null) {
+            String hullTypeName = compoundNBT.getString("hull_type");
+            if (!hullTypeName.isEmpty()) {
+                HullType hullType = TransportAPI.HULL_TYPE.get().getValue(new ResourceLocation(hullTypeName));
+                if (hullType != null) {
+                    return hullType;
+                }
+            }
+        }
+        return TransportHullTypes.IRON.get();
     }
 
     @Override

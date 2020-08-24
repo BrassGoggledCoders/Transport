@@ -26,23 +26,25 @@ import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 import xyz.brassgoggledcoders.transport.api.engine.PoweredState;
+import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.entity.ModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.content.TransportEntities;
-import xyz.brassgoggledcoders.transport.content.TransportItemTags;
-import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
+import xyz.brassgoggledcoders.transport.content.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Objects;
 
 public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implements IHoldable, IEntityAdditionalSpawnData,
         IItemProvider {
     private final LazyOptional<IModularEntity> modularEntityLazy;
     private final ModularEntity<CargoCarrierMinecartEntity> modularEntity;
+
+    private HullType hullType = TransportHullTypes.IRON.get();
 
     private double originalPushX;
     private double originalPushZ;
@@ -76,7 +78,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @Override
     @Nonnull
     public Type getMinecartType() {
-        return Type.CHEST;
+        return this.getModularEntity().getModuleInstance(TransportModuleTypes.CARGO) != null ? Type.CHEST : Type.RIDEABLE;
     }
 
     @Override
@@ -143,8 +145,22 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
             }
         }
 
+        ActionResultType actionResultType = modularEntity.applyPlayerInteraction(TransportModuleSlots.CARGO, player, vector3d, hand);
+        if (actionResultType != ActionResultType.PASS) {
+            return actionResultType;
+        }
 
-        return modularEntity.applyPlayerInteraction(TransportModuleSlots.CARGO, player, vector3d, hand);
+        if (this.canBeRidden()) {
+            if (this.isBeingRidden()) {
+                return ActionResultType.PASS;
+            } else if (!this.world.isRemote) {
+                return player.startRiding(this) ? ActionResultType.CONSUME : ActionResultType.PASS;
+            } else {
+                return ActionResultType.SUCCESS;
+            }
+        } else {
+            return ActionResultType.PASS;
+        }
     }
 
     @Override
@@ -166,6 +182,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
         this.pushZ = compound.getDouble("pushZ");
         this.originalPushX = compound.getDouble("originalPushX");
         this.originalPushZ = compound.getDouble("originalPushZ");
+        this.setHullType(TransportAPI.HULL_TYPE.get().getValue(new ResourceLocation(compound.getString("hull_type"))));
         if (compound.contains("modules")) {
             this.modularEntity.deserializeNBT(compound.getCompound("modules"));
         } else if (compound.contains("cargo")) {
@@ -191,6 +208,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
         compound.putDouble("pushZ", this.pushZ);
         compound.putDouble("originalPushX", this.originalPushX);
         compound.putDouble("originalPushZ", this.originalPushZ);
+        compound.putString("hull_type", Objects.requireNonNull(this.hullType.getRegistryName()).toString());
     }
 
     @Override
@@ -284,6 +302,14 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
                 itemStack.setDisplayName(this.getCustomName());
             }
 
+            CompoundNBT tagNBT = itemStack.getTag();
+            if (tagNBT == null) {
+                tagNBT = new CompoundNBT();
+            }
+            tagNBT.putString("hull_type", Objects.requireNonNull(this.getHullType().getRegistryName()).toString());
+            itemStack.setTag(tagNBT);
+
+
             this.entityDropItem(itemStack);
         }
     }
@@ -309,11 +335,13 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @Override
     public void writeSpawnData(PacketBuffer buffer) {
         this.modularEntity.write(buffer);
+        buffer.writeResourceLocation(Objects.requireNonNull(this.getHullType().getRegistryName()));
     }
 
     @Override
     public void readSpawnData(PacketBuffer additionalData) {
         this.modularEntity.read(additionalData);
+        this.setHullType(TransportAPI.HULL_TYPE.get().getValue(additionalData.readResourceLocation()));
     }
 
     @Override
@@ -349,5 +377,21 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     public void setOriginalPushes(double pushX, double pushZ) {
         this.originalPushX = pushX;
         this.originalPushZ = pushZ;
+    }
+
+    public IModularEntity getModularEntity() {
+        return this.modularEntity;
+    }
+
+    public void setHullType(@Nullable HullType hullType) {
+        if (hullType != null) {
+            this.hullType = hullType;
+        } else {
+            this.hullType = TransportHullTypes.IRON.get();
+        }
+    }
+
+    public HullType getHullType() {
+        return this.hullType;
     }
 }

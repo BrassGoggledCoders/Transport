@@ -1,14 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "CCC",
-    "III"
+    "TTT",
+    "BBB"
   ],
   "key": {
-    "C": {
+    "T": {
       "item": "minecraft:crafting_table"
     },
-    "I": {
+    "B": {
       "tag": "forge:ingots/iron"
     }
   },

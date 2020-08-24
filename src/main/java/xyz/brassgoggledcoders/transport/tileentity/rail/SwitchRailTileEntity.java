@@ -2,13 +2,10 @@ package xyz.brassgoggledcoders.transport.tileentity.rail;
 
 import com.google.common.collect.Maps;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.state.properties.RailShape;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import org.apache.commons.lang3.tuple.Pair;
-import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -17,9 +14,6 @@ import java.util.UUID;
 public class SwitchRailTileEntity extends TileEntity {
     private final Map<UUID, Pair<Long, RailShape>> cachedRailShapes;
 
-    public SwitchRailTileEntity() {
-        this(TransportBlocks.SWITCH_RAIL_TILE_ENTITY.get());
-    }
 
     public SwitchRailTileEntity(TileEntityType<?> tileEntityType) {
         super(tileEntityType);

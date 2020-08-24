@@ -49,13 +49,6 @@ public class ScaffoldingSlabBlock extends SlabBlock {
         this.setDefaultState(this.getDefaultState().with(RAILED, false));
     }
 
-    public ScaffoldingSlabBlock() {
-        this(Block.Properties.create(Material.MISCELLANEOUS, MaterialColor.SAND)
-                .doesNotBlockMovement()
-                .sound(SoundType.SCAFFOLDING)
-                .variableOpacity());
-    }
-
     public static int getDistance(IBlockReader blockReader, BlockPos blockPos) {
         BlockPos.Mutable mutableBlockPos = blockPos.toMutable().move(Direction.DOWN);
         BlockState blockState = blockReader.getBlockState(mutableBlockPos);

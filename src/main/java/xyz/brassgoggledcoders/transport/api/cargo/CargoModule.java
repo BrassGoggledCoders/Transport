@@ -27,11 +27,13 @@ public class CargoModule extends Module<CargoModule> {
         this(blockSupplier, CargoModuleInstance::new);
     }
 
-    public CargoModule(Supplier<? extends Block> blockSupplier, BiFunction<CargoModule, IModularEntity, ? extends CargoModuleInstance> cargoInstanceCreator) {
+    public CargoModule(Supplier<? extends Block> blockSupplier, BiFunction<CargoModule, IModularEntity,
+            ? extends CargoModuleInstance> cargoInstanceCreator) {
         this(blockSupplier, cargoInstanceCreator, false);
     }
 
-    public CargoModule(Supplier<? extends Block> blockSupplier, BiFunction<CargoModule, IModularEntity, ? extends CargoModuleInstance> cargoInstanceCreator, boolean useBlockTranslation) {
+    public CargoModule(Supplier<? extends Block> blockSupplier, BiFunction<CargoModule, IModularEntity,
+            ? extends CargoModuleInstance> cargoInstanceCreator, boolean useBlockTranslation) {
         super(TransportObjects.CARGO_TYPE, cargoInstanceCreator);
         this.blockSupplier = blockSupplier;
         this.isActive = NonNullLazy.of(() -> blockSupplier.get() != Blocks.AIR);

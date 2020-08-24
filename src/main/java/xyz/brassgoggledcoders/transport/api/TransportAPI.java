@@ -16,6 +16,7 @@ import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.connection.IConnectionChecker;
 import xyz.brassgoggledcoders.transport.api.connection.NoConnectionChecker;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
+import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
@@ -52,6 +53,7 @@ public class TransportAPI {
     public static Lazy<IForgeRegistry<EngineModule>> ENGINES = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(EngineModule.class));
     public static Lazy<IForgeRegistry<ModuleType>> MODULE_TYPE = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(ModuleType.class));
     public static Lazy<IForgeRegistry<ModuleSlot>> MODULE_SLOT = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(ModuleSlot.class));
+    public static Lazy<IForgeRegistry<HullType>> HULL_TYPE = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(HullType.class));
 
     public static CargoModule getCargo(String name) {
         return getCargo(new ResourceLocation(name));

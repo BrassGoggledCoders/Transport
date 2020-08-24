@@ -6,12 +6,11 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.common.util.LazyOptional;
-import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.TransportClientAPI;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
@@ -19,6 +18,7 @@ import xyz.brassgoggledcoders.transport.api.renderer.IModuleRenderer;
 import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCarrierMinecartEntity> {
@@ -92,16 +92,20 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
             matrixStack.rotate(Vector3f.XP.rotationDegrees(MathHelper.sin(f5) * f5 * f6 / 10.0F * (float) entity.getRollingDirection()));
         }
 
-        LazyOptional<IModularEntity> modularEntityLazy = entity.getCapability(TransportAPI.MODULAR_ENTITY);
-        float finalEntityYaw = entityYaw;
-        modularEntityLazy.ifPresent(modularEntity -> this.renderModules(modularEntity, finalEntityYaw, partialTicks,
-                matrixStack, buffer, packedLight));
+        this.renderModules(entity.getModularEntity(), entityYaw, partialTicks, matrixStack, buffer, packedLight);
 
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
         this.modelMinecart.setRotationAngles(entity, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F);
         IVertexBuilder ivertexbuilder = buffer.getBuffer(this.modelMinecart.getRenderType(this.getEntityTexture(entity)));
         this.modelMinecart.render(matrixStack, ivertexbuilder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         matrixStack.pop();
+    }
+
+    @Override
+    @Nonnull
+    public ResourceLocation getEntityTexture(@Nonnull CargoCarrierMinecartEntity entity) {
+        ResourceLocation entityTexture = entity.getHullType().getEntityTexture(entity);
+        return entityTexture != null ? entityTexture : super.getEntityTexture(entity);
     }
 
     private void renderModules(IModularEntity modularEntity, float entityYaw, float partialTicks, MatrixStack matrixStack,

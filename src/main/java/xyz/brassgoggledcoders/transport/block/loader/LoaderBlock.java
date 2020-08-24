@@ -29,19 +29,11 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class LoaderBlock extends Block {
+public abstract class LoaderBlock extends Block {
     public static final EnumMap<Direction, EnumProperty<LoadType>> PROPERTIES = createLoadTypeProperties();
-    private final Supplier<? extends BasicLoaderTileEntity<?>> tileSupplier;
 
-    public LoaderBlock(Supplier<? extends BasicLoaderTileEntity<?>> tileSupplier) {
-        this(Properties.create(Material.IRON)
-                .hardnessAndResistance(5.0F, 6.0F)
-                .sound(SoundType.METAL), tileSupplier);
-    }
-
-    public LoaderBlock(Properties properties, Supplier<? extends BasicLoaderTileEntity<?>> tileSupplier) {
+    public LoaderBlock(Properties properties) {
         super(properties);
-        this.tileSupplier = tileSupplier;
         BlockState defaultState = this.getStateContainer().getBaseState();
         for (EnumProperty<LoadType> loadTypeEnumProperty : PROPERTIES.values()) {
             defaultState = defaultState.with(loadTypeEnumProperty, LoadType.NONE);
@@ -101,15 +93,18 @@ public class LoaderBlock extends Block {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return this.tileSupplier.get();
+        return this.createLoaderTileEntity();
     }
 
     @Override
     @Nonnull
     @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
     public BlockState updatePostPlacement(@Nonnull BlockState state, Direction facing, BlockState facingState,
                                           IWorld world, BlockPos currentPos, BlockPos facingPos) {
         this.handleTileEntity(world, currentPos, basicLoaderTileEntity -> basicLoaderTileEntity.updateSide(facing));
         return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
     }
+
+    public abstract TileEntity createLoaderTileEntity();
 }
