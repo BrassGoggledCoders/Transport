@@ -33,6 +33,7 @@ import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingDes
 import xyz.brassgoggledcoders.transport.api.routing.serializer.SingleRoutingDeserializer;
 import xyz.brassgoggledcoders.transport.compat.immersiveengineering.TransportIE;
 import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
+import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.event.EventHandler;
@@ -94,6 +95,7 @@ public class Transport {
         TransportHullTypes.setup();
         TransportText.setup();
 
+        TransportVanilla.setup();
         TransportIE.setup();
         TransportQuark.setup();
     }

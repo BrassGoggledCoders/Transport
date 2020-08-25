@@ -75,7 +75,14 @@ public class TransportRegistrate extends AbstractRegistrate<TransportRegistrate>
     public CargoModuleBuilder<CargoModule, TransportRegistrate> cargoModule(NonNullSupplier<? extends Block> block,
                                                                             NonNullBiFunction<CargoModule, IModularEntity,
                                                                                     ? extends CargoModuleInstance> cargoInstanceCreator) {
-        return this.cargoModule(() -> new CargoModule(block, cargoInstanceCreator));
+        return this.cargoModule(block, cargoInstanceCreator, false);
+    }
+
+    public CargoModuleBuilder<CargoModule, TransportRegistrate> cargoModule(NonNullSupplier<? extends Block> block,
+                                                                            NonNullBiFunction<CargoModule, IModularEntity,
+                                                                                    ? extends CargoModuleInstance> cargoInstanceCreator,
+                                                                            boolean useBlockName) {
+        return this.cargoModule(() -> new CargoModule(block, cargoInstanceCreator, useBlockName));
     }
 
     public <C extends CargoModule> CargoModuleBuilder<C, TransportRegistrate> cargoModule(NonNullSupplier<C> cargoModuleSupplier) {
