@@ -111,7 +111,6 @@ public class ModularBoatItem extends Item implements IModularItem<ModularBoatEnt
                     }
                 }
             }
-
         }
     }
 

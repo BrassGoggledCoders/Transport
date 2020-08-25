@@ -37,13 +37,6 @@ public class HoldingRailBlock extends AbstractRailBlock {
 
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
-    public HoldingRailBlock() {
-        this(Block.Properties.create(Material.MISCELLANEOUS)
-                .doesNotBlockMovement()
-                .hardnessAndResistance(0.7F)
-                .sound(SoundType.METAL));
-    }
-
     public HoldingRailBlock(Block.Properties properties) {
         super(true, properties);
         this.setDefaultState(this.getDefaultState().with(POWERED, false)
@@ -97,6 +90,11 @@ public class HoldingRailBlock extends AbstractRailBlock {
         }
         if (minecartEntity instanceof IHoldable) {
             ((IHoldable) minecartEntity).onRelease();
+            if (blockState.get(SHAPE) == RailShape.NORTH_SOUTH) {
+                ((IHoldable) minecartEntity).push(0, speedIncrease);
+            } else {
+                ((IHoldable) minecartEntity).push(speedIncrease, 0);
+            }
         }
     }
 

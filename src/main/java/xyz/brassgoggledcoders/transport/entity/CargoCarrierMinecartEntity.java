@@ -362,6 +362,16 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
         }
     }
 
+    @Override
+    public void push(float xPush, float zPush) {
+        this.setOriginalPushes(xPush, zPush);
+        for (ModuleInstance<?> moduleInstance : this.modularEntity.getModuleInstances()) {
+            if (moduleInstance instanceof IHoldable) {
+                ((IHoldable) moduleInstance).push(xPush, zPush);
+            }
+        }
+    }
+
     public void remove(boolean keepData) {
         super.remove(keepData);
         if (!keepData) {

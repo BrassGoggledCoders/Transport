@@ -192,6 +192,15 @@ public class ModularBoatEntity extends HulledBoatEntity implements IHoldable, IE
     }
 
     @Override
+    public void push(float xPush, float zPush) {
+        for (ModuleInstance<?> moduleInstance : this.modularEntity.getModuleInstances()) {
+            if (moduleInstance instanceof IHoldable) {
+                ((IHoldable) moduleInstance).push(xPush, zPush);
+            }
+        }
+    }
+
+    @Override
     @Nonnull
     public Item asItem() {
         return TransportEntities.MODULAR_BOAT_ITEM.get();

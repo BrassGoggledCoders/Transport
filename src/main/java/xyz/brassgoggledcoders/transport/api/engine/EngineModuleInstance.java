@@ -51,6 +51,11 @@ public abstract class EngineModuleInstance extends ModuleInstance<EngineModule> 
     }
 
     @Override
+    public void push(float xPush, float zPush) {
+
+    }
+
+    @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT compoundNBT = super.serializeNBT();
         compoundNBT.putString("poweredState", this.poweredState.name());
