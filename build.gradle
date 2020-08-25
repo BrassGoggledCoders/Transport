@@ -58,7 +58,7 @@ sourceSets {
         resources {
             include '**/**'
             exclude '**/*.bbmodel'
-            srcDirs += '$rootDir/src/generated/resources'
+            srcDirs += '/src/generated/resources'
             exclude '.cache'
         }
     }
