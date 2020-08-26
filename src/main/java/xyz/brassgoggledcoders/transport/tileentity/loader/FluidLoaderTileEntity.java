@@ -32,7 +32,7 @@ public class FluidLoaderTileEntity extends BasicLoaderTileEntity<IFluidHandler> 
 
     @Override
     protected void transfer(IFluidHandler from, IFluidHandler to) {
-        FluidStack output = from.drain(1000, FluidAction.SIMULATE);
+        FluidStack output = from.drain(5000, FluidAction.SIMULATE);
         if (!output.isEmpty()) {
             int filledAmount = to.fill(output, FluidAction.SIMULATE);
             if (filledAmount > 0) {

@@ -27,7 +27,7 @@ public class EnergyLoaderTileEntity extends BasicLoaderTileEntity<IEnergyStorage
 
     @Override
     protected void transfer(IEnergyStorage from, IEnergyStorage to) {
-        int amountSimPulled = from.extractEnergy(10000, true);
+        int amountSimPulled = from.extractEnergy(5000, true);
         if (amountSimPulled > 0) {
             int amountSimPushed = to.receiveEnergy(amountSimPulled, true);
             if (amountSimPushed > 0) {
