@@ -169,6 +169,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
         for (Entry<ModuleSlot, ModuleInstance<?>> entrySet : byModuleSlot.entrySet()) {
             Module.toPacketBuffer(entrySet.getValue().getModule(), packetBuffer);
             packetBuffer.writeResourceLocation(Objects.requireNonNull(entrySet.getKey().getRegistryName()));
+            entrySet.getValue().write(packetBuffer);
         }
     }
 
@@ -192,7 +193,10 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
             Module<?> module = Module.fromPacketBuffer(packetBuffer);
             ModuleSlot moduleSlot = TransportAPI.getModuleSlot(packetBuffer.readResourceLocation());
             if (module != null && moduleSlot != null) {
-                this.add(module, moduleSlot, false);
+                ModuleInstance<?> moduleInstance = this.add(module, moduleSlot, false);
+                if (moduleInstance != null) {
+                    moduleInstance.read(packetBuffer);
+                }
             }
         }
     }
@@ -207,6 +211,12 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
                 //TransportAPI.getNetworkHandler().sendAddModuleCase(modularEntity, moduleInstance, false);
             }
         }
+    }
+
+    @Override
+    public void remove(ModuleInstance<?> moduleInstance) {
+        byModuleSlot.entrySet().removeIf(entry -> entry.getValue() == moduleInstance);
+        byModuleType.entrySet().removeIf(entry -> entry.getValue() == moduleInstance);
     }
 
     @Nonnull

@@ -51,6 +51,8 @@ public interface IModularEntity extends IItemProvider, INBTSerializable<Compound
 
     void remove(ModuleSlot moduleSlot, boolean sendUpdate);
 
+    void remove(ModuleInstance<?> moduleInstance);
+
     @Nullable
     <T extends Module<T>> ModuleInstance<T> add(Module<T> module, ModuleSlot moduleSlot, boolean sendUpdate);
 

@@ -1,10 +1,12 @@
 package xyz.brassgoggledcoders.transport.cargoinstance;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -12,7 +14,6 @@ import net.minecraft.util.math.vector.Vector3d;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 
 import static net.minecraft.block.CakeBlock.BITES;
 
@@ -43,6 +44,18 @@ public class CakeCargoModuleInstance extends CargoModuleInstance {
     }
 
     @Override
+    public void write(PacketBuffer packetBuffer) {
+        super.write(packetBuffer);
+        packetBuffer.writeInt(Block.getStateId(this.cakeBlockState));
+    }
+
+    @Override
+    public void read(PacketBuffer packetBuffer) {
+        super.read(packetBuffer);
+        this.cakeBlockState = Block.getStateById(packetBuffer.readInt());
+    }
+
+    @Override
     public ActionResultType applyInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
         if (!player.canEat(false)) {
             return ActionResultType.PASS;
@@ -53,7 +66,7 @@ public class CakeCargoModuleInstance extends CargoModuleInstance {
             if (i < 6) {
                 this.cakeBlockState = cakeBlockState.with(BITES, i + 1);
             } else {
-                this.getModularEntity().remove(TransportModuleSlots.CARGO.get(), true);
+                this.getModularEntity().remove(this);
             }
 
             return ActionResultType.SUCCESS;
