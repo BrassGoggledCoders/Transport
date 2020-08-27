@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.api;
 
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -18,13 +19,15 @@ import xyz.brassgoggledcoders.transport.api.connection.NoConnectionChecker;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.functional.ThrowingFunction;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.network.INetworkHandler;
 import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
-import xyz.brassgoggledcoders.transport.api.routing.RoutingStorage;
-import xyz.brassgoggledcoders.transport.api.routing.serializer.RoutingDeserializer;
+import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
+import xyz.brassgoggledcoders.transport.api.predicate.PredicateParserException;
+import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,12 +35,13 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public class TransportAPI {
     public static final Logger LOGGER = LogManager.getLogger("transport-api");
 
-    @CapabilityInject(RoutingStorage.class)
-    public static Capability<RoutingStorage> ROUTING_STORAGE;
+    @CapabilityInject(PredicateStorage.class)
+    public static Capability<PredicateStorage> PREDICATE_STORAGE;
 
     @CapabilityInject(IModularEntity.class)
     public static Capability<IModularEntity> MODULAR_ENTITY;
@@ -46,7 +50,10 @@ public class TransportAPI {
     private static INetworkHandler networkHandler;
 
     private static final Map<Block, IPointMachineBehavior> POINT_MACHINE_BEHAVIORS = Maps.newHashMap();
-    private static final Map<String, RoutingDeserializer> ROUTING_DESERIALIZERS = Maps.newHashMap();
+    private static final Map<String, ThrowingFunction<PredicateParser, Predicate<Entity>, PredicateParserException>>
+            ENTITY_PREDICATE_CREATORS = Maps.newHashMap();
+    private static final Map<String, ThrowingFunction<PredicateParser, Predicate<String>, PredicateParserException>>
+            STRING_PREDICATE_CREATORS = Maps.newHashMap();
     private static final Map<Item, Module<?>> ITEM_TO_MODULE = Maps.newHashMap();
 
     public static Lazy<ForgeRegistry<CargoModule>> CARGO = Lazy.of(() -> (ForgeRegistry<CargoModule>) RegistryManager.ACTIVE.getRegistry(CargoModule.class));
@@ -87,18 +94,24 @@ public class TransportAPI {
         return MODULE_TYPE.get().getValue(resourceLocation);
     }
 
-    @Nullable
-    public static RoutingDeserializer getRoutingDeserializer(String name) {
-        return ROUTING_DESERIALIZERS.get(name.toUpperCase(Locale.ENGLISH));
+    public static void addEntityPredicateCreator(String name, ThrowingFunction<PredicateParser, Predicate<Entity>,
+            PredicateParserException> entityPredicateCreator) {
+        ENTITY_PREDICATE_CREATORS.put(name.toUpperCase(Locale.US), entityPredicateCreator);
     }
 
-    public static void addRoutingDeserializer(String name, RoutingDeserializer routingDeserializer) {
-        ROUTING_DESERIALIZERS.put(name, routingDeserializer);
+    public static ThrowingFunction<PredicateParser, Predicate<Entity>, PredicateParserException> getEntityPredicateCreator(String name) {
+        return ENTITY_PREDICATE_CREATORS.get(name.toUpperCase(Locale.US));
     }
 
-    public static Map<String, RoutingDeserializer> getRoutingDeserializers() {
-        return ROUTING_DESERIALIZERS;
+    public static void addStringPredicateCreator(String name, ThrowingFunction<PredicateParser, Predicate<String>,
+            PredicateParserException> stringPredicateCreator) {
+        STRING_PREDICATE_CREATORS.put(name.toUpperCase(Locale.US), stringPredicateCreator);
     }
+
+    public static ThrowingFunction<PredicateParser, Predicate<String>, PredicateParserException> getStringPredicateCreator(String name) {
+        return STRING_PREDICATE_CREATORS.get(name.toUpperCase(Locale.US));
+    }
+
 
     @Nullable
     public static IPointMachineBehavior getPointMachineBehavior(Block block) {

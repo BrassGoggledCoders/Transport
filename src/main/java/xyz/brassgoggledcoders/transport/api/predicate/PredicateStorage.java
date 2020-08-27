@@ -1,6 +1,7 @@
-package xyz.brassgoggledcoders.transport.api.routing;
+package xyz.brassgoggledcoders.transport.api.predicate;
 
 import com.mojang.datafixers.util.Either;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.WritableBookItem;
 import net.minecraft.item.WrittenBookItem;
@@ -11,16 +12,18 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.common.util.Constants;
-import xyz.brassgoggledcoders.transport.api.routing.instruction.Routing;
+import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
+import xyz.brassgoggledcoders.transport.api.predicate.PredicateParserException;
 
 import javax.annotation.Nonnull;
+import java.util.function.Predicate;
 
-public class RoutingStorage {
-    private Either<String, Routing> routing = null;
+public class PredicateStorage {
+    private Either<String, Predicate<Entity>> predicate = null;
 
     @Nonnull
-    public Either<String, Routing> getRouting(TileEntity tileEntity) {
-        if (routing == null) {
+    public Either<String, Predicate<Entity>> getPredicate(TileEntity tileEntity) {
+        if (predicate == null) {
             if (tileEntity instanceof LecternTileEntity) {
                 LecternTileEntity lecternTileEntity = (LecternTileEntity) tileEntity;
                 if (lecternTileEntity.hasBook()) {
@@ -41,22 +44,26 @@ public class RoutingStorage {
                     }
 
                     if (routingString != null) {
-                        this.routing = RoutingParser.parse(routingString);
+                        try {
+                            this.predicate = Either.right(PredicateParser.fromString(routingString).getNextEntityPredicate());
+                        } catch (PredicateParserException exception) {
+                            this.predicate = Either.left(exception.getMessage());
+                        }
                     } else {
-                        this.routing = Either.left("Found Invalid Book");
+                        this.predicate = Either.left("Found Invalid Book");
                     }
                 } else {
-                    this.routing = Either.left("No Book found");
+                    this.predicate = Either.left("No Book found");
                 }
             } else {
-                this.routing = Either.left("Didn't find Lectern");
+                this.predicate = Either.left("Didn't find Lectern");
             }
         }
 
-        return routing;
+        return predicate;
     }
 
     public void invalidate() {
-        routing = null;
+        predicate = null;
     }
 }
