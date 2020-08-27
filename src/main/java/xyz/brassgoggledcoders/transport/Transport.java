@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport;
 import com.hrznstudio.titanium.network.locator.LocatorType;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -25,12 +26,9 @@ import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
-import xyz.brassgoggledcoders.transport.api.routing.RoutingStorage;
-import xyz.brassgoggledcoders.transport.api.routing.instruction.Routing;
-import xyz.brassgoggledcoders.transport.api.routing.serializer.ListRoutingDeserializer;
-import xyz.brassgoggledcoders.transport.api.routing.serializer.ListValidatedRoutingDeserializer;
-import xyz.brassgoggledcoders.transport.api.routing.serializer.NoInputRoutingDeserializer;
-import xyz.brassgoggledcoders.transport.api.routing.serializer.SingleRoutingDeserializer;
+import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
+import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
+import xyz.brassgoggledcoders.transport.api.predicate.StringPredicate;
 import xyz.brassgoggledcoders.transport.compat.immersiveengineering.TransportIE;
 import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
@@ -43,12 +41,14 @@ import xyz.brassgoggledcoders.transport.nbt.EmptyStorage;
 import xyz.brassgoggledcoders.transport.network.NetworkHandler;
 import xyz.brassgoggledcoders.transport.pointmachine.ComparatorPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
+import xyz.brassgoggledcoders.transport.pointmachine.PredicatePointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
-import xyz.brassgoggledcoders.transport.pointmachine.RoutingPointMachineBehavior;
+import xyz.brassgoggledcoders.transport.predicate.NamePredicate;
+import xyz.brassgoggledcoders.transport.predicate.TimePredicate;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrate;
-import xyz.brassgoggledcoders.transport.routing.instruction.*;
 
 import javax.annotation.Nonnull;
+import java.util.function.Predicate;
 
 import static xyz.brassgoggledcoders.transport.Transport.ID;
 
@@ -108,20 +108,38 @@ public class Transport {
         TransportAPI.addPointMachineBehavior(Blocks.LEVER, new LeverPointMachineBehavior());
         TransportAPI.addPointMachineBehavior(Blocks.REPEATER, new RedstonePointMachineBehavior());
         TransportAPI.addPointMachineBehavior(Blocks.COMPARATOR, new ComparatorPointMachineBehavior());
-        TransportAPI.addPointMachineBehavior(Blocks.LECTERN, new RoutingPointMachineBehavior());
+        TransportAPI.addPointMachineBehavior(Blocks.LECTERN, new PredicatePointMachineBehavior());
 
-        TransportAPI.addRoutingDeserializer("TRUE", new NoInputRoutingDeserializer(TrueRouting::new));
-        TransportAPI.addRoutingDeserializer("FALSE", new NoInputRoutingDeserializer(FalseRouting::new));
-        TransportAPI.addRoutingDeserializer("NAME", new ListRoutingDeserializer<>(String.class, NameRouting::new));
-        TransportAPI.addRoutingDeserializer("AND", new ListRoutingDeserializer<>(Routing.class, AndRouting::new));
-        TransportAPI.addRoutingDeserializer("OR", new ListRoutingDeserializer<>(Routing.class, OrRouting::new));
-        TransportAPI.addRoutingDeserializer("NOT", new SingleRoutingDeserializer<>(Routing.class, NotRouting::new));
-        TransportAPI.addRoutingDeserializer("RIDERS", new SingleRoutingDeserializer<>(Number.class, RiderRouting::new));
-        TransportAPI.addRoutingDeserializer("POWERED", new NoInputRoutingDeserializer(PoweredRouting::new));
-        TransportAPI.addRoutingDeserializer("COMPARATOR", new SingleRoutingDeserializer<>(Number.class, ComparatorRouting::new));
-        TransportAPI.addRoutingDeserializer("TIME", new ListValidatedRoutingDeserializer<>(String.class, TimeRouting::create));
+        TransportAPI.addEntityPredicateCreator("ROUTING", PredicateParser::getNextEntityPredicate);
+        TransportAPI.addEntityPredicateCreator("TRUE", parser -> entity -> true);
+        TransportAPI.addEntityPredicateCreator("FALSE", parser -> entity -> false);
+        TransportAPI.addEntityPredicateCreator("NAME", NamePredicate::create);
+        TransportAPI.addEntityPredicateCreator("NOT", parser -> parser.getNextEntityPredicate().negate());
+        TransportAPI.addEntityPredicateCreator("POWERED", parser -> entity -> entity instanceof AbstractMinecartEntity &&
+                ((AbstractMinecartEntity) entity).isPoweredCart());
+        TransportAPI.addEntityPredicateCreator("TIME", TimePredicate::create);
+        TransportAPI.addEntityPredicateCreator("AND", parse -> {
+            Predicate<Entity> predicate = parse.getNextEntityPredicate();
+            while (parse.hasNextPredicate()) {
+                predicate = predicate.and(parse.getNextEntityPredicate());
+            }
+            return predicate;
+        });
+        TransportAPI.addEntityPredicateCreator("OR", parse -> {
+            Predicate<Entity> predicate = parse.getNextEntityPredicate();
+            while (parse.hasNextPredicate()) {
+                predicate = predicate.or(parse.getNextEntityPredicate());
+            }
+            return predicate;
+        });
 
-        CapabilityManager.INSTANCE.register(RoutingStorage.class, new EmptyStorage<>(), RoutingStorage::new);
+
+        TransportAPI.addStringPredicateCreator("ENDS_WITH", StringPredicate.create(String::endsWith));
+        TransportAPI.addStringPredicateCreator("STARTS_WITH", StringPredicate.create(String::startsWith));
+        TransportAPI.addStringPredicateCreator("CONTAINS", StringPredicate.create((predicateString, testString) ->
+                testString.contains(predicateString)));
+
+        CapabilityManager.INSTANCE.register(PredicateStorage.class, new EmptyStorage<>(), PredicateStorage::new);
         CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () -> null);
 
         TransportAPI.generateItemToModuleMap();

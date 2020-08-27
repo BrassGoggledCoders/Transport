@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.api.routing;
+package xyz.brassgoggledcoders.transport.api.predicate;
 
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -9,17 +9,17 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class RoutingStorageProvider implements ICapabilityProvider {
-    private final LazyOptional<RoutingStorage> routingStorageLazyOptional;
+public class PredicateStorageProvider implements ICapabilityProvider {
+    private final LazyOptional<PredicateStorage> routingStorageLazyOptional;
 
-    public RoutingStorageProvider() {
-        RoutingStorage routingStorage = new RoutingStorage();
-        this.routingStorageLazyOptional = LazyOptional.of(() -> routingStorage);
+    public PredicateStorageProvider() {
+        PredicateStorage predicateStorage = new PredicateStorage();
+        this.routingStorageLazyOptional = LazyOptional.of(() -> predicateStorage);
     }
 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return TransportAPI.ROUTING_STORAGE.orEmpty(cap, routingStorageLazyOptional);
+        return TransportAPI.PREDICATE_STORAGE.orEmpty(cap, routingStorageLazyOptional);
     }
 }

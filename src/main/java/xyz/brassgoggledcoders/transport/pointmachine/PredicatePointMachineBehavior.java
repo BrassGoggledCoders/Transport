@@ -12,12 +12,12 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
-import xyz.brassgoggledcoders.transport.api.routing.RoutingStorage;
-import xyz.brassgoggledcoders.transport.api.routing.instruction.Routing;
+import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
 
 import javax.annotation.Nullable;
+import java.util.function.Predicate;
 
-public class RoutingPointMachineBehavior implements IPointMachineBehavior {
+public class PredicatePointMachineBehavior implements IPointMachineBehavior {
     @Override
     public boolean shouldDiverge(BlockState motorState, IBlockReader blockReader, BlockPos motorPos, BlockPos switchPos,
                                  @Nullable AbstractMinecartEntity minecartEntity) {
@@ -25,8 +25,8 @@ public class RoutingPointMachineBehavior implements IPointMachineBehavior {
             if (motorPos.offset(motorState.get(BlockStateProperties.HORIZONTAL_FACING).getOpposite()).equals(switchPos)) {
                 TileEntity tileEntity = blockReader.getTileEntity(motorPos);
                 if (tileEntity != null) {
-                    return tileEntity.getCapability(TransportAPI.ROUTING_STORAGE)
-                            .map(routingStorage -> routingStorage.getRouting(tileEntity))
+                    return tileEntity.getCapability(TransportAPI.PREDICATE_STORAGE)
+                            .map(predicateStorage -> predicateStorage.getPredicate(tileEntity))
                             .map(routing -> this.handleRouting(routing, minecartEntity))
                             .orElse(false);
                 }
@@ -35,14 +35,14 @@ public class RoutingPointMachineBehavior implements IPointMachineBehavior {
         return false;
     }
 
-    private Boolean handleRouting(Either<String, Routing> routing, AbstractMinecartEntity minecartEntity) {
+    private Boolean handleRouting(Either<String, Predicate<Entity>> routing, AbstractMinecartEntity minecartEntity) {
         return routing.ifLeft(error -> {
             for (Entity entity : minecartEntity.getPassengers()) {
                 if (entity instanceof PlayerEntity && !entity.getEntityWorld().isRemote()) {
                     ((PlayerEntity) entity).sendStatusMessage(new StringTextComponent(error), true);
                 }
             }
-        }).mapRight(value -> value.matches(minecartEntity))
+        }).mapRight(value -> value.test(minecartEntity))
                 .right()
                 .orElse(false);
     }
@@ -51,7 +51,7 @@ public class RoutingPointMachineBehavior implements IPointMachineBehavior {
     public void onBlockStateUpdate(BlockState motorState, IBlockReader blockReader, BlockPos motorPos) {
         TileEntity tileEntity = blockReader.getTileEntity(motorPos);
         if (tileEntity != null) {
-            tileEntity.getCapability(TransportAPI.ROUTING_STORAGE).ifPresent(RoutingStorage::invalidate);
+            tileEntity.getCapability(TransportAPI.PREDICATE_STORAGE).ifPresent(PredicateStorage::invalidate);
         }
     }
 }

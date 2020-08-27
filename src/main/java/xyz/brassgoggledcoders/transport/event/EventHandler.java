@@ -7,7 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.api.routing.RoutingStorageProvider;
+import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorageProvider;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.furnaceminecart.FurnaceMinecartFuelProvider;
 
 public class EventHandler {
@@ -20,8 +20,8 @@ public class EventHandler {
 
     public static void onAttachTileEntityCapabilities(AttachCapabilitiesEvent<TileEntity> attachCapabilitiesEvent) {
         if (attachCapabilitiesEvent.getObject() instanceof LecternTileEntity) {
-            attachCapabilitiesEvent.addCapability(new ResourceLocation(Transport.ID, "routing_storage"),
-                    new RoutingStorageProvider());
+            attachCapabilitiesEvent.addCapability(new ResourceLocation(Transport.ID, "predicate_storage"),
+                    new PredicateStorageProvider());
         }
     }
 }
