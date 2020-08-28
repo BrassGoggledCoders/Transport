@@ -38,6 +38,11 @@ public class TransportCargoModules {
             .lang("Fluid Tank")
             .register();
 
+    public static final RegistryEntry<CargoModule> PODIUM = Transport.getRegistrate()
+            .object("podium")
+            .cargoModule(TransportBlocks.PODIUM, CargoModuleInstance::new, true)
+            .register();
+
     public static void setup() {
     }
 }

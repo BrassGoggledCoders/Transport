@@ -36,10 +36,7 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.block.BuoyBlock;
-import xyz.brassgoggledcoders.transport.block.DockBlock;
-import xyz.brassgoggledcoders.transport.block.ModuleConfiguratorBlock;
-import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
+import xyz.brassgoggledcoders.transport.block.*;
 import xyz.brassgoggledcoders.transport.block.loader.EnergyLoaderBlock;
 import xyz.brassgoggledcoders.transport.block.loader.FluidLoaderBlock;
 import xyz.brassgoggledcoders.transport.block.loader.ItemLoaderBlock;
@@ -387,6 +384,18 @@ public class TransportBlocks {
     public static final BlockEntry<DockBlock> DOCK = Transport.getRegistrate()
             .object("dock")
             .block(Material.IRON, DockBlock::new)
+            .item()
+            .group(Transport::getItemGroup)
+            .build()
+            .register();
+
+    public static final BlockEntry<PodiumBlock> PODIUM = Transport.getRegistrate()
+            .object("podium")
+            .block(Material.WOOD, PodiumBlock::new)
+            .blockstate((context, provider) -> provider.horizontalBlock(context.get(), provider.models()
+                    .getExistingFile(Transport.rl("block/podium")))
+            )
+            .lang("Podium")
             .item()
             .group(Transport::getItemGroup)
             .build()
