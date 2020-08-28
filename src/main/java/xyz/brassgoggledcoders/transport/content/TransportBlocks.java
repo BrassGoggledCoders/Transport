@@ -51,13 +51,13 @@ import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateBlockLootT
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateModels;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateRecipes;
 import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
+import xyz.brassgoggledcoders.transport.tileentity.PodiumTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.rail.SwitchRailTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.rail.TimedHoldingRailTileEntity;
 
-@SuppressWarnings("unused")
 public class TransportBlocks {
     //region Rails
     public static final BlockEntry<HoldingRailBlock> HOLDING_RAIL =
@@ -399,7 +399,12 @@ public class TransportBlocks {
             .item()
             .group(Transport::getItemGroup)
             .build()
+            .tileEntity(PodiumTileEntity::new)
+            .build()
             .register();
+
+    public static final RegistryEntry<TileEntityType<PodiumTileEntity>> PODIUM_TILE_ENTITY =
+            PODIUM.getSibling(ForgeRegistries.TILE_ENTITIES);
     //endregion
 
     private static NonNullUnaryOperator<AbstractBlock.Properties> railProperties() {

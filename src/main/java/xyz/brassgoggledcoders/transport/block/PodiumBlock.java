@@ -12,23 +12,26 @@ import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import xyz.brassgoggledcoders.transport.api.TransportBlockStateProperties;
+import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.tileentity.PodiumTileEntity;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class PodiumBlock extends Block {
     public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
-    public static final BooleanProperty HAS_ITEM = BlockStateProperties.HAS_BOOK;
+    public static final BooleanProperty HAS_ITEM = TransportBlockStateProperties.HAS_ITEM;
     public static final VoxelShape BASE_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
     public static final VoxelShape POST_SHAPE = Block.makeCuboidShape(4.0D, 2.0D, 4.0D, 12.0D, 14.0D, 12.0D);
     public static final VoxelShape COMMON_SHAPE = VoxelShapes.or(BASE_SHAPE, POST_SHAPE);
@@ -45,6 +48,45 @@ public class PodiumBlock extends Block {
                 .with(FACING, Direction.NORTH)
                 .with(HAS_ITEM, false)
         );
+    }
+
+    @Override
+    @Nonnull
+    @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof PodiumTileEntity) {
+            PodiumTileEntity podiumTileEntity = (PodiumTileEntity) tileEntity;
+            ItemStack heldItem = player.getHeldItem(hand);
+            if (podiumTileEntity.getDisplayItemStack().isEmpty()) {
+                podiumTileEntity.setDisplayItemStack(heldItem.split(1));
+                world.setBlockState(pos, state.with(HAS_ITEM, true));
+                return ActionResultType.SUCCESS;
+            } else {
+                if (player.isSneaking()) {
+                    if (heldItem.isEmpty()) {
+                        player.setHeldItem(hand, podiumTileEntity.takeDisplayItemStack());
+                        world.setBlockState(pos, state.with(HAS_ITEM, false));
+                        return ActionResultType.SUCCESS;
+                    }
+                } else {
+                    return podiumTileEntity.activateBehavior(player);
+                }
+             }
+        }
+        return ActionResultType.PASS;
+    }
+
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new PodiumTileEntity(TransportBlocks.PODIUM_TILE_ENTITY.get());
     }
 
     @Override

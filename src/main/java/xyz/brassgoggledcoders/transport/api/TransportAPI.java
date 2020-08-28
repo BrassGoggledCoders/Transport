@@ -24,6 +24,8 @@ import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.network.INetworkHandler;
+import xyz.brassgoggledcoders.transport.api.podium.IPodium;
+import xyz.brassgoggledcoders.transport.api.podium.PodiumBehavior;
 import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateParserException;
@@ -35,6 +37,7 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class TransportAPI {
@@ -50,11 +53,13 @@ public class TransportAPI {
     private static INetworkHandler networkHandler;
 
     private static final Map<Block, IPointMachineBehavior> POINT_MACHINE_BEHAVIORS = Maps.newHashMap();
+    private static final Map<Item, Function<IPodium, PodiumBehavior>> PODIUM_BEHAVIORS = Maps.newHashMap();
     private static final Map<String, ThrowingFunction<PredicateParser, Predicate<Entity>, PredicateParserException>>
             ENTITY_PREDICATE_CREATORS = Maps.newHashMap();
     private static final Map<String, ThrowingFunction<PredicateParser, Predicate<String>, PredicateParserException>>
             STRING_PREDICATE_CREATORS = Maps.newHashMap();
     private static final Map<Item, Module<?>> ITEM_TO_MODULE = Maps.newHashMap();
+
 
     public static Lazy<ForgeRegistry<CargoModule>> CARGO = Lazy.of(() -> (ForgeRegistry<CargoModule>) RegistryManager.ACTIVE.getRegistry(CargoModule.class));
     public static Lazy<IForgeRegistry<EngineModule>> ENGINES = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(EngineModule.class));
@@ -112,7 +117,6 @@ public class TransportAPI {
         return STRING_PREDICATE_CREATORS.get(name.toUpperCase(Locale.US));
     }
 
-
     @Nullable
     public static IPointMachineBehavior getPointMachineBehavior(Block block) {
         return POINT_MACHINE_BEHAVIORS.get(block);
@@ -120,6 +124,21 @@ public class TransportAPI {
 
     public static void addPointMachineBehavior(Block block, IPointMachineBehavior pointMachineBehavior) {
         POINT_MACHINE_BEHAVIORS.put(block, pointMachineBehavior);
+    }
+
+    public static void addPodiumBehavior(Item item, Function<IPodium, PodiumBehavior> behaviorCreator) {
+        PODIUM_BEHAVIORS.put(item, behaviorCreator);
+    }
+
+
+    @Nullable
+    public static PodiumBehavior getPodiumBehavior(Item item, IPodium podium) {
+        Function<IPodium, PodiumBehavior> behaviorFunction = PODIUM_BEHAVIORS.get(item);
+        if (behaviorFunction != null) {
+            return behaviorFunction.apply(podium);
+        } else {
+            return null;
+        }
     }
 
     public static Map<Block, IPointMachineBehavior> getPointMachineBehaviors() {

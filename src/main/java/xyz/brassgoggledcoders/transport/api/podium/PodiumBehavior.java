@@ -1,7 +1,9 @@
 package xyz.brassgoggledcoders.transport.api.podium;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.function.Predicate;
@@ -21,6 +23,10 @@ public class PodiumBehavior implements INBTSerializable<CompoundNBT>, Predicate<
         return podium;
     }
 
+    public boolean isBook() {
+        return true;
+    }
+
     @Override
     public CompoundNBT serializeNBT() {
         return new CompoundNBT();
@@ -34,5 +40,9 @@ public class PodiumBehavior implements INBTSerializable<CompoundNBT>, Predicate<
     @Override
     public boolean test(Entity entity) {
         return false;
+    }
+
+    public ActionResultType activate(PlayerEntity playerEntity) {
+        return ActionResultType.PASS;
     }
 }

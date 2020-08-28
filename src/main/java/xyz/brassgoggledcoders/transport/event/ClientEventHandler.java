@@ -28,7 +28,9 @@ import xyz.brassgoggledcoders.transport.renderer.CargoCarrierMinecartEntityRende
 import xyz.brassgoggledcoders.transport.renderer.boat.HulledBoatRender;
 import xyz.brassgoggledcoders.transport.renderer.boat.ModularBoatRenderer;
 import xyz.brassgoggledcoders.transport.renderer.tileentity.ModuleConfiguratorTileEntityRenderer;
+import xyz.brassgoggledcoders.transport.renderer.tileentity.PodiumTileEntityRenderer;
 import xyz.brassgoggledcoders.transport.screen.ModuleConfiguratorScreen;
+import xyz.brassgoggledcoders.transport.tileentity.PodiumTileEntity;
 
 @EventBusSubscriber(modid = Transport.ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ClientEventHandler {
@@ -55,6 +57,8 @@ public class ClientEventHandler {
 
         ClientRegistry.bindTileEntityRenderer(TransportBlocks.MODULE_CONFIGURATOR_TILE_ENTITY.get(),
                 ModuleConfiguratorTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(TransportBlocks.PODIUM_TILE_ENTITY.get(),
+                PodiumTileEntityRenderer::new);
 
         TransportClientAPI.setModuleTypeDefault(TransportModuleTypes.CARGO.get(), new CargoModuleRender());
         TransportClientAPI.setModuleTypeDefault(TransportModuleTypes.ENGINE.get(), new ItemModuleRenderer());

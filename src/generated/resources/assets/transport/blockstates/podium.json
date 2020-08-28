@@ -1,32 +1,32 @@
 {
   "variants": {
-    "facing=north,has_book=false": {
+    "facing=north,has_item=false": {
       "model": "transport:block/podium"
     },
-    "facing=south,has_book=false": {
+    "facing=south,has_item=false": {
       "model": "transport:block/podium",
       "y": 180
     },
-    "facing=west,has_book=false": {
+    "facing=west,has_item=false": {
       "model": "transport:block/podium",
       "y": 270
     },
-    "facing=east,has_book=false": {
+    "facing=east,has_item=false": {
       "model": "transport:block/podium",
       "y": 90
     },
-    "facing=north,has_book=true": {
+    "facing=north,has_item=true": {
       "model": "transport:block/podium"
     },
-    "facing=south,has_book=true": {
+    "facing=south,has_item=true": {
       "model": "transport:block/podium",
       "y": 180
     },
-    "facing=west,has_book=true": {
+    "facing=west,has_item=true": {
       "model": "transport:block/podium",
       "y": 270
     },
-    "facing=east,has_book=true": {
+    "facing=east,has_item=true": {
       "model": "transport:block/podium",
       "y": 90
     }

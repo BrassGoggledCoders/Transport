@@ -4,7 +4,9 @@ import com.hrznstudio.titanium.network.locator.LocatorType;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -15,10 +17,12 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import vazkii.patchouli.common.base.Patchouli;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
@@ -26,6 +30,7 @@ import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
+import xyz.brassgoggledcoders.transport.api.podium.PodiumBehavior;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
 import xyz.brassgoggledcoders.transport.api.predicate.StringPredicate;
@@ -138,6 +143,13 @@ public class Transport {
         TransportAPI.addStringPredicateCreator("STARTS_WITH", StringPredicate.create(String::startsWith));
         TransportAPI.addStringPredicateCreator("CONTAINS", StringPredicate.create((predicateString, testString) ->
                 testString.contains(predicateString)));
+
+        TransportAPI.addPodiumBehavior(Items.WRITABLE_BOOK, PodiumBehavior::new);
+        TransportAPI.addPodiumBehavior(Items.WRITTEN_BOOK, PodiumBehavior::new);
+        Item patchouliBook = ForgeRegistries.ITEMS.getValue(new ResourceLocation("patchouli", "guide_book"));
+        if (patchouliBook != null) {
+            TransportAPI.addPodiumBehavior(patchouliBook, PodiumBehavior::new);
+        }
 
         CapabilityManager.INSTANCE.register(PredicateStorage.class, new EmptyStorage<>(), PredicateStorage::new);
         CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () -> null);
