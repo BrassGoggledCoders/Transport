@@ -65,7 +65,7 @@ sourceSets {
 }
 
 def version_properties = [
-        "version"       : mod_version,
+        "version"       : version,
         "mc_version"    : minecraft_version,
         "forge_version" : min_forge_version,
         "loader_version": loader_version
