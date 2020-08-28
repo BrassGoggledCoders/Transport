@@ -46,37 +46,22 @@ public class NBTShapedRecipeBuilder {
         this.tagNBT = tagNBT;
     }
 
-    /**
-     * Creates a new builder for a shaped recipe.
-     */
     public static NBTShapedRecipeBuilder shapedRecipe(IItemProvider result, CompoundNBT tagNBT) {
         return shapedRecipe(result, 1, tagNBT);
     }
 
-    /**
-     * Creates a new builder for a shaped recipe.
-     */
     public static NBTShapedRecipeBuilder shapedRecipe(IItemProvider resultIn, int count, CompoundNBT tagNBT) {
         return new NBTShapedRecipeBuilder(resultIn, count, tagNBT);
     }
 
-    /**
-     * Adds a key to the recipe pattern.
-     */
     public NBTShapedRecipeBuilder key(Character symbol, ITag<Item> tag) {
         return this.key(symbol, Ingredient.fromTag(tag));
     }
 
-    /**
-     * Adds a key to the recipe pattern.
-     */
     public NBTShapedRecipeBuilder key(Character symbol, IItemProvider item) {
         return this.key(symbol, Ingredient.fromItems(item));
     }
 
-    /**
-     * Adds a key to the recipe pattern.
-     */
     public NBTShapedRecipeBuilder key(Character symbol, Ingredient ingredient) {
         if (this.key.containsKey(symbol)) {
             throw new IllegalArgumentException("Symbol '" + symbol + "' is already defined!");
@@ -88,9 +73,6 @@ public class NBTShapedRecipeBuilder {
         }
     }
 
-    /**
-     * Adds a new entry to the patterns for this recipe.
-     */
     public NBTShapedRecipeBuilder patternLine(String pattern) {
         if (!this.pattern.isEmpty() && pattern.length() != this.pattern.get(0).length()) {
             throw new IllegalArgumentException("Pattern must be the same width on every line!");
@@ -100,9 +82,6 @@ public class NBTShapedRecipeBuilder {
         }
     }
 
-    /**
-     * Adds a criterion needed to unlock the recipe.
-     */
     public NBTShapedRecipeBuilder addCriterion(String name, ICriterionInstance criterion) {
         this.advancementBuilder.withCriterion(name, criterion);
         return this;
@@ -113,17 +92,10 @@ public class NBTShapedRecipeBuilder {
         return this;
     }
 
-    /**
-     * Builds this recipe into an {@link IFinishedRecipe}.
-     */
     public void build(Consumer<IFinishedRecipe> consumer) {
         this.build(consumer, ForgeRegistries.ITEMS.getKey(this.result));
     }
 
-    /**
-     * Builds this recipe into an {@link IFinishedRecipe}. Use {@link #build(Consumer)} if save is the same as the ID for
-     * the result.
-     */
     public void build(Consumer<IFinishedRecipe> consumer, String save) {
         ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.result);
         if ((new ResourceLocation(save)).equals(resourcelocation)) {
@@ -133,9 +105,6 @@ public class NBTShapedRecipeBuilder {
         }
     }
 
-    /**
-     * Builds this recipe into an {@link IFinishedRecipe}.
-     */
     public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
         this.validate(id);
         this.advancementBuilder.withParentId(new ResourceLocation("recipes/root"))

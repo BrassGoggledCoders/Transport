@@ -64,14 +64,18 @@ sourceSets {
     }
 }
 
-def version_properties = ["version"       : mod_version, "mc_version": minecraft_version, "forge_version": min_forge_version,
-                          "loader_version": loader_version]
-                          
-mainReplaceResources {
+def version_properties = [
+        "version"       : mod_version,
+        "mc_version"    : minecraft_version,
+        "forge_version" : min_forge_version,
+        "loader_version": loader_version
+]
+
+processResources {
     outputs.upToDateWhen { false }
-    from(sourceSet.resources) {
-       include "META-INF/mods.toml"
-       expand version_properties
+    from(sourceSets.main.resources) {
+        include "META-INF/mods.toml"
+        expand version_properties
     }
     into "$buildDir/resources/main/"
 }
