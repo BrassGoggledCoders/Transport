@@ -184,6 +184,12 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
         return compoundNBT;
     }
 
+    @Override
+    public void handleUpdateTag(CompoundNBT tag) {
+        this.modularItemInventory.deserializeNBT(tag.getCompound("modularInventory"));
+        this.handleEntity(this.modularItemInventory.getStackInSlot(0), 0);
+    }
+
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
@@ -193,6 +199,6 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements ICompone
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         CompoundNBT compoundNBT = pkt.getNbtCompound();
-        this.modularItemInventory.deserializeNBT(compoundNBT.getCompound("modularInventory"));
+        this.handleUpdateTag(compoundNBT);
     }
 }
