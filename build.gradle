@@ -128,6 +128,7 @@ configurations {
 shadowJar {
     configurations = [project.configurations.shade]
     relocate 'com.tterrag.registrate', 'xyz.brassgoggledcoders.transport.repack.registrate'
+    classifier ''
 }
 
 reobf {
@@ -171,7 +172,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 jar {
-    from sourceSets.main.output
+    classifier = "nodep"
     manifest {
         attributes([
                 "Specification-Title"     : "${title}",
