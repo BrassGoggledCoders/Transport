@@ -44,6 +44,10 @@ repositories {
         name = "Registrate"
         url = "http://maven.tterrag.com/"
     }
+    maven {
+        name = "Mappings"
+        url = 'https://www.dogforce-games.com/maven/'
+    }
 }
 
 test {
