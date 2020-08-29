@@ -130,6 +130,13 @@ shadowJar {
     relocate 'com.tterrag.registrate', 'xyz.brassgoggledcoders.transport.repack.registrate'
 }
 
+reobf {
+    shadowJar {}
+}
+
+build.dependsOn shadowJar
+build.dependsOn reobfShadowJar
+
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     if (findProject(':Titanium') != null) {
