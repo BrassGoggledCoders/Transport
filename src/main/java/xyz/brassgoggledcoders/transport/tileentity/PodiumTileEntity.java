@@ -10,9 +10,12 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import net.minecraftforge.common.util.Constants;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.podium.IPodium;
 import xyz.brassgoggledcoders.transport.api.podium.PodiumBehavior;
+import xyz.brassgoggledcoders.transport.api.podium.PodiumInventory;
+import xyz.brassgoggledcoders.transport.block.PodiumBlock;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -20,11 +23,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
 public class PodiumTileEntity extends TileEntity implements IPodium {
-    private ItemStack displayItemStack = ItemStack.EMPTY;
+    private final PodiumInventory podiumInventory;
     private PodiumBehavior podiumBehavior = null;
 
     public PodiumTileEntity(TileEntityType<? extends PodiumTileEntity> tileEntityType) {
         super(tileEntityType);
+        this.podiumInventory = new PodiumInventory(ItemStack.EMPTY, this::canPlayerUse);
+        this.podiumInventory.addListener(inventory -> this.setHasItem(!inventory.getStackInSlot(0).isEmpty()));
     }
 
     public ActionResultType activateBehavior(PlayerEntity playerEntity) {
@@ -75,12 +80,22 @@ public class PodiumTileEntity extends TileEntity implements IPodium {
         return itemStack;
     }
 
-    public void setDisplayItemStack(ItemStack itemStack) {
-        this.displayItemStack = itemStack;
+    @Override
+    public void setDisplayItemStack(@Nonnull ItemStack itemStack) {
+        this.podiumInventory.setInventorySlotContents(0, itemStack);
         if (!itemStack.isEmpty()) {
             this.podiumBehavior = TransportAPI.getPodiumBehavior(itemStack.getItem(), this);
+            this.setHasItem(true);
         } else {
             this.podiumBehavior = null;
+            this.setHasItem(false);
+        }
+    }
+
+    public void setHasItem(boolean hasItem) {
+        if (this.getWorld() != null) {
+            this.getWorld().setBlockState(this.getPos(), this.getBlockState().with(PodiumBlock.HAS_ITEM, hasItem),
+                    Constants.BlockFlags.DEFAULT);
         }
     }
 
@@ -90,8 +105,14 @@ public class PodiumTileEntity extends TileEntity implements IPodium {
     }
 
     @Nonnull
+    @Override
+    public PodiumInventory getPodiumInventory() {
+        return this.podiumInventory;
+    }
+
+    @Nonnull
     public ItemStack getDisplayItemStack() {
-        return this.displayItemStack;
+        return this.podiumInventory.getStackInSlot(0);
     }
 
 
@@ -121,5 +142,9 @@ public class PodiumTileEntity extends TileEntity implements IPodium {
 
     public boolean renderBook() {
         return this.getPodiumBehavior() != null && this.getPodiumBehavior().isBook();
+    }
+
+    public boolean canPlayerUse(PlayerEntity playerEntity) {
+        return true;
     }
 }

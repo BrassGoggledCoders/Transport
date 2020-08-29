@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public interface IPodium {
     @Nonnull
@@ -17,8 +18,13 @@ public interface IPodium {
     @Nonnull
     ItemStack getDisplayItemStack();
 
+    void setDisplayItemStack(@Nonnull ItemStack itemStack);
+
     @Nonnull
     IWorld getPodiumWorld();
 
     void pulseRedstone(int power);
+
+    @Nonnull
+    PodiumInventory getPodiumInventory();
 }

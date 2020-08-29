@@ -11,7 +11,6 @@ import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 import xyz.brassgoggledcoders.transport.item.HulledBoatItem;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateRecipes;
 
-@SuppressWarnings("unused")
 public class TransportIE {
     public static final ITag.INamedTag<Item> TREATED_WOOD_TAG = ItemTags.makeWrapperTag("forge:treated_wood");
 

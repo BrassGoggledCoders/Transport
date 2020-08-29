@@ -22,7 +22,6 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import vazkii.patchouli.common.base.Patchouli;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
@@ -30,6 +29,7 @@ import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
+import xyz.brassgoggledcoders.transport.podium.BookPodiumBehavior;
 import xyz.brassgoggledcoders.transport.api.podium.PodiumBehavior;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
@@ -144,8 +144,8 @@ public class Transport {
         TransportAPI.addStringPredicateCreator("CONTAINS", StringPredicate.create((predicateString, testString) ->
                 testString.contains(predicateString)));
 
-        TransportAPI.addPodiumBehavior(Items.WRITABLE_BOOK, PodiumBehavior::new);
-        TransportAPI.addPodiumBehavior(Items.WRITTEN_BOOK, PodiumBehavior::new);
+        TransportAPI.addPodiumBehavior(Items.WRITABLE_BOOK, BookPodiumBehavior::new);
+        TransportAPI.addPodiumBehavior(Items.WRITTEN_BOOK, BookPodiumBehavior::new);
         Item patchouliBook = ForgeRegistries.ITEMS.getValue(new ResourceLocation("patchouli", "guide_book"));
         if (patchouliBook != null) {
             TransportAPI.addPodiumBehavior(patchouliBook, PodiumBehavior::new);
