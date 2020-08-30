@@ -1,7 +1,8 @@
 package xyz.brassgoggledcoders.transport.compat.immersiveengineering;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
-import net.minecraft.tags.ItemTags;
+import net.minecraftforge.common.crafting.conditions.NotCondition;
+import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
@@ -19,7 +20,7 @@ public class TransportIE {
                     .group(Transport::getItemGroup)
                     .tag(TransportItemTags.BOAT_HULL)
                     .model((context, modelProvider) -> modelProvider.generated(context))
-                    .recipe(TransportRegistrateRecipes.vehicleShape(ItemTags.makeWrapperTag("forge:treated_wood"))))
+                    .recipe(TransportRegistrateRecipes.vehicleShape("forge:treated_wood")))
             .register();
 
     public static void setup() {
