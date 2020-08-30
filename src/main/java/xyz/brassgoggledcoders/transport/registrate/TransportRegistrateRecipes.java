@@ -10,16 +10,35 @@ import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.ConditionalRecipe;
+import net.minecraftforge.common.crafting.conditions.NotCondition;
+import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class TransportRegistrateRecipes {
-    public static <T extends Item> NonNullBiConsumer<DataGenContext<Item, T>, RegistrateRecipeProvider> vehicleShape(ITag.INamedTag<Item> material) {
+    public static <T extends Item> NonNullBiConsumer<DataGenContext<Item, T>, RegistrateRecipeProvider> vehicleShape(
+            ITag.INamedTag<Item> material) {
         return (context, recipeProvider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
                 .patternLine("M M")
                 .patternLine("MMM")
                 .key('M', material)
                 .addCriterion("has_item", RegistrateRecipeProvider.hasItem(material))
                 .build(recipeProvider);
+    }
+
+    public static <T extends Item> NonNullBiConsumer<DataGenContext<Item, T>, RegistrateRecipeProvider> vehicleShape(
+            String tagName) {
+        return (context, recipeProvider) -> {
+            ITag.INamedTag<Item> material = ItemTags.makeWrapperTag(tagName);
+            ConditionalRecipe.builder()
+                    .addCondition(new NotCondition(new TagEmptyCondition(tagName)))
+                    .addRecipe(ShapedRecipeBuilder.shapedRecipe(context.get())
+                            .patternLine("M M")
+                            .patternLine("MMM")
+                            .key('M', material)
+                            .addCriterion("has_item", RegistrateRecipeProvider.hasItem(material))::build)
+                    .build(recipeProvider, context.getId());
+        };
     }
 
     public static <T extends IItemProvider & IForgeRegistryEntry<T>, I extends T> NonNullBiConsumer<DataGenContext<T, I>,
