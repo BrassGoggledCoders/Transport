@@ -27,6 +27,18 @@ public class NetworkHandler implements INetworkHandler {
                 .encoder(AddModuleCaseMessage::encode)
                 .consumer(AddModuleCaseMessage::consume)
                 .add();
+
+        this.channel.messageBuilder(EditNoteMessage.class, 1)
+                .decoder(EditNoteMessage::decode)
+                .encoder(EditNoteMessage::encode)
+                .consumer(EditNoteMessage::consume)
+                .add();
+
+        this.channel.messageBuilder(OpenNoteMessage.class, 2)
+                .decoder(OpenNoteMessage::decode)
+                .encoder(OpenNoteMessage::encode)
+                .consumer(OpenNoteMessage::consume)
+                .add();
     }
 
     @Override
