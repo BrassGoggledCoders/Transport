@@ -19,7 +19,6 @@ public class TransportEngineModules {
             .lang("Creative Engine")
             .item("creative_engine")
             .model((context, provider) -> provider.generated(context, provider.mcLoc("item/barrier")))
-            .group(Transport::getItemGroup)
             .build()
             .register();
 
@@ -28,7 +27,6 @@ public class TransportEngineModules {
             .engineModule(SolidFuelEngineModuleInstance::new)
             .lang("Solid Fuel Engine")
             .item("solid_fuel_engine")
-            .group(Transport::getItemGroup)
             .recipe((context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
                     .patternLine("F")
                     .patternLine("F")
@@ -44,7 +42,6 @@ public class TransportEngineModules {
             .engineModule(BoosterEngineModuleInstance::new)
             .lang("Booster Engine")
             .item("booster_engine")
-            .group(Transport::getItemGroup)
             .recipe((context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
                     .patternLine("G G")
                     .patternLine("RGR")

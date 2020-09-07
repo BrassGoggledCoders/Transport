@@ -55,11 +55,15 @@ import static xyz.brassgoggledcoders.transport.Transport.ID;
 @Mod(ID)
 public class Transport {
     public static final String ID = "transport";
-    public static final Lazy<ItemGroup> ITEM_GROUP = Lazy.of(() -> new TransportItemGroup(ID, TransportBlocks.HOLDING_RAIL::get));
     public static final Logger LOGGER = LogManager.getLogger(ID);
 
     public static final LocatorType ENTITY = new LocatorType("entity", EntityLocatorInstance::new);
-    public static final Lazy<TransportRegistrate> TRANSPORT_REGISTRATE = Lazy.of(() -> TransportRegistrate.create(ID));
+    public static final Lazy<TransportRegistrate> TRANSPORT_REGISTRATE = Lazy.of(() -> TransportRegistrate.create(ID)
+            .itemGroup(() -> new TransportItemGroup(ID, () -> TransportBlocks.HOLDING_RAIL.orElseThrow(
+                    () -> new IllegalStateException("Got Item too early")
+            )))
+    );
+
     public static Transport instance;
 
     public final NetworkHandler networkHandler;
@@ -150,11 +154,6 @@ public class Transport {
                 .setName(new ResourceLocation("transport", name))
                 .setType(type)
                 .create();
-    }
-
-    @Nonnull
-    public static ItemGroup getItemGroup() {
-        return ITEM_GROUP.get();
     }
 
     public static TransportRegistrate getRegistrate() {

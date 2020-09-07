@@ -207,7 +207,6 @@ public class TransportBlocks {
             .item()
             .model((context, provider) -> {
             })
-            .group(Transport::getItemGroup)
             .recipe(TransportRegistrateRecipes.createLoader(Tags.Items.CHESTS))
             .build()
             .tileEntity(ItemLoaderTileEntity::new)
@@ -228,7 +227,6 @@ public class TransportBlocks {
             .item()
             .model((context, provider) -> {
             })
-            .group(Transport::getItemGroup)
             .recipe(TransportRegistrateRecipes.createLoader(Items.BUCKET))
             .build()
             .tileEntity(FluidLoaderTileEntity::new)
@@ -249,7 +247,6 @@ public class TransportBlocks {
             .item()
             .model((context, provider) -> {
             })
-            .group(Transport::getItemGroup)
             .recipe(TransportRegistrateRecipes.createLoader(Tags.Items.DUSTS_REDSTONE))
             .build()
             .tileEntity(EnergyLoaderTileEntity::new)
@@ -299,7 +296,6 @@ public class TransportBlocks {
             .item()
             .model((context, provider) -> provider.blockItem(context, "_bottom"))
             .recipe(TransportRegistrateRecipes.slab(Items.SCAFFOLDING))
-            .group(Transport::getItemGroup)
             .build()
             .register();
 
@@ -340,7 +336,6 @@ public class TransportBlocks {
                             )
             ))
             .item()
-            .group(Transport::getItemGroup)
             .recipe(TransportRegistrateRecipes.dualSlab(Tags.Items.INGOTS_IRON, Ingredient.fromItems(Items.CRAFTING_TABLE)))
             .build()
             .tileEntity(ModuleConfiguratorTileEntity::new)
@@ -380,7 +375,6 @@ public class TransportBlocks {
                     .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.OAK_BOAT)))
             .item(BuoyBlockItem::new)
             .model((context, provider) -> provider.generated(context, provider.modLoc("item/buoy")))
-            .group(Transport::getItemGroup)
             .build()
             .register();
 
@@ -388,7 +382,6 @@ public class TransportBlocks {
             .object("dock")
             .block(Material.IRON, DockBlock::new)
             .item()
-            .group(Transport::getItemGroup)
             .build()
             .register();
     //endregion
@@ -409,7 +402,6 @@ public class TransportBlocks {
                 .tag(BlockTags.RAILS)
                 .item()
                 .tag(ItemTags.RAILS)
-                .group(Transport::getItemGroup)
                 .model(TransportRegistrateModels.railItem());
 
     }
