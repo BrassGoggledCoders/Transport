@@ -36,10 +36,7 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.block.BuoyBlock;
-import xyz.brassgoggledcoders.transport.block.DockBlock;
-import xyz.brassgoggledcoders.transport.block.ModuleConfiguratorBlock;
-import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
+import xyz.brassgoggledcoders.transport.block.*;
 import xyz.brassgoggledcoders.transport.block.loader.EnergyLoaderBlock;
 import xyz.brassgoggledcoders.transport.block.loader.FluidLoaderBlock;
 import xyz.brassgoggledcoders.transport.block.loader.ItemLoaderBlock;
@@ -54,6 +51,7 @@ import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateBlockLootT
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateModels;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateRecipes;
 import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
+import xyz.brassgoggledcoders.transport.tileentity.YardMasterTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
@@ -193,6 +191,23 @@ public class TransportBlocks {
                     .blockstate((context, provider) -> {
                     })
                     .register();
+
+
+    //region Rail Support
+    public static final BlockEntry<YardMasterBlock> YARD_MASTER = Transport.getRegistrate()
+            .object("yard_master")
+            .block(Material.IRON, YardMasterBlock::new)
+            .properties(AbstractBlock.Properties::notSolid)
+            .blockstate((context, provider) -> provider.horizontalBlock(context.get(), provider.models()
+                    .getExistingFile(provider.modLoc("block/yard_master")))
+            )
+            .simpleItem()
+            .tileEntity(YardMasterTileEntity::new)
+            .build()
+            .register();
+
+    public static final RegistryEntry<TileEntityType<YardMasterTileEntity>> YARD_MASTER_TILE_ENTITY =
+            YARD_MASTER.getSibling(ForgeRegistries.TILE_ENTITIES);
     //endregion
 
     //region Loaders

@@ -15,6 +15,7 @@
   "block.transport.switch_rail": "\u05DF\u0131\u0250\u1D1A \u0265\u0254\u0287\u0131\u028DS",
   "block.transport.timed_holding_rail": "\u05DF\u0131\u0250\u1D1A bu\u0131p\u05DFoH p\u01DD\u026F\u0131\u27D8",
   "block.transport.wye_switch_rail": "\u05DF\u0131\u0250\u1D1A \u0265\u0254\u0287\u0131\u028DS \u01DD\u028EM",
+  "block.transport.yard_master": "\u0279\u01DD\u0287s\u0250W p\u0279\u0250\u028E",
   "cargo.transport.empty": "\u028E\u0287d\u026F\u018E",
   "cargo.transport.energy": "\u01DDb\u0250\u0279o\u0287S \u028Eb\u0279\u01DDu\u018E",
   "cargo.transport.fluid": "\u029Eu\u0250\u27D8 p\u0131n\u05DF\u2132",

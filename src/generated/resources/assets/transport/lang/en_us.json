@@ -15,6 +15,7 @@
   "block.transport.switch_rail": "Switch Rail",
   "block.transport.timed_holding_rail": "Timed Holding Rail",
   "block.transport.wye_switch_rail": "Wye Switch Rail",
+  "block.transport.yard_master": "Yard Master",
   "cargo.transport.empty": "Empty",
   "cargo.transport.energy": "Energy Storage",
   "cargo.transport.fluid": "Fluid Tank",
