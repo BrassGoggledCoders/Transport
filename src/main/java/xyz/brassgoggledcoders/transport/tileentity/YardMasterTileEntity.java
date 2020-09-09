@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -13,6 +14,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.transport.block.YardMasterBlock;
 import xyz.brassgoggledcoders.transport.container.provider.YardMasterContainerProvider;
@@ -92,6 +94,11 @@ public class YardMasterTileEntity extends TileEntity implements ITickableTileEnt
     public CompoundNBT write(@Nonnull CompoundNBT compound) {
         CompoundNBT nbt = super.write(compound);
         nbt.putUniqueId("uniqueId", this.uniqueId);
+        ListNBT connectedObjectNBT = new ListNBT();
+        for (YardMasterObject yardMasterObject : this.connectedObjects) {
+            connectedObjectNBT.add(yardMasterObject.toCompoundNBT());
+        }
+        nbt.put("connectedObjects", connectedObjectNBT);
         return nbt;
     }
 
@@ -100,6 +107,11 @@ public class YardMasterTileEntity extends TileEntity implements ITickableTileEnt
     public void read(BlockState state, CompoundNBT nbt) {
         super.read(state, nbt);
         this.uniqueId = nbt.getUniqueId("uniqueId");
+        this.connectedObjects.clear();
+        ListNBT connectedObjectNBT = nbt.getList("connectedObjects", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < connectedObjectNBT.size(); i++) {
+            this.connectedObjects.add(new YardMasterObject(connectedObjectNBT.getCompound(i)));
+        }
     }
 
     public List<YardMasterObject> getConnectedObjects() {
