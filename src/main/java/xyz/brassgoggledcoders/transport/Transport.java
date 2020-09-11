@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport;
 
 import com.hrznstudio.titanium.network.locator.LocatorType;
+import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
@@ -34,6 +35,7 @@ import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
+import xyz.brassgoggledcoders.transport.content.data.TransportAdditionalRecipes;
 import xyz.brassgoggledcoders.transport.event.EventHandler;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
 import xyz.brassgoggledcoders.transport.nbt.CompoundNBTStorage;
@@ -59,7 +61,9 @@ public class Transport {
     public static final Logger LOGGER = LogManager.getLogger(ID);
 
     public static final LocatorType ENTITY = new LocatorType("entity", EntityLocatorInstance::new);
-    public static final Lazy<TransportRegistrate> TRANSPORT_REGISTRATE = Lazy.of(() -> TransportRegistrate.create(ID));
+    public static final Lazy<TransportRegistrate> TRANSPORT_REGISTRATE = Lazy.of(() -> TransportRegistrate.create(ID)
+            .addDataGenerator(ProviderType.RECIPE, TransportAdditionalRecipes::generate)
+    );
     public static Transport instance;
 
     public final NetworkHandler networkHandler;
@@ -87,7 +91,7 @@ public class Transport {
         TransportContainers.register(modBus);
         TransportEntities.setup();
         TransportItems.setup();
-
+        TransportRecipes.setup();
         TransportModuleTypes.setup();
         TransportCargoModules.setup();
         TransportEngineModules.setup();
