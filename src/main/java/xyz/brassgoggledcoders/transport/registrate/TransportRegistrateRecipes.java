@@ -99,7 +99,7 @@ public class TransportRegistrateRecipes {
                     .build(provider, Transport.rl(fixRL(context.get().getRegistryName()) +
                             "_from_" + fixRL(ingot.getName())));
 
-            ShapedRecipeBuilder.shapedRecipe(rail, 32)
+            ShapedRecipeBuilder.shapedRecipe(rail, 64)
                     .patternLine("R R")
                     .patternLine("RSR")
                     .patternLine("R R")
