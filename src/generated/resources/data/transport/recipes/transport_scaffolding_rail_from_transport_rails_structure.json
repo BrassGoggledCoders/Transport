@@ -1,0 +1,8 @@
+{
+  "type": "transport:rail_worker",
+  "ingredient": {
+    "tag": "transport:rails/structure"
+  },
+  "result": "transport:scaffolding_rail",
+  "count": 1
+}

@@ -1,0 +1,8 @@
+{
+  "type": "transport:rail_worker",
+  "ingredient": {
+    "tag": "transport:rails/powered"
+  },
+  "result": "transport:holding_rail",
+  "count": 1
+}

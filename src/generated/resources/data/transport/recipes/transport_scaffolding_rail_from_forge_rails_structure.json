@@ -1,8 +1,0 @@
-{
-  "type": "transport:rail_worker",
-  "ingredient": {
-    "tag": "forge:rails/structure"
-  },
-  "result": "transport:scaffolding_rail",
-  "count": 1
-}

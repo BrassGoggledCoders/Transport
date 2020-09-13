@@ -1,0 +1,8 @@
+{
+  "type": "transport:rail_worker",
+  "ingredient": {
+    "tag": "transport:rails/powered"
+  },
+  "result": "minecraft:activator_rail",
+  "count": 1
+}
