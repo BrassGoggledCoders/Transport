@@ -448,7 +448,7 @@ public class TransportBlocks {
             String name, String lang, NonNullFunction<AbstractBlock.Properties, B> blockCreator) {
         return Transport.getRegistrate()
                 .object(name)
-                .block(blockCreator)
+                .block(Material.MISCELLANEOUS, blockCreator)
                 .properties(railProperties())
                 .lang(lang)
                 .tag(BlockTags.RAILS)
