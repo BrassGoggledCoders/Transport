@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:rail",
+    "transport:diamond_crossing_rail",
+    "transport:switch_rail",
+    "transport:wye_switch_rail",
+    "transport:bumper_rail"
+  ]
+}

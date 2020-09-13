@@ -64,7 +64,6 @@ import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.rail.SwitchRailTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.rail.TimedHoldingRailTileEntity;
 
-@SuppressWarnings("unused")
 public class TransportBlocks {
     //region Rails
     public static final BlockEntry<HoldingRailBlock> HOLDING_RAIL =
@@ -75,7 +74,9 @@ public class TransportBlocks {
                                     .addIngredient(Items.POWERED_RAIL)
                                     .addCriterion("has_rail", RegistrateRecipeProvider.hasItem(ItemTags.RAILS))
                                     .build(recipeProvider)))
+                    .tag(TransportItemTags.POWERED_RAILS)
                     .build()
+                    .tag(TransportBlockTags.POWERED_RAILS)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -90,7 +91,9 @@ public class TransportBlocks {
                             .key('R', Ingredient.fromItems(Items.RAIL))
                             .addCriterion("has_rail", RegistrateRecipeProvider.hasItem(ItemTags.RAILS))
                             .build(provider))
+                    .tag(TransportItemTags.REGULAR_RAILS)
                     .build()
+                    .tag(TransportBlockTags.REGULAR_RAILS)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -109,7 +112,9 @@ public class TransportBlocks {
                     )
                     .model((context, provider) -> provider.generated(context, provider.mcLoc("block/scaffolding_top"),
                             provider.mcLoc("block/rail")))
+                    .tag(TransportItemTags.STRUCTURE_RAILS)
                     .build()
+                    .tag(TransportBlockTags.STRUCTURE_RAILS)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -126,7 +131,9 @@ public class TransportBlocks {
                     )
                     .model((context, provider) -> provider.generated(context, provider.mcLoc("block/scaffolding_top"),
                             provider.mcLoc("block/rail")))
+                    .tag(TransportItemTags.STRUCTURE_RAILS)
                     .build()
+                    .tag(TransportBlockTags.STRUCTURE_RAILS)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -141,7 +148,9 @@ public class TransportBlocks {
                             .build(provider)
                     )
                     .model(TransportRegistrateModels.railItem("switch_rail_straight_right"))
+                    .tag(TransportItemTags.REGULAR_RAILS)
                     .build()
+                    .tag(TransportBlockTags.REGULAR_RAILS)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -155,7 +164,9 @@ public class TransportBlocks {
                             .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.RAIL))
                             .build(provider)
                     )
+                    .tag(TransportItemTags.REGULAR_RAILS)
                     .build()
+                    .tag(TransportBlockTags.REGULAR_RAILS)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -179,7 +190,9 @@ public class TransportBlocks {
                             .build(provider)
                     )
                     .model((context, provider) -> provider.blockItem(context))
+                    .tag(TransportItemTags.REGULAR_RAILS)
                     .build()
+                    .tag(TransportBlockTags.REGULAR_RAILS)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -191,11 +204,13 @@ public class TransportBlocks {
                             .addIngredient(Items.REPEATER)
                             .addCriterion("has_rail", RegistrateRecipeProvider.hasItem(ItemTags.RAILS))
                             .build(provider))
+                    .tag(TransportItemTags.POWERED_RAILS)
                     .build()
-                    .tileEntity(TimedHoldingRailTileEntity::new)
-                    .build()
+                    .tag(TransportBlockTags.POWERED_RAILS)
                     .blockstate((context, provider) -> {
                     })
+                    .tileEntity(TimedHoldingRailTileEntity::new)
+                    .build()
                     .register();
     //endregion
 
@@ -406,6 +421,14 @@ public class TransportBlocks {
             )
             .lang("Rail Worker's Bench")
             .item()
+            .recipe((context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
+                    .patternLine(" R ")
+                    .patternLine("SSS")
+                    .key('S', Tags.Items.STONE)
+                    .key('R', ItemTags.RAILS)
+                    .addCriterion("has_item", RegistrateRecipeProvider.hasItem(ItemTags.RAILS))
+                    .build(provider)
+            )
             .model((context, provider) -> provider.blockItem(context))
             .group(Transport::getItemGroup)
             .build()

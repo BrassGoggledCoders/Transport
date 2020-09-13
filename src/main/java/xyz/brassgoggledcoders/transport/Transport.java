@@ -35,7 +35,6 @@ import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
-import xyz.brassgoggledcoders.transport.content.data.TransportAdditionalRecipes;
 import xyz.brassgoggledcoders.transport.event.EventHandler;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
 import xyz.brassgoggledcoders.transport.nbt.CompoundNBTStorage;
@@ -62,7 +61,9 @@ public class Transport {
 
     public static final LocatorType ENTITY = new LocatorType("entity", EntityLocatorInstance::new);
     public static final Lazy<TransportRegistrate> TRANSPORT_REGISTRATE = Lazy.of(() -> TransportRegistrate.create(ID)
-            .addDataGenerator(ProviderType.RECIPE, TransportAdditionalRecipes::generate)
+            .addDataGenerator(ProviderType.BLOCK_TAGS, TransportAdditionalData::generateBlockTags)
+            .addDataGenerator(ProviderType.ITEM_TAGS, TransportAdditionalData::generateItemTags)
+            .addDataGenerator(ProviderType.RECIPE, TransportAdditionalData::generateRecipes)
     );
     public static Transport instance;
 

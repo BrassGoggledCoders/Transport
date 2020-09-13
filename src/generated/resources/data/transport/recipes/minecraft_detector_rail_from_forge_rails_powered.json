@@ -1,0 +1,8 @@
+{
+  "type": "transport:rail_worker",
+  "ingredient": {
+    "tag": "forge:rails/powered"
+  },
+  "result": "minecraft:detector_rail",
+  "count": 1
+}
