@@ -1,0 +1,8 @@
+{
+  "type": "transport:rail_worker",
+  "ingredient": {
+    "tag": "forge:rails/regular"
+  },
+  "result": "transport:bumper_rail",
+  "count": 1
+}

@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:powered_rail",
+    "minecraft:detector_rail",
+    "minecraft:activator_rail",
+    "transport:holding_rail",
+    "transport:timed_holding_rail"
+  ]
+}
