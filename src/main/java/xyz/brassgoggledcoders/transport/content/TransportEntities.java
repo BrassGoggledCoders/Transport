@@ -38,7 +38,6 @@ public class TransportEntities {
             .item(CargoCarrierMinecartItem::new)
             .model((context, provider) -> {
             })
-            .group(Transport::getItemGroup)
             .recipe((context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
                     .patternLine(" S ")
                     .patternLine("RMR")
@@ -57,7 +56,6 @@ public class TransportEntities {
             .item(ModularBoatItem::new)
             .model((context, provider) -> {
             })
-            .group(Transport::getItemGroup)
             .lang("Modular Boat")
             .register();
 

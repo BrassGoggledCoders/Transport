@@ -7,12 +7,10 @@ import net.minecraftforge.common.Tags;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.item.RailBreakerItem;
 
-@SuppressWarnings("unused")
 public class TransportItems {
     public static final ItemEntry<RailBreakerItem> RAIL_BREAKER = Transport.getRegistrate()
             .object("rail_breaker")
             .item(RailBreakerItem::new)
-            .group(Transport::getItemGroup)
             .properties(properties -> properties.maxStackSize(1))
             .lang("Rail Breaker")
             .tag(TransportItemTags.WRENCHES)

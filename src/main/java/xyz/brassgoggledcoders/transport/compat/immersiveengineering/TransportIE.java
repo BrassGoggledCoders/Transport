@@ -17,7 +17,6 @@ public class TransportIE {
             .lang("Treated Wood Hull")
             .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
             .item("boat", HulledBoatItem::new, itemBuilder -> itemBuilder
-                    .group(Transport::getItemGroup)
                     .tag(TransportItemTags.BOAT_HULL)
                     .model((context, modelProvider) -> modelProvider.generated(context))
                     .recipe(TransportRegistrateRecipes.vehicleShape("forge:treated_wood")))
