@@ -1,8 +1,8 @@
 {
   "type": "transport:rail_worker",
   "ingredient": {
-    "tag": "forge:rails/powered"
+    "tag": "transport:rails/regular"
   },
-  "result": "transport:holding_rail",
+  "result": "transport:bumper_rail",
   "count": 1
 }

@@ -74,9 +74,9 @@ public class TransportBlocks {
                                     .addIngredient(Items.POWERED_RAIL)
                                     .addCriterion("has_rail", RegistrateRecipeProvider.hasItem(ItemTags.RAILS))
                                     .build(recipeProvider)))
-                    .tag(TransportItemTags.POWERED_RAILS)
+                    .tag(TransportItemTags.RAILS_POWERED)
                     .build()
-                    .tag(TransportBlockTags.POWERED_RAILS)
+                    .tag(TransportBlockTags.RAILS_POWERED)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -91,9 +91,9 @@ public class TransportBlocks {
                             .key('R', Ingredient.fromItems(Items.RAIL))
                             .addCriterion("has_rail", RegistrateRecipeProvider.hasItem(ItemTags.RAILS))
                             .build(provider))
-                    .tag(TransportItemTags.REGULAR_RAILS)
+                    .tag(TransportItemTags.RAILS_REGULAR)
                     .build()
-                    .tag(TransportBlockTags.REGULAR_RAILS)
+                    .tag(TransportBlockTags.RAILS_REGULAR)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -112,9 +112,9 @@ public class TransportBlocks {
                     )
                     .model((context, provider) -> provider.generated(context, provider.mcLoc("block/scaffolding_top"),
                             provider.mcLoc("block/rail")))
-                    .tag(TransportItemTags.STRUCTURE_RAILS)
+                    .tag(TransportItemTags.RAILS_STRUCTURE)
                     .build()
-                    .tag(TransportBlockTags.STRUCTURE_RAILS)
+                    .tag(TransportBlockTags.RAILS_STRUCTURE)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -131,9 +131,9 @@ public class TransportBlocks {
                     )
                     .model((context, provider) -> provider.generated(context, provider.mcLoc("block/scaffolding_top"),
                             provider.mcLoc("block/rail")))
-                    .tag(TransportItemTags.STRUCTURE_RAILS)
+                    .tag(TransportItemTags.RAILS_STRUCTURE)
                     .build()
-                    .tag(TransportBlockTags.STRUCTURE_RAILS)
+                    .tag(TransportBlockTags.RAILS_STRUCTURE)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -148,9 +148,9 @@ public class TransportBlocks {
                             .build(provider)
                     )
                     .model(TransportRegistrateModels.railItem("switch_rail_straight_right"))
-                    .tag(TransportItemTags.REGULAR_RAILS)
+                    .tag(TransportItemTags.RAILS_REGULAR)
                     .build()
-                    .tag(TransportBlockTags.REGULAR_RAILS)
+                    .tag(TransportBlockTags.RAILS_REGULAR)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -164,9 +164,9 @@ public class TransportBlocks {
                             .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.RAIL))
                             .build(provider)
                     )
-                    .tag(TransportItemTags.REGULAR_RAILS)
+                    .tag(TransportItemTags.RAILS_REGULAR)
                     .build()
-                    .tag(TransportBlockTags.REGULAR_RAILS)
+                    .tag(TransportBlockTags.RAILS_REGULAR)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -190,9 +190,9 @@ public class TransportBlocks {
                             .build(provider)
                     )
                     .model((context, provider) -> provider.blockItem(context))
-                    .tag(TransportItemTags.REGULAR_RAILS)
+                    .tag(TransportItemTags.RAILS_REGULAR)
                     .build()
-                    .tag(TransportBlockTags.REGULAR_RAILS)
+                    .tag(TransportBlockTags.RAILS_REGULAR)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -204,9 +204,9 @@ public class TransportBlocks {
                             .addIngredient(Items.REPEATER)
                             .addCriterion("has_rail", RegistrateRecipeProvider.hasItem(ItemTags.RAILS))
                             .build(provider))
-                    .tag(TransportItemTags.POWERED_RAILS)
+                    .tag(TransportItemTags.RAILS_POWERED)
                     .build()
-                    .tag(TransportBlockTags.POWERED_RAILS)
+                    .tag(TransportBlockTags.RAILS_POWERED)
                     .blockstate((context, provider) -> {
                     })
                     .tileEntity(TimedHoldingRailTileEntity::new)

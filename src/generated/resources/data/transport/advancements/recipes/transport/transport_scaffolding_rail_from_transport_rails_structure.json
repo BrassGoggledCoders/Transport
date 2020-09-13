@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "transport:minecraft_detector_rail_from_forge_rails_powered"
+      "transport:transport_scaffolding_rail_from_transport_rails_structure"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "transport:minecraft_detector_rail_from_forge_rails_powered"
+        "recipe": "transport:transport_scaffolding_rail_from_transport_rails_structure"
       }
     }
   },

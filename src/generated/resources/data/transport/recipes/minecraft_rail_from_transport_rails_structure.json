@@ -1,7 +1,7 @@
 {
   "type": "transport:rail_worker",
   "ingredient": {
-    "tag": "forge:rails/powered"
+    "tag": "transport:rails/structure"
   },
   "result": "minecraft:rail",
   "count": 1

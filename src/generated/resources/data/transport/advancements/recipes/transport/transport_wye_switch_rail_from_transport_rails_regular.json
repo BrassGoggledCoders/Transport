@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "transport:transport_elevator_switch_rail_from_forge_rails_structure"
+      "transport:transport_wye_switch_rail_from_transport_rails_regular"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "transport:transport_elevator_switch_rail_from_forge_rails_structure"
+        "recipe": "transport:transport_wye_switch_rail_from_transport_rails_regular"
       }
     }
   },

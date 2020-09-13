@@ -1,0 +1,8 @@
+{
+  "type": "transport:rail_worker",
+  "ingredient": {
+    "tag": "transport:rails/regular"
+  },
+  "result": "transport:wye_switch_rail",
+  "count": 1
+}

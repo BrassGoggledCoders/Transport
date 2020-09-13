@@ -1,7 +1,7 @@
 {
   "type": "transport:rail_worker",
   "ingredient": {
-    "tag": "forge:rails/regular"
+    "tag": "transport:rails/regular"
   },
   "result": "transport:switch_rail",
   "count": 1
