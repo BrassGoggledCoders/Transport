@@ -15,4 +15,7 @@ public class TransportItemTags {
     public static final ITag.INamedTag<Item> RAILS_POWERED = ItemTags.makeWrapperTag("transport:rails/powered");
     public static final ITag.INamedTag<Item> RAILS_STRUCTURE = ItemTags.makeWrapperTag("transport:rails/structure");
 
+    public static final ITag.INamedTag<Item> RAILS = ItemTags.makeWrapperTag("forge:rails");
+    public static final ITag.INamedTag<Item> RAILS_IRON = ItemTags.makeWrapperTag("forge:rails/iron");
+    public static final ITag.INamedTag<Item> RAILS_GOLD = ItemTags.makeWrapperTag("forge:rails/gold");
 }

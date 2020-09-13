@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "R R",
+    "RSR",
+    "R R"
+  ],
+  "key": {
+    "R": {
+      "item": "transport:iron_rail"
+    },
+    "S": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "minecraft:rail",
+    "count": 32
+  }
+}

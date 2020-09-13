@@ -70,6 +70,9 @@ public class TransportAdditionalData {
                 .addTag(TransportItemTags.HULLS_BOAT)
                 .addTag(TransportItemTags.HULLS_MINECART);
 
+        itemTagsProvider.getOrCreateBuilder(TransportItemTags.RAILS)
+                .addTag(TransportItemTags.RAILS_IRON)
+                .addTag(TransportItemTags.RAILS_GOLD);
     }
 
     public static List<Pair<IItemProvider, ITag<Item>>> getTagInfoList() {
