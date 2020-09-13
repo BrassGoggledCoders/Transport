@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.compat.immersiveengineering;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import net.minecraftforge.fml.ModList;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
@@ -21,5 +22,8 @@ public class TransportIE {
             .register();
 
     public static void setup() {
+        if (ModList.get().isLoaded("immersiveengineering")) {
+            IEDependentSetup.setup();
+        }
     }
 }
