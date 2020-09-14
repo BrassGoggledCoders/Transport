@@ -11,4 +11,6 @@ public interface IHoldable {
     void onHeld();
 
     void onRelease();
+
+    void push(float xPush, float zPush);
 }
