@@ -44,6 +44,10 @@ repositories {
         name = "Registrate"
         url = "http://maven.tterrag.com/"
     }
+    maven {
+        name = "JEI"
+        url = "https://dvs1.progwml6.com/files/maven"
+    }
 }
 
 test {
@@ -159,6 +163,10 @@ dependencies {
     compile fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.16.1-${immersive_engineering_version}")
 
     compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
+
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
+
     testImplementation('org.junit.jupiter:junit-jupiter:5.6.1')
 }
 
