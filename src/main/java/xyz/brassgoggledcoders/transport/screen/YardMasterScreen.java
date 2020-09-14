@@ -15,6 +15,7 @@ import xyz.brassgoggledcoders.transport.tileentity.YardMasterObject;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Objects;
 
 public class YardMasterScreen extends ContainerScreen<YardMasterContainer> {
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("textures/gui/container/stonecutter.png");
@@ -30,14 +31,15 @@ public class YardMasterScreen extends ContainerScreen<YardMasterContainer> {
     @Override
     public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.func_230459_a_(matrixStack, mouseX, mouseY);
+        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
         this.renderBackground(matrixStack);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(BACKGROUND_TEXTURE);
+        this.getMinecraft().getTextureManager().bindTexture(BACKGROUND_TEXTURE);
         int i = this.guiLeft;
         int j = this.guiTop;
         this.blit(matrixStack, i, j, 0, 0, this.xSize, this.ySize);
@@ -51,8 +53,8 @@ public class YardMasterScreen extends ContainerScreen<YardMasterContainer> {
     }
 
     @Override
-    protected void func_230459_a_(@Nonnull MatrixStack matrixStack, int x, int y) {
-        super.func_230459_a_(matrixStack, x, y);
+    protected void renderHoveredTooltip(@Nonnull MatrixStack matrixStack, int x, int y) {
+        super.renderHoveredTooltip(matrixStack, x, y);
         int i = this.guiLeft + 52;
         int j = this.guiTop + 14;
         int k = this.recipeIndexOffset + 12;
@@ -94,7 +96,7 @@ public class YardMasterScreen extends ContainerScreen<YardMasterContainer> {
             int k = left + j % 4 * 16;
             int l = j / 4;
             int i1 = top + l * 18 + 2;
-            this.minecraft.getItemRenderer().renderItemAndEffectIntoGUI(list.get(i).getRepresentative(), k, i1);
+            this.getMinecraft().getItemRenderer().renderItemAndEffectIntoGUI(list.get(i).getRepresentative(), k, i1);
         }
 
     }
@@ -110,9 +112,10 @@ public class YardMasterScreen extends ContainerScreen<YardMasterContainer> {
             int i1 = l - this.recipeIndexOffset;
             double d0 = mouseX - (double) (i + i1 % 4 * 16);
             double d1 = mouseY - (double) (j + i1 / 4 * 18);
-            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 16.0D && d1 < 18.0D && this.container.enchantItem(this.minecraft.player, l)) {
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 16.0D && d1 < 18.0D && this.container.enchantItem(
+                    Objects.requireNonNull(this.getMinecraft().player), l)) {
                 Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
-                this.minecraft.playerController.sendEnchantPacket((this.container).windowId, l);
+                Objects.requireNonNull(this.getMinecraft().playerController).sendEnchantPacket((this.container).windowId, l);
                 return true;
             }
         }
