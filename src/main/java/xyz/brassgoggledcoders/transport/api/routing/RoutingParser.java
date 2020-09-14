@@ -74,8 +74,15 @@ public class RoutingParser {
                         }
                     } else if (METHOD_START.test(routingInstructionInput)) {
                         String newMethodName = trimInstruction(routingInstructionInput);
-                        return parseRouting(newMethodName, routingMethodInputs, getDeserializer)
+                        Either<String, Routing> routingInput = parseRouting(newMethodName, routingMethodInputs, getDeserializer)
                                 .mapLeft(error -> newMethodName + " failed: " + error);
+                        if (routingInput.left().isPresent()) {
+                            return routingInput;
+                        } else if (routingInput.right().isPresent()){
+                            inputs.add(routingInput.right().get());
+                        } else {
+                            return Either.left("Unable to deal with Routing Input");
+                        }
                     } else {
                         return Either.left("Unable to parse value for Routing: " + routingInstructionInput);
                     }

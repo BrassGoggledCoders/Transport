@@ -23,7 +23,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullConsumer;
 import net.minecraftforge.fml.network.NetworkHooks;
-import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.block.loader.LoadType;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
 import xyz.brassgoggledcoders.transport.container.LoaderContainerProvider;
@@ -41,23 +40,28 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
 
     private final Capability<CAP> capability;
     private final EnumMap<Direction, LazyOptional<CAP>> lazyOptionals;
-    private final EnumMap<Direction, Pair<Long, LazyOptional<CAP>>> neighboringTiles;
     private int run = 20;
 
     public <T extends BasicLoaderTileEntity<CAP>> BasicLoaderTileEntity(TileEntityType<T> tileEntityType, Capability<CAP> capability) {
         super(tileEntityType);
         this.capability = capability;
         this.lazyOptionals = Maps.newEnumMap(Direction.class);
-        this.neighboringTiles = Maps.newEnumMap(Direction.class);
     }
 
     @Override
     public void tick() {
-        if (run >= 0) {
-            run--;
-        } else {
-            doWork();
+        if (this.getWorld() != null) {
+            if (!this.getWorld().isRemote()) {
+                if (run >= 0) {
+                    run--;
+                } else {
+                    doWork();
+                    run = 15 + this.getWorld().getRandom().nextInt(10);
+                }
+            }
+
         }
+
     }
 
     @Nonnull
@@ -66,10 +70,7 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
     }
 
     private void doWork() {
-        int x = this.getPos().getX();
-        int y = this.getPos().getY();
-        int z = this.getPos().getZ();
-        AxisAlignedBB axisAlignedBB = new AxisAlignedBB(x - 1, y - 1, z - 1, x + 2, y + 2, z + 2);
+        AxisAlignedBB axisAlignedBB = new AxisAlignedBB(this.getPos()).grow(1);
         List<Entity> entities = this.getTheWorld().getEntitiesInAABBexcluding(null, axisAlignedBB, Entity::isAlive);
 
         for (Direction side : Direction.values()) {
@@ -82,16 +83,7 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
     }
 
     private void doWorkOnSide(LoadType loadType, Direction side, BlockPos neighborPos, Stream<Entity> entitiesOnSide) {
-        Pair<Long, LazyOptional<CAP>> neighborCap = neighboringTiles.get(side);
-        if (neighborCap == null) {
-            neighborCap = getNeighborCap(side, neighborPos, entitiesOnSide);
-            neighboringTiles.put(side, neighborCap);
-        } else if (this.getTheWorld().getGameTime() - neighborCap.getLeft() > 200) {
-            neighborCap = getNeighborCap(side, neighborPos, entitiesOnSide);
-            neighboringTiles.put(side, neighborCap);
-        }
-
-        neighborCap.getRight()
+        this.getNeighborCap(side, neighborPos, entitiesOnSide)
                 .ifPresent(cap -> this.handleNeighborCap(loadType, cap));
     }
 
@@ -105,7 +97,7 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
 
     protected abstract void transfer(CAP from, CAP to);
 
-    private Pair<Long, LazyOptional<CAP>> getNeighborCap(Direction side, BlockPos neighborPos, Stream<Entity> entitiesOnSide) {
+    private LazyOptional<CAP> getNeighborCap(Direction side, BlockPos neighborPos, Stream<Entity> entitiesOnSide) {
         LazyOptional<CAP> capLazyOptional;
         Optional<Entity> entity = entitiesOnSide.findAny();
         if (entity.isPresent()) {
@@ -116,10 +108,8 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
                     .map(tileEntity -> tileEntity.getCapability(this.capability, side.getOpposite()))
                     .orElseGet(LazyOptional::empty);
         }
-        if (capLazyOptional.isPresent()) {
-            capLazyOptional.addListener(this.createInvalidationHandler(side));
-        }
-        return Pair.of(this.getTheWorld().getGameTime(), capLazyOptional);
+
+        return capLazyOptional;
     }
 
     public void updateSide(Direction direction) {
@@ -179,10 +169,6 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
     protected abstract LazyOptional<CAP> createOutputCAP();
 
     protected abstract LazyOptional<CAP> createInputCAP();
-
-    private NonNullConsumer<LazyOptional<CAP>> createInvalidationHandler(Direction side) {
-        return capLazyOptional -> this.neighboringTiles.remove(side);
-    }
 
     protected abstract CompoundNBT serializeCap();
 
