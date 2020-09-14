@@ -31,7 +31,7 @@ public class BuoyBlockItem extends BlockItem {
     @ParametersAreNonnullByDefault
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         BlockRayTraceResult fluidRayTraceResult = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
-        BlockRayTraceResult blockRayTraceResult = fluidRayTraceResult.func_237485_a_(fluidRayTraceResult.getPos().up());
+        BlockRayTraceResult blockRayTraceResult = fluidRayTraceResult.withPosition(fluidRayTraceResult.getPos().up());
         ActionResultType actionResultType = super.onItemUse(new ItemUseContext(player, hand, blockRayTraceResult));
         return new ActionResult<>(actionResultType, player.getHeldItem(hand));
     }

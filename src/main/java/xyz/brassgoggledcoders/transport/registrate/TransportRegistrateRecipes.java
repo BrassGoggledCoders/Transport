@@ -9,11 +9,16 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.recipe.jobsite.RailWorkerBenchRecipeBuilder;
+
+import javax.annotation.Nullable;
 
 public class TransportRegistrateRecipes {
     public static <T extends Item> NonNullBiConsumer<DataGenContext<Item, T>, RegistrateRecipeProvider> vehicleShape(
@@ -68,7 +73,7 @@ public class TransportRegistrateRecipes {
 
     public static <T extends IItemProvider & IForgeRegistryEntry<T>, I extends T> NonNullBiConsumer<DataGenContext<T, I>,
             RegistrateRecipeProvider> slab(IItemProvider item) {
-        return (context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
+        return (context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get(), 3)
                 .patternLine("SSS")
                 .key('S', Ingredient.fromItems(item))
                 .addCriterion("has_item", RegistrateRecipeProvider.hasItem(item))
@@ -84,5 +89,30 @@ public class TransportRegistrateRecipes {
                 .key('B', bottom)
                 .addCriterion("has_item", RegistrateRecipeProvider.hasItem(bottom))
                 .build(provider);
+    }
+
+    public static <T extends IItemProvider & IForgeRegistryEntry<T>, I extends T> NonNullBiConsumer<DataGenContext<T, I>,
+            RegistrateRecipeProvider> railRecipes(ITag.INamedTag<Item> ingot, Item rail) {
+        return (context, provider) -> {
+            RailWorkerBenchRecipeBuilder.create(ingot, context.get())
+                    .addCriterion("has_item", RegistrateRecipeProvider.hasItem(ingot))
+                    .build(provider, Transport.rl(fixRL(context.get().getRegistryName()) +
+                            "_from_" + fixRL(ingot.getName())));
+
+            ShapedRecipeBuilder.shapedRecipe(rail, 64)
+                    .patternLine("R R")
+                    .patternLine("RSR")
+                    .patternLine("R R")
+                    .key('R', context.get())
+                    .key('S', Tags.Items.RODS_WOODEN)
+                    .addCriterion("has_item", RegistrateRecipeProvider.hasItem(context.get()))
+                    .build(provider, Transport.rl(fixRL(rail.getRegistryName()) +
+                            "_from_" + fixRL(context.getId())));
+        };
+    }
+
+    public static String fixRL(@Nullable ResourceLocation resourceLocation) {
+        return resourceLocation != null ? resourceLocation.toString().replace(":", "_")
+                .replace("/", "_") : "";
     }
 }

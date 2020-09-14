@@ -16,6 +16,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.ShapelessRecipeBuilder;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -40,6 +41,7 @@ import xyz.brassgoggledcoders.transport.block.BuoyBlock;
 import xyz.brassgoggledcoders.transport.block.DockBlock;
 import xyz.brassgoggledcoders.transport.block.ModuleConfiguratorBlock;
 import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
+import xyz.brassgoggledcoders.transport.block.jobsite.RailWorkerBenchBlock;
 import xyz.brassgoggledcoders.transport.block.loader.EnergyLoaderBlock;
 import xyz.brassgoggledcoders.transport.block.loader.FluidLoaderBlock;
 import xyz.brassgoggledcoders.transport.block.loader.ItemLoaderBlock;
@@ -48,11 +50,13 @@ import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitch
 import xyz.brassgoggledcoders.transport.block.rail.elevatorswitch.ElevatorSwitchSupportBlock;
 import xyz.brassgoggledcoders.transport.block.rail.turnout.SwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.turnout.WyeSwitchRailBlock;
+import xyz.brassgoggledcoders.transport.container.jobsite.RailWorkerBenchContainer;
 import xyz.brassgoggledcoders.transport.item.BuoyBlockItem;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrate;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateBlockLootTables;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateModels;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateRecipes;
+import xyz.brassgoggledcoders.transport.screen.jobsite.RailWorkerBenchScreen;
 import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
@@ -60,7 +64,6 @@ import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.rail.SwitchRailTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.rail.TimedHoldingRailTileEntity;
 
-@SuppressWarnings("unused")
 public class TransportBlocks {
     //region Rails
     public static final BlockEntry<HoldingRailBlock> HOLDING_RAIL =
@@ -71,7 +74,9 @@ public class TransportBlocks {
                                     .addIngredient(Items.POWERED_RAIL)
                                     .addCriterion("has_rail", RegistrateRecipeProvider.hasItem(ItemTags.RAILS))
                                     .build(recipeProvider)))
+                    .tag(TransportItemTags.RAILS_POWERED)
                     .build()
+                    .tag(TransportBlockTags.RAILS_POWERED)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -86,7 +91,9 @@ public class TransportBlocks {
                             .key('R', Ingredient.fromItems(Items.RAIL))
                             .addCriterion("has_rail", RegistrateRecipeProvider.hasItem(ItemTags.RAILS))
                             .build(provider))
+                    .tag(TransportItemTags.RAILS_REGULAR)
                     .build()
+                    .tag(TransportBlockTags.RAILS_REGULAR)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -105,7 +112,9 @@ public class TransportBlocks {
                     )
                     .model((context, provider) -> provider.generated(context, provider.mcLoc("block/scaffolding_top"),
                             provider.mcLoc("block/rail")))
+                    .tag(TransportItemTags.RAILS_STRUCTURE)
                     .build()
+                    .tag(TransportBlockTags.RAILS_STRUCTURE)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -122,7 +131,9 @@ public class TransportBlocks {
                     )
                     .model((context, provider) -> provider.generated(context, provider.mcLoc("block/scaffolding_top"),
                             provider.mcLoc("block/rail")))
+                    .tag(TransportItemTags.RAILS_STRUCTURE)
                     .build()
+                    .tag(TransportBlockTags.RAILS_STRUCTURE)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -137,7 +148,9 @@ public class TransportBlocks {
                             .build(provider)
                     )
                     .model(TransportRegistrateModels.railItem("switch_rail_straight_right"))
+                    .tag(TransportItemTags.RAILS_REGULAR)
                     .build()
+                    .tag(TransportBlockTags.RAILS_REGULAR)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -151,7 +164,9 @@ public class TransportBlocks {
                             .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.RAIL))
                             .build(provider)
                     )
+                    .tag(TransportItemTags.RAILS_REGULAR)
                     .build()
+                    .tag(TransportBlockTags.RAILS_REGULAR)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -175,7 +190,9 @@ public class TransportBlocks {
                             .build(provider)
                     )
                     .model((context, provider) -> provider.blockItem(context))
+                    .tag(TransportItemTags.RAILS_REGULAR)
                     .build()
+                    .tag(TransportBlockTags.RAILS_REGULAR)
                     .blockstate((context, provider) -> {
                     })
                     .register();
@@ -187,11 +204,13 @@ public class TransportBlocks {
                             .addIngredient(Items.REPEATER)
                             .addCriterion("has_rail", RegistrateRecipeProvider.hasItem(ItemTags.RAILS))
                             .build(provider))
+                    .tag(TransportItemTags.RAILS_POWERED)
                     .build()
-                    .tileEntity(TimedHoldingRailTileEntity::new)
-                    .build()
+                    .tag(TransportBlockTags.RAILS_POWERED)
                     .blockstate((context, provider) -> {
                     })
+                    .tileEntity(TimedHoldingRailTileEntity::new)
+                    .build()
                     .register();
     //endregion
 
@@ -207,7 +226,6 @@ public class TransportBlocks {
             .item()
             .model((context, provider) -> {
             })
-            .group(Transport::getItemGroup)
             .recipe(TransportRegistrateRecipes.createLoader(Tags.Items.CHESTS))
             .build()
             .tileEntity(ItemLoaderTileEntity::new)
@@ -228,7 +246,6 @@ public class TransportBlocks {
             .item()
             .model((context, provider) -> {
             })
-            .group(Transport::getItemGroup)
             .recipe(TransportRegistrateRecipes.createLoader(Items.BUCKET))
             .build()
             .tileEntity(FluidLoaderTileEntity::new)
@@ -249,7 +266,6 @@ public class TransportBlocks {
             .item()
             .model((context, provider) -> {
             })
-            .group(Transport::getItemGroup)
             .recipe(TransportRegistrateRecipes.createLoader(Tags.Items.DUSTS_REDSTONE))
             .build()
             .tileEntity(EnergyLoaderTileEntity::new)
@@ -299,7 +315,6 @@ public class TransportBlocks {
             .item()
             .model((context, provider) -> provider.blockItem(context, "_bottom"))
             .recipe(TransportRegistrateRecipes.slab(Items.SCAFFOLDING))
-            .group(Transport::getItemGroup)
             .build()
             .register();
 
@@ -340,7 +355,6 @@ public class TransportBlocks {
                             )
             ))
             .item()
-            .group(Transport::getItemGroup)
             .recipe(TransportRegistrateRecipes.dualSlab(Tags.Items.INGOTS_IRON, Ingredient.fromItems(Items.CRAFTING_TABLE)))
             .build()
             .tileEntity(ModuleConfiguratorTileEntity::new)
@@ -380,7 +394,6 @@ public class TransportBlocks {
                     .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.OAK_BOAT)))
             .item(BuoyBlockItem::new)
             .model((context, provider) -> provider.generated(context, provider.modLoc("item/buoy")))
-            .group(Transport::getItemGroup)
             .build()
             .register();
 
@@ -388,9 +401,33 @@ public class TransportBlocks {
             .object("dock")
             .block(Material.IRON, DockBlock::new)
             .item()
-            .group(Transport::getItemGroup)
             .build()
             .register();
+
+    public static final BlockEntry<RailWorkerBenchBlock> RAIL_WORKER_BENCH = Transport.getRegistrate()
+            .object("rail_workers_bench")
+            .container(RailWorkerBenchContainer::new, () -> RailWorkerBenchScreen::new)
+            .build()
+            .block(RailWorkerBenchBlock::new)
+            .blockstate((context, provider) -> provider.horizontalBlock(context.get(), provider.models()
+                    .getExistingFile(provider.modLoc("block/rail_workers_bench")))
+            )
+            .lang("Rail Worker's Bench")
+            .item()
+            .recipe((context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
+                    .patternLine(" R ")
+                    .patternLine("SSS")
+                    .key('S', Tags.Items.STONE)
+                    .key('R', ItemTags.RAILS)
+                    .addCriterion("has_item", RegistrateRecipeProvider.hasItem(ItemTags.RAILS))
+                    .build(provider)
+            )
+            .model((context, provider) -> provider.blockItem(context))
+            .build()
+            .register();
+
+    public static final RegistryEntry<ContainerType<RailWorkerBenchContainer>> RAIL_WORKER_BENCH_CONTAINER =
+            RAIL_WORKER_BENCH.getSibling(ForgeRegistries.CONTAINERS);
     //endregion
 
     private static NonNullUnaryOperator<AbstractBlock.Properties> railProperties() {
@@ -403,13 +440,12 @@ public class TransportBlocks {
             String name, String lang, NonNullFunction<AbstractBlock.Properties, B> blockCreator) {
         return Transport.getRegistrate()
                 .object(name)
-                .block(blockCreator)
+                .block(Material.MISCELLANEOUS, blockCreator)
                 .properties(railProperties())
                 .lang(lang)
                 .tag(BlockTags.RAILS)
                 .item()
                 .tag(ItemTags.RAILS)
-                .group(Transport::getItemGroup)
                 .model(TransportRegistrateModels.railItem());
 
     }

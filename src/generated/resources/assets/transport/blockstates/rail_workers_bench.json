@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "transport:block/rail_workers_bench"
+    },
+    "facing=south": {
+      "model": "transport:block/rail_workers_bench",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "transport:block/rail_workers_bench",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "transport:block/rail_workers_bench",
+      "y": 90
+    }
+  }
+}

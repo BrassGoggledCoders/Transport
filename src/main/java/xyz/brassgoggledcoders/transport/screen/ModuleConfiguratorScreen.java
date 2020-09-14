@@ -21,7 +21,7 @@ public class ModuleConfiguratorScreen extends BasicAddonScreen {
     }
 
     @Override
-    protected void func_230459_a_(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY) {
+    protected void renderHoveredTooltip(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY) {
         if (this.minecraft != null && this.minecraft.player != null) {
             if (this.minecraft.player.inventory.getItemStack().isEmpty() && this.hoveredSlot instanceof SlotItemHandler &&
                     ((SlotItemHandler) this.hoveredSlot).getItemHandler() instanceof ModuleCaseItemStackHandler) {
@@ -40,10 +40,10 @@ public class ModuleConfiguratorScreen extends BasicAddonScreen {
                             mouseX, mouseY);
                 }
             } else {
-                super.func_230459_a_(matrixStack, mouseX, mouseY);
+                super.renderHoveredTooltip(matrixStack, mouseX, mouseY);
             }
         } else {
-            super.func_230459_a_(matrixStack, mouseX, mouseY);
+            super.renderHoveredTooltip(matrixStack, mouseX, mouseY);
         }
     }
 }

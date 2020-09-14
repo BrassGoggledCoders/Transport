@@ -1,0 +1,8 @@
+{
+  "type": "transport:rail_workers_bench",
+  "ingredient": {
+    "tag": "transport:rails/structure"
+  },
+  "result": "minecraft:rail",
+  "count": 1
+}

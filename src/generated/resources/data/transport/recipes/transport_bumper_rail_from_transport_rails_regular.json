@@ -1,0 +1,8 @@
+{
+  "type": "transport:rail_workers_bench",
+  "ingredient": {
+    "tag": "transport:rails/regular"
+  },
+  "result": "transport:bumper_rail",
+  "count": 1
+}

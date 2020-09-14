@@ -1,8 +1,7 @@
 package xyz.brassgoggledcoders.transport.compat.immersiveengineering;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
-import net.minecraftforge.common.crafting.conditions.NotCondition;
-import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
+import net.minecraftforge.fml.ModList;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
@@ -17,12 +16,14 @@ public class TransportIE {
             .lang("Treated Wood Hull")
             .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
             .item("boat", HulledBoatItem::new, itemBuilder -> itemBuilder
-                    .group(Transport::getItemGroup)
-                    .tag(TransportItemTags.BOAT_HULL)
+                    .tag(TransportItemTags.HULLS_BOAT)
                     .model((context, modelProvider) -> modelProvider.generated(context))
                     .recipe(TransportRegistrateRecipes.vehicleShape("forge:treated_wood")))
             .register();
 
     public static void setup() {
+        if (ModList.get().isLoaded("immersiveengineering")) {
+            IEDependentSetup.setup();
+        }
     }
 }
