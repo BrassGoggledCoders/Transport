@@ -73,7 +73,7 @@ public class TransportRegistrateRecipes {
 
     public static <T extends IItemProvider & IForgeRegistryEntry<T>, I extends T> NonNullBiConsumer<DataGenContext<T, I>,
             RegistrateRecipeProvider> slab(IItemProvider item) {
-        return (context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
+        return (context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get(), 3)
                 .patternLine("SSS")
                 .key('S', Ingredient.fromItems(item))
                 .addCriterion("has_item", RegistrateRecipeProvider.hasItem(item))
