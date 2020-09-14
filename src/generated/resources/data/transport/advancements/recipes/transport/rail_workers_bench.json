@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "transport:rail_worker_bench"
+      "transport:rail_workers_bench"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "transport:rail_worker_bench"
+        "recipe": "transport:rail_workers_bench"
       }
     }
   },

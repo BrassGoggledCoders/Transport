@@ -8,11 +8,11 @@ import xyz.brassgoggledcoders.transport.recipe.jobsite.RailWorkerBenchRecipe;
 import xyz.brassgoggledcoders.transport.recipe.jobsite.SingleItemRecipeSerializer;
 
 public class TransportRecipes {
-    public static final IRecipeType<RailWorkerBenchRecipe> RAIL_WORKER_BENCH_TYPE = IRecipeType.register("transport:rail_worker");
+    public static final IRecipeType<RailWorkerBenchRecipe> RAIL_WORKER_BENCH_TYPE = IRecipeType.register("transport:rail_workers_bench");
 
     public static final RegistryEntry<SingleItemRecipeSerializer<RailWorkerBenchRecipe>> RAIL_WORKER_BENCH_SERIALIZER =
             Transport.getRegistrate()
-                    .object("rail_worker")
+                    .object("rail_workers_bench")
                     .simple(IRecipeSerializer.class, () -> new SingleItemRecipeSerializer<>(RailWorkerBenchRecipe::new));
 
     public static void setup() {

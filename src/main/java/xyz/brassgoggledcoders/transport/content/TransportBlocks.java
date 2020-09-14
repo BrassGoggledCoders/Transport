@@ -405,12 +405,12 @@ public class TransportBlocks {
             .register();
 
     public static final BlockEntry<RailWorkerBenchBlock> RAIL_WORKER_BENCH = Transport.getRegistrate()
-            .object("rail_worker_bench")
+            .object("rail_workers_bench")
             .container(RailWorkerBenchContainer::new, () -> RailWorkerBenchScreen::new)
             .build()
             .block(RailWorkerBenchBlock::new)
             .blockstate((context, provider) -> provider.horizontalBlock(context.get(), provider.models()
-                    .getExistingFile(provider.modLoc("block/rail_worker_bench")))
+                    .getExistingFile(provider.modLoc("block/rail_workers_bench")))
             )
             .lang("Rail Worker's Bench")
             .item()

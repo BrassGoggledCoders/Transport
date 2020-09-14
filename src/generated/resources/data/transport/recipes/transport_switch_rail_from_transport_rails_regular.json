@@ -1,5 +1,5 @@
 {
-  "type": "transport:rail_worker",
+  "type": "transport:rail_workers_bench",
   "ingredient": {
     "tag": "transport:rails/regular"
   },

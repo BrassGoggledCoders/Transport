@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "transport:rail_worker_bench"
+          "name": "transport:rail_workers_bench"
         }
       ],
       "conditions": [
