@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -193,7 +194,7 @@ public class NBTShapedRecipeBuilder {
 
             json.add("key", jsonobject);
             JsonObject result = new JsonObject();
-            result.addProperty("item", Registry.ITEM.getKey(this.result).toString());
+            result.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(this.result)).toString());
             if (this.count > 1) {
                 result.addProperty("count", this.count);
             }

@@ -9,6 +9,7 @@
     }
   },
   "result": {
-    "item": "transport:scaffolding_slab"
+    "item": "transport:scaffolding_slab",
+    "count": 3
   }
 }

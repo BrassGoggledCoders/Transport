@@ -1,10 +1,10 @@
 package xyz.brassgoggledcoders.transport;
 
 import com.hrznstudio.titanium.network.locator.LocatorType;
+import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -47,7 +47,6 @@ import xyz.brassgoggledcoders.transport.predicate.NamePredicate;
 import xyz.brassgoggledcoders.transport.predicate.TimePredicate;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrate;
 
-import javax.annotation.Nonnull;
 import java.util.function.Predicate;
 
 import static xyz.brassgoggledcoders.transport.Transport.ID;
@@ -59,6 +58,9 @@ public class Transport {
 
     public static final LocatorType ENTITY = new LocatorType("entity", EntityLocatorInstance::new);
     public static final Lazy<TransportRegistrate> TRANSPORT_REGISTRATE = Lazy.of(() -> TransportRegistrate.create(ID)
+            .addDataGenerator(ProviderType.BLOCK_TAGS, TransportAdditionalData::generateBlockTags)
+            .addDataGenerator(ProviderType.ITEM_TAGS, TransportAdditionalData::generateItemTags)
+            .addDataGenerator(ProviderType.RECIPE, TransportAdditionalData::generateRecipes)
             .itemGroup(() -> new TransportItemGroup(ID, () -> TransportBlocks.HOLDING_RAIL.orElseThrow(
                     () -> new IllegalStateException("Got Item too early")
             )))
@@ -91,7 +93,7 @@ public class Transport {
         TransportContainers.register(modBus);
         TransportEntities.setup();
         TransportItems.setup();
-
+        TransportRecipes.setup();
         TransportModuleTypes.setup();
         TransportCargoModules.setup();
         TransportEngineModules.setup();
