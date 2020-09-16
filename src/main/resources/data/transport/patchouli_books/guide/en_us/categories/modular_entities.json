@@ -1,0 +1,7 @@
+{
+  "name": "Modular Entities",
+  "description": "",
+  "parent": "transport:modularity",
+  "icon": "transport:cargo_minecart",
+  "sortnum": -1
+}
