@@ -23,6 +23,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.item.IHulledItem;
 import xyz.brassgoggledcoders.transport.api.item.IModularItem;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.content.TransportHullTypes;
@@ -36,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-public class ModularBoatItem extends Item implements IModularItem<ModularBoatEntity> {
+public class ModularBoatItem extends Item implements IModularItem<ModularBoatEntity>, IHulledItem {
     private static final Predicate<Entity> CAN_COLLIDE = EntityPredicates.NOT_SPECTATING.and(Entity::canBeCollidedWith);
 
     public ModularBoatItem(Properties properties) {
@@ -155,5 +156,11 @@ public class ModularBoatItem extends Item implements IModularItem<ModularBoatEnt
     @Override
     public EntityType<ModularBoatEntity> getEntityType() {
         return TransportEntities.MODULAR_BOAT.get();
+    }
+
+    @Override
+    @Nonnull
+    public HullType getHullType(@Nonnull ItemStack itemStack) {
+        return this.getHullType(itemStack.getTag());
     }
 }
