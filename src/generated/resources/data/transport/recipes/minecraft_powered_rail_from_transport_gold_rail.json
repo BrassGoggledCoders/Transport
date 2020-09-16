@@ -3,9 +3,12 @@
   "pattern": [
     "R R",
     "RSR",
-    "R R"
+    "RDR"
   ],
   "key": {
+    "D": {
+      "tag": "forge:dusts/redstone"
+    },
     "R": {
       "item": "transport:gold_rail"
     },
@@ -15,6 +18,6 @@
   },
   "result": {
     "item": "minecraft:powered_rail",
-    "count": 64
+    "count": 24
   }
 }
