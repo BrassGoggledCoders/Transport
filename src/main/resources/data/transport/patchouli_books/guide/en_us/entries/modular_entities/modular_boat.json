@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "The $(item)Modular Boat$() is a boat that can be equip with both Cargo modules"
+      "text": "The $(item)Modular Boat$() is a boat that can be equip with Cargo modules"
     },
     {
       "type": "crafting",

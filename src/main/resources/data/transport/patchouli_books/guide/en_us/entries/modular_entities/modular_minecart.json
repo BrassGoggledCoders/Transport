@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "transport:cargo_cart"
+      "recipe": "transport:cargo_minecart_from_iron"
     }
   ]
 }
