@@ -61,6 +61,7 @@ public class Transport {
             .addDataGenerator(ProviderType.BLOCK_TAGS, TransportAdditionalData::generateBlockTags)
             .addDataGenerator(ProviderType.ITEM_TAGS, TransportAdditionalData::generateItemTags)
             .addDataGenerator(ProviderType.RECIPE, TransportAdditionalData::generateRecipes)
+            .addDataGenerator(ProviderType.LANG, TransportAdditionalData::generateLang)
             .itemGroup(() -> new TransportItemGroup(ID, () -> TransportBlocks.HOLDING_RAIL.orElseThrow(
                     () -> new IllegalStateException("Got Item too early")
             )))

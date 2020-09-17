@@ -38,16 +38,6 @@ public class TransportEntities {
             .item(CargoCarrierMinecartItem::new)
             .model((context, provider) -> {
             })
-            .recipe((context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
-                    .patternLine(" S ")
-                    .patternLine("RMR")
-                    .patternLine(" S ")
-                    .key('S', Ingredient.fromTag(Tags.Items.SLIMEBALLS))
-                    .key('R', Ingredient.fromTag(Tags.Items.DUSTS_REDSTONE))
-                    .key('M', Ingredient.fromItems(Items.MINECART))
-                    .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.MINECART))
-                    .build(provider)
-            )
             .lang("Modular Minecart")
             .register();
 

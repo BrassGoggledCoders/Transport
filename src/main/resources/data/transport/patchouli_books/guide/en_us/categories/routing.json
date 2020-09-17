@@ -1,5 +1,6 @@
 {
   "name": "Routing",
   "description": "",
-  "icon": "minecraft:written_book"
+  "icon": "minecraft:written_book",
+  "sortnum": 22
 }

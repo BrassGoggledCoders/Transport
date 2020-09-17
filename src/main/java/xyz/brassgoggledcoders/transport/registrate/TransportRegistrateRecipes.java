@@ -92,22 +92,28 @@ public class TransportRegistrateRecipes {
     }
 
     public static <T extends IItemProvider & IForgeRegistryEntry<T>, I extends T> NonNullBiConsumer<DataGenContext<T, I>,
-            RegistrateRecipeProvider> railRecipes(ITag.INamedTag<Item> ingot, Item rail) {
+            RegistrateRecipeProvider> railRecipes(ITag.INamedTag<Item> ingot, Item rail, int railCount, boolean includeRedstone) {
         return (context, provider) -> {
             RailWorkerBenchRecipeBuilder.create(ingot, context.get())
                     .addCriterion("has_item", RegistrateRecipeProvider.hasItem(ingot))
                     .build(provider, Transport.rl(fixRL(context.get().getRegistryName()) +
                             "_from_" + fixRL(ingot.getName())));
 
-            ShapedRecipeBuilder.shapedRecipe(rail, 64)
+            ShapedRecipeBuilder builder = ShapedRecipeBuilder.shapedRecipe(rail, railCount)
                     .patternLine("R R")
-                    .patternLine("RSR")
-                    .patternLine("R R")
-                    .key('R', context.get())
+                    .patternLine("RSR");
+
+            if (includeRedstone) {
+                builder = builder.patternLine("RDR")
+                        .key('D', Tags.Items.DUSTS_REDSTONE);
+            } else {
+                builder = builder.patternLine("R R");
+            }
+
+            builder.key('R', context.get())
                     .key('S', Tags.Items.RODS_WOODEN)
                     .addCriterion("has_item", RegistrateRecipeProvider.hasItem(context.get()))
-                    .build(provider, Transport.rl(fixRL(rail.getRegistryName()) +
-                            "_from_" + fixRL(context.getId())));
+                    .build(provider, Transport.rl(fixRL(rail.getRegistryName()) + "_from_" + fixRL(context.getId())));
         };
     }
 

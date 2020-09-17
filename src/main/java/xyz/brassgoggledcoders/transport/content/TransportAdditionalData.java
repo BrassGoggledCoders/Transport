@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.content;
 
 import com.google.common.collect.Lists;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import net.minecraft.block.Block;
@@ -73,6 +74,10 @@ public class TransportAdditionalData {
         itemTagsProvider.getOrCreateBuilder(TransportItemTags.RAILS)
                 .addTag(TransportItemTags.RAILS_IRON)
                 .addTag(TransportItemTags.RAILS_GOLD);
+    }
+
+    public static void generateLang(RegistrateLangProvider langProvider) {
+        langProvider.add("screen.transport.jei.category.rail_workers_bench", "Rail Worker's Bench");
     }
 
     public static List<Pair<IItemProvider, ITag<Item>>> getTagInfoList() {

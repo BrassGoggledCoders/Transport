@@ -32,7 +32,7 @@ public class TransportItems {
             .item(Item::new)
             .lang("Iron Rail")
             .tag(TransportItemTags.RAILS_IRON)
-            .recipe(TransportRegistrateRecipes.railRecipes(Tags.Items.INGOTS_IRON, Items.RAIL))
+            .recipe(TransportRegistrateRecipes.railRecipes(Tags.Items.INGOTS_IRON, Items.RAIL, 64, false))
             .register();
 
     public static final ItemEntry<Item> GOLD_RAIL = Transport.getRegistrate()
@@ -40,7 +40,7 @@ public class TransportItems {
             .item(Item::new)
             .lang("Gold Rail")
             .tag(TransportItemTags.RAILS_GOLD)
-            .recipe(TransportRegistrateRecipes.railRecipes(Tags.Items.INGOTS_GOLD, Items.POWERED_RAIL))
+            .recipe(TransportRegistrateRecipes.railRecipes(Tags.Items.INGOTS_GOLD, Items.POWERED_RAIL, 24, true))
             .register();
 
     public static void setup() {
