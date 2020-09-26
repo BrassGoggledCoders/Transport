@@ -6,18 +6,18 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.IntReferenceHolder;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
-import xyz.brassgoggledcoders.transport.tileentity.YardMasterObject;
+import xyz.brassgoggledcoders.transport.api.master.ManagedObject;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class YardMasterContainer extends Container {
-    private final List<YardMasterObject> connectedObjects;
+public class ManagerContainer extends Container {
+    private final List<ManagedObject> managedObjects;
     private final IntReferenceHolder selectedObject = IntReferenceHolder.single();
 
-    public YardMasterContainer(int id, PlayerInventory inventory, List<YardMasterObject> connectedObjects) {
-        super(TransportContainers.YARD_MASTER.get(), id);
-        this.connectedObjects = connectedObjects;
+    public ManagerContainer(int id, PlayerInventory inventory, List<ManagedObject> managedObjects) {
+        super(TransportContainers.MANAGER.get(), id);
+        this.managedObjects = managedObjects;
 
         for(int i = 0; i < 3; ++i) {
             for(int j = 0; j < 9; ++j) {
@@ -36,8 +36,8 @@ public class YardMasterContainer extends Container {
         return true;
     }
 
-    public List<YardMasterObject> getConnectedObjects() {
-        return connectedObjects;
+    public List<ManagedObject> getManagedObjects() {
+        return this.managedObjects;
     }
 
     public IntReferenceHolder getSelectedObject() {
@@ -54,6 +54,6 @@ public class YardMasterContainer extends Container {
     }
 
     private boolean checkValidIndex(int index) {
-        return index >= 0 && index < this.connectedObjects.size();
+        return index >= 0 && index < this.managedObjects.size();
     }
 }

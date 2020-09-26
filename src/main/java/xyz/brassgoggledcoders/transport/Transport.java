@@ -8,6 +8,7 @@ import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.RegistryEvent;
@@ -24,6 +25,8 @@ import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.master.IManageable;
+import xyz.brassgoggledcoders.transport.api.master.IManager;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
@@ -148,6 +151,8 @@ public class Transport {
 
         CapabilityManager.INSTANCE.register(PredicateStorage.class, new EmptyStorage<>(), PredicateStorage::new);
         CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () -> null);
+        CapabilityManager.INSTANCE.register(IManager.class, new CompoundNBTStorage<>(), () -> null);
+        CapabilityManager.INSTANCE.register(IManageable.class, new CompoundNBTStorage<>(), () -> null);
 
         TransportAPI.generateItemToModuleMap();
     }

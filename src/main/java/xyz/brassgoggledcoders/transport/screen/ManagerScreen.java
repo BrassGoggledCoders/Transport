@@ -10,20 +10,20 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import xyz.brassgoggledcoders.transport.container.YardMasterContainer;
-import xyz.brassgoggledcoders.transport.tileentity.YardMasterObject;
+import xyz.brassgoggledcoders.transport.container.ManagerContainer;
+import xyz.brassgoggledcoders.transport.api.master.ManagedObject;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Objects;
 
-public class YardMasterScreen extends ContainerScreen<YardMasterContainer> {
+public class ManagerScreen extends ContainerScreen<ManagerContainer> {
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("textures/gui/container/stonecutter.png");
     private float sliderProgress;
     private boolean clickedOnScroll;
     private int recipeIndexOffset;
 
-    public YardMasterScreen(YardMasterContainer container, PlayerInventory inventory, ITextComponent title) {
+    public ManagerScreen(ManagerContainer container, PlayerInventory inventory, ITextComponent title) {
         super(container, inventory, title);
         --this.titleY;
     }
@@ -58,9 +58,9 @@ public class YardMasterScreen extends ContainerScreen<YardMasterContainer> {
         int i = this.guiLeft + 52;
         int j = this.guiTop + 14;
         int k = this.recipeIndexOffset + 12;
-        List<YardMasterObject> list = this.container.getConnectedObjects();
+        List<ManagedObject> list = this.container.getManagedObjects();
 
-        for (int l = this.recipeIndexOffset; l < k && l < this.container.getConnectedObjects().size(); ++l) {
+        for (int l = this.recipeIndexOffset; l < k && l < this.container.getManagedObjects().size(); ++l) {
             int i1 = l - this.recipeIndexOffset;
             int j1 = i + i1 % 4 * 16;
             int k1 = j + i1 / 4 * 18 + 2;
@@ -71,7 +71,7 @@ public class YardMasterScreen extends ContainerScreen<YardMasterContainer> {
     }
 
     private void func_238853_b_(MatrixStack p_238853_1_, int p_238853_2_, int p_238853_3_, int p_238853_4_, int p_238853_5_, int p_238853_6_) {
-        for (int i = this.recipeIndexOffset; i < p_238853_6_ && i < this.container.getConnectedObjects().size(); ++i) {
+        for (int i = this.recipeIndexOffset; i < p_238853_6_ && i < this.container.getManagedObjects().size(); ++i) {
             int j = i - this.recipeIndexOffset;
             int k = p_238853_4_ + j % 4 * 16;
             int l = j / 4;
@@ -89,9 +89,9 @@ public class YardMasterScreen extends ContainerScreen<YardMasterContainer> {
     }
 
     private void drawRecipesItems(int left, int top, int recipeIndexOffsetMax) {
-        List<YardMasterObject> list = this.container.getConnectedObjects();
+        List<ManagedObject> list = this.container.getManagedObjects();
 
-        for (int i = this.recipeIndexOffset; i < recipeIndexOffsetMax && i < this.container.getConnectedObjects().size(); ++i) {
+        for (int i = this.recipeIndexOffset; i < recipeIndexOffsetMax && i < this.container.getManagedObjects().size(); ++i) {
             int j = i - this.recipeIndexOffset;
             int k = left + j % 4 * 16;
             int l = j / 4;
@@ -156,10 +156,10 @@ public class YardMasterScreen extends ContainerScreen<YardMasterContainer> {
     }
 
     private boolean canScroll() {
-        return this.container.getConnectedObjects().size() > 12;
+        return this.container.getManagedObjects().size() > 12;
     }
 
     protected int getHiddenRows() {
-        return (this.container.getConnectedObjects().size() + 4 - 1) / 4 - 3;
+        return (this.container.getManagedObjects().size() + 4 - 1) / 4 - 3;
     }
 }

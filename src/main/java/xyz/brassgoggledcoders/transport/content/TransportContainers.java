@@ -25,8 +25,8 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
-import xyz.brassgoggledcoders.transport.container.YardMasterContainer;
-import xyz.brassgoggledcoders.transport.tileentity.YardMasterObject;
+import xyz.brassgoggledcoders.transport.container.ManagerContainer;
+import xyz.brassgoggledcoders.transport.api.master.ManagedObject;
 
 import java.util.List;
 
@@ -81,14 +81,14 @@ public class TransportContainers {
                 }
             }));
 
-    public static final RegistryObject<ContainerType<YardMasterContainer>> YARD_MASTER = CONTAINERS.register(
-            "yard_master", () -> IForgeContainerType.create((windowId, inv, data) -> {
+    public static final RegistryObject<ContainerType<ManagerContainer>> MANAGER = CONTAINERS.register(
+            "manager", () -> IForgeContainerType.create((windowId, inv, data) -> {
                 int objects = data.readInt();
-                List<YardMasterObject> connectedObjects = Lists.newArrayList();
+                List<ManagedObject> connectedObjects = Lists.newArrayList();
                 for (int i = 0; i < objects; i++) {
-                    connectedObjects.add(new YardMasterObject(BlockPos.fromLong(data.readLong()), data.readItemStack()));
+                    connectedObjects.add(new ManagedObject(BlockPos.fromLong(data.readLong()), data.readItemStack()));
                 }
-                return new YardMasterContainer(windowId, inv, connectedObjects);
+                return new ManagerContainer(windowId, inv, connectedObjects);
             })
     );
 

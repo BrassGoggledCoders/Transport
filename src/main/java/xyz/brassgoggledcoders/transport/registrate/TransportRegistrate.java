@@ -111,4 +111,9 @@ public class TransportRegistrate extends AbstractRegistrate<TransportRegistrate>
         return this.entry((name, builderCallback) -> new EngineModuleBuilder<>(this, parent, this.currentName(),
                 builderCallback, engineModuleSupplier));
     }
+
+    public Text addText(String key, String value) {
+        this.addRawLang(key, value);
+        return new Text(key);
+    }
 }

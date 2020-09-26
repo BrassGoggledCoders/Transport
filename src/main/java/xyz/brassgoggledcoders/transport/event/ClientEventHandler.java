@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -29,7 +28,7 @@ import xyz.brassgoggledcoders.transport.renderer.boat.HulledBoatRender;
 import xyz.brassgoggledcoders.transport.renderer.boat.ModularBoatRenderer;
 import xyz.brassgoggledcoders.transport.renderer.tileentity.ModuleConfiguratorTileEntityRenderer;
 import xyz.brassgoggledcoders.transport.screen.ModuleConfiguratorScreen;
-import xyz.brassgoggledcoders.transport.screen.YardMasterScreen;
+import xyz.brassgoggledcoders.transport.screen.ManagerScreen;
 
 @EventBusSubscriber(modid = Transport.ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ClientEventHandler {
@@ -48,7 +47,7 @@ public class ClientEventHandler {
 
         ScreenManager.registerFactory(TransportContainers.MODULE.get(), BasicAddonScreen::new);
         ScreenManager.registerFactory(TransportContainers.MODULE_CONFIGURATOR.get(), ModuleConfiguratorScreen::new);
-        ScreenManager.registerFactory(TransportContainers.YARD_MASTER.get(), YardMasterScreen::new);
+        ScreenManager.registerFactory(TransportContainers.MANAGER.get(), ManagerScreen::new);
 
         EntityRendererManager rendererManager = Minecraft.getInstance().getRenderManager();
         rendererManager.register(TransportEntities.CARGO_MINECART.get(), new CargoCarrierMinecartEntityRenderer(rendererManager));

@@ -20,6 +20,8 @@ import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.functional.ThrowingFunction;
+import xyz.brassgoggledcoders.transport.api.master.IManageable;
+import xyz.brassgoggledcoders.transport.api.master.IManager;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
@@ -45,6 +47,12 @@ public class TransportAPI {
 
     @CapabilityInject(IModularEntity.class)
     public static Capability<IModularEntity> MODULAR_ENTITY;
+
+    @CapabilityInject(IManager.class)
+    public static Capability<IManager> MANAGER;
+
+    @CapabilityInject(IManageable.class)
+    public static Capability<IManageable> MANAGEABLE;
 
     private static IConnectionChecker connectionChecker = new NoConnectionChecker();
     private static INetworkHandler networkHandler;

@@ -9,10 +9,13 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import xyz.brassgoggledcoders.transport.tileentity.YardMasterObject;
-import xyz.brassgoggledcoders.transport.tileentity.YardMasterTileEntity;
+import net.minecraftforge.common.util.LazyOptional;
+import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.master.IManageable;
+import xyz.brassgoggledcoders.transport.api.master.ManagedObject;
+import xyz.brassgoggledcoders.transport.content.TransportText;
 
 import javax.annotation.Nonnull;
 
@@ -30,25 +33,45 @@ public class RailBreakerItem extends Item {
     @Nonnull
     public ActionResultType onItemUse(@Nonnull ItemUseContext context) {
         World world = context.getWorld();
-        CompoundNBT yardMasterNBT = context.getItem().getChildTag("yardMaster");
-        if (yardMasterNBT != null) {
-            BlockPos yardMasterPos = BlockPos.fromLong(yardMasterNBT.getLong("pos"));
-            if (context.getPos().distanceSq(yardMasterPos) < 20F) {
-                TileEntity tileEntity = world.getTileEntity(yardMasterPos);
-                if (tileEntity instanceof YardMasterTileEntity) {
-                    if (((YardMasterTileEntity) tileEntity).addConnectedObject(new YardMasterObject(context.getPos(),
-                            new ItemStack(world.getBlockState(context.getPos()).getBlock())))) {
-                        context.getItem().removeChildTag("yardMaster");
+        CompoundNBT managerNBT = context.getItem().getChildTag("manager");
+        if (managerNBT != null) {
+            BlockPos managerPos = BlockPos.fromLong(managerNBT.getLong("pos"));
+            if (context.getPos().distanceSq(managerPos) < 20F) {
+                TileEntity managerTileEntity = world.getTileEntity(managerPos);
+                TileEntity manageableTileEntity = world.getTileEntity(context.getPos());
+                if (managerTileEntity != null && manageableTileEntity != null) {
+                    boolean connected = managerTileEntity.getCapability(TransportAPI.MANAGER)
+                            .map(manager -> {
+                                LazyOptional<IManageable> manageable = manageableTileEntity.getCapability(
+                                        TransportAPI.MANAGEABLE);
+                                if (manageable.isPresent()) {
+                                    return manageable.map(manager::addManageable).orElse(false);
+                                } else {
+                                    return manager.addManagedObject(new ManagedObject(context.getPos(),
+                                            new ItemStack(world.getBlockState(context.getPos()).getBlock())));
+                                }
+                            })
+                            .orElse(false);
+                    if (connected) {
+                        context.getItem().removeChildTag("manager");
+                        TransportText.MANAGER_LINKING_SUCCESS.send(context.getPlayer(), true);
                         return ActionResultType.SUCCESS;
+                    } else {
+                        TransportText.MANAGER_LINKING_FAIL.send(context.getPlayer(), true);
                     }
                 }
             }
-            context.getItem().removeChildTag("yardMaster");
+            context.getItem().removeChildTag("manager");
         } else {
             TileEntity tileEntity = context.getWorld().getTileEntity(context.getPos());
-            if (tileEntity instanceof YardMasterTileEntity) {
-                CompoundNBT compoundNBT = context.getItem().getOrCreateChildTag("yardMaster");
+            if (tileEntity != null && tileEntity.getCapability(TransportAPI.MANAGER).isPresent()) {
+                CompoundNBT compoundNBT = context.getItem().getOrCreateChildTag("manager");
                 compoundNBT.putLong("pos", context.getPos().toLong());
+                TransportText.MANAGER_LINKING_START.send(context.getPlayer(), true, new TranslationTextComponent(
+                        tileEntity.getBlockState()
+                                .getBlock()
+                                .getTranslationKey()
+                ));
                 return ActionResultType.SUCCESS;
             }
         }

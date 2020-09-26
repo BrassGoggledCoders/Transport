@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.content;
 
 import net.minecraft.util.text.ITextComponent;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.registrate.Text;
 
 @SuppressWarnings("unused")
 public class TransportText {
@@ -25,6 +26,15 @@ public class TransportText {
 
     public static final ITextComponent GUIDE_LANDING_TEXT = Transport.getRegistrate()
             .addRawLang("guide.transport.landing_text", "Importing the Transportation of Goods");
+
+    public static final Text MANAGER_LINKING_START = Transport.getRegistrate()
+            .addText("text.transport.manager_linking.start", "Starting Manager Link with %s");
+
+    public static final Text MANAGER_LINKING_FAIL = Transport.getRegistrate()
+            .addText("text.transport.manager_linking.fail", "Failed to Link to Manager");
+
+    public static final Text MANAGER_LINKING_SUCCESS = Transport.getRegistrate()
+            .addText("text.transport.manager_linking.success", "Successful Link to Manager");
 
     public static void setup() {
 
