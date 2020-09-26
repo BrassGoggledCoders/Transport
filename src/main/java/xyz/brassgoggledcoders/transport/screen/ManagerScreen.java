@@ -10,6 +10,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.container.ManagerContainer;
 import xyz.brassgoggledcoders.transport.api.master.ManagedObject;
 
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ManagerScreen extends ContainerScreen<ManagerContainer> {
-    private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("textures/gui/container/stonecutter.png");
+    private static final ResourceLocation BACKGROUND_TEXTURE = Transport.rl("textures/screen/manager.png");
     private float sliderProgress;
     private boolean clickedOnScroll;
     private int recipeIndexOffset;
@@ -44,8 +45,8 @@ public class ManagerScreen extends ContainerScreen<ManagerContainer> {
         int j = this.guiTop;
         this.blit(matrixStack, i, j, 0, 0, this.xSize, this.ySize);
         int k = (int) (41.0F * this.sliderProgress);
-        this.blit(matrixStack, i + 119, j + 15 + k, 176 + (this.canScroll() ? 0 : 12), 0, 12, 15);
-        int l = this.guiLeft + 52;
+        this.blit(matrixStack, i + 75, j + 15 + k, 176 + (this.canScroll() ? 0 : 12), 0, 12, 15);
+        int l = this.guiLeft + 8;
         int i1 = this.guiTop + 14;
         int j1 = this.recipeIndexOffset + 12;
         this.func_238853_b_(matrixStack, x, y, l, i1, j1);
@@ -55,7 +56,7 @@ public class ManagerScreen extends ContainerScreen<ManagerContainer> {
     @Override
     protected void renderHoveredTooltip(@Nonnull MatrixStack matrixStack, int x, int y) {
         super.renderHoveredTooltip(matrixStack, x, y);
-        int i = this.guiLeft + 52;
+        int i = this.guiLeft + 8;
         int j = this.guiTop + 14;
         int k = this.recipeIndexOffset + 12;
         List<ManagedObject> list = this.container.getManagedObjects();
@@ -104,7 +105,7 @@ public class ManagerScreen extends ContainerScreen<ManagerContainer> {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int p_231044_5_) {
         this.clickedOnScroll = false;
-        int i = this.guiLeft + 52;
+        int i = this.guiLeft + 8;
         int j = this.guiTop + 14;
         int k = this.recipeIndexOffset + 12;
 
@@ -120,7 +121,7 @@ public class ManagerScreen extends ContainerScreen<ManagerContainer> {
             }
         }
 
-        i = this.guiLeft + 119;
+        i = this.guiLeft + 75;
         j = this.guiTop + 9;
         if (mouseX >= (double) i && mouseX < (double) (i + 12) && mouseY >= (double) j && mouseY < (double) (j + 54)) {
             this.clickedOnScroll = true;
