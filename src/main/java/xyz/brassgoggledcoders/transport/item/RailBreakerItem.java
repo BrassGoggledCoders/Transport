@@ -36,32 +36,35 @@ public class RailBreakerItem extends Item {
         CompoundNBT managerNBT = context.getItem().getChildTag("manager");
         if (managerNBT != null) {
             BlockPos managerPos = BlockPos.fromLong(managerNBT.getLong("pos"));
-            if (context.getPos().distanceSq(managerPos) < 20F) {
-                TileEntity managerTileEntity = world.getTileEntity(managerPos);
-                TileEntity manageableTileEntity = world.getTileEntity(context.getPos());
-                if (managerTileEntity != null && manageableTileEntity != null) {
-                    boolean connected = managerTileEntity.getCapability(TransportAPI.MANAGER)
-                            .map(manager -> {
-                                LazyOptional<IManageable> manageable = manageableTileEntity.getCapability(
-                                        TransportAPI.MANAGEABLE);
-                                if (manageable.isPresent()) {
-                                    return manageable.map(manager::addManageable).orElse(false);
-                                } else {
-                                    return manager.addManagedObject(new ManagedObject(context.getPos(),
-                                            new ItemStack(world.getBlockState(context.getPos()).getBlock())));
-                                }
-                            })
-                            .orElse(false);
-                    if (connected) {
-                        context.getItem().removeChildTag("manager");
-                        TransportText.MANAGER_LINKING_SUCCESS.send(context.getPlayer(), true);
-                        return ActionResultType.SUCCESS;
-                    } else {
-                        TransportText.MANAGER_LINKING_FAIL.send(context.getPlayer(), true);
-                    }
+            TileEntity managerTileEntity = world.getTileEntity(managerPos);
+            TileEntity manageableTileEntity = world.getTileEntity(context.getPos());
+            if (managerTileEntity != null && manageableTileEntity != null) {
+                boolean connected = managerTileEntity.getCapability(TransportAPI.MANAGER)
+                        .map(manager -> {
+                            LazyOptional<IManageable> manageable = manageableTileEntity.getCapability(
+                                    TransportAPI.MANAGEABLE);
+                            if (manageable.isPresent()) {
+                                return manageable.map(manager::addManageable).orElse(false);
+                            } else {
+                                return manager.addManagedObject(new ManagedObject(context.getPos(),
+                                        new ItemStack(world.getBlockState(context.getPos()).getBlock())));
+                            }
+                        })
+                        .orElse(false);
+                if (connected) {
+                    context.getItem().removeChildTag("manager");
+                    TransportText.MANAGER_LINKING_SUCCESS.send(context.getPlayer(), true);
+                    return ActionResultType.SUCCESS;
+                } else {
+                    TransportText.MANAGER_LINKING_FAIL.send(context.getPlayer(), true);
+                    context.getItem().removeChildTag("manager");
+                    return ActionResultType.FAIL;
                 }
+            } else {
+                TransportText.MANAGER_LINKING_FAIL.send(context.getPlayer(), true);
+                context.getItem().removeChildTag("manager");
             }
-            context.getItem().removeChildTag("manager");
+
         } else {
             TileEntity tileEntity = context.getWorld().getTileEntity(context.getPos());
             if (tileEntity != null && tileEntity.getCapability(TransportAPI.MANAGER).isPresent()) {

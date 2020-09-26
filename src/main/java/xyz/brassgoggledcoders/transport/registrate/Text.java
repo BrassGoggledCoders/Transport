@@ -19,26 +19,11 @@ public class Text {
 
     @Nonnull
     public ITextComponent getTranslation(Object... args) {
-        return new TranslationTextComponent(translationKey, args);
-    }
-
-    @Nonnull
-    public ITextComponent getTranslation() {
-        return noChange.get();
-    }
-
-    public void send(@Nullable PlayerEntity playerEntity) {
-        this.send(playerEntity, false);
-    }
-
-    public void send(@Nullable PlayerEntity playerEntity, boolean actionBar) {
-        if (playerEntity != null) {
-            playerEntity.sendStatusMessage(this.getTranslation(), actionBar);
+        if (args.length == 0) {
+            return noChange.get();
+        } else {
+            return new TranslationTextComponent(translationKey, args);
         }
-    }
-
-    public void send(@Nullable PlayerEntity playerEntity, Object... args) {
-        this.send(playerEntity, false, args);
     }
 
     public void send(@Nullable PlayerEntity playerEntity, boolean actionBar, Object... args) {

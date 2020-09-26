@@ -17,6 +17,7 @@
   "block.transport.timed_holding_rail": "Timed Holding Rail",
   "block.transport.wye_switch_rail": "Wye Switch Rail",
   "block.transport.yard_master": "Yard Master",
+  "block.transport.yard_rail": "Yard Rail",
   "cargo.transport.empty": "Empty",
   "cargo.transport.energy": "Energy Storage",
   "cargo.transport.fluid": "Fluid Tank",
@@ -56,5 +57,8 @@
   "text.transport.hull_type": "Hull Type: %s",
   "text.transport.installed_module": " * %s - %s",
   "text.transport.installed_modules": "Installed Modules",
+  "text.transport.manager_linking.fail": "Failed to Link to Manager",
+  "text.transport.manager_linking.start": "Starting Manager Link with %s",
+  "text.transport.manager_linking.success": "Successful Link to Manager",
   "text.transport.module_slot": "%s Module Slot"
 }

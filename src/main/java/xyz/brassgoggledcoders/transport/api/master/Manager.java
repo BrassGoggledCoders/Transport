@@ -91,7 +91,7 @@ public class Manager implements IManager {
         this.managedObjects.clear();
         ListNBT connectedObjectNBT = nbt.getList("managedObjects", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < connectedObjectNBT.size(); i++) {
-            this.addManagedObject(new ManagedObject(connectedObjectNBT.getCompound(i)));
+            this.managedObjects.add(new ManagedObject(connectedObjectNBT.getCompound(i)));
         }
     }
 

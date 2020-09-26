@@ -49,6 +49,7 @@ import xyz.brassgoggledcoders.transport.block.rail.turnout.SwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.turnout.WyeSwitchRailBlock;
 import xyz.brassgoggledcoders.transport.container.jobsite.RailWorkerBenchContainer;
 import xyz.brassgoggledcoders.transport.item.BuoyBlockItem;
+import xyz.brassgoggledcoders.transport.recipe.jobsite.RailWorkerBenchRecipeBuilder;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrate;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateBlockLootTables;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateModels;
@@ -61,6 +62,7 @@ import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.rail.SwitchRailTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.rail.TimedHoldingRailTileEntity;
+import xyz.brassgoggledcoders.transport.tileentity.rail.YardRailTileEntity;
 
 public class TransportBlocks {
     //region Rails
@@ -210,6 +212,30 @@ public class TransportBlocks {
                     .tileEntity(TimedHoldingRailTileEntity::new)
                     .build()
                     .register();
+
+    public static final BlockEntry<YardRailBlock> YARD_RAIL =
+            createRail("yard_rail", "Yard Rail", YardRailBlock::new)
+                    .recipe((context, provider) -> {
+                                ShapelessRecipeBuilder.shapelessRecipe(context.get())
+                                        .addIngredient(Tags.Items.INGOTS_IRON)
+                                        .addIngredient(ItemTags.RAILS);
+                                RailWorkerBenchRecipeBuilder.create(TransportItemTags.RAILS_REGULAR, context.get())
+                                        .addCriterion("has_item", RegistrateRecipeProvider.hasItem(
+                                                TransportItemTags.RAILS_REGULAR))
+                                        .build(provider, Transport.rl("yard_rail_from_transport_rails_regular"));
+                            }
+                    )
+                    .tag(TransportItemTags.RAILS_REGULAR)
+                    .build()
+                    .blockstate(TransportRegistrateModels::rail)
+                    .tag(TransportBlockTags.RAILS_REGULAR)
+                    .tileEntity(YardRailTileEntity::new)
+                    .build()
+                    .register();
+
+    public static final RegistryEntry<TileEntityType<YardRailTileEntity>> YARD_RAIL_TILE_ENTITY =
+            YARD_RAIL.getSibling(ForgeRegistries.TILE_ENTITIES);
+    //endregion
 
 
     //region Rail Support
