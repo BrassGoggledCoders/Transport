@@ -14,6 +14,7 @@ import net.minecraft.block.SlabBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.ShapelessRecipeBuilder;
 import net.minecraft.inventory.container.ContainerType;
@@ -227,6 +228,7 @@ public class TransportBlocks {
                     )
                     .tag(TransportItemTags.RAILS_REGULAR)
                     .build()
+                    .addLayer(() -> RenderType::getCutout)
                     .blockstate(TransportRegistrateModels::rail)
                     .tag(TransportBlockTags.RAILS_REGULAR)
                     .tileEntity(YardRailTileEntity::new)

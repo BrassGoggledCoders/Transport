@@ -14,8 +14,10 @@ import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class Manager implements IManager {
+    private final Consumer<?> markDirty;
     private final NonNullLazy<BlockPos> position;
     private final NonNullLazy<AxisAlignedBB> boundary;
     private final ManagerType type;
@@ -23,11 +25,13 @@ public class Manager implements IManager {
 
     private UUID uniqueId;
 
+
     public Manager(NonNullSupplier<BlockPos> positionSupplier, NonNullSupplier<AxisAlignedBB> boundarySupplier,
-                   ManagerType type) {
+                   ManagerType type, Consumer<?> markDirty) {
         this.position = NonNullLazy.of(positionSupplier);
         this.boundary = NonNullLazy.of(boundarySupplier);
         this.type = type;
+        this.markDirty = markDirty;
         this.managedObjects = Maps.newLinkedHashMap();
         this.uniqueId = UUID.randomUUID();
     }
@@ -56,6 +60,7 @@ public class Manager implements IManager {
         if (!managedObjects.containsKey(managedObject.getUniqueId()) && !blockPos.equals(this.getPosition()) &&
                 this.getBoundary().contains(blockPos.getX(), blockPos.getY(), blockPos.getZ())) {
             this.managedObjects.put(managedObject.getUniqueId(), managedObject);
+            this.markDirty.accept(null);
             return true;
         } else {
             return false;

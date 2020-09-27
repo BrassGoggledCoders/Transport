@@ -31,7 +31,7 @@ public class YardMasterTileEntity extends TileEntity implements ITickableTileEnt
 
     public YardMasterTileEntity(TileEntityType<? extends YardMasterTileEntity> tileEntityType) {
         super(tileEntityType);
-        this.manager = new Manager(this::getPos, this::createBoundaries, ManagerType.RAIL);
+        this.manager = new Manager(this::getPos, this::createBoundaries, ManagerType.RAIL, nothing -> this.markDirty());
         this.managerLazy = LazyOptional.of(this::getManager);
     }
 
@@ -59,6 +59,11 @@ public class YardMasterTileEntity extends TileEntity implements ITickableTileEnt
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
+    }
+
+    @Override
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+
     }
 
     @Nonnull
