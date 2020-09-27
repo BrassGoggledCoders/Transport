@@ -23,13 +23,8 @@ public class YardRailTileEntity extends TileEntity {
 
     public YardRailTileEntity(TileEntityType<? extends YardRailTileEntity> tileEntityType) {
         super(tileEntityType);
-        this.manageable = new Manageable(this::getPos, this::getRepresentation, ManagerType.RAIL);
+        this.manageable = new Manageable(ManagerType.RAIL);
         this.manageableLazy = LazyOptional.of(() -> manageable);
-    }
-
-    @Nonnull
-    public ItemStack getRepresentation() {
-        return new ItemStack(this.getBlockState().getBlock());
     }
 
     @Override

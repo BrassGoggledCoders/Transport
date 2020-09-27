@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.api.master;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -8,6 +9,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public interface IManageable extends INBTSerializable<CompoundNBT> {
     @Nonnull
@@ -16,10 +18,14 @@ public interface IManageable extends INBTSerializable<CompoundNBT> {
     @Nullable
     BlockPos getManagerPos();
 
-    void setManager(@Nonnull LazyOptional<IManager> manager);
+    void setManagerPos(@Nullable BlockPos blockPos);
 
-    boolean isValidMaster(@Nonnull IManager manager);
+    boolean isValidManager(@Nonnull IManager manager);
+
+    boolean hasCustomRepresentative();
 
     @Nonnull
-    ManagedObject createManagedObject();
+    ItemStack getCustomRepresentative();
+
+    UUID getUniqueId();
 }

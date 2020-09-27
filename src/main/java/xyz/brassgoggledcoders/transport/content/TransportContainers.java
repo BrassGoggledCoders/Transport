@@ -86,7 +86,7 @@ public class TransportContainers {
                 int objects = data.readInt();
                 List<ManagedObject> connectedObjects = Lists.newArrayList();
                 for (int i = 0; i < objects; i++) {
-                    connectedObjects.add(new ManagedObject(BlockPos.fromLong(data.readLong()), data.readItemStack()));
+                    connectedObjects.add(ManagedObject.fromPacketBuffer(data));
                 }
                 return new ManagerContainer(windowId, inv, connectedObjects);
             })

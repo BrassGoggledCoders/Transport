@@ -21,13 +21,6 @@ public interface IManager extends INBTSerializable<CompoundNBT> {
 
     boolean addManagedObject(@Nonnull ManagedObject managedObject);
 
-    default boolean addManageable(@Nonnull IManageable manageable) {
-        if (manageable.isValidMaster(this)) {
-            return this.addManagedObject(manageable.createManagedObject());
-        }
-        return false;
-    }
-
     @Nonnull
     Collection<ManagedObject> getManagedObjects();
 

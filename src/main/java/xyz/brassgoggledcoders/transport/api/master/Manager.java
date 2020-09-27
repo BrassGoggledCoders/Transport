@@ -1,6 +1,6 @@
 package xyz.brassgoggledcoders.transport.api.master;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
@@ -12,14 +12,14 @@ import net.minecraftforge.common.util.NonNullSupplier;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 
 public class Manager implements IManager {
     private final NonNullLazy<BlockPos> position;
     private final NonNullLazy<AxisAlignedBB> boundary;
     private final ManagerType type;
-    private final Set<ManagedObject> managedObjects;
+    private final Map<UUID, ManagedObject> managedObjects;
 
     private UUID uniqueId;
 
@@ -28,7 +28,7 @@ public class Manager implements IManager {
         this.position = NonNullLazy.of(positionSupplier);
         this.boundary = NonNullLazy.of(boundarySupplier);
         this.type = type;
-        this.managedObjects = Sets.newHashSet();
+        this.managedObjects = Maps.newLinkedHashMap();
         this.uniqueId = UUID.randomUUID();
     }
 
@@ -53,18 +53,19 @@ public class Manager implements IManager {
     @Override
     public boolean addManagedObject(@Nonnull ManagedObject managedObject) {
         BlockPos blockPos = managedObject.getBlockPos();
-        if (!blockPos.equals(this.getPosition()) && this.getBoundary().contains(blockPos.getX(), blockPos.getY(),
-                blockPos.getZ())) {
-            return this.getManagedObjects().add(managedObject);
+        if (!managedObjects.containsKey(managedObject.getUniqueId()) && !blockPos.equals(this.getPosition()) &&
+                this.getBoundary().contains(blockPos.getX(), blockPos.getY(), blockPos.getZ())) {
+            this.managedObjects.put(managedObject.getUniqueId(), managedObject);
+            return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     @Override
     @Nonnull
     public Collection<ManagedObject> getManagedObjects() {
-        return managedObjects;
+        return managedObjects.values();
     }
 
     @Override
@@ -78,7 +79,7 @@ public class Manager implements IManager {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putUniqueId("uniqueId", this.uniqueId);
         ListNBT managedObjectsList = new ListNBT();
-        for (ManagedObject managedObject : this.managedObjects) {
+        for (ManagedObject managedObject : this.managedObjects.values()) {
             managedObjectsList.add(managedObject.toCompoundNBT());
         }
         nbt.put("managedObjects", managedObjectsList);
@@ -91,15 +92,15 @@ public class Manager implements IManager {
         this.managedObjects.clear();
         ListNBT connectedObjectNBT = nbt.getList("managedObjects", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < connectedObjectNBT.size(); i++) {
-            this.managedObjects.add(new ManagedObject(connectedObjectNBT.getCompound(i)));
+            ManagedObject managedObject = ManagedObject.fromCompoundNBT(connectedObjectNBT.getCompound(i));
+            this.managedObjects.put(managedObject.getUniqueId(), managedObject);
         }
     }
 
     public void writeToPacketBuffer(PacketBuffer packetBuffer) {
         packetBuffer.writeInt(this.managedObjects.size());
-        for (ManagedObject managedObject : this.managedObjects) {
-            packetBuffer.writeLong(managedObject.getBlockPos().toLong());
-            packetBuffer.writeItemStack(managedObject.getRepresentative());
+        for (ManagedObject managedObject : this.managedObjects.values()) {
+            managedObject.toPackerBuffer(packetBuffer);
         }
     }
 }

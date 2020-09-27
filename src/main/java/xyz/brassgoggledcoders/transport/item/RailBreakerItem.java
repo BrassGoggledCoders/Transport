@@ -11,9 +11,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.master.IManageable;
 import xyz.brassgoggledcoders.transport.api.master.ManagedObject;
 import xyz.brassgoggledcoders.transport.content.TransportText;
 
@@ -33,6 +31,7 @@ public class RailBreakerItem extends Item {
     @Nonnull
     public ActionResultType onItemUse(@Nonnull ItemUseContext context) {
         World world = context.getWorld();
+        BlockPos blockPos = context.getPos();
         CompoundNBT managerNBT = context.getItem().getChildTag("manager");
         if (managerNBT != null) {
             BlockPos managerPos = BlockPos.fromLong(managerNBT.getLong("pos"));
@@ -40,16 +39,11 @@ public class RailBreakerItem extends Item {
             TileEntity manageableTileEntity = world.getTileEntity(context.getPos());
             if (managerTileEntity != null && manageableTileEntity != null) {
                 boolean connected = managerTileEntity.getCapability(TransportAPI.MANAGER)
-                        .map(manager -> {
-                            LazyOptional<IManageable> manageable = manageableTileEntity.getCapability(
-                                    TransportAPI.MANAGEABLE);
-                            if (manageable.isPresent()) {
-                                return manageable.map(manager::addManageable).orElse(false);
-                            } else {
-                                return manager.addManagedObject(new ManagedObject(context.getPos(),
-                                        new ItemStack(world.getBlockState(context.getPos()).getBlock())));
-                            }
-                        })
+                        .map(manager -> manageableTileEntity.getCapability(TransportAPI.MANAGEABLE)
+                                .map(manageable -> ManagedObject.fromManageable(manageable, blockPos,
+                                        manageableTileEntity.getBlockState()))
+                                .map(manager::addManagedObject)
+                                .orElse(false))
                         .orElse(false);
                 if (connected) {
                     context.getItem().removeChildTag("manager");

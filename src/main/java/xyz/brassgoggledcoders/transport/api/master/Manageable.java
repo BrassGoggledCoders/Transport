@@ -5,40 +5,38 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.common.util.NonNullSupplier;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.util.WorldUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class Manageable implements IManageable {
     private final ManagerType type;
     private LazyOptional<IManager> manager;
     private BlockPos managerPos;
-    private final NonNullLazy<BlockPos> pos;
-    private final NonNullSupplier<ItemStack> itemStackSupplier;
+    private UUID uniqueId;
 
-    public Manageable(NonNullSupplier<BlockPos> blockPosSupplier, NonNullSupplier<ItemStack> itemStackSupplier,
-                      ManagerType type) {
-        this.pos = NonNullLazy.of(blockPosSupplier);
-        this.itemStackSupplier = itemStackSupplier;
+    public Manageable(@Nullable ManagerType type) {
         this.type = type;
+        this.uniqueId = UUID.randomUUID();
     }
 
     @Nonnull
     @Override
     public LazyOptional<IManager> getManager(IBlockReader blockReader) {
         if (this.getManagerPos() != null) {
-            if (manager == null) {
+            if (manager == null && WorldUtils.isBlockLoaded(blockReader, this.getManagerPos())) {
                 TileEntity tileEntity = blockReader.getTileEntity(this.getManagerPos());
                 if (tileEntity != null) {
                     this.manager = tileEntity.getCapability(TransportAPI.MANAGER);
                     if (this.manager.isPresent()) {
                         this.manager.addListener(this::invalidatedManager);
-                        this.managerPos = manager.map(IManager::getPosition)
-                                .orElseGet(() -> BlockPos.ZERO);
                     }
                 }
             }
@@ -53,19 +51,29 @@ public class Manageable implements IManageable {
     }
 
     @Override
-    public void setManager(@Nonnull LazyOptional<IManager> manager) {
-        this.manager = manager;
+    public void setManagerPos(@Nullable BlockPos managerPos) {
+        this.managerPos = managerPos;
     }
 
     @Override
-    public boolean isValidMaster(@Nonnull IManager manager) {
-        return type == manager.getType();
+    public boolean isValidManager(@Nonnull IManager manager) {
+        return type == null || type == manager.getType();
     }
 
     @Override
+    public boolean hasCustomRepresentative() {
+        return false;
+    }
+
     @Nonnull
-    public ManagedObject createManagedObject() {
-        return new ManagedObject(this.pos.get(), this.itemStackSupplier.get());
+    @Override
+    public ItemStack getCustomRepresentative() {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public UUID getUniqueId() {
+        return uniqueId;
     }
 
     public void invalidatedManager(LazyOptional<IManager> optional) {
@@ -78,6 +86,7 @@ public class Manageable implements IManageable {
         if (this.getManagerPos() != null) {
             nbt.putLong("managerPos", this.getManagerPos().toLong());
         }
+        nbt.putUniqueId("uniqueId", this.uniqueId);
         return nbt;
     }
 
@@ -86,5 +95,6 @@ public class Manageable implements IManageable {
         if (nbt.contains("managerPos")) {
             this.managerPos = BlockPos.fromLong(nbt.getLong("managerPos"));
         }
+        this.uniqueId = nbt.getUniqueId("uniqueId");
     }
 }
