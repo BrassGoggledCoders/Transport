@@ -55,10 +55,7 @@ public class TransportAPI {
     private static INetworkHandler networkHandler;
 
     private static final Map<Block, IPointMachineBehavior> POINT_MACHINE_BEHAVIORS = Maps.newHashMap();
-    private static final Map<String, ThrowingFunction<PredicateParser, Predicate<Entity>, PredicateParserException>>
-            ENTITY_PREDICATE_CREATORS = Maps.newHashMap();
-    private static final Map<String, ThrowingFunction<PredicateParser, Predicate<String>, PredicateParserException>>
-            STRING_PREDICATE_CREATORS = Maps.newHashMap();
+
     private static final Map<Item, Module<?>> ITEM_TO_MODULE = Maps.newHashMap();
     private static final Map<Capability<?>, ITransferor<?>> TRANSFERORS = Maps.newHashMap();
 
@@ -99,25 +96,6 @@ public class TransportAPI {
     public static ModuleType getModuleType(ResourceLocation resourceLocation) {
         return MODULE_TYPE.get().getValue(resourceLocation);
     }
-
-    public static void addEntityPredicateCreator(String name, ThrowingFunction<PredicateParser, Predicate<Entity>,
-            PredicateParserException> entityPredicateCreator) {
-        ENTITY_PREDICATE_CREATORS.put(name.toUpperCase(Locale.US), entityPredicateCreator);
-    }
-
-    public static ThrowingFunction<PredicateParser, Predicate<Entity>, PredicateParserException> getEntityPredicateCreator(String name) {
-        return ENTITY_PREDICATE_CREATORS.get(name.toUpperCase(Locale.US));
-    }
-
-    public static void addStringPredicateCreator(String name, ThrowingFunction<PredicateParser, Predicate<String>,
-            PredicateParserException> stringPredicateCreator) {
-        STRING_PREDICATE_CREATORS.put(name.toUpperCase(Locale.US), stringPredicateCreator);
-    }
-
-    public static ThrowingFunction<PredicateParser, Predicate<String>, PredicateParserException> getStringPredicateCreator(String name) {
-        return STRING_PREDICATE_CREATORS.get(name.toUpperCase(Locale.US));
-    }
-
 
     @Nullable
     public static IPointMachineBehavior getPointMachineBehavior(Block block) {

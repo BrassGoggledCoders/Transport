@@ -27,5 +27,6 @@ public interface IManageable extends INBTSerializable<CompoundNBT> {
     @Nonnull
     ItemStack getCustomRepresentative();
 
+    @Nonnull
     UUID getUniqueId();
 }

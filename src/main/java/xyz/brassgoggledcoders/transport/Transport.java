@@ -115,35 +115,6 @@ public class Transport {
         TransportAPI.addPointMachineBehavior(Blocks.COMPARATOR, new ComparatorPointMachineBehavior());
         TransportAPI.addPointMachineBehavior(Blocks.LECTERN, new PredicatePointMachineBehavior());
 
-        TransportAPI.addEntityPredicateCreator("ROUTING", PredicateParser::getNextEntityPredicate);
-        TransportAPI.addEntityPredicateCreator("TRUE", parser -> entity -> true);
-        TransportAPI.addEntityPredicateCreator("FALSE", parser -> entity -> false);
-        TransportAPI.addEntityPredicateCreator("NAME", NamePredicate::create);
-        TransportAPI.addEntityPredicateCreator("NOT", parser -> parser.getNextEntityPredicate().negate());
-        TransportAPI.addEntityPredicateCreator("POWERED", parser -> entity -> entity instanceof AbstractMinecartEntity &&
-                ((AbstractMinecartEntity) entity).isPoweredCart());
-        TransportAPI.addEntityPredicateCreator("TIME", TimePredicate::create);
-        TransportAPI.addEntityPredicateCreator("AND", parse -> {
-            Predicate<Entity> predicate = parse.getNextEntityPredicate();
-            while (parse.hasNextPredicate()) {
-                predicate = predicate.and(parse.getNextEntityPredicate());
-            }
-            return predicate;
-        });
-        TransportAPI.addEntityPredicateCreator("OR", parse -> {
-            Predicate<Entity> predicate = parse.getNextEntityPredicate();
-            while (parse.hasNextPredicate()) {
-                predicate = predicate.or(parse.getNextEntityPredicate());
-            }
-            return predicate;
-        });
-
-
-        TransportAPI.addStringPredicateCreator("ENDS_WITH", StringPredicate.create(String::endsWith));
-        TransportAPI.addStringPredicateCreator("STARTS_WITH", StringPredicate.create(String::startsWith));
-        TransportAPI.addStringPredicateCreator("CONTAINS", StringPredicate.create((predicateString, testString) ->
-                testString.contains(predicateString)));
-
         CapabilityManager.INSTANCE.register(PredicateStorage.class, new EmptyStorage<>(), PredicateStorage::new);
         CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () -> null);
         CapabilityManager.INSTANCE.register(IManager.class, new CompoundNBTStorage<>(), () -> null);

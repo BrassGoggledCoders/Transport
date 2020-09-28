@@ -1,22 +1,37 @@
 package xyz.brassgoggledcoders.transport.api.manager;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.NonNullLazy;
+import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
+import xyz.brassgoggledcoders.transport.api.predicate.PredicateParserException;
+import xyz.brassgoggledcoders.transport.api.predicate.PredicateRegistry;
 
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public class ManagedObject {
     private final BlockPos blockPos;
     private final ItemStack representative;
     private final UUID uniqueId;
 
-    public ManagedObject(BlockPos blockPos, ItemStack representative, UUID uniqueId) {
+    private ItemStack importPredicateStack;
+    private ItemStack exportPredicateStack;
+
+    private Predicate<Entity> importPredicate = entity -> true;
+    private Predicate<Entity> exportPredicate = entity -> true;
+
+    public ManagedObject(BlockPos blockPos, ItemStack representative, UUID uniqueId, ItemStack importPredicateStack,
+                         ItemStack exportPredicateStack) {
         this.blockPos = blockPos;
         this.representative = representative;
         this.uniqueId = uniqueId;
+        this.importPredicateStack = importPredicateStack;
+        this.exportPredicateStack = exportPredicateStack;
     }
 
     public BlockPos getBlockPos() {
@@ -29,6 +44,44 @@ public class ManagedObject {
 
     public UUID getUniqueId() {
         return uniqueId;
+    }
+
+    public Predicate<Entity> getExportPredicate() {
+        return exportPredicate;
+    }
+
+    public Predicate<Entity> getImportPredicate() {
+        return importPredicate;
+    }
+
+    public boolean attemptSetExportPredicateStack(ItemStack itemStack) {
+        PredicateParser predicateParser = PredicateRegistry.getPredicateParserFromItemStack(itemStack);
+        if (predicateParser != null) {
+            try {
+                this.exportPredicate = predicateParser.getNextEntityPredicate();
+                this.exportPredicateStack = itemStack;
+                return true;
+            } catch (PredicateParserException exception) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public boolean attemptSetImportPredicateStack(ItemStack itemStack) {
+        PredicateParser predicateParser = PredicateRegistry.getPredicateParserFromItemStack(itemStack);
+        if (predicateParser != null) {
+            try {
+                this.importPredicate = predicateParser.getNextEntityPredicate();
+                this.importPredicateStack = itemStack;
+                return true;
+            } catch (PredicateParserException exception) {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public CompoundNBT toCompoundNBT() {
@@ -49,7 +102,9 @@ public class ManagedObject {
         return new ManagedObject(
                 BlockPos.fromLong(nbt.getLong("blockPos")),
                 ItemStack.read(nbt.getCompound("representative")),
-                nbt.getUniqueId("uniqueId")
+                nbt.getUniqueId("uniqueId"),
+                ItemStack.read(nbt.getCompound("importPredicateStack")),
+                ItemStack.read(nbt.getCompound("exportPredicateStack"))
         );
     }
 
@@ -57,7 +112,9 @@ public class ManagedObject {
         return new ManagedObject(
                 packetBuffer.readBlockPos(),
                 packetBuffer.readItemStack(),
-                packetBuffer.readUniqueId()
+                packetBuffer.readUniqueId(),
+                packetBuffer.readItemStack(),
+                packetBuffer.readItemStack()
         );
     }
 
@@ -66,7 +123,9 @@ public class ManagedObject {
                 blockPos,
                 manageable.hasCustomRepresentative() ? manageable.getCustomRepresentative() :
                         new ItemStack(blockState.getBlock()),
-                manageable.getUniqueId()
+                manageable.getUniqueId(),
+                ItemStack.EMPTY,
+                ItemStack.EMPTY
         );
     }
 }

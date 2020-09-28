@@ -1,7 +1,6 @@
 package xyz.brassgoggledcoders.transport.api.predicate;
 
 import net.minecraft.entity.Entity;
-import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.functional.ThrowingFunction;
 
 import java.util.function.Function;
@@ -15,7 +14,6 @@ public class PredicateParser {
 
     private final Function<String, ThrowingFunction<PredicateParser, Predicate<Entity>, PredicateParserException>>
             getEntityPredicateCreator;
-
     private final Function<String, ThrowingFunction<PredicateParser, Predicate<String>, PredicateParserException>>
             getStringPredicateCreator;
 
@@ -23,7 +21,7 @@ public class PredicateParser {
     private int parsedLocation;
 
     private PredicateParser(String parsing) {
-        this(parsing, TransportAPI::getEntityPredicateCreator, TransportAPI::getStringPredicateCreator);
+        this(parsing, PredicateRegistry::getEntityPredicateCreator, PredicateRegistry::getStringPredicateCreator);
     }
 
     private PredicateParser(String parsing, Function<String, ThrowingFunction<PredicateParser, Predicate<Entity>,
@@ -34,6 +32,7 @@ public class PredicateParser {
         this.getStringPredicateCreator = getStringPredicateCreator;
         this.getEntityPredicateCreator = getEntityPredicateCreator;
     }
+
 
     public String getNextString() throws PredicateParserException {
         int startQuoteIndex = parsing.indexOf('\"', parsedLocation);
@@ -53,7 +52,7 @@ public class PredicateParser {
         return STRING_PATTERN.test(parsing.substring(parsedLocation));
     }
 
-    public int getNextInt() throws PredicateParserException{
+    public int getNextInt() throws PredicateParserException {
         boolean foundNumber = false;
         int startIndex = parsedLocation;
         int endIndex = -1;
