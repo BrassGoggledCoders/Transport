@@ -30,13 +30,11 @@ import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateParserException;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
+import xyz.brassgoggledcoders.transport.api.transfer.ITransferor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class TransportAPI {
@@ -63,8 +61,9 @@ public class TransportAPI {
     private static final Map<String, ThrowingFunction<PredicateParser, Predicate<String>, PredicateParserException>>
             STRING_PREDICATE_CREATORS = Maps.newHashMap();
     private static final Map<Item, Module<?>> ITEM_TO_MODULE = Maps.newHashMap();
+    private static final Map<Capability<?>, ITransferor<?>> TRANSFERORS = Maps.newHashMap();
 
-    public static Lazy<ForgeRegistry<CargoModule>> CARGO = Lazy.of(() -> (ForgeRegistry<CargoModule>) RegistryManager.ACTIVE.getRegistry(CargoModule.class));
+    public static Lazy<IForgeRegistry<CargoModule>> CARGO = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(CargoModule.class));
     public static Lazy<IForgeRegistry<EngineModule>> ENGINES = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(EngineModule.class));
     public static Lazy<IForgeRegistry<ModuleType>> MODULE_TYPE = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(ModuleType.class));
     public static Lazy<IForgeRegistry<ModuleSlot>> MODULE_SLOT = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(ModuleSlot.class));
@@ -184,5 +183,19 @@ public class TransportAPI {
 
     public static ModuleSlot getModuleSlot(ResourceLocation resourceLocation) {
         return TransportAPI.MODULE_SLOT.get().getValue(resourceLocation);
+    }
+
+    public static void registerTransferor(ITransferor<?> transferor) {
+        TRANSFERORS.put(transferor.getCapability(), transferor);
+    }
+
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public static <T> ITransferor<T> getTransferor(Capability<T> capability) {
+        return (ITransferor<T>) TRANSFERORS.get(capability);
+    }
+
+    public static Collection<ITransferor<?>> getTransferors() {
+        return TRANSFERORS.values();
     }
 }
