@@ -1,19 +1,24 @@
 package xyz.brassgoggledcoders.transport.api.manager;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.common.util.NonNullSupplier;
+import org.apache.commons.lang3.tuple.Pair;
+import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.transfer.ITransferor;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Manager implements IManager {
@@ -77,6 +82,58 @@ public class Manager implements IManager {
     @Nonnull
     public AxisAlignedBB getBoundary() {
         return boundary.get();
+    }
+
+    @Override
+    public boolean handleUnloading(@Nonnull Entity leader, @Nonnull List<Entity> followers) {
+        boolean unloaded = false;
+        List<Pair<ManagedObject, TileEntity>> matchedObjects = Lists.newArrayList();
+        for (ManagedObject managedObject : this.getManagedObjects()) {
+            if (managedObject.getImportPredicate().test(leader)) {
+                TileEntity tileEntity = leader.getEntityWorld().getTileEntity(managedObject.getBlockPos());
+                if (tileEntity != null) {
+                    if (tileEntity.getCapability(TransportAPI.MANAGEABLE).map(IManageable::getUniqueId)
+                            .map(managedObject.getUniqueId()::equals)
+                            .orElse(false)) {
+                        matchedObjects.add(Pair.of(managedObject, tileEntity));
+                    }
+                }
+            }
+        }
+        for (ITransferor<?> transferor : TransportAPI.getTransferors()) {
+            LazyOptional<?> leaderLazy = leader.getCapability(transferor.getCapability());
+            List<LazyOptional<?>> allLazies = new ArrayList<>();
+            if (leaderLazy.isPresent()) {
+                allLazies.add(leaderLazy);
+            }
+            for (Entity entity : followers) {
+                LazyOptional<?> lazyOptional = entity.getCapability(transferor.getCapability());
+                if (lazyOptional.isPresent()) {
+                    allLazies.add(lazyOptional);
+                }
+            }
+            if (!allLazies.isEmpty()) {
+                for (Pair<ManagedObject, TileEntity> managedObject : matchedObjects) {
+                    LazyOptional<?> managedLazy = managedObject.getRight().getCapability(transferor.getCapability());
+                    unloaded |= managedLazy.map(managedValue -> {
+                        boolean unloadedManaged = false;
+                        for (LazyOptional<?> entityLazy : allLazies) {
+                            unloadedManaged |= entityLazy.map(entityValue -> {
+                                return false;
+                                //transferor.transfer(entityValue, managedValue);
+                            }).orElse(false);
+                        }
+                        return unloadedManaged;
+                    }).orElse(false);
+                }
+            }
+        }
+        return unloaded;
+    }
+
+    @Override
+    public boolean handleLoading(@Nonnull Entity leader, @Nonnull List<Entity> followers) {
+        return false;
     }
 
     @Override
