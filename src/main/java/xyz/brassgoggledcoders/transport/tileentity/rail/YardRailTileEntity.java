@@ -15,9 +15,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
-import xyz.brassgoggledcoders.transport.api.master.IManageable;
-import xyz.brassgoggledcoders.transport.api.master.Manageable;
-import xyz.brassgoggledcoders.transport.api.master.ManagerType;
+import xyz.brassgoggledcoders.transport.api.manager.IManageable;
+import xyz.brassgoggledcoders.transport.api.manager.Manageable;
+import xyz.brassgoggledcoders.transport.api.manager.ManagerType;
 import xyz.brassgoggledcoders.transport.util.TickTimer;
 
 import javax.annotation.Nonnull;

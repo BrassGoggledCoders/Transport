@@ -15,9 +15,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.master.IManager;
-import xyz.brassgoggledcoders.transport.api.master.Manager;
-import xyz.brassgoggledcoders.transport.api.master.ManagerType;
+import xyz.brassgoggledcoders.transport.api.manager.IManager;
+import xyz.brassgoggledcoders.transport.api.manager.Manager;
+import xyz.brassgoggledcoders.transport.api.manager.ManagerType;
 import xyz.brassgoggledcoders.transport.block.YardMasterBlock;
 import xyz.brassgoggledcoders.transport.container.provider.ManagerContainerProvider;
 

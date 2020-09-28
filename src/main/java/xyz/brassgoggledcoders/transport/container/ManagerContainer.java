@@ -6,7 +6,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.IntReferenceHolder;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
-import xyz.brassgoggledcoders.transport.api.master.ManagedObject;
+import xyz.brassgoggledcoders.transport.api.manager.ManagedObject;
 
 import javax.annotation.Nonnull;
 import java.util.List;

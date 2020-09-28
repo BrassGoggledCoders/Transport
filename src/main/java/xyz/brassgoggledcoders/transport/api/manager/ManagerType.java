@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.api.master;
+package xyz.brassgoggledcoders.transport.api.manager;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

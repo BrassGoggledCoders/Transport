@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.api.master;
+package xyz.brassgoggledcoders.transport.api.manager;
 
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundNBT;

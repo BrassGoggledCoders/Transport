@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.api.master;
+package xyz.brassgoggledcoders.transport.api.manager;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;

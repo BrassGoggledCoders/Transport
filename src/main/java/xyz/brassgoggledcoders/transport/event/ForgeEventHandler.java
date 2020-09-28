@@ -7,36 +7,45 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.manager.IManageable;
+import xyz.brassgoggledcoders.transport.api.manager.Manageable;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorageProvider;
-import xyz.brassgoggledcoders.transport.api.transfer.EnergyTransferor;
-import xyz.brassgoggledcoders.transport.api.transfer.FluidTransferor;
-import xyz.brassgoggledcoders.transport.api.transfer.ITransferor;
-import xyz.brassgoggledcoders.transport.api.transfer.ItemTransferor;
+import xyz.brassgoggledcoders.transport.capability.NBTCapabilityProvider;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.furnaceminecart.FurnaceMinecartFuelProvider;
 
-import java.util.function.Supplier;
-
-@Mod.EventBusSubscriber(modid = Transport.ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = Transport.ID, bus = Bus.FORGE)
 public class ForgeEventHandler {
+    public static final ResourceLocation MANAGEABLE = Transport.rl("manageable");
+    public static final ResourceLocation FURNACE_FUEL = Transport.rl("furnace_fuel");
+    public static final ResourceLocation PREDICATE_STORAGE = Transport.rl("predicate_storage");
+
     @SubscribeEvent
     public static void onAttachEntityCapabilities(AttachCapabilitiesEvent<Entity> entityAttachCapabilitiesEvent) {
         if (entityAttachCapabilitiesEvent.getObject() instanceof FurnaceMinecartEntity) {
-            entityAttachCapabilitiesEvent.addCapability(new ResourceLocation(Transport.ID, "furnace_fuel"),
-                    new FurnaceMinecartFuelProvider((FurnaceMinecartEntity) entityAttachCapabilitiesEvent.getObject()));
+            FurnaceMinecartFuelProvider fuelProvider =  new FurnaceMinecartFuelProvider(
+                    (FurnaceMinecartEntity) entityAttachCapabilitiesEvent.getObject());
+            entityAttachCapabilitiesEvent.addCapability(FURNACE_FUEL, fuelProvider);
+            entityAttachCapabilitiesEvent.addListener(fuelProvider::invalidate);
         }
     }
 
     @SubscribeEvent
     public static void onAttachTileEntityCapabilities(AttachCapabilitiesEvent<TileEntity> attachCapabilitiesEvent) {
         if (attachCapabilitiesEvent.getObject() instanceof LecternTileEntity) {
-            attachCapabilitiesEvent.addCapability(new ResourceLocation(Transport.ID, "predicate_storage"),
-                    new PredicateStorageProvider());
+            PredicateStorageProvider storageProvider = new PredicateStorageProvider();
+            attachCapabilitiesEvent.addCapability(PREDICATE_STORAGE, storageProvider);
+            attachCapabilitiesEvent.addListener(storageProvider::invalidate);
+        }
+
+        if (!attachCapabilitiesEvent.getCapabilities().containsKey(MANAGEABLE)) {
+            NBTCapabilityProvider<IManageable> manageableProvider = new NBTCapabilityProvider<>(TransportAPI.MANAGEABLE,
+                    new Manageable(null));
+            attachCapabilitiesEvent.addCapability(MANAGEABLE, manageableProvider);
+            attachCapabilitiesEvent.addListener(manageableProvider::invalidate);
         }
     }
 }

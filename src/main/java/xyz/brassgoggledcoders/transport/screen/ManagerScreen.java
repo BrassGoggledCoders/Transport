@@ -12,7 +12,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.container.ManagerContainer;
-import xyz.brassgoggledcoders.transport.api.master.ManagedObject;
+import xyz.brassgoggledcoders.transport.api.manager.ManagedObject;
 
 import javax.annotation.Nonnull;
 import java.util.List;

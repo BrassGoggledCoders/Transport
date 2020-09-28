@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.api.master;
+package xyz.brassgoggledcoders.transport.api.manager;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;

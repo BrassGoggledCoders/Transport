@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.master.ManagedObject;
+import xyz.brassgoggledcoders.transport.api.manager.ManagedObject;
 import xyz.brassgoggledcoders.transport.content.TransportText;
 
 import javax.annotation.Nonnull;
