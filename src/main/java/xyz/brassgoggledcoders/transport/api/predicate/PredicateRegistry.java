@@ -4,11 +4,14 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import xyz.brassgoggledcoders.transport.api.functional.ThrowingFunction;
+import xyz.brassgoggledcoders.transport.api.podium.IBookHolder;
 
 import javax.annotation.Nullable;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -17,7 +20,7 @@ public class PredicateRegistry {
             ENTITY_PREDICATE_CREATORS = Maps.newHashMap();
     private static final Map<String, ThrowingFunction<PredicateParser, Predicate<String>, PredicateParserException>>
             STRING_PREDICATE_CREATORS = Maps.newHashMap();
-    private static final Map<Item, Function<ItemStack, PredicateParser>> ITEM_TO_PREDICATE_PARSERS = Maps.newHashMap();
+    private static final Map<Item, BiFunction<ItemStack, IBookHolder, String>> ITEM_TO_PREDICATE_INPUT = Maps.newHashMap();
 
     public static void addEntityPredicateCreator(String name, ThrowingFunction<PredicateParser, Predicate<Entity>,
             PredicateParserException> entityPredicateCreator) {
@@ -38,16 +41,31 @@ public class PredicateRegistry {
     }
 
     @Nullable
-    public static PredicateParser getPredicateParserFromItemStack(ItemStack itemStack) {
-        Function<ItemStack, PredicateParser> parserFunction = ITEM_TO_PREDICATE_PARSERS.get(itemStack.getItem());
+    public static PredicateParser getPredicateParserFromItemStack(ItemStack itemStack, @Nullable IBookHolder bookHolder) {
+        BiFunction<ItemStack, IBookHolder, String> parserFunction = ITEM_TO_PREDICATE_INPUT.get(itemStack.getItem());
         if (parserFunction != null) {
-            return parserFunction.apply(itemStack);
+            String predicateInput = parserFunction.apply(itemStack, bookHolder);
+            if (predicateInput != null) {
+                return PredicateParser.fromString(predicateInput);
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
     }
 
-    public static void addItemToPredicateParser(Item item, Function<ItemStack, PredicateParser> parserFunction) {
-        ITEM_TO_PREDICATE_PARSERS.put(item, parserFunction);
+    @Nullable
+    public static String getPredicateInputFromItemStack(ItemStack itemStack, @Nullable IBookHolder bookHolder) {
+        BiFunction<ItemStack, IBookHolder, String> parserFunction = ITEM_TO_PREDICATE_INPUT.get(itemStack.getItem());
+        if (parserFunction != null) {
+            return parserFunction.apply(itemStack, bookHolder);
+        } else {
+            return null;
+        }
+    }
+
+    public static void addItemToPredicateInput(Item item, BiFunction<ItemStack, IBookHolder, String> parserFunction) {
+        ITEM_TO_PREDICATE_INPUT.put(item, parserFunction);
     }
 }

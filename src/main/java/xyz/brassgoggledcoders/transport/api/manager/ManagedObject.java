@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.NonNullLazy;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateParserException;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateRegistry;
@@ -55,7 +54,7 @@ public class ManagedObject {
     }
 
     public boolean attemptSetExportPredicateStack(ItemStack itemStack) {
-        PredicateParser predicateParser = PredicateRegistry.getPredicateParserFromItemStack(itemStack);
+        PredicateParser predicateParser = PredicateRegistry.getPredicateParserFromItemStack(itemStack, null);
         if (predicateParser != null) {
             try {
                 this.exportPredicate = predicateParser.getNextEntityPredicate();
@@ -70,7 +69,7 @@ public class ManagedObject {
     }
 
     public boolean attemptSetImportPredicateStack(ItemStack itemStack) {
-        PredicateParser predicateParser = PredicateRegistry.getPredicateParserFromItemStack(itemStack);
+        PredicateParser predicateParser = PredicateRegistry.getPredicateParserFromItemStack(itemStack, null);
         if (predicateParser != null) {
             try {
                 this.importPredicate = predicateParser.getNextEntityPredicate();
@@ -89,6 +88,8 @@ public class ManagedObject {
         nbt.putLong("blockPos", blockPos.toLong());
         nbt.put("representative", this.representative.write(new CompoundNBT()));
         nbt.putUniqueId("uniqueId", this.uniqueId);
+        nbt.put("importPredicateStack", this.importPredicateStack.write(new CompoundNBT()));
+        nbt.put("exportPredicateStack", this.exportPredicateStack.write(new CompoundNBT()));
         return nbt;
     }
 
