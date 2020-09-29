@@ -9,12 +9,9 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullLazy;
-import net.minecraftforge.common.util.NonNullSupplier;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.*;
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.system.CallbackI;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.transfer.ITransferor;
 
@@ -87,7 +84,17 @@ public class Manager implements IManager {
 
     @Override
     public boolean handleUnloading(@Nonnull Entity leader, @Nonnull List<Entity> followers) {
-        boolean unloaded = false;
+        return transfer(leader, followers, ITransferor::transfer);
+    }
+
+    @Override
+    public boolean handleLoading(@Nonnull Entity leader, @Nonnull List<Entity> followers) {
+        return transfer(leader, followers, (transferor, entity, managed) -> transferor.transfer(managed, entity));
+    }
+
+    private boolean transfer(Entity leader, List<Entity> followers, TriPredicate<ITransferor<?>, ICapabilityProvider,
+            ICapabilityProvider> transfer) {
+        boolean didSomething = false;
         List<Pair<ManagedObject, TileEntity>> matchedObjects = Lists.newArrayList();
         for (ManagedObject managedObject : this.getManagedObjects()) {
             if (managedObject.getImportPredicate().test(leader)) {
@@ -114,23 +121,18 @@ public class Manager implements IManager {
                 }
             }
             if (!allLazies.isEmpty()) {
-                SingleCapabilityProvider fromProvider = new SingleCapabilityProvider();
-                SingleCapabilityProvider toProvider = new SingleCapabilityProvider();
+                SingleCapabilityProvider managedProvider = new SingleCapabilityProvider();
+                SingleCapabilityProvider entityProvider = new SingleCapabilityProvider();
                 for (Pair<ManagedObject, TileEntity> managedObject : matchedObjects) {
                     LazyOptional<?> managedLazy = managedObject.getRight().getCapability(transferor.getCapability());
-                    for (LazyOptional<?> entityLazy: allLazies) {
-                        unloaded |= transferor.transfer(fromProvider.withCurrentCap(entityLazy),
-                                toProvider.withCurrentCap(managedLazy));
+                    for (LazyOptional<?> entityLazy : allLazies) {
+                        didSomething |= transfer.test(transferor, entityProvider.withCurrentCap(entityLazy),
+                                managedProvider.withCurrentCap(managedLazy));
                     }
                 }
             }
         }
-        return unloaded;
-    }
-
-    @Override
-    public boolean handleLoading(@Nonnull Entity leader, @Nonnull List<Entity> followers) {
-        return false;
+        return !didSomething;
     }
 
     @Override

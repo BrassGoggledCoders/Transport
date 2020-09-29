@@ -29,7 +29,17 @@ public interface IManager extends INBTSerializable<CompoundNBT> {
     @Nonnull
     AxisAlignedBB getBoundary();
 
+    /**
+     * @param leader The Leading Entity
+     * @param followers Any other Linked Entities
+     * @return if finished Unloading
+     */
     boolean handleUnloading(@Nonnull Entity leader, @Nonnull List<Entity> followers);
 
+    /**
+     * @param leader The Leading Entity
+     * @param followers Any other Linked Entities
+     * @return if finished Loading
+     */
     boolean handleLoading(@Nonnull Entity leader, @Nonnull List<Entity> followers);
 }

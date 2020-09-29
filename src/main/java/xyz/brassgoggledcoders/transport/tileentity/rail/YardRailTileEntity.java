@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.transport.tileentity.rail;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
@@ -25,6 +24,7 @@ import xyz.brassgoggledcoders.transport.util.TickTimer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
@@ -85,14 +85,20 @@ public class YardRailTileEntity extends TileEntity implements ITickableTileEntit
 
     private void handleUnloading(AbstractMinecartEntity minecartEntity) {
         LazyOptional<IManager> manager = this.manageable.getManager(this.getWorld());
-        boolean unloaded = manager.map(managerValue -> managerValue.handleUnloading(minecartEntity, Lists.newArrayList())).orElse(false);
-        if (minecartEntity.getEntityWorld().getGameTime() % 100 == 0) {
+        boolean finished = manager.map(managerValue -> managerValue.handleUnloading(minecartEntity,
+                Collections.emptyList()))
+                .orElse(false);
+        if (finished) {
             this.updateYardState(minecartEntity, YardState.LOADING);
         }
     }
 
     private void handleLoading(AbstractMinecartEntity minecartEntity) {
-        if (minecartEntity.getEntityWorld().getGameTime() % 100 == 0) {
+        LazyOptional<IManager> manager = this.manageable.getManager(this.getWorld());
+        boolean finished = manager.map(managerValue -> managerValue.handleLoading(minecartEntity,
+                Collections.emptyList()))
+                .orElse(false);
+        if (finished) {
             this.updateYardState(minecartEntity, YardState.DEPARTING);
         }
     }
