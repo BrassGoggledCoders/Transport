@@ -40,8 +40,11 @@ public class RailBreakerItem extends Item {
             if (managerTileEntity != null && manageableTileEntity != null) {
                 boolean connected = managerTileEntity.getCapability(TransportAPI.MANAGER)
                         .map(manager -> manageableTileEntity.getCapability(TransportAPI.MANAGEABLE)
-                                .map(manageable -> ManagedObject.fromManageable(manageable, blockPos,
-                                        manageableTileEntity.getBlockState()))
+                                .map(manageable -> {
+                                    manageable.setManagerPos(manager.getPosition());
+                                    return ManagedObject.fromManageable(manageable, blockPos,
+                                            manageableTileEntity.getBlockState());
+                                })
                                 .map(manager::addManagedObject)
                                 .orElse(false))
                         .orElse(false);

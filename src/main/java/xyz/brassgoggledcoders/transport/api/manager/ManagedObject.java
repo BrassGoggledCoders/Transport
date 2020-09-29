@@ -96,6 +96,8 @@ public class ManagedObject {
         packetBuffer.writeBlockPos(this.blockPos);
         packetBuffer.writeItemStack(this.getRepresentative());
         packetBuffer.writeUniqueId(this.uniqueId);
+        packetBuffer.writeItemStack(this.importPredicateStack);
+        packetBuffer.writeItemStack(this.exportPredicateStack);
     }
 
     public static ManagedObject fromCompoundNBT(CompoundNBT nbt) {

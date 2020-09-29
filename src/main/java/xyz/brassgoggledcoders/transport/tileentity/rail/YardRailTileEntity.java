@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.tileentity.rail;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
@@ -16,6 +17,7 @@ import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
 import xyz.brassgoggledcoders.transport.api.manager.IManageable;
+import xyz.brassgoggledcoders.transport.api.manager.IManager;
 import xyz.brassgoggledcoders.transport.api.manager.Manageable;
 import xyz.brassgoggledcoders.transport.api.manager.ManagerType;
 import xyz.brassgoggledcoders.transport.util.TickTimer;
@@ -82,6 +84,8 @@ public class YardRailTileEntity extends TileEntity implements ITickableTileEntit
     }
 
     private void handleUnloading(AbstractMinecartEntity minecartEntity) {
+        LazyOptional<IManager> manager = this.manageable.getManager(this.getWorld());
+        boolean unloaded = manager.map(managerValue -> managerValue.handleUnloading(minecartEntity, Lists.newArrayList())).orElse(false);
         if (minecartEntity.getEntityWorld().getGameTime() % 100 == 0) {
             this.updateYardState(minecartEntity, YardState.LOADING);
         }

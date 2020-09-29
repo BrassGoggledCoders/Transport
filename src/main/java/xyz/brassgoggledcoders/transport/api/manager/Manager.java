@@ -14,6 +14,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.common.util.NonNullSupplier;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.system.CallbackI;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.transfer.ITransferor;
 
@@ -113,18 +114,14 @@ public class Manager implements IManager {
                 }
             }
             if (!allLazies.isEmpty()) {
+                SingleCapabilityProvider fromProvider = new SingleCapabilityProvider();
+                SingleCapabilityProvider toProvider = new SingleCapabilityProvider();
                 for (Pair<ManagedObject, TileEntity> managedObject : matchedObjects) {
                     LazyOptional<?> managedLazy = managedObject.getRight().getCapability(transferor.getCapability());
-                    unloaded |= managedLazy.map(managedValue -> {
-                        boolean unloadedManaged = false;
-                        for (LazyOptional<?> entityLazy : allLazies) {
-                            unloadedManaged |= entityLazy.map(entityValue -> {
-                                return false;
-                                //transferor.transfer(entityValue, managedValue);
-                            }).orElse(false);
-                        }
-                        return unloadedManaged;
-                    }).orElse(false);
+                    for (LazyOptional<?> entityLazy: allLazies) {
+                        unloaded |= transferor.transfer(fromProvider.withCurrentCap(entityLazy),
+                                toProvider.withCurrentCap(managedLazy));
+                    }
                 }
             }
         }
