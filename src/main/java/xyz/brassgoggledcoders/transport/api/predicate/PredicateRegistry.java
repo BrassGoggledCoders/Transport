@@ -4,15 +4,13 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import xyz.brassgoggledcoders.transport.api.functional.ThrowingFunction;
-import xyz.brassgoggledcoders.transport.api.podium.IBookHolder;
+import xyz.brassgoggledcoders.transport.api.bookholder.IBookHolder;
 
 import javax.annotation.Nullable;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class PredicateRegistry {

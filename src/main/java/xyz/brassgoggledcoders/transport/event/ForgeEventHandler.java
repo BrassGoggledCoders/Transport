@@ -14,8 +14,8 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.manager.IManageable;
 import xyz.brassgoggledcoders.transport.api.manager.Manageable;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorageProvider;
-import xyz.brassgoggledcoders.transport.capability.NBTCapabilityProvider;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.furnaceminecart.FurnaceMinecartFuelProvider;
+import xyz.brassgoggledcoders.transport.capability.provider.NBTCapabilityProvider;
 
 @EventBusSubscriber(modid = Transport.ID, bus = Bus.FORGE)
 public class ForgeEventHandler {
@@ -26,7 +26,7 @@ public class ForgeEventHandler {
     @SubscribeEvent
     public static void onAttachEntityCapabilities(AttachCapabilitiesEvent<Entity> entityAttachCapabilitiesEvent) {
         if (entityAttachCapabilitiesEvent.getObject() instanceof FurnaceMinecartEntity) {
-            FurnaceMinecartFuelProvider fuelProvider =  new FurnaceMinecartFuelProvider(
+            FurnaceMinecartFuelProvider fuelProvider = new FurnaceMinecartFuelProvider(
                     (FurnaceMinecartEntity) entityAttachCapabilitiesEvent.getObject());
             entityAttachCapabilitiesEvent.addCapability(FURNACE_FUEL, fuelProvider);
             entityAttachCapabilitiesEvent.addListener(fuelProvider::invalidate);
