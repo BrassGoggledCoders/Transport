@@ -3,10 +3,7 @@ package xyz.brassgoggledcoders.transport;
 import com.hrznstudio.titanium.network.locator.LocatorType;
 import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.RegistryEvent;
@@ -19,7 +16,6 @@ import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.bookholder.IBookHolder;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
@@ -29,9 +25,7 @@ import xyz.brassgoggledcoders.transport.api.manager.IManager;
 import xyz.brassgoggledcoders.transport.api.manager.Manageable;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
-import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
-import xyz.brassgoggledcoders.transport.api.predicate.StringPredicate;
 import xyz.brassgoggledcoders.transport.compat.immersiveengineering.TransportIE;
 import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
@@ -45,11 +39,7 @@ import xyz.brassgoggledcoders.transport.pointmachine.ComparatorPointMachineBehav
 import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.PredicatePointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
-import xyz.brassgoggledcoders.transport.predicate.NamePredicate;
-import xyz.brassgoggledcoders.transport.predicate.TimePredicate;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrate;
-
-import java.util.function.Predicate;
 
 import static xyz.brassgoggledcoders.transport.Transport.ID;
 
@@ -121,7 +111,6 @@ public class Transport {
         CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () -> null);
         CapabilityManager.INSTANCE.register(IManager.class, new CompoundNBTStorage<>(), () -> null);
         CapabilityManager.INSTANCE.register(IManageable.class, new CompoundNBTStorage<>(), () -> new Manageable(null));
-        CapabilityManager.INSTANCE.register(IBookHolder.class, new EmptyStorage<>(), () -> null);
 
         TransportAPI.generateItemToModuleMap();
     }

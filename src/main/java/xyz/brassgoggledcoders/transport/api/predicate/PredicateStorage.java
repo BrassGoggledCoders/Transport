@@ -12,8 +12,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.common.util.Constants;
-import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
-import xyz.brassgoggledcoders.transport.api.predicate.PredicateParserException;
 
 import javax.annotation.Nonnull;
 import java.util.function.Predicate;
