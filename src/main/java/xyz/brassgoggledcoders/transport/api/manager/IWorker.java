@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public interface IManageable extends INBTSerializable<CompoundNBT> {
+public interface IWorker extends INBTSerializable<CompoundNBT> {
     @Nonnull
     LazyOptional<IManager> getManager(IBlockReader blockReader);
 

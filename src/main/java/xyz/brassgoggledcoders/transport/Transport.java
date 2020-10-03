@@ -20,9 +20,9 @@ import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.api.manager.IManageable;
+import xyz.brassgoggledcoders.transport.api.manager.IWorker;
 import xyz.brassgoggledcoders.transport.api.manager.IManager;
-import xyz.brassgoggledcoders.transport.api.manager.Manageable;
+import xyz.brassgoggledcoders.transport.api.manager.Worker;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
@@ -110,7 +110,7 @@ public class Transport {
         CapabilityManager.INSTANCE.register(PredicateStorage.class, new EmptyStorage<>(), PredicateStorage::new);
         CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () -> null);
         CapabilityManager.INSTANCE.register(IManager.class, new CompoundNBTStorage<>(), () -> null);
-        CapabilityManager.INSTANCE.register(IManageable.class, new CompoundNBTStorage<>(), () -> new Manageable(null));
+        CapabilityManager.INSTANCE.register(IWorker.class, new CompoundNBTStorage<>(), () -> new Worker(null));
 
         TransportAPI.generateItemToModuleMap();
     }

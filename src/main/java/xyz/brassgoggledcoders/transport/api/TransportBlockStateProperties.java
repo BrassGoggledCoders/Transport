@@ -9,4 +9,6 @@ public class TransportBlockStateProperties {
 
     public static final EnumProperty<RailShape> STRAIGHT_RAIL_SHAPE = EnumProperty.create("shape", RailShape.class,
             railShape -> railShape == RailShape.NORTH_SOUTH || railShape == RailShape.EAST_WEST);
+
+    public static final BooleanProperty CONNECTED = BooleanProperty.create("connected");
 }

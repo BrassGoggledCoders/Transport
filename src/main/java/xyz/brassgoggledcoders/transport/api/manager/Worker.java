@@ -13,13 +13,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class Manageable implements IManageable {
+public class Worker implements IWorker {
     private final ManagerType type;
     private LazyOptional<IManager> manager;
     private BlockPos managerPos;
     private UUID uniqueId;
 
-    public Manageable(@Nullable ManagerType type) {
+    public Worker(@Nullable ManagerType type) {
         this.type = type;
         this.uniqueId = UUID.randomUUID();
     }
@@ -69,11 +69,12 @@ public class Manageable implements IManageable {
     }
 
     @Override
+    @Nonnull
     public UUID getUniqueId() {
         return uniqueId;
     }
 
-    public void invalidatedManager(LazyOptional<IManager> optional) {
+    private void invalidatedManager(LazyOptional<IManager> optional) {
         this.manager = null;
     }
 

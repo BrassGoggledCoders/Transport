@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.transport.api;
 
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -18,23 +17,19 @@ import xyz.brassgoggledcoders.transport.api.connection.NoConnectionChecker;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.api.functional.ThrowingFunction;
-import xyz.brassgoggledcoders.transport.api.manager.IManageable;
+import xyz.brassgoggledcoders.transport.api.manager.IWorker;
 import xyz.brassgoggledcoders.transport.api.manager.IManager;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.network.INetworkHandler;
 import xyz.brassgoggledcoders.transport.api.pointmachine.IPointMachineBehavior;
-import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
-import xyz.brassgoggledcoders.transport.api.predicate.PredicateParserException;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
 import xyz.brassgoggledcoders.transport.api.transfer.ITransferor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Predicate;
 
 public class TransportAPI {
     public static final Logger LOGGER = LogManager.getLogger("transport-api");
@@ -48,8 +43,8 @@ public class TransportAPI {
     @CapabilityInject(IManager.class)
     public static Capability<IManager> MANAGER;
 
-    @CapabilityInject(IManageable.class)
-    public static Capability<IManageable> MANAGEABLE;
+    @CapabilityInject(IWorker.class)
+    public static Capability<IWorker> MANAGEABLE;
 
     private static IConnectionChecker connectionChecker = new NoConnectionChecker();
     private static INetworkHandler networkHandler;

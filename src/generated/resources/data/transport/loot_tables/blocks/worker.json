@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "transport:yard_master"
+          "name": "transport:worker"
         }
       ],
       "conditions": [

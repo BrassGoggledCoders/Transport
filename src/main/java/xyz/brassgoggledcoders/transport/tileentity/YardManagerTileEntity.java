@@ -18,18 +18,18 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.manager.IManager;
 import xyz.brassgoggledcoders.transport.api.manager.Manager;
 import xyz.brassgoggledcoders.transport.api.manager.ManagerType;
-import xyz.brassgoggledcoders.transport.block.YardMasterBlock;
+import xyz.brassgoggledcoders.transport.block.YardManagerBlock;
 import xyz.brassgoggledcoders.transport.container.provider.ManagerContainerProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class YardMasterTileEntity extends TileEntity implements ITickableTileEntity {
+public class YardManagerTileEntity extends TileEntity implements ITickableTileEntity {
     private final Manager manager;
     private final LazyOptional<IManager> managerLazy;
 
-    public YardMasterTileEntity(TileEntityType<? extends YardMasterTileEntity> tileEntityType) {
+    public YardManagerTileEntity(TileEntityType<? extends YardManagerTileEntity> tileEntityType) {
         super(tileEntityType);
         this.manager = new Manager(this::getPos, this::createBoundaries, ManagerType.RAIL, nothing -> this.markDirty());
         this.managerLazy = LazyOptional.of(this::getManager);
@@ -42,7 +42,7 @@ public class YardMasterTileEntity extends TileEntity implements ITickableTileEnt
 
     @Nonnull
     public AxisAlignedBB createBoundaries() {
-        Direction facing = this.getBlockState().get(YardMasterBlock.FACING);
+        Direction facing = this.getBlockState().get(YardManagerBlock.FACING);
         BlockPos blockPos = this.getPos();
         BlockPos farCorner = blockPos.offset(facing, 8).offset(facing.rotateY(), 4).up(6);
         BlockPos nearCorner = blockPos.offset(facing.rotateYCCW(), 4).down(2);

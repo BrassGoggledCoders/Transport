@@ -18,6 +18,8 @@ import xyz.brassgoggledcoders.transport.api.transfer.ITransferor;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class Manager implements IManager {
     private final Consumer<?> markDirty;
@@ -84,23 +86,24 @@ public class Manager implements IManager {
 
     @Override
     public boolean handleUnloading(@Nonnull Entity leader, @Nonnull List<Entity> followers) {
-        return transfer(leader, followers, ITransferor::transfer);
+        return transfer(leader, followers, ManagedObject::getImportPredicate, ITransferor::transfer);
     }
 
     @Override
     public boolean handleLoading(@Nonnull Entity leader, @Nonnull List<Entity> followers) {
-        return transfer(leader, followers, (transferor, entity, managed) -> transferor.transfer(managed, entity));
+        return transfer(leader, followers, ManagedObject::getExportPredicate,
+                (transferor, entity, managed) -> transferor.transfer(managed, entity));
     }
 
-    private boolean transfer(Entity leader, List<Entity> followers, TriPredicate<ITransferor<?>, ICapabilityProvider,
-            ICapabilityProvider> transfer) {
+    private boolean transfer(Entity leader, List<Entity> followers, Function<ManagedObject, Predicate<Entity>> predicateFunction,
+                             TriPredicate<ITransferor<?>, ICapabilityProvider, ICapabilityProvider> transfer) {
         boolean didSomething = false;
         List<Pair<ManagedObject, TileEntity>> matchedObjects = Lists.newArrayList();
         for (ManagedObject managedObject : this.getManagedObjects()) {
-            if (managedObject.getImportPredicate().test(leader)) {
+            if (predicateFunction.apply(managedObject).test(leader)) {
                 TileEntity tileEntity = leader.getEntityWorld().getTileEntity(managedObject.getBlockPos());
                 if (tileEntity != null) {
-                    if (tileEntity.getCapability(TransportAPI.MANAGEABLE).map(IManageable::getUniqueId)
+                    if (tileEntity.getCapability(TransportAPI.MANAGEABLE).map(IWorker::getUniqueId)
                             .map(managedObject.getUniqueId()::equals)
                             .orElse(false)) {
                         matchedObjects.add(Pair.of(managedObject, tileEntity));

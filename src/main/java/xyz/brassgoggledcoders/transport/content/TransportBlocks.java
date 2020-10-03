@@ -57,7 +57,8 @@ import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateModels;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateRecipes;
 import xyz.brassgoggledcoders.transport.screen.jobsite.RailWorkerBenchScreen;
 import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
-import xyz.brassgoggledcoders.transport.tileentity.YardMasterTileEntity;
+import xyz.brassgoggledcoders.transport.tileentity.WorkerTileEntity;
+import xyz.brassgoggledcoders.transport.tileentity.YardManagerTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
@@ -240,21 +241,44 @@ public class TransportBlocks {
     //endregion
 
 
-    //region Rail Support
-    public static final BlockEntry<YardMasterBlock> YARD_MASTER = Transport.getRegistrate()
-            .object("yard_master")
-            .block(Material.IRON, YardMasterBlock::new)
-            .properties(AbstractBlock.Properties::notSolid)
-            .blockstate((context, provider) -> provider.horizontalBlock(context.get(), provider.models()
-                    .getExistingFile(provider.modLoc("block/yard_master")))
+    //region Managers
+    public static final BlockEntry<YardManagerBlock> YARD_MANAGER = Transport.getRegistrate()
+            .object("yard_manager")
+            .block(Material.IRON, YardManagerBlock::new)
+            .lang("Yard Manager")
+            .properties(properties -> properties.notSolid()
+                    .hardnessAndResistance(5.0F, 6.0F)
+                    .sound(SoundType.METAL)
             )
+            .blockstate((context, provider) -> provider.horizontalBlock(context.get(), provider.models()
+                    .getExistingFile(provider.modLoc("block/yard_manager"))
+            ))
             .simpleItem()
-            .tileEntity(YardMasterTileEntity::new)
+            .tileEntity(YardManagerTileEntity::new)
             .build()
             .register();
 
-    public static final RegistryEntry<TileEntityType<YardMasterTileEntity>> YARD_MASTER_TILE_ENTITY =
-            YARD_MASTER.getSibling(ForgeRegistries.TILE_ENTITIES);
+    public static final RegistryEntry<TileEntityType<YardManagerTileEntity>> YARD_MANAGER_TILE_ENTITY =
+            YARD_MANAGER.getSibling(ForgeRegistries.TILE_ENTITIES);
+
+    public static final BlockEntry<WorkerBlock> WORKER = Transport.getRegistrate()
+            .object("worker")
+            .block(Material.IRON, WorkerBlock::new)
+            .properties(properties -> properties.notSolid()
+                    .hardnessAndResistance(5.0F, 6.0F)
+                    .sound(SoundType.METAL)
+            )
+            .lang("Worker")
+            .blockstate((context, provider) -> provider.directionalBlock(context.get(), provider.models()
+                    .getExistingFile(provider.modLoc("block/worker"))
+            ))
+            .simpleItem()
+            .tileEntity(WorkerTileEntity::new)
+            .build()
+            .register();
+
+    public static final RegistryEntry<TileEntityType<WorkerTileEntity>> WORKER_TILE_ENTITY =
+            WORKER.getSibling(ForgeRegistries.TILE_ENTITIES);
     //endregion
 
     //region Loaders

@@ -16,16 +16,16 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
-import xyz.brassgoggledcoders.transport.tileentity.YardMasterTileEntity;
+import xyz.brassgoggledcoders.transport.tileentity.YardManagerTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class YardMasterBlock extends Block {
+public class YardManagerBlock extends Block {
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public YardMasterBlock(Properties properties) {
+    public YardManagerBlock(Properties properties) {
         super(properties);
     }
 
@@ -48,7 +48,7 @@ public class YardMasterBlock extends Block {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new YardMasterTileEntity(TransportBlocks.YARD_MASTER_TILE_ENTITY.get());
+        return new YardManagerTileEntity(TransportBlocks.YARD_MANAGER_TILE_ENTITY.get());
     }
 
     @Override
@@ -58,8 +58,8 @@ public class YardMasterBlock extends Block {
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
                                              BlockRayTraceResult hit) {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof YardMasterTileEntity) {
-            return ((YardMasterTileEntity) tileEntity).onRightClick(player);
+        if (tileEntity instanceof YardManagerTileEntity) {
+            return ((YardManagerTileEntity) tileEntity).onRightClick(player);
         }
         return super.onBlockActivated(state, world, pos, player, hand, hit);
     }

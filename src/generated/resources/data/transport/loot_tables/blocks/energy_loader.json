@@ -16,10 +16,10 @@
           "properties": [
             "east",
             "up",
-            "north",
-            "west",
+            "down",
             "south",
-            "down"
+            "north",
+            "west"
           ]
         },
         {

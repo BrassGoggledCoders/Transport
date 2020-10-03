@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "transport:block/yard_manager"
+    },
+    "facing=south": {
+      "model": "transport:block/yard_manager",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "transport:block/yard_manager",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "transport:block/yard_manager",
+      "y": 90
+    }
+  }
+}

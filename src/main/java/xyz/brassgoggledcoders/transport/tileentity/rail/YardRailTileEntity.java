@@ -15,9 +15,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
-import xyz.brassgoggledcoders.transport.api.manager.IManageable;
+import xyz.brassgoggledcoders.transport.api.manager.IWorker;
 import xyz.brassgoggledcoders.transport.api.manager.IManager;
-import xyz.brassgoggledcoders.transport.api.manager.Manageable;
+import xyz.brassgoggledcoders.transport.api.manager.Worker;
 import xyz.brassgoggledcoders.transport.api.manager.ManagerType;
 import xyz.brassgoggledcoders.transport.util.TickTimer;
 
@@ -29,14 +29,14 @@ import java.util.Map;
 import java.util.UUID;
 
 public class YardRailTileEntity extends TileEntity implements ITickableTileEntity {
-    private final IManageable manageable;
-    private final LazyOptional<IManageable> manageableLazy;
+    private final IWorker manageable;
+    private final LazyOptional<IWorker> manageableLazy;
 
     private final Map<UUID, Pair<TickTimer, YardState>> entityYardState;
 
     public YardRailTileEntity(TileEntityType<? extends YardRailTileEntity> tileEntityType) {
         super(tileEntityType);
-        this.manageable = new Manageable(ManagerType.RAIL);
+        this.manageable = new Worker(ManagerType.RAIL);
         this.manageableLazy = LazyOptional.of(() -> manageable);
         this.entityYardState = Maps.newHashMap();
     }
