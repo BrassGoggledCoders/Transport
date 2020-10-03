@@ -6,9 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
-import xyz.brassgoggledcoders.transport.api.predicate.PredicateParserException;
-import xyz.brassgoggledcoders.transport.api.predicate.PredicateRegistry;
 
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -54,33 +51,13 @@ public class ManagedObject {
     }
 
     public boolean attemptSetExportPredicateStack(ItemStack itemStack) {
-        PredicateParser predicateParser = PredicateRegistry.getPredicateParserFromItemStack(itemStack, null);
-        if (predicateParser != null) {
-            try {
-                this.exportPredicate = predicateParser.getNextEntityPredicate();
-                this.exportPredicateStack = itemStack;
-                return true;
-            } catch (PredicateParserException exception) {
-                return false;
-            }
-        } else {
-            return false;
-        }
+        this.exportPredicateStack = itemStack;
+        return true;
     }
 
     public boolean attemptSetImportPredicateStack(ItemStack itemStack) {
-        PredicateParser predicateParser = PredicateRegistry.getPredicateParserFromItemStack(itemStack, null);
-        if (predicateParser != null) {
-            try {
-                this.importPredicate = predicateParser.getNextEntityPredicate();
-                this.importPredicateStack = itemStack;
-                return true;
-            } catch (PredicateParserException exception) {
-                return false;
-            }
-        } else {
-            return false;
-        }
+        this.importPredicateStack = itemStack;
+        return true;
     }
 
     public CompoundNBT toCompoundNBT() {
@@ -121,7 +98,7 @@ public class ManagedObject {
         );
     }
 
-    public static ManagedObject fromManageable(IManageable manageable, BlockPos blockPos, BlockState blockState) {
+    public static ManagedObject fromManageable(IWorker manageable, BlockPos blockPos, BlockState blockState) {
         return new ManagedObject(
                 blockPos,
                 manageable.hasCustomRepresentative() ? manageable.getCustomRepresentative() :
