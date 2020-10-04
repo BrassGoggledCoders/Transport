@@ -12,7 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.api.TransportCapabilities;
-import xyz.brassgoggledcoders.transport.api.manager.WorkerRepresentation;
 import xyz.brassgoggledcoders.transport.content.TransportText;
 
 import javax.annotation.Nonnull;
@@ -31,7 +30,6 @@ public class RailBreakerItem extends Item {
     @Nonnull
     public ActionResultType onItemUse(@Nonnull ItemUseContext context) {
         World world = context.getWorld();
-        BlockPos blockPos = context.getPos();
         CompoundNBT managerNBT = context.getItem().getChildTag("manager");
         if (managerNBT != null) {
             BlockPos managerPos = BlockPos.fromLong(managerNBT.getLong("pos"));
@@ -56,17 +54,16 @@ public class RailBreakerItem extends Item {
                 TransportText.MANAGER_LINKING_FAIL.send(context.getPlayer(), true);
                 context.getItem().removeChildTag("manager");
             }
-
         } else {
             TileEntity tileEntity = context.getWorld().getTileEntity(context.getPos());
             if (tileEntity != null && tileEntity.getCapability(TransportCapabilities.MANAGER).isPresent()) {
                 CompoundNBT compoundNBT = context.getItem().getOrCreateChildTag("manager");
                 compoundNBT.putLong("pos", context.getPos().toLong());
-                TransportText.MANAGER_LINKING_START.send(context.getPlayer(), true, new TranslationTextComponent(
-                        tileEntity.getBlockState()
+                TransportText.MANAGER_LINKING_START.send(context.getPlayer(), true,
+                        new TranslationTextComponent(tileEntity.getBlockState()
                                 .getBlock()
                                 .getTranslationKey()
-                ));
+                        ));
                 return ActionResultType.SUCCESS;
             }
         }
