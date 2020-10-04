@@ -15,6 +15,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.TransportCapabilities;
 import xyz.brassgoggledcoders.transport.api.manager.IManager;
 import xyz.brassgoggledcoders.transport.api.manager.Manager;
 import xyz.brassgoggledcoders.transport.api.manager.ManagerType;
@@ -69,7 +70,7 @@ public class YardManagerTileEntity extends TileEntity implements ITickableTileEn
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == TransportAPI.MANAGER) {
+        if (cap == TransportCapabilities.MANAGER) {
             return managerLazy.cast();
         }
         return super.getCapability(cap, side);

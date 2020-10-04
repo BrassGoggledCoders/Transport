@@ -1,7 +1,8 @@
 {
   "parent": "block/thin_block",
   "textures": {
-    "particle": "transport:block/worker_connected"
+    "particle": "transport:block/worker_connected",
+    "texture": "transport:block/worker_connected"
   },
   "elements": [
     {

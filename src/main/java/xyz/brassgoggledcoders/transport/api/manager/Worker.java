@@ -6,7 +6,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.util.LazyOptional;
-import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import net.minecraftforge.common.util.NonNullLazy;
+import net.minecraftforge.common.util.NonNullSupplier;
+import xyz.brassgoggledcoders.transport.api.TransportCapabilities;
 import xyz.brassgoggledcoders.transport.util.WorldUtils;
 
 import javax.annotation.Nonnull;
@@ -14,14 +16,24 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class Worker implements IWorker {
+    private final NonNullLazy<ItemStack> representativeLazy;
     private final ManagerType type;
     private LazyOptional<IManager> manager;
     private BlockPos managerPos;
     private UUID uniqueId;
 
+    public Worker() {
+        this(null);
+    }
+
     public Worker(@Nullable ManagerType type) {
+        this(type, () -> ItemStack.EMPTY);
+    }
+
+    public Worker(@Nullable ManagerType type, @Nonnull NonNullSupplier<ItemStack> representativeSupplier) {
         this.type = type;
         this.uniqueId = UUID.randomUUID();
+        this.representativeLazy = NonNullLazy.of(representativeSupplier);
     }
 
     @Nonnull
@@ -31,7 +43,7 @@ public class Worker implements IWorker {
             if (manager == null && WorldUtils.isBlockLoaded(blockReader, this.getManagerPos())) {
                 TileEntity tileEntity = blockReader.getTileEntity(this.getManagerPos());
                 if (tileEntity != null) {
-                    this.manager = tileEntity.getCapability(TransportAPI.MANAGER);
+                    this.manager = tileEntity.getCapability(TransportCapabilities.MANAGER);
                     if (this.manager.isPresent()) {
                         this.manager.addListener(this::invalidatedManager);
                     }
@@ -59,13 +71,13 @@ public class Worker implements IWorker {
 
     @Override
     public boolean hasCustomRepresentative() {
-        return false;
+        return !this.getCustomRepresentative().isEmpty();
     }
 
     @Nonnull
     @Override
     public ItemStack getCustomRepresentative() {
-        return ItemStack.EMPTY;
+        return this.representativeLazy.get();
     }
 
     @Override

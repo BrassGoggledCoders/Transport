@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.TransportCapabilities;
 import xyz.brassgoggledcoders.transport.api.manager.IWorker;
 import xyz.brassgoggledcoders.transport.api.manager.Worker;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorageProvider;
@@ -19,7 +20,6 @@ import xyz.brassgoggledcoders.transport.capability.provider.NBTCapabilityProvide
 
 @EventBusSubscriber(modid = Transport.ID, bus = Bus.FORGE)
 public class ForgeEventHandler {
-    public static final ResourceLocation MANAGEABLE = Transport.rl("manageable");
     public static final ResourceLocation FURNACE_FUEL = Transport.rl("furnace_fuel");
     public static final ResourceLocation PREDICATE_STORAGE = Transport.rl("predicate_storage");
 
@@ -39,13 +39,6 @@ public class ForgeEventHandler {
             PredicateStorageProvider storageProvider = new PredicateStorageProvider();
             attachCapabilitiesEvent.addCapability(PREDICATE_STORAGE, storageProvider);
             attachCapabilitiesEvent.addListener(storageProvider::invalidate);
-        }
-
-        if (!attachCapabilitiesEvent.getCapabilities().containsKey(MANAGEABLE)) {
-            NBTCapabilityProvider<IWorker> manageableProvider = new NBTCapabilityProvider<>(TransportAPI.MANAGEABLE,
-                    new Worker(null));
-            attachCapabilitiesEvent.addCapability(MANAGEABLE, manageableProvider);
-            attachCapabilitiesEvent.addListener(manageableProvider::invalidate);
         }
     }
 }

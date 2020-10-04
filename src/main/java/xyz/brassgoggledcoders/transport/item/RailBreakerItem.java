@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.TransportCapabilities;
 import xyz.brassgoggledcoders.transport.api.manager.ManagedObject;
 import xyz.brassgoggledcoders.transport.content.TransportText;
 
@@ -38,8 +39,8 @@ public class RailBreakerItem extends Item {
             TileEntity managerTileEntity = world.getTileEntity(managerPos);
             TileEntity manageableTileEntity = world.getTileEntity(context.getPos());
             if (managerTileEntity != null && manageableTileEntity != null) {
-                boolean connected = managerTileEntity.getCapability(TransportAPI.MANAGER)
-                        .map(manager -> manageableTileEntity.getCapability(TransportAPI.MANAGEABLE)
+                boolean connected = managerTileEntity.getCapability(TransportCapabilities.MANAGER)
+                        .map(manager -> manageableTileEntity.getCapability(TransportCapabilities.WORKER)
                                 .map(manageable -> {
                                     manageable.setManagerPos(manager.getPosition());
                                     return ManagedObject.fromManageable(manageable, blockPos,
@@ -64,7 +65,7 @@ public class RailBreakerItem extends Item {
 
         } else {
             TileEntity tileEntity = context.getWorld().getTileEntity(context.getPos());
-            if (tileEntity != null && tileEntity.getCapability(TransportAPI.MANAGER).isPresent()) {
+            if (tileEntity != null && tileEntity.getCapability(TransportCapabilities.MANAGER).isPresent()) {
                 CompoundNBT compoundNBT = context.getItem().getOrCreateChildTag("manager");
                 compoundNBT.putLong("pos", context.getPos().toLong());
                 TransportText.MANAGER_LINKING_START.send(context.getPlayer(), true, new TranslationTextComponent(

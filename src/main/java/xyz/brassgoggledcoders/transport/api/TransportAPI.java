@@ -40,12 +40,6 @@ public class TransportAPI {
     @CapabilityInject(IModularEntity.class)
     public static Capability<IModularEntity> MODULAR_ENTITY;
 
-    @CapabilityInject(IManager.class)
-    public static Capability<IManager> MANAGER;
-
-    @CapabilityInject(IWorker.class)
-    public static Capability<IWorker> MANAGEABLE;
-
     private static IConnectionChecker connectionChecker = new NoConnectionChecker();
     private static INetworkHandler networkHandler;
 

@@ -13,6 +13,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.*;
 import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.TransportCapabilities;
 import xyz.brassgoggledcoders.transport.api.transfer.ITransferor;
 
 import javax.annotation.Nonnull;
@@ -103,7 +104,7 @@ public class Manager implements IManager {
             if (predicateFunction.apply(managedObject).test(leader)) {
                 TileEntity tileEntity = leader.getEntityWorld().getTileEntity(managedObject.getBlockPos());
                 if (tileEntity != null) {
-                    if (tileEntity.getCapability(TransportAPI.MANAGEABLE).map(IWorker::getUniqueId)
+                    if (tileEntity.getCapability(TransportCapabilities.WORKER).map(IWorker::getUniqueId)
                             .map(managedObject.getUniqueId()::equals)
                             .orElse(false)) {
                         matchedObjects.add(Pair.of(managedObject, tileEntity));

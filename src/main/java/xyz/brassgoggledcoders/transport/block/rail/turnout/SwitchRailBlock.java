@@ -28,13 +28,6 @@ public class SwitchRailBlock extends AbstractSwitchRailBlock {
     public static final EnumProperty<RailShape> STRAIGHT_SHAPE = EnumProperty.create("straight_shape",
             RailShape.class, railShape -> railShape == RailShape.NORTH_SOUTH || railShape == RailShape.EAST_WEST);
 
-    public SwitchRailBlock() {
-        this(Block.Properties.create(Material.MISCELLANEOUS)
-                .doesNotBlockMovement()
-                .hardnessAndResistance(0.7F)
-                .sound(SoundType.METAL));
-    }
-
     public SwitchRailBlock(Properties properties) {
         super(true, properties);
         this.setDefaultState(this.getDefaultState().with(STRAIGHT_SHAPE, RailShape.NORTH_SOUTH)

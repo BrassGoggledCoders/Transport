@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.compat.immersiveengineering;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
