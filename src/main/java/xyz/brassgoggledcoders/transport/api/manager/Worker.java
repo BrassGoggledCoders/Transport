@@ -17,23 +17,18 @@ import java.util.UUID;
 
 public class Worker implements IWorker {
     private final NonNullLazy<ItemStack> representativeLazy;
+    private final NonNullSupplier<BlockPos> workerPosSupplier;
     private final ManagerType type;
     private LazyOptional<IManager> manager;
     private BlockPos managerPos;
     private UUID uniqueId;
 
-    public Worker() {
-        this(null);
-    }
-
-    public Worker(@Nullable ManagerType type) {
-        this(type, () -> ItemStack.EMPTY);
-    }
-
-    public Worker(@Nullable ManagerType type, @Nonnull NonNullSupplier<ItemStack> representativeSupplier) {
+    public Worker(@Nullable ManagerType type, @Nonnull NonNullSupplier<ItemStack> representativeSupplier,
+                  @Nonnull NonNullSupplier<BlockPos> workerPosSupplier) {
         this.type = type;
         this.uniqueId = UUID.randomUUID();
         this.representativeLazy = NonNullLazy.of(representativeSupplier);
+        this.workerPosSupplier = workerPosSupplier;
     }
 
     @Nonnull
@@ -56,7 +51,13 @@ public class Worker implements IWorker {
     @Override
     @Nullable
     public BlockPos getManagerPos() {
-        return managerPos != null && managerPos != BlockPos.ZERO ? managerPos : null;
+        return this.managerPos != null && this.managerPos != BlockPos.ZERO ? this.managerPos : null;
+    }
+
+    @Nonnull
+    @Override
+    public BlockPos getWorkerPos() {
+        return this.workerPosSupplier.get();
     }
 
     @Override
@@ -69,14 +70,9 @@ public class Worker implements IWorker {
         return type == null || type == manager.getType();
     }
 
-    @Override
-    public boolean hasCustomRepresentative() {
-        return !this.getCustomRepresentative().isEmpty();
-    }
-
     @Nonnull
     @Override
-    public ItemStack getCustomRepresentative() {
+    public ItemStack getRepresentative() {
         return this.representativeLazy.get();
     }
 

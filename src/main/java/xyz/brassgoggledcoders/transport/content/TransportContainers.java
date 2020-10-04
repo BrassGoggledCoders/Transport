@@ -25,7 +25,7 @@ import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.container.ManagerContainer;
-import xyz.brassgoggledcoders.transport.api.manager.ManagedObject;
+import xyz.brassgoggledcoders.transport.api.manager.WorkerRepresentation;
 
 import java.util.List;
 
@@ -83,9 +83,9 @@ public class TransportContainers {
     public static final RegistryObject<ContainerType<ManagerContainer>> MANAGER = CONTAINERS.register(
             "manager", () -> IForgeContainerType.create((windowId, inv, data) -> {
                 int objects = data.readInt();
-                List<ManagedObject> connectedObjects = Lists.newArrayList();
+                List<WorkerRepresentation> connectedObjects = Lists.newArrayList();
                 for (int i = 0; i < objects; i++) {
-                    connectedObjects.add(ManagedObject.fromPacketBuffer(data));
+                    connectedObjects.add(WorkerRepresentation.fromPacketBuffer(data));
                 }
                 return new ManagerContainer(windowId, inv, connectedObjects);
             })

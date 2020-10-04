@@ -27,7 +27,7 @@ public class Manager implements IManager {
     private final NonNullLazy<BlockPos> position;
     private final NonNullLazy<AxisAlignedBB> boundary;
     private final ManagerType type;
-    private final Map<UUID, ManagedObject> managedObjects;
+    private final Map<UUID, WorkerRepresentation> workerRepresentations;
 
     private UUID uniqueId;
 
@@ -38,7 +38,7 @@ public class Manager implements IManager {
         this.boundary = NonNullLazy.of(boundarySupplier);
         this.type = type;
         this.markDirty = markDirty;
-        this.managedObjects = Maps.newLinkedHashMap();
+        this.workerRepresentations = Maps.newLinkedHashMap();
         this.uniqueId = UUID.randomUUID();
     }
 
@@ -61,11 +61,12 @@ public class Manager implements IManager {
     }
 
     @Override
-    public boolean addManagedObject(@Nonnull ManagedObject managedObject) {
-        BlockPos blockPos = managedObject.getBlockPos();
-        if (!managedObjects.containsKey(managedObject.getUniqueId()) && !blockPos.equals(this.getPosition()) &&
+    public boolean addWorker(@Nonnull IWorker worker) {
+        BlockPos blockPos = worker.getWorkerPos();
+        if (worker.isValidManager(this) && !workerRepresentations.containsKey(worker.getUniqueId()) &&
                 this.getBoundary().contains(blockPos.getX(), blockPos.getY(), blockPos.getZ())) {
-            this.managedObjects.put(managedObject.getUniqueId(), managedObject);
+            worker.setManagerPos(this.getPosition());
+            this.workerRepresentations.put(worker.getUniqueId(), WorkerRepresentation.fromWorker(worker));
             this.markDirty.accept(null);
             return true;
         } else {
@@ -74,9 +75,14 @@ public class Manager implements IManager {
     }
 
     @Override
+    public boolean removeWorker(@Nonnull IWorker worker) {
+        return this.workerRepresentations.remove(worker.getUniqueId()) != null;
+    }
+
+    @Override
     @Nonnull
-    public Collection<ManagedObject> getManagedObjects() {
-        return managedObjects.values();
+    public Collection<WorkerRepresentation> getWorkerRepresentatives() {
+        return workerRepresentations.values();
     }
 
     @Override
@@ -87,27 +93,27 @@ public class Manager implements IManager {
 
     @Override
     public boolean handleUnloading(@Nonnull Entity leader, @Nonnull List<Entity> followers) {
-        return transfer(leader, followers, ManagedObject::getImportPredicate, ITransferor::transfer);
+        return transfer(leader, followers, workerRepresentation -> entity -> true, ITransferor::transfer);
     }
 
     @Override
     public boolean handleLoading(@Nonnull Entity leader, @Nonnull List<Entity> followers) {
-        return transfer(leader, followers, ManagedObject::getExportPredicate,
+        return transfer(leader, followers, workerRepresentation -> entity -> true,
                 (transferor, entity, managed) -> transferor.transfer(managed, entity));
     }
 
-    private boolean transfer(Entity leader, List<Entity> followers, Function<ManagedObject, Predicate<Entity>> predicateFunction,
+    private boolean transfer(Entity leader, List<Entity> followers, Function<WorkerRepresentation, Predicate<Entity>> predicateFunction,
                              TriPredicate<ITransferor<?>, ICapabilityProvider, ICapabilityProvider> transfer) {
         boolean didSomething = false;
-        List<Pair<ManagedObject, TileEntity>> matchedObjects = Lists.newArrayList();
-        for (ManagedObject managedObject : this.getManagedObjects()) {
-            if (predicateFunction.apply(managedObject).test(leader)) {
-                TileEntity tileEntity = leader.getEntityWorld().getTileEntity(managedObject.getBlockPos());
+        List<Pair<WorkerRepresentation, TileEntity>> matchedObjects = Lists.newArrayList();
+        for (WorkerRepresentation workerRepresentation : this.getWorkerRepresentatives()) {
+            if (predicateFunction.apply(workerRepresentation).test(leader)) {
+                TileEntity tileEntity = leader.getEntityWorld().getTileEntity(workerRepresentation.getBlockPos());
                 if (tileEntity != null) {
                     if (tileEntity.getCapability(TransportCapabilities.WORKER).map(IWorker::getUniqueId)
-                            .map(managedObject.getUniqueId()::equals)
+                            .map(workerRepresentation.getUniqueId()::equals)
                             .orElse(false)) {
-                        matchedObjects.add(Pair.of(managedObject, tileEntity));
+                        matchedObjects.add(Pair.of(workerRepresentation, tileEntity));
                     }
                 }
             }
@@ -127,7 +133,7 @@ public class Manager implements IManager {
             if (!allLazies.isEmpty()) {
                 SingleCapabilityProvider managedProvider = new SingleCapabilityProvider();
                 SingleCapabilityProvider entityProvider = new SingleCapabilityProvider();
-                for (Pair<ManagedObject, TileEntity> managedObject : matchedObjects) {
+                for (Pair<WorkerRepresentation, TileEntity> managedObject : matchedObjects) {
                     LazyOptional<?> managedLazy = managedObject.getRight().getCapability(transferor.getCapability());
                     for (LazyOptional<?> entityLazy : allLazies) {
                         didSomething |= transfer.test(transferor, entityProvider.withCurrentCap(entityLazy),
@@ -143,29 +149,30 @@ public class Manager implements IManager {
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putUniqueId("uniqueId", this.uniqueId);
-        ListNBT managedObjectsList = new ListNBT();
-        for (ManagedObject managedObject : this.managedObjects.values()) {
-            managedObjectsList.add(managedObject.toCompoundNBT());
+        ListNBT workerRepresentativeListNBT = new ListNBT();
+        for (WorkerRepresentation workerRepresentation : this.workerRepresentations.values()) {
+            workerRepresentativeListNBT.add(workerRepresentation.toCompoundNBT());
         }
-        nbt.put("managedObjects", managedObjectsList);
+        nbt.put("workerRepresentatives", workerRepresentativeListNBT);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         this.uniqueId = nbt.getUniqueId("uniqueId");
-        this.managedObjects.clear();
-        ListNBT connectedObjectNBT = nbt.getList("managedObjects", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < connectedObjectNBT.size(); i++) {
-            ManagedObject managedObject = ManagedObject.fromCompoundNBT(connectedObjectNBT.getCompound(i));
-            this.managedObjects.put(managedObject.getUniqueId(), managedObject);
+        this.workerRepresentations.clear();
+        ListNBT workerRepresentativeListNBT = nbt.getList("workerRepresentatives", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < workerRepresentativeListNBT.size(); i++) {
+            WorkerRepresentation workerRepresentation = WorkerRepresentation.fromCompoundNBT(
+                    workerRepresentativeListNBT.getCompound(i));
+            this.workerRepresentations.put(workerRepresentation.getUniqueId(), workerRepresentation);
         }
     }
 
     public void writeToPacketBuffer(PacketBuffer packetBuffer) {
-        packetBuffer.writeInt(this.managedObjects.size());
-        for (ManagedObject managedObject : this.managedObjects.values()) {
-            managedObject.toPackerBuffer(packetBuffer);
+        packetBuffer.writeInt(this.workerRepresentations.size());
+        for (WorkerRepresentation workerRepresentation : this.workerRepresentations.values()) {
+            workerRepresentation.toPackerBuffer(packetBuffer);
         }
     }
 }

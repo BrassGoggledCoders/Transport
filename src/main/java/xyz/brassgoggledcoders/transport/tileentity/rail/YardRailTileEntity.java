@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.tileentity.rail;
 import com.google.common.collect.Maps;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -16,10 +17,10 @@ import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.TransportCapabilities;
 import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
-import xyz.brassgoggledcoders.transport.api.manager.IWorker;
 import xyz.brassgoggledcoders.transport.api.manager.IManager;
-import xyz.brassgoggledcoders.transport.api.manager.Worker;
+import xyz.brassgoggledcoders.transport.api.manager.IWorker;
 import xyz.brassgoggledcoders.transport.api.manager.ManagerType;
+import xyz.brassgoggledcoders.transport.api.manager.Worker;
 import xyz.brassgoggledcoders.transport.util.TickTimer;
 
 import javax.annotation.Nonnull;
@@ -32,12 +33,12 @@ import java.util.UUID;
 public class YardRailTileEntity extends TileEntity implements ITickableTileEntity {
     private final IWorker manageable;
     private final LazyOptional<IWorker> manageableLazy;
-
     private final Map<UUID, Pair<TickTimer, YardState>> entityYardState;
 
     public YardRailTileEntity(TileEntityType<? extends YardRailTileEntity> tileEntityType) {
         super(tileEntityType);
-        this.manageable = new Worker(ManagerType.RAIL);
+        this.manageable = new Worker(ManagerType.RAIL, () -> new ItemStack(this.getBlockState().getBlock()),
+                this::getPos);
         this.manageableLazy = LazyOptional.of(() -> manageable);
         this.entityYardState = Maps.newHashMap();
     }

@@ -11,9 +11,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.TransportCapabilities;
-import xyz.brassgoggledcoders.transport.api.manager.ManagedObject;
+import xyz.brassgoggledcoders.transport.api.manager.WorkerRepresentation;
 import xyz.brassgoggledcoders.transport.content.TransportText;
 
 import javax.annotation.Nonnull;
@@ -37,16 +36,11 @@ public class RailBreakerItem extends Item {
         if (managerNBT != null) {
             BlockPos managerPos = BlockPos.fromLong(managerNBT.getLong("pos"));
             TileEntity managerTileEntity = world.getTileEntity(managerPos);
-            TileEntity manageableTileEntity = world.getTileEntity(context.getPos());
-            if (managerTileEntity != null && manageableTileEntity != null) {
+            TileEntity workerTileEntity = world.getTileEntity(context.getPos());
+            if (managerTileEntity != null && workerTileEntity != null) {
                 boolean connected = managerTileEntity.getCapability(TransportCapabilities.MANAGER)
-                        .map(manager -> manageableTileEntity.getCapability(TransportCapabilities.WORKER)
-                                .map(manageable -> {
-                                    manageable.setManagerPos(manager.getPosition());
-                                    return ManagedObject.fromManageable(manageable, blockPos,
-                                            manageableTileEntity.getBlockState());
-                                })
-                                .map(manager::addManagedObject)
+                        .map(manager -> workerTileEntity.getCapability(TransportCapabilities.WORKER)
+                                .map(manager::addWorker)
                                 .orElse(false))
                         .orElse(false);
                 if (connected) {

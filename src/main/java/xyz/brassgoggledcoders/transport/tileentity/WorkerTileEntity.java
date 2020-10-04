@@ -30,7 +30,7 @@ public class WorkerTileEntity extends TileEntity {
 
     public WorkerTileEntity(TileEntityType<? extends WorkerTileEntity> tileEntityType) {
         super(tileEntityType);
-        this.worker = new Worker(null, this::getWorkerRepresentative);
+        this.worker = new Worker(null, this::getWorkerRepresentative, this::getPos);
         this.workerLazy = LazyOptional.of(() -> worker);
     }
 

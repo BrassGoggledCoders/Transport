@@ -44,6 +44,6 @@ public class ManagerContainerProvider implements INamedContainerProvider {
     @Override
     @ParametersAreNonnullByDefault
     public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity playerEntity) {
-        return new ManagerContainer(windowId, inventory, new ArrayList<>(manager.getManagedObjects()));
+        return new ManagerContainer(windowId, inventory, new ArrayList<>(manager.getWorkerRepresentatives()));
     }
 }

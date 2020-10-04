@@ -18,14 +18,15 @@ public interface IWorker extends INBTSerializable<CompoundNBT> {
     @Nullable
     BlockPos getManagerPos();
 
+    @Nonnull
+    BlockPos getWorkerPos();
+
     void setManagerPos(@Nullable BlockPos blockPos);
 
     boolean isValidManager(@Nonnull IManager manager);
 
-    boolean hasCustomRepresentative();
-
     @Nonnull
-    ItemStack getCustomRepresentative();
+    ItemStack getRepresentative();
 
     @Nonnull
     UUID getUniqueId();

@@ -12,7 +12,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.container.ManagerContainer;
-import xyz.brassgoggledcoders.transport.api.manager.ManagedObject;
+import xyz.brassgoggledcoders.transport.api.manager.WorkerRepresentation;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -59,7 +59,7 @@ public class ManagerScreen extends ContainerScreen<ManagerContainer> {
         int i = this.guiLeft + 8;
         int j = this.guiTop + 14;
         int k = this.recipeIndexOffset + 12;
-        List<ManagedObject> list = this.container.getManagedObjects();
+        List<WorkerRepresentation> list = this.container.getManagedObjects();
 
         for (int l = this.recipeIndexOffset; l < k && l < this.container.getManagedObjects().size(); ++l) {
             int i1 = l - this.recipeIndexOffset;
@@ -90,7 +90,7 @@ public class ManagerScreen extends ContainerScreen<ManagerContainer> {
     }
 
     private void drawRecipesItems(int left, int top, int recipeIndexOffsetMax) {
-        List<ManagedObject> list = this.container.getManagedObjects();
+        List<WorkerRepresentation> list = this.container.getManagedObjects();
 
         for (int i = this.recipeIndexOffset; i < recipeIndexOffsetMax && i < this.container.getManagedObjects().size(); ++i) {
             int j = i - this.recipeIndexOffset;

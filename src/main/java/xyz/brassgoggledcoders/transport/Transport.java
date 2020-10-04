@@ -110,7 +110,7 @@ public class Transport {
         CapabilityManager.INSTANCE.register(PredicateStorage.class, new EmptyStorage<>(), PredicateStorage::new);
         CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () -> null);
         CapabilityManager.INSTANCE.register(IManager.class, new CompoundNBTStorage<>(), () -> null);
-        CapabilityManager.INSTANCE.register(IWorker.class, new CompoundNBTStorage<>(), Worker::new);
+        CapabilityManager.INSTANCE.register(IWorker.class, new CompoundNBTStorage<>(), () -> null);
 
         TransportAPI.generateItemToModuleMap();
     }

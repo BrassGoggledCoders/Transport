@@ -21,10 +21,12 @@ public interface IManager extends INBTSerializable<CompoundNBT> {
     @Nonnull
     ManagerType getType();
 
-    boolean addManagedObject(@Nonnull ManagedObject managedObject);
+    boolean addWorker(@Nonnull IWorker worker);
+
+    boolean removeWorker(@Nonnull IWorker worker);
 
     @Nonnull
-    Collection<ManagedObject> getManagedObjects();
+    Collection<WorkerRepresentation> getWorkerRepresentatives();
 
     @Nonnull
     AxisAlignedBB getBoundary();

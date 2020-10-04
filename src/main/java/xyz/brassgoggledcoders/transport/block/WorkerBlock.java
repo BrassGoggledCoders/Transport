@@ -18,7 +18,9 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
 import xyz.brassgoggledcoders.transport.api.TransportBlockStateProperties;
+import xyz.brassgoggledcoders.transport.api.TransportCapabilities;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.tileentity.WorkerTileEntity;
 
@@ -61,6 +63,22 @@ public class WorkerBlock extends Block {
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         VoxelShape shape = SHAPES.get(state.get(FACING));
         return shape != null ? shape : super.getShape(state, world, pos, context);
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    @SuppressWarnings("deprecation")
+    public void onReplaced(BlockState blockState, World world, BlockPos pos, BlockState newBlockState, boolean isMoving) {
+        if (!blockState.isIn(newBlockState.getBlock())) {
+            TileEntity tileentity = world.getTileEntity(pos);
+            if (tileentity instanceof WorkerTileEntity) {
+                tileentity.getCapability(TransportCapabilities.WORKER)
+                        .ifPresent(worker -> worker.getManager(world)
+                                .ifPresent(manager -> manager.removeWorker(worker)));
+            }
+
+            super.onReplaced(blockState, world, pos, newBlockState, isMoving);
+        }
     }
 
     @Override
