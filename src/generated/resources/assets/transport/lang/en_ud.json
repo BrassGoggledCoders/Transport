@@ -55,11 +55,21 @@
   "module_type.transport.cargo": "ob\u0279\u0250\u0186",
   "module_type.transport.engine": "\u01DDu\u0131bu\u018E",
   "screen.transport.jei.category.rail_workers_bench": "\u0265\u0254u\u01DD\u15FA s,\u0279\u01DD\u029E\u0279oM \u05DF\u0131\u0250\u1D1A",
+  "text.transport.direction.down": "u\u028Do\u15E1",
+  "text.transport.direction.east": "\u0287s\u0250\u018E",
+  "text.transport.direction.none": "\u01DDuoN",
+  "text.transport.direction.north": "\u0265\u0287\u0279oN",
+  "text.transport.direction.south": "\u0265\u0287noS",
+  "text.transport.direction.up": "d\u2229",
+  "text.transport.direction.west": "\u0287s\u01DDM",
+  "text.transport.export": "\u0287\u0279odx\u018E",
   "text.transport.hull_type": "%s :\u01DDd\u028E\u27D8 \u05DF\u05DFnH",
+  "text.transport.import": "\u0287\u0279od\u026FI",
   "text.transport.installed_module": "%s - %s * ",
   "text.transport.installed_modules": "s\u01DD\u05DFnpoW p\u01DD\u05DF\u05DF\u0250\u0287suI",
   "text.transport.manager_linking.fail": "\u0279\u01DDb\u0250u\u0250W o\u0287 \u029Eu\u0131\uA780 o\u0287 p\u01DD\u05DF\u0131\u0250\u2132",
   "text.transport.manager_linking.start": "%s \u0265\u0287\u0131\u028D \u029Eu\u0131\uA780 \u0279\u01DDb\u0250u\u0250W bu\u0131\u0287\u0279\u0250\u0287S",
   "text.transport.manager_linking.success": "\u0279\u01DDb\u0250u\u0250W o\u0287 \u029Eu\u0131\uA780 \u05DFn\u025Fss\u01DD\u0254\u0254nS",
-  "text.transport.module_slot": "\u0287o\u05DFS \u01DD\u05DFnpoW %s"
+  "text.transport.module_slot": "\u0287o\u05DFS \u01DD\u05DFnpoW %s",
+  "text.transport.side": "\u01DDp\u0131S"
 }

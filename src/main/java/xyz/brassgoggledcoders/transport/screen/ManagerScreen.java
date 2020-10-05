@@ -5,14 +5,18 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.container.ManagerContainer;
 import xyz.brassgoggledcoders.transport.api.manager.WorkerRepresentation;
+import xyz.brassgoggledcoders.transport.capability.supervisor.NonnullDirection;
+import xyz.brassgoggledcoders.transport.container.ManagerContainer;
+import xyz.brassgoggledcoders.transport.content.TransportText;
+import xyz.brassgoggledcoders.transport.screen.widget.EnumButton;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -23,6 +27,9 @@ public class ManagerScreen extends ContainerScreen<ManagerContainer> {
     private float sliderProgress;
     private boolean clickedOnScroll;
     private int recipeIndexOffset;
+
+    private Button importButton;
+    private Button exportButton;
 
     public ManagerScreen(ManagerContainer container, PlayerInventory inventory, ITextComponent title) {
         super(container, inventory, title);
@@ -54,6 +61,13 @@ public class ManagerScreen extends ContainerScreen<ManagerContainer> {
     }
 
     @Override
+    protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrixStack, int x, int y) {
+        super.drawGuiContainerForegroundLayer(matrixStack, x, y);
+        this.font.func_238422_b_(matrixStack, TransportText.IMPORT.get(), 97, 15, 4210752);
+        this.font.func_238422_b_(matrixStack, TransportText.EXPORT.get(), 97, 43, 4210752);
+    }
+
+    @Override
     protected void renderHoveredTooltip(@Nonnull MatrixStack matrixStack, int x, int y) {
         super.renderHoveredTooltip(matrixStack, x, y);
         int i = this.guiLeft + 8;
@@ -69,6 +83,23 @@ public class ManagerScreen extends ContainerScreen<ManagerContainer> {
                 this.renderTooltip(matrixStack, list.get(l).getRepresentative(), x, y);
             }
         }
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        if (importButton == null) {
+            importButton = new EnumButton<>(NonnullDirection.values(), NonnullDirection.NONE,
+                    value -> TransportText.SIDE.with(value.getName()), this.guiLeft + 116,
+                    this.guiTop + 23, 60, 20);
+        }
+        this.addButton(importButton);
+        if (exportButton == null) {
+            exportButton = new EnumButton<>(NonnullDirection.values(), NonnullDirection.NONE,
+                    value -> TransportText.SIDE.with(value.getName()), this.guiLeft + 116, this.guiTop + 45,
+                    60, 20);
+        }
+        this.addButton(exportButton);
     }
 
     private void func_238853_b_(MatrixStack p_238853_1_, int p_238853_2_, int p_238853_3_, int p_238853_4_, int p_238853_5_, int p_238853_6_) {

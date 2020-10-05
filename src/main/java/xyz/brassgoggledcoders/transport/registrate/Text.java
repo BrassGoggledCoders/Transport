@@ -18,7 +18,12 @@ public class Text {
     }
 
     @Nonnull
-    public ITextComponent getTranslation(Object... args) {
+    public ITextComponent get() {
+        return noChange.get();
+    }
+
+    @Nonnull
+    public ITextComponent with(Object... args) {
         if (args.length == 0) {
             return noChange.get();
         } else {
@@ -28,7 +33,7 @@ public class Text {
 
     public void send(@Nullable PlayerEntity playerEntity, boolean actionBar, Object... args) {
         if (playerEntity != null) {
-            playerEntity.sendStatusMessage(this.getTranslation(args), actionBar);
+            playerEntity.sendStatusMessage(this.with(args), actionBar);
         }
     }
 }

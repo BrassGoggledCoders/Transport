@@ -55,11 +55,21 @@
   "module_type.transport.cargo": "Cargo",
   "module_type.transport.engine": "Engine",
   "screen.transport.jei.category.rail_workers_bench": "Rail Worker's Bench",
+  "text.transport.direction.down": "Down",
+  "text.transport.direction.east": "East",
+  "text.transport.direction.none": "None",
+  "text.transport.direction.north": "North",
+  "text.transport.direction.south": "South",
+  "text.transport.direction.up": "Up",
+  "text.transport.direction.west": "West",
+  "text.transport.export": "Export",
   "text.transport.hull_type": "Hull Type: %s",
+  "text.transport.import": "Import",
   "text.transport.installed_module": " * %s - %s",
   "text.transport.installed_modules": "Installed Modules",
   "text.transport.manager_linking.fail": "Failed to Link to Manager",
   "text.transport.manager_linking.start": "Starting Manager Link with %s",
   "text.transport.manager_linking.success": "Successful Link to Manager",
-  "text.transport.module_slot": "%s Module Slot"
+  "text.transport.module_slot": "%s Module Slot",
+  "text.transport.side": "Side"
 }

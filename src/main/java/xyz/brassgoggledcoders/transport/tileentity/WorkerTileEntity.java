@@ -31,6 +31,7 @@ public class WorkerTileEntity extends TileEntity {
     public WorkerTileEntity(TileEntityType<? extends WorkerTileEntity> tileEntityType) {
         super(tileEntityType);
         this.worker = new Worker(null, this::getWorkerRepresentative, this::getPos);
+        this.worker.addConnectionListener(this::handleConnectionChange);
         this.workerLazy = LazyOptional.of(() -> worker);
     }
 
@@ -68,6 +69,12 @@ public class WorkerTileEntity extends TileEntity {
         }
     }
 
+    private void handleConnectionChange(boolean connected) {
+        if (this.getWorld() != null) {
+            this.getWorld().setBlockState(this.getPos(), this.getBlockState().with(WorkerBlock.CONNECTED, connected));
+        }
+    }
+
     @Nullable
     private TileEntity getWorkedTileEntity() {
         if (this.getWorld() != null) {
@@ -96,6 +103,11 @@ public class WorkerTileEntity extends TileEntity {
     public void read(BlockState blockState, CompoundNBT nbt) {
         super.read(blockState, nbt);
         this.worker.deserializeNBT(nbt.getCompound("worker"));
+    }
+
+    @Override
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+
     }
 
     @Nonnull

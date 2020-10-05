@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.api.manager;
 
+import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -13,7 +14,9 @@ import xyz.brassgoggledcoders.transport.util.WorldUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class Worker implements IWorker {
     private final NonNullLazy<ItemStack> representativeLazy;
@@ -23,12 +26,16 @@ public class Worker implements IWorker {
     private BlockPos managerPos;
     private UUID uniqueId;
 
+    private final List<Consumer<Boolean>> connectionListeners;
+
     public Worker(@Nullable ManagerType type, @Nonnull NonNullSupplier<ItemStack> representativeSupplier,
                   @Nonnull NonNullSupplier<BlockPos> workerPosSupplier) {
         this.type = type;
         this.uniqueId = UUID.randomUUID();
         this.representativeLazy = NonNullLazy.of(representativeSupplier);
         this.workerPosSupplier = workerPosSupplier;
+
+        this.connectionListeners = Lists.newArrayList();
     }
 
     @Nonnull
@@ -63,6 +70,7 @@ public class Worker implements IWorker {
     @Override
     public void setManagerPos(@Nullable BlockPos managerPos) {
         this.managerPos = managerPos;
+        this.connectionListeners.forEach(listener -> listener.accept(managerPos != null));
     }
 
     @Override
@@ -84,6 +92,10 @@ public class Worker implements IWorker {
 
     private void invalidatedManager(LazyOptional<IManager> optional) {
         this.manager = null;
+    }
+
+    public void addConnectionListener(Consumer<Boolean> connectionListener) {
+        this.connectionListeners.add(connectionListener);
     }
 
     @Override

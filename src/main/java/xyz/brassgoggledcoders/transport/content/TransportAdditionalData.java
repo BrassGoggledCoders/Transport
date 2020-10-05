@@ -13,10 +13,12 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.capability.supervisor.NonnullDirection;
 import xyz.brassgoggledcoders.transport.recipe.jobsite.RailWorkerBenchRecipeBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Locale;
 
 public class TransportAdditionalData {
     private static final List<Pair<IItemProvider, ITag<Item>>> tagInfoList = Lists.newArrayList();
@@ -78,6 +80,11 @@ public class TransportAdditionalData {
 
     public static void generateLang(RegistrateLangProvider langProvider) {
         langProvider.add("screen.transport.jei.category.rail_workers_bench", "Rail Worker's Bench");
+        for (NonnullDirection direction : NonnullDirection.values()) {
+            String name = direction.toString().substring(0, 1).toUpperCase(Locale.US) +
+                    direction.toString().substring(1).toLowerCase(Locale.US);
+            langProvider.add(direction.getTranslationKey(), name);
+        }
     }
 
     public static List<Pair<IItemProvider, ITag<Item>>> getTagInfoList() {

@@ -269,8 +269,11 @@ public class TransportBlocks {
                     .sound(SoundType.METAL)
             )
             .lang("Worker")
-            .blockstate((context, provider) -> provider.directionalBlock(context.get(), provider.models()
-                    .getExistingFile(provider.modLoc("block/worker"))
+            .blockstate((context, provider) -> provider.directionalBlock(context.get(), blockState -> {
+                        String connected = blockState.get(WorkerBlock.CONNECTED) ? "_connected" : "";
+                        return provider.models()
+                                .getExistingFile(provider.modLoc("block/worker" + connected));
+                    }
             ))
             .simpleItem()
             .tileEntity(WorkerTileEntity::new)

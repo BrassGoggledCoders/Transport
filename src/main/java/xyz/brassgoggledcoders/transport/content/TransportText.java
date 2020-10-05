@@ -36,6 +36,15 @@ public class TransportText {
     public static final Text MANAGER_LINKING_SUCCESS = Transport.getRegistrate()
             .addText("text.transport.manager_linking.success", "Successful Link to Manager");
 
+    public static final Text IMPORT = Transport.getRegistrate()
+            .addText("text.transport.import", "Import");
+
+    public static final Text EXPORT = Transport.getRegistrate()
+            .addText("text.transport.export", "Export");
+
+    public static final Text SIDE = Transport.getRegistrate()
+            .addText("text.transport.side", "Side: %s");
+
     public static void setup() {
 
     }

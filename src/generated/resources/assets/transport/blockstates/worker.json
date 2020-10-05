@@ -5,21 +5,21 @@
       "x": 180
     },
     "connected=true,facing=down": {
-      "model": "transport:block/worker",
+      "model": "transport:block/worker_connected",
       "x": 180
     },
     "connected=false,facing=up": {
       "model": "transport:block/worker"
     },
     "connected=true,facing=up": {
-      "model": "transport:block/worker"
+      "model": "transport:block/worker_connected"
     },
     "connected=false,facing=north": {
       "model": "transport:block/worker",
       "x": 90
     },
     "connected=true,facing=north": {
-      "model": "transport:block/worker",
+      "model": "transport:block/worker_connected",
       "x": 90
     },
     "connected=false,facing=south": {
@@ -28,7 +28,7 @@
       "y": 180
     },
     "connected=true,facing=south": {
-      "model": "transport:block/worker",
+      "model": "transport:block/worker_connected",
       "x": 90,
       "y": 180
     },
@@ -38,7 +38,7 @@
       "y": 270
     },
     "connected=true,facing=west": {
-      "model": "transport:block/worker",
+      "model": "transport:block/worker_connected",
       "x": 90,
       "y": 270
     },
@@ -48,7 +48,7 @@
       "y": 90
     },
     "connected=true,facing=east": {
-      "model": "transport:block/worker",
+      "model": "transport:block/worker_connected",
       "x": 90,
       "y": 90
     }
