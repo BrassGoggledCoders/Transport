@@ -59,7 +59,7 @@ public class TransportRegistrate extends AbstractRegistrate<TransportRegistrate>
 
     public ModuleTypeBuilder<ModuleType, TransportRegistrate> moduleType(Function<ResourceLocation, Module<?>> loadValue,
                                                                          NonNullSupplier<Collection<Module<?>>> getValues) {
-        return this.moduleType(() -> new ModuleType(loadValue, getValues));
+        return this.moduleType(() -> new ModuleType(loadValue, getValues::get));
     }
 
     public <M extends ModuleType> ModuleTypeBuilder<M, TransportRegistrate> moduleType(NonNullSupplier<M> moduleTypeBuilder) {

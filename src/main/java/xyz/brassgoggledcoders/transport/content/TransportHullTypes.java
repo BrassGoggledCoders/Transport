@@ -11,7 +11,7 @@ import xyz.brassgoggledcoders.transport.hulltype.VanillaBoatHullType;
 @SuppressWarnings("unused")
 public class TransportHullTypes {
     public static final RegistryEntry<VanillaBoatHullType> OAK = Transport.getRegistrate().object("oak")
-            .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier, BoatEntity.Type.OAK))
+            .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier::get, BoatEntity.Type.OAK))
             .lang("Oak Hull")
             .item(() -> Items.OAK_BOAT)
             .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
@@ -19,7 +19,7 @@ public class TransportHullTypes {
             .register();
 
     public static final RegistryEntry<VanillaBoatHullType> ACACIA = Transport.getRegistrate().object("acacia")
-            .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier, BoatEntity.Type.ACACIA))
+            .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier::get, BoatEntity.Type.ACACIA))
             .lang("Acacia Hull")
             .item(() -> Items.ACACIA_BOAT)
             .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
@@ -27,7 +27,7 @@ public class TransportHullTypes {
             .register();
 
     public static final RegistryEntry<VanillaBoatHullType> BIRCH = Transport.getRegistrate().object("birch")
-            .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier, BoatEntity.Type.BIRCH))
+            .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier::get, BoatEntity.Type.BIRCH))
             .lang("Birch Hull")
             .item(() -> Items.BIRCH_BOAT)
             .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
@@ -35,7 +35,7 @@ public class TransportHullTypes {
             .register();
 
     public static final RegistryEntry<VanillaBoatHullType> DARK_OAK = Transport.getRegistrate().object("dark_oak")
-            .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier, BoatEntity.Type.DARK_OAK))
+            .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier::get, BoatEntity.Type.DARK_OAK))
             .lang("Dark Oak Hull")
             .item(() -> Items.DARK_OAK_BOAT)
             .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
@@ -43,7 +43,7 @@ public class TransportHullTypes {
             .register();
 
     public static final RegistryEntry<VanillaBoatHullType> JUNGLE = Transport.getRegistrate().object("jungle")
-            .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier, BoatEntity.Type.JUNGLE))
+            .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier::get, BoatEntity.Type.JUNGLE))
             .lang("Jungle Hull")
             .item(() -> Items.JUNGLE_BOAT)
             .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
@@ -51,7 +51,7 @@ public class TransportHullTypes {
             .register();
 
     public static final RegistryEntry<VanillaBoatHullType> SPRUCE = Transport.getRegistrate().object("spruce")
-            .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier, BoatEntity.Type.SPRUCE))
+            .hullType(itemSupplier -> new VanillaBoatHullType(itemSupplier::get, BoatEntity.Type.SPRUCE))
             .lang("Spruce Hull")
             .item(() -> Items.SPRUCE_BOAT)
             .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
@@ -59,7 +59,7 @@ public class TransportHullTypes {
             .register();
 
     public static final RegistryEntry<HullType> IRON = Transport.getRegistrate().object("iron")
-            .hullType(itemSupplier -> new HullType(itemSupplier, new ResourceLocation("minecart.png")))
+            .hullType(itemSupplier -> new HullType(itemSupplier::get, new ResourceLocation("minecart.png")))
             .lang("Iron Hull")
             .item(() -> Items.MINECART)
             .defaultRecipe(TransportEntities.CARGO_MINECART_ITEM::get)

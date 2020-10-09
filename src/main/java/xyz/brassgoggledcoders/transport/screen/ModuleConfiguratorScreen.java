@@ -32,12 +32,11 @@ public class ModuleConfiguratorScreen extends BasicAddonScreen {
                     net.minecraftforge.fml.client.gui.GuiUtils.preItemToolTip(hoveredStack);
                     List<ITextComponent> tooltips = this.getTooltipFromItem(hoveredStack);
                     tooltips.add(0, new TranslationTextComponent("text.transport.module_slot", moduleSlot.getDisplayName()));
-                    this.renderTooltip(matrixStack, tooltips, mouseX, mouseY);
+                    this.renderTooltip(matrixStack, Lists.transform(tooltips, ITextComponent::func_241878_f), mouseX, mouseY);
                     net.minecraftforge.fml.client.gui.GuiUtils.postItemToolTip();
                 } else {
-                    this.renderTooltip(matrixStack, Lists.newArrayList(
-                            new TranslationTextComponent("text.transport.module_slot", moduleSlot.getDisplayName())),
-                            mouseX, mouseY);
+                    this.renderTooltip(matrixStack, new TranslationTextComponent("text.transport.module_slot",
+                            moduleSlot.getDisplayName()), mouseX, mouseY);
                 }
             } else {
                 super.renderHoveredTooltip(matrixStack, mouseX, mouseY);

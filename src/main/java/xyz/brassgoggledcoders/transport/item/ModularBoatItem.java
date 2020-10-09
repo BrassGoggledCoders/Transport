@@ -101,11 +101,11 @@ public class ModularBoatItem extends Item implements IModularItem<ModularBoatEnt
                 itemStack.setTag(tagNBT);
                 items.add(itemStack);
             } else {
-                for (Map.Entry<ResourceLocation, HullType> hullType : TransportAPI.HULL_TYPE.get().getEntries()) {
+                for (Map.Entry<RegistryKey<HullType>, HullType> hullType : TransportAPI.HULL_TYPE.get().getEntries()) {
                     Item hullItem = hullType.getValue().asItem();
                     if (hullItem.isIn(TransportItemTags.HULLS_BOAT)) {
                         CompoundNBT tagNBT = new CompoundNBT();
-                        tagNBT.putString("hull_type", hullType.getKey().toString());
+                        tagNBT.putString("hull_type", hullType.getKey().getLocation().toString());
                         ItemStack itemStack = new ItemStack(this);
                         itemStack.setTag(tagNBT);
                         items.add(itemStack);

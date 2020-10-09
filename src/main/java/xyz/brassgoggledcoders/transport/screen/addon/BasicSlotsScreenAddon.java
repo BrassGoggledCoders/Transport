@@ -35,7 +35,8 @@ public class BasicSlotsScreenAddon extends BasicScreenAddon {
     public void drawBackgroundLayer(MatrixStack matrixStack, Screen screen, IAssetProvider iAssetProvider, int screenX,
                                     int screenY, int mouseX, int mouseY, float partialTicks) {
         SlotsScreenAddon.drawAsset(matrixStack, screen, iAssetProvider, getPosX(), getPosY(), screenX, screenY,
-                itemHandler.getSlots(), positionFunction, itemHandler::getStackInSlot, false, slot -> null);
+                itemHandler.getSlots(), positionFunction, itemHandler::getStackInSlot, false, slot -> null,
+                slot -> true);
     }
 
     @Override
