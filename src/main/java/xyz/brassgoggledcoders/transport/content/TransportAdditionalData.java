@@ -31,7 +31,7 @@ public class TransportAdditionalData {
 
         RailWorkerBenchRecipeBuilder.create(Tags.Items.INGOTS_IRON, Items.CHAIN)
                 .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.CHAIN))
-                .build(recipeProvider, "minecraft_chain_from_forge_ingots_iron");
+                .build(recipeProvider, Transport.rl("minecraft_chain_from_forge_ingots_iron"));
     }
 
     public static void railBenchRecipes(RegistrateRecipeProvider recipeProvider, List<Pair<IItemProvider, ITag<Item>>> itemTagList,
