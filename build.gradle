@@ -214,6 +214,7 @@ jar {
 artifacts {
     archives javadocJar
     archives srcJar
+    archives shadowJar
 }
 
 uploadArchives {
