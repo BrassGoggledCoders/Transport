@@ -5,11 +5,12 @@ import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -56,14 +57,20 @@ public class Transport {
     public static final Logger LOGGER = LogManager.getLogger(ID);
 
     public static final LocatorType ENTITY = new LocatorType("entity", EntityLocatorInstance::new);
-    public static final Lazy<TransportRegistrate> TRANSPORT_REGISTRATE = Lazy.of(() -> TransportRegistrate.create(ID)
-            .addDataGenerator(ProviderType.BLOCK_TAGS, TransportAdditionalData::generateBlockTags)
-            .addDataGenerator(ProviderType.ITEM_TAGS, TransportAdditionalData::generateItemTags)
-            .addDataGenerator(ProviderType.RECIPE, TransportAdditionalData::generateRecipes)
-            .addDataGenerator(ProviderType.LANG, TransportAdditionalData::generateLang)
-            .itemGroup(() -> new TransportItemGroup(ID, () -> TransportBlocks.HOLDING_RAIL.orElseThrow(
+    
+    public static final NonNullLazy<ItemGroup> ITEM_GROUP = NonNullLazy.of(() ->
+            new TransportItemGroup(ID, () -> TransportBlocks.HOLDING_RAIL.orElseThrow(
                     () -> new IllegalStateException("Got Item too early")
-            )))
+            ))
+    );
+
+    public static final NonNullLazy<TransportRegistrate> TRANSPORT_REGISTRATE = NonNullLazy.of(() ->
+            TransportRegistrate.create(ID)
+                    .addDataGenerator(ProviderType.BLOCK_TAGS, TransportAdditionalData::generateBlockTags)
+                    .addDataGenerator(ProviderType.ITEM_TAGS, TransportAdditionalData::generateItemTags)
+                    .addDataGenerator(ProviderType.RECIPE, TransportAdditionalData::generateRecipes)
+                    .addDataGenerator(ProviderType.LANG, TransportAdditionalData::generateLang)
+                    .itemGroup(ITEM_GROUP::get)
     );
 
     public static Transport instance;
