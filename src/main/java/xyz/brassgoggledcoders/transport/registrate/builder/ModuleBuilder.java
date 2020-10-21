@@ -45,7 +45,6 @@ public class ModuleBuilder<M extends Module<M>, E extends M, P, B extends Module
             if (renderer != null) {
                 TransportClientAPI.registerModuleRenderer(this.getEntry(), this.renderer.get().get());
             }
-
         });
     }
 

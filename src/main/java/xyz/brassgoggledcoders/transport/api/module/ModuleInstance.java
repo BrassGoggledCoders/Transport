@@ -46,6 +46,10 @@ public class ModuleInstance<MOD extends Module<MOD>>
         return LazyOptional.empty();
     }
 
+    public void onActivatorPass(boolean receivingPower) {
+
+    }
+
     @Override
     public CompoundNBT serializeNBT() {
         return new CompoundNBT();
@@ -58,7 +62,6 @@ public class ModuleInstance<MOD extends Module<MOD>>
     public MOD getModule() {
         return module;
     }
-
 
     public ModuleType getModuleType() {
         return this.getModule().getType();

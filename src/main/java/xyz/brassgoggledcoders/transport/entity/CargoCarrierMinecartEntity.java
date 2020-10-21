@@ -315,6 +315,14 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     }
 
     @Override
+    public void onActivatorRailPass(int x, int y, int z, boolean receivingPower) {
+        super.onActivatorRailPass(x, y, z, receivingPower);
+        for (ModuleInstance<?> moduleInstance: this.modularEntity.getModuleInstances()) {
+            moduleInstance.onActivatorPass(receivingPower);
+        }
+    }
+
+    @Override
     public int getComparatorLevel() {
         CargoModuleInstance cargoModuleInstance = this.modularEntity.getModuleInstance(TransportObjects.CARGO_TYPE);
         return cargoModuleInstance != null ? cargoModuleInstance.getComparatorLevel() : -1;
