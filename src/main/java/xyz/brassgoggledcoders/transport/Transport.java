@@ -57,7 +57,7 @@ public class Transport {
     public static final Logger LOGGER = LogManager.getLogger(ID);
 
     public static final LocatorType ENTITY = new LocatorType("entity", EntityLocatorInstance::new);
-    
+
     public static final NonNullLazy<ItemGroup> ITEM_GROUP = NonNullLazy.of(() ->
             new TransportItemGroup(ID, () -> TransportBlocks.HOLDING_RAIL.orElseThrow(
                     () -> new IllegalStateException("Got Item too early")
