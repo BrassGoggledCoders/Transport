@@ -105,11 +105,13 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         return itemStackHandler.getScreenAddons();
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
         return itemStackHandler.getContainerAddons();
     }
