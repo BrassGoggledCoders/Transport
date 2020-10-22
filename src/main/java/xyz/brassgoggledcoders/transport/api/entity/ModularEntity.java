@@ -257,4 +257,13 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     public void invalidateCapabilities() {
         this.byModuleSlot.values().forEach(ModuleInstance::invalidateCapabilities);
     }
+
+    @Override
+    public void sendClientUpdate(ModuleInstance<?> moduleInstance, int type, CompoundNBT compoundNBT) {
+        for (Entry<ModuleSlot, ModuleInstance<?>> entry: byModuleSlot.entrySet()) {
+            if (entry.getValue() == moduleInstance) {
+                TransportAPI.getNetworkHandler().sendModuleInstanceUpdate(this, entry.getKey(), type, compoundNBT);
+            }
+        }
+    }
 }

@@ -79,6 +79,14 @@ public class ModuleInstance<MOD extends Module<MOD>>
         return new ItemStack(this.getModule().asItem());
     }
 
+    public void receiveClientUpdate(int type, @Nullable CompoundNBT compoundNBT) {
+
+    }
+
+    public void sendClientUpdate(int type, @Nullable CompoundNBT compoundNBT) {
+        this.getModularEntity().sendClientUpdate(this, type, compoundNBT);
+    }
+
     public void invalidateCapabilities() {
     }
 

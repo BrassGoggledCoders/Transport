@@ -5,8 +5,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.NonNullLazy;
+import net.minecraftforge.common.util.NonNullSupplier;
 import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
@@ -17,14 +19,15 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class CargoModule extends Module<CargoModule> {
-    private final Supplier<? extends Block> blockSupplier;
+    private final NonNullLazy<? extends Block> blockLazy;
+    private final NonNullLazy<? extends Item> itemLazy;
     private BlockState blockState;
 
     private final NonNullLazy<Boolean> isActive;
-    private final boolean useBlockTranslation;
+    private final boolean useContentTranslation;
 
-    public CargoModule(Supplier<? extends Block> blockSupplier) {
-        this(blockSupplier, CargoModuleInstance::new);
+    public CargoModule(Supplier<? extends Block> blockLazy) {
+        this(blockLazy, CargoModuleInstance::new);
     }
 
     public CargoModule(Supplier<? extends Block> blockSupplier, BiFunction<CargoModule, IModularEntity,
@@ -33,17 +36,24 @@ public class CargoModule extends Module<CargoModule> {
     }
 
     public CargoModule(Supplier<? extends Block> blockSupplier, BiFunction<CargoModule, IModularEntity,
-            ? extends CargoModuleInstance> cargoInstanceCreator, boolean useBlockTranslation) {
+            ? extends CargoModuleInstance> cargoInstanceCreator, boolean useContentTranslation) {
+        this(blockSupplier, () -> blockSupplier.get() == null ? Items.AIR : blockSupplier.get().asItem(),
+                cargoInstanceCreator, useContentTranslation);
+    }
+
+    public CargoModule(Supplier<? extends Block> blockSupplier, Supplier<? extends Item> itemSupplier, BiFunction<CargoModule, IModularEntity,
+            ? extends CargoModuleInstance> cargoInstanceCreator, boolean useContentTranslation) {
         super(TransportObjects.CARGO_TYPE, cargoInstanceCreator);
-        this.blockSupplier = blockSupplier;
-        this.isActive = NonNullLazy.of(() -> blockSupplier.get() != Blocks.AIR);
-        this.useBlockTranslation = useBlockTranslation;
+        this.blockLazy = NonNullLazy.of(() -> blockSupplier.get() == null ? Blocks.AIR : blockSupplier.get());
+        this.itemLazy = NonNullLazy.of(() -> itemSupplier.get() == null ? Items.AIR : itemSupplier.get());
+        this.isActive = NonNullLazy.of(() -> blockSupplier.get() != null || itemSupplier.get() != null);
+        this.useContentTranslation = useContentTranslation;
     }
 
     @Nonnull
     public BlockState getDefaultBlockState() {
         if (blockState == null) {
-            blockState = blockSupplier.get().getDefaultState();
+            blockState = blockLazy.get().getDefaultState();
         }
         return blockState;
     }
@@ -55,7 +65,7 @@ public class CargoModule extends Module<CargoModule> {
     @Nonnull
     @Override
     public String getTranslationKey() {
-        return useBlockTranslation ? this.blockSupplier.get().getTranslationKey() : super.getTranslationKey();
+        return useContentTranslation ? this.blockLazy.get().getTranslationKey() : super.getTranslationKey();
     }
 
     public ItemStack createItemStack(Item item) {
@@ -75,6 +85,16 @@ public class CargoModule extends Module<CargoModule> {
     @Override
     @Nonnull
     public Item asItem() {
-        return this.getDefaultBlockState().getBlock().asItem();
+        return this.itemLazy.get();
+    }
+
+    public static CargoModule fromItem(NonNullSupplier<? extends Item> itemSupplier, BiFunction<CargoModule, IModularEntity,
+            ? extends CargoModuleInstance> cargoInstanceCreator) {
+        return fromItem(itemSupplier, cargoInstanceCreator, false);
+    }
+
+    public static CargoModule fromItem(NonNullSupplier<? extends Item> itemSupplier, BiFunction<CargoModule, IModularEntity,
+            ? extends CargoModuleInstance> cargoInstanceCreator, boolean useContentTranslation) {
+        return new CargoModule(() -> null, itemSupplier::get, cargoInstanceCreator, useContentTranslation);
     }
 }
