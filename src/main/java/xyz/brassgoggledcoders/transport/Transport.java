@@ -55,7 +55,6 @@ import static xyz.brassgoggledcoders.transport.Transport.ID;
 public class Transport {
     public static final String ID = "transport";
     public static final Logger LOGGER = LogManager.getLogger(ID);
-
     public static final LocatorType ENTITY = new LocatorType("entity", EntityLocatorInstance::new);
 
     public static final NonNullLazy<ItemGroup> ITEM_GROUP = NonNullLazy.of(() ->
@@ -73,9 +72,12 @@ public class Transport {
                     .itemGroup(ITEM_GROUP::get)
     );
 
+    private static boolean registriesSetup = false;
+
     public static Transport instance;
 
     public final NetworkHandler networkHandler;
+
 
     public Transport() {
         instance = this;
@@ -90,11 +92,7 @@ public class Transport {
         this.networkHandler = new NetworkHandler();
         TransportAPI.setNetworkHandler(this.networkHandler);
 
-        makeRegistry("module_type", ModuleType.class);
-        makeRegistry("cargo", CargoModule.class);
-        makeRegistry("engine", EngineModule.class);
-        makeRegistry("module_slot", ModuleSlot.class);
-        makeRegistry("hull_type", HullType.class);
+        this.setupRegistries();
 
         TransportBlocks.setup();
         TransportContainers.register(modBus);
@@ -110,6 +108,17 @@ public class Transport {
 
         TransportVanilla.setup();
         TransportIE.setup();
+    }
+
+    public static void setupRegistries() {
+        if (!registriesSetup) {
+            makeRegistry("module_type", ModuleType.class);
+            makeRegistry("cargo", CargoModule.class);
+            makeRegistry("engine", EngineModule.class);
+            makeRegistry("module_slot", ModuleSlot.class);
+            makeRegistry("hull_type", HullType.class);
+            registriesSetup = true;
+        }
     }
 
     public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
