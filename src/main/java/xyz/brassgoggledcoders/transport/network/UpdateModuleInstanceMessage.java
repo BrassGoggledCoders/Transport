@@ -39,6 +39,7 @@ public class UpdateModuleInstanceMessage {
     public static void encode(UpdateModuleInstanceMessage updateModuleInstanceMessage, PacketBuffer packetBuffer) {
         packetBuffer.writeInt(updateModuleInstanceMessage.entityId);
         packetBuffer.writeRegistryId(updateModuleInstanceMessage.moduleSlot);
+        packetBuffer.writeInt(updateModuleInstanceMessage.type);
         packetBuffer.writeBoolean(updateModuleInstanceMessage.compoundNBT != null);
         if (updateModuleInstanceMessage.compoundNBT != null) {
             packetBuffer.writeCompoundTag(updateModuleInstanceMessage.compoundNBT);
