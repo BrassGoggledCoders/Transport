@@ -7,8 +7,10 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
@@ -40,7 +42,7 @@ public class TransportJEI implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(TransportBlocks.RAIL_WORKER_BENCH.get(), RailWorkerBenchCategory.UID);
+        registration.addRecipeCatalyst(new ItemStack(TransportBlocks.RAIL_WORKER_BENCH.get()), RailWorkerBenchCategory.UID);
     }
 
     public <T extends IRecipe<?>> Collection<T> getRecipes(IRecipeType<T> recipeType) {
