@@ -1,0 +1,6 @@
+{
+  "parent": "forge:item/default",
+  "loader": "forge:obj",
+  "model": "transport:models/item/steam_locomotive.obj",
+  "flip-v": true
+}
