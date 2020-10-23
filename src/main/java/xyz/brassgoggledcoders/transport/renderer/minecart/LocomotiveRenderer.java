@@ -1,34 +1,41 @@
-package xyz.brassgoggledcoders.transport.renderer;
+package xyz.brassgoggledcoders.transport.renderer.minecart;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
-import xyz.brassgoggledcoders.transport.api.TransportClientAPI;
-import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.api.renderer.IModuleRenderer;
-import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
-import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
+import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.registries.ForgeRegistries;
+import xyz.brassgoggledcoders.transport.content.TransportEntities;
+import xyz.brassgoggledcoders.transport.entity.LocomotiveEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCarrierMinecartEntity> {
-    public CargoCarrierMinecartEntityRenderer(EntityRendererManager renderManager) {
+public class LocomotiveRenderer<T extends LocomotiveEntity> extends MinecartRenderer<T> {
+    private final Lazy<IBakedModel> modelLazy;
+    private final ResourceLocation textureLocation;
+
+    public LocomotiveRenderer(ResourceLocation modelLocation, ResourceLocation textureLocation,
+                              EntityRendererManager renderManager) {
         super(renderManager);
+        this.textureLocation = textureLocation;
+        this.modelLazy = Lazy.of(() -> this.getModel(modelLocation));
     }
 
     @Override
     @ParametersAreNonnullByDefault
-    public void render(CargoCarrierMinecartEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack,
+    public void render(T entity, float entityYaw, float partialTicks, MatrixStack matrixStack,
                        IRenderTypeBuffer buffer, int packedLight) {
         matrixStack.push();
         long i = (long) entity.getEntityId() * 493286711L;
@@ -92,44 +99,30 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
             matrixStack.rotate(Vector3f.XP.rotationDegrees(MathHelper.sin(f5) * f5 * f6 / 10.0F * (float) entity.getRollingDirection()));
         }
 
-        this.renderModules(entity.getModularEntity(), entityYaw, partialTicks, matrixStack, buffer, packedLight);
-
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
-        this.modelMinecart.setRotationAngles(entity, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F);
-        IVertexBuilder ivertexbuilder = buffer.getBuffer(this.modelMinecart.getRenderType(this.getEntityTexture(entity)));
-        this.modelMinecart.render(matrixStack, ivertexbuilder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        IBakedModel model = this.modelLazy.get();
+        if (model != null) {
+            matrixStack.scale(0.085F, 0.085F, 0.085F);
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(180));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(90));
+            matrixStack.translate(0, -5F, 0);
+            RenderHelper.disableStandardItemLighting();
+            Minecraft.getInstance().getItemRenderer()
+                    .renderModel(model, ItemStack.EMPTY, packedLight, OverlayTexture.NO_OVERLAY, matrixStack,
+                            buffer.getBuffer(RenderType.getTranslucent()));
+            RenderHelper.enableStandardItemLighting();
+        }
         matrixStack.pop();
     }
 
     @Override
     @Nonnull
-    public ResourceLocation getEntityTexture(@Nonnull CargoCarrierMinecartEntity entity) {
-        ResourceLocation entityTexture = entity.getHullType().getEntityTexture(entity);
-        return entityTexture != null ? entityTexture : super.getEntityTexture(entity);
+    public ResourceLocation getEntityTexture(@Nonnull T entity) {
+        return textureLocation;
     }
 
-    private void renderModules(IModularEntity modularEntity, float entityYaw, float partialTicks, MatrixStack matrixStack,
-                               IRenderTypeBuffer buffer, int packedLight) {
-        ModuleInstance<?> cargoSlotModuleInstance = modularEntity.getModuleInstance(TransportModuleSlots.CARGO.get());
-        if (cargoSlotModuleInstance != null) {
-            IModuleRenderer moduleRenderer = TransportClientAPI.getModuleRenderer(cargoSlotModuleInstance.getModule());
-            if (moduleRenderer != null) {
-                matrixStack.push();
-                moduleRenderer.render(cargoSlotModuleInstance, entityYaw, partialTicks, matrixStack, buffer, packedLight);
-                matrixStack.pop();
-            }
-        }
-
-        ModuleInstance<?> backSlotModuleInstance = modularEntity.getModuleInstance(TransportModuleSlots.BACK.get());
-        if (backSlotModuleInstance != null) {
-            IModuleRenderer moduleRenderer = TransportClientAPI.getModuleRenderer(backSlotModuleInstance.getModule());
-            if (moduleRenderer != null) {
-                matrixStack.push();
-                matrixStack.translate(0.65F, 0F, -0.125F);
-                matrixStack.rotate(new Quaternion(90, 90, 0, true));
-                moduleRenderer.render(backSlotModuleInstance, entityYaw, partialTicks, matrixStack, buffer, packedLight);
-                matrixStack.pop();
-            }
-        }
+    private IBakedModel getModel(ResourceLocation resourceLocation) {
+        return Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(
+                TransportEntities.DIESEL_LOCOMOTIVE.getSibling(ForgeRegistries.ITEMS).get());
     }
 }
