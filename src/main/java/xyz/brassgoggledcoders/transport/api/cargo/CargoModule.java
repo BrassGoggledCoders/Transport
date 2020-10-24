@@ -19,9 +19,8 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class CargoModule extends Module<CargoModule> {
-    private final NonNullLazy<? extends Block> blockLazy;
+    private final NonNullLazy<? extends BlockState> blockStateLazy;
     private final NonNullLazy<? extends Item> itemLazy;
-    private BlockState blockState;
 
     private final NonNullLazy<Boolean> isActive;
     private final boolean useContentTranslation;
@@ -37,14 +36,15 @@ public class CargoModule extends Module<CargoModule> {
 
     public CargoModule(Supplier<? extends Block> blockSupplier, BiFunction<CargoModule, IModularEntity,
             ? extends CargoModuleInstance> cargoInstanceCreator, boolean useContentTranslation) {
-        this(blockSupplier, () -> blockSupplier.get() == null ? Items.AIR : blockSupplier.get().asItem(),
-                cargoInstanceCreator, useContentTranslation);
+        this(() -> blockSupplier.get().getDefaultState(), () -> blockSupplier.get() == null ? Items.AIR :
+                blockSupplier.get().asItem(), cargoInstanceCreator, useContentTranslation);
     }
 
-    public CargoModule(Supplier<? extends Block> blockSupplier, Supplier<? extends Item> itemSupplier, BiFunction<CargoModule, IModularEntity,
+    public CargoModule(Supplier<? extends BlockState> blockSupplier, Supplier<? extends Item> itemSupplier, BiFunction<CargoModule, IModularEntity,
             ? extends CargoModuleInstance> cargoInstanceCreator, boolean useContentTranslation) {
         super(TransportObjects.CARGO_TYPE, cargoInstanceCreator);
-        this.blockLazy = NonNullLazy.of(() -> blockSupplier.get() == null ? Blocks.AIR : blockSupplier.get());
+        this.blockStateLazy = NonNullLazy.of(() -> blockSupplier.get() == null ? Blocks.AIR.getDefaultState() :
+                blockSupplier.get());
         this.itemLazy = NonNullLazy.of(() -> itemSupplier.get() == null ? Items.AIR : itemSupplier.get());
         this.isActive = NonNullLazy.of(() -> blockSupplier.get() != null || itemSupplier.get() != null);
         this.useContentTranslation = useContentTranslation;
@@ -52,10 +52,7 @@ public class CargoModule extends Module<CargoModule> {
 
     @Nonnull
     public BlockState getDefaultBlockState() {
-        if (blockState == null) {
-            blockState = blockLazy.get().getDefaultState();
-        }
-        return blockState;
+        return this.blockStateLazy.get();
     }
 
     public boolean isActive() {
@@ -96,5 +93,12 @@ public class CargoModule extends Module<CargoModule> {
     public static CargoModule fromItem(NonNullSupplier<? extends Item> itemSupplier, BiFunction<CargoModule, IModularEntity,
             ? extends CargoModuleInstance> cargoInstanceCreator, boolean useContentTranslation) {
         return new CargoModule(() -> null, itemSupplier::get, cargoInstanceCreator, useContentTranslation);
+    }
+
+    public static CargoModule fromBlockState(NonNullSupplier<? extends BlockState> blockStateSupplier,
+                                             BiFunction<CargoModule, IModularEntity, ? extends CargoModuleInstance> cargoInstanceCreator,
+                                             boolean useContentTranslation) {
+        return new CargoModule(blockStateSupplier::get, () -> blockStateSupplier.get().getBlock().asItem(),
+                cargoInstanceCreator, useContentTranslation);
     }
 }
