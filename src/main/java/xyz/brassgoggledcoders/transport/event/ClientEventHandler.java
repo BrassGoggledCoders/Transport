@@ -6,10 +6,15 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.profiler.IProfiler;
+import net.minecraft.resources.DataPackRegistries;
+import net.minecraft.resources.IFutureReloadListener;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -28,6 +33,9 @@ import xyz.brassgoggledcoders.transport.renderer.boat.HulledBoatRender;
 import xyz.brassgoggledcoders.transport.renderer.boat.ModularBoatRenderer;
 import xyz.brassgoggledcoders.transport.renderer.tileentity.ModuleConfiguratorTileEntityRenderer;
 import xyz.brassgoggledcoders.transport.screen.ModuleConfiguratorScreen;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @EventBusSubscriber(modid = Transport.ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ClientEventHandler {

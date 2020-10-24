@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.renderer.minecart;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -9,28 +10,32 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.registries.ForgeRegistries;
-import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.entity.LocomotiveEntity;
+import xyz.brassgoggledcoders.transport.model.item.EntityItemModelCache;
+import xyz.brassgoggledcoders.transport.util.CachedValue;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class LocomotiveRenderer<T extends LocomotiveEntity> extends MinecartRenderer<T> {
-    private final Lazy<IBakedModel> modelLazy;
     private final ResourceLocation textureLocation;
+    private final CachedValue<IBakedModel> cachedBakedModel;
+    private final float scale;
+    private final float translateDown;
 
-    public LocomotiveRenderer(ResourceLocation modelLocation, ResourceLocation textureLocation,
-                              EntityRendererManager renderManager) {
+    public LocomotiveRenderer(NonNullSupplier<? extends Item> itemSupplier, float scale, float translateDown,
+                              ResourceLocation textureLocation, EntityRendererManager renderManager) {
         super(renderManager);
+        this.cachedBakedModel = EntityItemModelCache.getBakedModelCacheFor(itemSupplier);
         this.textureLocation = textureLocation;
-        this.modelLazy = Lazy.of(() -> this.getModel(modelLocation));
+        this.scale = scale;
+        this.translateDown = translateDown;
     }
 
     @Override
@@ -100,12 +105,12 @@ public class LocomotiveRenderer<T extends LocomotiveEntity> extends MinecartRend
         }
 
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
-        IBakedModel model = this.modelLazy.get();
+        IBakedModel model = this.cachedBakedModel.getValue();
         if (model != null) {
-            matrixStack.scale(0.085F, 0.085F, 0.085F);
+            matrixStack.scale(scale, scale, scale);
             matrixStack.rotate(Vector3f.ZP.rotationDegrees(180));
             matrixStack.rotate(Vector3f.YP.rotationDegrees(90));
-            matrixStack.translate(0, -5F, 0);
+            matrixStack.translate(0, -translateDown, 0);
             RenderHelper.disableStandardItemLighting();
             Minecraft.getInstance().getItemRenderer()
                     .renderModel(model, ItemStack.EMPTY, packedLight, OverlayTexture.NO_OVERLAY, matrixStack,
@@ -119,10 +124,5 @@ public class LocomotiveRenderer<T extends LocomotiveEntity> extends MinecartRend
     @Nonnull
     public ResourceLocation getEntityTexture(@Nonnull T entity) {
         return textureLocation;
-    }
-
-    private IBakedModel getModel(ResourceLocation resourceLocation) {
-        return Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(
-                TransportEntities.DIESEL_LOCOMOTIVE.getSibling(ForgeRegistries.ITEMS).get());
     }
 }

@@ -92,7 +92,7 @@ public class Transport {
         this.networkHandler = new NetworkHandler();
         TransportAPI.setNetworkHandler(this.networkHandler);
 
-        this.setupRegistries();
+        setupRegistries();
 
         TransportBlocks.setup();
         TransportContainers.register(modBus);
