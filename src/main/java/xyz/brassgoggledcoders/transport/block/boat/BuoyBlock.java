@@ -22,12 +22,16 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import xyz.brassgoggledcoders.transport.api.TransportCapabilities;
+import xyz.brassgoggledcoders.transport.api.navigation.INavigationPoint;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.content.TransportNavigationPoints;
 import xyz.brassgoggledcoders.transport.tileentity.boat.BuoyTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
 
 public class BuoyBlock extends Block {
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
@@ -66,6 +70,13 @@ public class BuoyBlock extends Block {
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
         world.setBlockState(pos.up(), state.with(HALF, DoubleBlockHalf.UPPER), 3);
+        world.getCapability(TransportCapabilities.NAVIGATION_NETWORK)
+                .ifPresent(network -> this.createNavigationPoint(pos)
+                        .ifPresent(network::addNavigationPoint));
+    }
+
+    protected Optional<INavigationPoint> createNavigationPoint(BlockPos blockPos) {
+        return TransportNavigationPoints.CONNECTOR.map(connector -> connector.create(blockPos));
     }
 
     @Override

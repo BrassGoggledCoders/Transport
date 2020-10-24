@@ -8,12 +8,12 @@ import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.UUID;
 
-public abstract class NavigationPointInstance implements INavigationPoint {
+public abstract class NavigationPoint implements INavigationPoint {
     private final NavigationPointType pointType;
     private final BlockPos position;
     private UUID uniqueId;
 
-    public NavigationPointInstance(NavigationPointType pointType, BlockPos position) {
+    public NavigationPoint(NavigationPointType pointType, BlockPos position) {
         this.uniqueId = UUID.randomUUID();
         this.pointType = pointType;
         this.position = position;
@@ -36,7 +36,7 @@ public abstract class NavigationPointInstance implements INavigationPoint {
 
     }
 
-    public abstract void addConnectedPoint(NavigationPointInstance navigationPointInstance);
+    public abstract boolean addConnectedPoint(NavigationPoint navigationPoint);
 
     public abstract Collection<UUID> getConnectedPoints();
 
@@ -52,7 +52,8 @@ public abstract class NavigationPointInstance implements INavigationPoint {
         this.uniqueId = nbt.getUniqueId("uniqueId");
     }
 
-    public NavigationPointType getPointType() {
+    @Override
+    public NavigationPointType getType() {
         return pointType;
     }
 }

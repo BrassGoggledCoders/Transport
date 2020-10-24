@@ -1,10 +1,10 @@
 package xyz.brassgoggledcoders.transport.api.navigation;
 
 import net.minecraft.util.Util;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.function.BiFunction;
@@ -12,9 +12,9 @@ import java.util.function.BiFunction;
 public class NavigationPointType extends ForgeRegistryEntry<NavigationPointType> {
     private ITextComponent displayName;
     private String translationKey;
-    private final BiFunction<NavigationPointType, IWorld, NavigationPointInstance> instanceSupplier;
+    private final BiFunction<NavigationPointType, BlockPos, NavigationPoint> instanceSupplier;
 
-    public NavigationPointType(BiFunction<NavigationPointType, IWorld, NavigationPointInstance> instanceSupplier) {
+    public NavigationPointType(BiFunction<NavigationPointType, BlockPos, NavigationPoint> instanceSupplier) {
         this.instanceSupplier = instanceSupplier;
     }
 
@@ -32,11 +32,11 @@ public class NavigationPointType extends ForgeRegistryEntry<NavigationPointType>
         return this.displayName;
     }
 
-    public NavigationPointInstance create(IWorld world) {
-        return this.instanceSupplier.apply(this, world);
+    public NavigationPoint create(BlockPos blockPos) {
+        return this.instanceSupplier.apply(this, blockPos);
     }
 
-    public static NavigationPointType of(BiFunction<NavigationPointType, IWorld, NavigationPointInstance> instanceSupplier) {
+    public static NavigationPointType of(BiFunction<NavigationPointType, BlockPos, NavigationPoint> instanceSupplier) {
         return new NavigationPointType(instanceSupplier);
     }
 }
