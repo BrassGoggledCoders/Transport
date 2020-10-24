@@ -16,4 +16,6 @@ public interface INavigationPoint extends INBTSerializable<CompoundNBT> {
     UUID getUniqueId();
 
     void alertApproach(@Nonnull INavigator navigator, @Nonnull Entity entity);
+
+    NavigationPointType getType();
 }

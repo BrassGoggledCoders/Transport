@@ -3,26 +3,26 @@ package xyz.brassgoggledcoders.transport.api.navigation;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.UUID;
 
-public class NavigationPointInstance implements INavigationPoint {
-    private final World world;
+public abstract class NavigationPointInstance implements INavigationPoint {
     private final NavigationPointType pointType;
+    private final BlockPos position;
     private UUID uniqueId;
 
-    public NavigationPointInstance(NavigationPointType pointType, World world) {
+    public NavigationPointInstance(NavigationPointType pointType, BlockPos position) {
         this.uniqueId = UUID.randomUUID();
-        this.world = world;
         this.pointType = pointType;
+        this.position = position;
     }
 
     @Nonnull
     @Override
     public BlockPos getPosition() {
-        return null;
+        return position;
     }
 
     @Nonnull
@@ -36,6 +36,10 @@ public class NavigationPointInstance implements INavigationPoint {
 
     }
 
+    public abstract void addConnectedPoint(NavigationPointInstance navigationPointInstance);
+
+    public abstract Collection<UUID> getConnectedPoints();
+
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
@@ -45,6 +49,10 @@ public class NavigationPointInstance implements INavigationPoint {
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
+        this.uniqueId = nbt.getUniqueId("uniqueId");
+    }
 
+    public NavigationPointType getPointType() {
+        return pointType;
     }
 }

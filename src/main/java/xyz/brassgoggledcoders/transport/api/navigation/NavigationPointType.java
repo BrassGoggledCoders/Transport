@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.api.navigation;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -11,9 +12,9 @@ import java.util.function.BiFunction;
 public class NavigationPointType extends ForgeRegistryEntry<NavigationPointType> {
     private ITextComponent displayName;
     private String translationKey;
-    private final BiFunction<NavigationPointType, World, NavigationPointInstance> instanceSupplier;
+    private final BiFunction<NavigationPointType, IWorld, NavigationPointInstance> instanceSupplier;
 
-    public NavigationPointType(BiFunction<NavigationPointType, World, NavigationPointInstance> instanceSupplier) {
+    public NavigationPointType(BiFunction<NavigationPointType, IWorld, NavigationPointInstance> instanceSupplier) {
         this.instanceSupplier = instanceSupplier;
     }
 
@@ -29,5 +30,13 @@ public class NavigationPointType extends ForgeRegistryEntry<NavigationPointType>
             this.displayName = new TranslationTextComponent(this.getTranslationKey());
         }
         return this.displayName;
+    }
+
+    public NavigationPointInstance create(IWorld world) {
+        return this.instanceSupplier.apply(this, world);
+    }
+
+    public static NavigationPointType of(BiFunction<NavigationPointType, IWorld, NavigationPointInstance> instanceSupplier) {
+        return new NavigationPointType(instanceSupplier);
     }
 }
