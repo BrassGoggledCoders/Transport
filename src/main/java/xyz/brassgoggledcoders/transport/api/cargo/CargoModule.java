@@ -65,7 +65,7 @@ public class CargoModule extends Module<CargoModule> {
     @Nonnull
     @Override
     public String getTranslationKey() {
-        return useContentTranslation ? this.blockLazy.get().getTranslationKey() : super.getTranslationKey();
+        return useContentTranslation ? this.itemLazy.get().getTranslationKey() : super.getTranslationKey();
     }
 
     public ItemStack createItemStack(Item item) {
