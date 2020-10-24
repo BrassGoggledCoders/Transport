@@ -54,8 +54,9 @@ public class NavigationNetwork implements INavigationNetwork {
     }
 
     @Override
+    @Nonnull
     public CompoundNBT serializeNBT() {
-        return null;
+        return new CompoundNBT();
     }
 
     @Override

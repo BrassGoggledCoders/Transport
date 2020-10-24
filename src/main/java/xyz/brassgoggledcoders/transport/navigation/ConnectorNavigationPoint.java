@@ -37,7 +37,7 @@ public class ConnectorNavigationPoint extends NavigationPoint {
     public void alertApproach(@Nonnull INavigator navigator, @Nonnull Entity entity) {
         super.alertApproach(navigator, entity);
         if (connectedPoints.contains(navigator.getLastPointId())) {
-            
+
         }
     }
 }
