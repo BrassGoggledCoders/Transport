@@ -66,6 +66,7 @@ public class TransportEntities {
             .object("diesel_locomotive")
             .<LocomotiveEntity>entity(LocomotiveEntity::new, EntityClassification.MISC)
             .lang("Diesel Locomotive")
+            .properties(properties -> properties.trackingRange(8).size(1.2F, 1.8F))
             .renderer(() -> renderManager -> new LocomotiveRenderer<>(DIESEL_LOCOMOTIVE_ITEM, 0.085F, 5,
                     Transport.rl("textures/entity/diesel_locomotive.png"), renderManager))
             .register();
@@ -115,7 +116,7 @@ public class TransportEntities {
             .object("steam_boat")
             .<TugBoatEntity>entity(TugBoatEntity::new, EntityClassification.MISC)
             .lang("Steam Tug Boat")
-            .properties(boatSetup())
+            .properties(properies -> properies.trackingRange(10).size(2.0F, 0.5625F))
             .renderer(() -> renderManager -> new TugBoatRenderer<>(STEAM_BOAT_ITEM, 1F,
                     Transport.rl("textures/entity/steam_boat.png"), renderManager))
             .register();

@@ -75,18 +75,20 @@ public class TugBoatRenderer<T extends TugBoatEntity> extends EntityRenderer<T> 
             matrixStack.push();
             matrixStack.scale(scale, scale, scale);
             matrixStack.rotate(Vector3f.ZP.rotationDegrees(180));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(90));
             RenderHelper.disableStandardItemLighting();
             Minecraft.getInstance().getItemRenderer()
                     .renderModel(model, ItemStack.EMPTY, packedLight, OverlayTexture.NO_OVERLAY, matrixStack,
                             buffer.getBuffer(RenderType.getTranslucent()));
             RenderHelper.enableStandardItemLighting();
-            matrixStack.pop();
             if (!entity.canSwim()) {
                 IVertexBuilder vertexBuilder = buffer.getBuffer(RenderType.getWaterMask());
                 matrixStack.scale(0.75F, 0, 2.8F);
                 matrixStack.translate(0, 0, -0.05F);
                 BOAT_MODEL.func_228245_c_().render(matrixStack, vertexBuilder, packedLight, OverlayTexture.NO_OVERLAY);
             }
+            matrixStack.pop();
+
         }
     }
 
