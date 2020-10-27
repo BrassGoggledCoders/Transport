@@ -12,6 +12,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.CSteerBoatPacket;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -22,7 +23,6 @@ import java.util.Optional;
 public class TugBoatEntity extends BoatEntity {
     private static final DataParameter<Optional<BlockPos>> TARGET_POS = EntityDataManager.createKey(TugBoatEntity.class,
             DataSerializers.OPTIONAL_BLOCK_POS);
-    private BlockPos targetedPosition = null;
 
     public TugBoatEntity(EntityType<? extends BoatEntity> type, World world) {
         super(type, world);
@@ -73,14 +73,12 @@ public class TugBoatEntity extends BoatEntity {
 
     @Override
     public void tick() {
-        if (!this.getEntityWorld().isRemote() && this.getEntityWorld().rand.nextInt(50) == 0) {
-            if (this.targetedPosition != null) {
-                this.getEntityWorld().setBlockState(this.targetedPosition, Blocks.AIR.getDefaultState());
-            }
-            this.targetedPosition = new BlockPos(this.getPosX() + this.getEntityWorld().rand.nextInt(20) - 10,
-                    this.getPosY() + 1, this.getPosZ() + this.getEntityWorld().rand.nextInt(20) - 10);
-            this.dataManager.set(TARGET_POS, Optional.of(targetedPosition));
-            this.getEntityWorld().setBlockState(this.targetedPosition, Blocks.STONE.getDefaultState());
+        if (!this.getEntityWorld().isRemote() && this.getEntityWorld().getGameTime() % 200 == 0) {
+            this.getTargetPos().ifPresent(value -> this.getEntityWorld().setBlockState(value, Blocks.AIR.getDefaultState()));
+            BlockPos newTargetedPosition = new BlockPos(this.getPosX() + this.getEntityWorld().rand.nextInt(40) - 20,
+                    this.getPosY() + 1, this.getPosZ() + this.getEntityWorld().rand.nextInt(40) - 20);
+            this.setTargetPos(newTargetedPosition);
+            this.getEntityWorld().setBlockState(newTargetedPosition, Blocks.STONE.getDefaultState());
         }
         this.previousStatus = this.status;
         this.status = this.getBoatStatus();
@@ -116,9 +114,10 @@ public class TugBoatEntity extends BoatEntity {
             }
 
             this.move(MoverType.SELF, this.getMotion());
-        } else if (this.dataManager.get(TARGET_POS).isPresent()) {
+        } else if (this.getTargetPos().isPresent()) {
             this.updateMotion();
             this.moveTowardsTarget();
+            this.move(MoverType.SELF, this.getMotion());
         } else {
             this.setMotion(Vector3d.ZERO);
         }
@@ -136,14 +135,49 @@ public class TugBoatEntity extends BoatEntity {
         this.baseTick();
     }
 
+    public boolean canPassengerSteer() {
+        Entity entity = this.getControllingPassenger();
+        if (this.getTargetPos().isPresent()) {
+            return false;
+        } else if (entity instanceof PlayerEntity) {
+            return ((PlayerEntity) entity).isUser();
+        } else {
+            return !this.world.isRemote;
+        }
+    }
+
     public void moveTowardsTarget() {
-        Optional<BlockPos> currentTarget = this.getDataManager().get(TARGET_POS);
-        currentTarget.ifPresent(target -> {
+        this.getTargetPos().ifPresent(target -> {
             BlockPos entityPos = this.getPosition();
             int xOffset = entityPos.getX() - target.getX();
             int zOffset = entityPos.getZ() - target.getZ();
-            double expectedYaw = Math.toDegrees(Math.atan2(xOffset, zOffset));
-            this.rotationYaw = (float) (-expectedYaw) + 180;
+            float expectedYaw = (float) (-Math.toDegrees(Math.atan2(xOffset, zOffset)) + 180F);
+            this.prevRotationYaw = this.rotationYaw;
+            if (Math.abs(xOffset) + Math.abs(zOffset) > 5) {
+                float delta = expectedYaw - this.rotationYaw;
+                if (delta < 0) {
+                    delta += 360;
+                } else if (delta > 360) {
+                    delta -= 360;
+                }
+                if (delta < 180 && delta > 1) {
+                    this.rotationYaw++;
+
+                } else if (delta > 180 && delta < 359) {
+                    this.rotationYaw--;
+                }
+                float f = 0.05F;
+                this.setMotion(this.getMotion().add(MathHelper.sin(-this.rotationYaw * ((float) Math.PI / 180F)) * f,
+                        0.0D, MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * f));
+            }
         });
+    }
+
+    public void setTargetPos(BlockPos blockPos) {
+        this.getDataManager().set(TARGET_POS, Optional.ofNullable(blockPos));
+    }
+
+    public Optional<BlockPos> getTargetPos() {
+        return this.getDataManager().get(TARGET_POS);
     }
 }

@@ -65,8 +65,8 @@ public class TugBoatRenderer<T extends TugBoatEntity> extends EntityRenderer<T> 
 
         this.renderBoat(entity, partialTicks, matrixStack, buffer, packedLight);
 
-        matrixStack.pop();
         super.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
+        matrixStack.pop();
     }
 
     protected void renderBoat(T entity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight) {
