@@ -5,6 +5,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
@@ -13,8 +16,11 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -70,13 +76,43 @@ public class BuoyBlock extends Block {
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
         world.setBlockState(pos.up(), state.with(HALF, DoubleBlockHalf.UPPER), 3);
-        world.getCapability(TransportCapabilities.NAVIGATION_NETWORK)
-                .ifPresent(network -> this.createNavigationPoint(pos)
-                        .ifPresent(network::addNavigationPoint));
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof BuoyTileEntity) {
+            ((BuoyTileEntity) tileEntity).setup(placer instanceof PlayerEntity ? (PlayerEntity)placer : null);
+        }
     }
 
-    protected Optional<INavigationPoint> createNavigationPoint(BlockPos blockPos) {
-        return TransportNavigationPoints.CONNECTOR.map(connector -> connector.create(blockPos));
+    @Override
+    @ParametersAreNonnullByDefault
+    @SuppressWarnings("deprecation")
+    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.isIn(newState.getBlock())) {
+            TileEntity tileentity = world.getTileEntity(pos);
+            if (tileentity instanceof BuoyTileEntity) {
+                ((BuoyTileEntity) tileentity).destroy();
+            }
+
+            super.onReplaced(state, world, pos, newState, isMoving);
+        }
+    }
+
+    @Override
+    @Nonnull
+    @ParametersAreNonnullByDefault
+    @SuppressWarnings("deprecation")
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
+                                             Hand hand, BlockRayTraceResult hit) {
+        BlockPos blockPos = pos;
+        if (state.get(HALF) == DoubleBlockHalf.UPPER) {
+            blockPos = blockPos.down();
+        }
+        TileEntity tileEntity = world.getTileEntity(blockPos);
+        if (tileEntity instanceof BuoyTileEntity) {
+            ((BuoyTileEntity) tileEntity).interact(player);
+            return ActionResultType.SUCCESS;
+        } else {
+            return ActionResultType.FAIL;
+        }
     }
 
     @Override

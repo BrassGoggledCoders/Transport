@@ -1,12 +1,18 @@
 package xyz.brassgoggledcoders.transport.api.navigation;
 
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IWorld;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import xyz.brassgoggledcoders.transport.api.TransportRegistries;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 public class NavigationPointType extends ForgeRegistryEntry<NavigationPointType> {
@@ -39,4 +45,30 @@ public class NavigationPointType extends ForgeRegistryEntry<NavigationPointType>
     public static NavigationPointType of(BiFunction<NavigationPointType, BlockPos, NavigationPoint> instanceSupplier) {
         return new NavigationPointType(instanceSupplier);
     }
+
+    @Nullable
+    public static INavigationPoint deserialize(CompoundNBT nbt) {
+        NavigationPointType pointType = TransportRegistries.NAVIGATION_POINT_TYPES.getValue(
+                new ResourceLocation(nbt.getString("type")));
+
+        BlockPos blockPos = NBTUtil.readBlockPos(nbt.getCompound("blockPos"));
+
+        if (pointType != null) {
+            NavigationPoint navigationPoint = pointType.create(blockPos);
+            navigationPoint.deserializeNBT(nbt);
+            return navigationPoint;
+        } else {
+            return null;
+        }
+    }
+
+    @Nonnull
+    public static CompoundNBT serialize(@Nonnull INavigationPoint navigationPoint) {
+        CompoundNBT nbt = navigationPoint.serializeNBT();
+        nbt.putString("type", Objects.requireNonNull(navigationPoint.getType().getRegistryName()).toString());
+        nbt.putUniqueId("uniqueId", navigationPoint.getUniqueId());
+        nbt.put("blockPos", NBTUtil.writeBlockPos(navigationPoint.getPosition()));
+        return nbt;
+    }
+
 }
