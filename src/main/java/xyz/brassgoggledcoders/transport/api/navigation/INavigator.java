@@ -1,16 +1,18 @@
 package xyz.brassgoggledcoders.transport.api.navigation;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface INavigator {
-    @Nullable
-    default INavigationPoint getCurrentPoint(INavigationNetwork network) {
+    @Nonnull
+    default Optional<INavigationPoint> getCurrentPoint(INavigationNetwork network) {
         UUID currentPointId = this.getCurrentPointId();
         if (currentPointId != null) {
-            return network.getNavigationPoint(currentPointId);
+            return Optional.ofNullable(network.getNavigationPoint(currentPointId));
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 

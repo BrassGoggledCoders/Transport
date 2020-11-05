@@ -4,7 +4,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -18,9 +17,9 @@ import java.util.function.BiFunction;
 public class NavigationPointType extends ForgeRegistryEntry<NavigationPointType> {
     private ITextComponent displayName;
     private String translationKey;
-    private final BiFunction<NavigationPointType, BlockPos, NavigationPoint> instanceSupplier;
+    private final BiFunction<INavigationNetwork, NavigationPointType, NavigationPoint> instanceSupplier;
 
-    public NavigationPointType(BiFunction<NavigationPointType, BlockPos, NavigationPoint> instanceSupplier) {
+    public NavigationPointType(BiFunction<INavigationNetwork, NavigationPointType, NavigationPoint> instanceSupplier) {
         this.instanceSupplier = instanceSupplier;
     }
 
@@ -38,23 +37,21 @@ public class NavigationPointType extends ForgeRegistryEntry<NavigationPointType>
         return this.displayName;
     }
 
-    public NavigationPoint create(BlockPos blockPos) {
-        return this.instanceSupplier.apply(this, blockPos);
+    public NavigationPoint create(INavigationNetwork navigationNetwork) {
+        return this.instanceSupplier.apply(navigationNetwork, this);
     }
 
-    public static NavigationPointType of(BiFunction<NavigationPointType, BlockPos, NavigationPoint> instanceSupplier) {
+    public static NavigationPointType of(BiFunction<INavigationNetwork, NavigationPointType, NavigationPoint> instanceSupplier) {
         return new NavigationPointType(instanceSupplier);
     }
 
     @Nullable
-    public static INavigationPoint deserialize(CompoundNBT nbt) {
+    public static INavigationPoint deserialize(INavigationNetwork navigationNetwork, CompoundNBT nbt) {
         NavigationPointType pointType = TransportRegistries.NAVIGATION_POINT_TYPES.getValue(
                 new ResourceLocation(nbt.getString("type")));
 
-        BlockPos blockPos = NBTUtil.readBlockPos(nbt.getCompound("blockPos"));
-
         if (pointType != null) {
-            NavigationPoint navigationPoint = pointType.create(blockPos);
+            NavigationPoint navigationPoint = pointType.create(navigationNetwork);
             navigationPoint.deserializeNBT(nbt);
             return navigationPoint;
         } else {

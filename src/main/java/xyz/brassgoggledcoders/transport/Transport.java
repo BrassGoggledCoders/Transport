@@ -28,6 +28,9 @@ import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.navigation.INavigationNetwork;
+import xyz.brassgoggledcoders.transport.api.navigation.INavigator;
+import xyz.brassgoggledcoders.transport.api.navigation.NavigationPointType;
+import xyz.brassgoggledcoders.transport.api.navigation.Navigator;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
 import xyz.brassgoggledcoders.transport.api.predicate.StringPredicate;
@@ -105,6 +108,7 @@ public class Transport {
         TransportModuleSlots.setup();
         TransportHullTypes.setup();
         TransportText.setup();
+        TransportNavigationPoints.setup();
 
         TransportVanilla.setup();
         TransportIE.setup();
@@ -117,6 +121,7 @@ public class Transport {
             makeRegistry("engine", EngineModule.class);
             makeRegistry("module_slot", ModuleSlot.class);
             makeRegistry("hull_type", HullType.class);
+            makeRegistry("navigation_point_type", NavigationPointType.class);
             registriesSetup = true;
         }
     }
@@ -163,6 +168,7 @@ public class Transport {
         CapabilityManager.INSTANCE.register(PredicateStorage.class, new EmptyStorage<>(), PredicateStorage::new);
         CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () -> null);
         CapabilityManager.INSTANCE.register(INavigationNetwork.class, new CompoundNBTStorage<>(), NavigationNetwork::new);
+        CapabilityManager.INSTANCE.register(INavigator.class, new EmptyStorage<>(), Navigator::new);
 
         TransportAPI.generateItemToModuleMap();
     }

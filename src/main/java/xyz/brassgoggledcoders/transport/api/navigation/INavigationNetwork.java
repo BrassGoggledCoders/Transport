@@ -23,11 +23,11 @@ public interface INavigationNetwork extends INBTSerializable<CompoundNBT> {
     @Nullable
     INavigationPoint getNavigationPoint(@Nonnull UUID uniqueID);
 
-    @Nullable
-    INavigationPoint getNavigationPoint(@Nonnull BlockPos blockPos);
-
     @Nonnull
     Collection<INavigationPoint> getKnownNavigationPoints(@Nonnull PlayerEntity playerEntity);
 
     boolean setKnownNavigationPoint(@Nonnull PlayerEntity playerEntity, @Nonnull INavigationPoint navigationPoint, boolean known);
+
+    @Nonnull
+    INavigationPoint createPoint(@Nonnull NavigationPointType pointType);
 }

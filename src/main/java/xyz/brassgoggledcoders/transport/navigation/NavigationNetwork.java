@@ -58,12 +58,6 @@ public class NavigationNetwork implements INavigationNetwork {
         return navigationPoints.get(uniqueId);
     }
 
-    @Nullable
-    @Override
-    public INavigationPoint getNavigationPoint(@Nonnull BlockPos blockPos) {
-        return null;
-    }
-
     @Nonnull
     @Override
     public Collection<INavigationPoint> getKnownNavigationPoints(@Nonnull PlayerEntity playerEntity) {
@@ -81,11 +75,17 @@ public class NavigationNetwork implements INavigationNetwork {
 
     @Override
     @Nonnull
+    public INavigationPoint createPoint(@Nonnull NavigationPointType pointType) {
+        return pointType.create(this);
+    }
+
+    @Override
+    @Nonnull
     public CompoundNBT serializeNBT() {
         CompoundNBT compoundNBT = new CompoundNBT();
         ListNBT navigationPointListNBT = new ListNBT();
         for (INavigationPoint navigationPoint : this.navigationPoints.values()) {
-            navigationPointListNBT.add(navigationPoint.serializeNBT());
+            navigationPointListNBT.add(NavigationPointType.serialize(navigationPoint));
         }
         compoundNBT.put("navigationPoints", navigationPointListNBT);
         CompoundNBT knownNavigationPointsNBT = new CompoundNBT();
@@ -106,7 +106,8 @@ public class NavigationNetwork implements INavigationNetwork {
         this.knownNavigationPoints.clear();
         ListNBT navigationPointsListNBT = nbt.getList("navigationPoints", Constants.NBT.TAG_COMPOUND);
         for (int x = 0; x < navigationPointsListNBT.size(); x++) {
-            INavigationPoint navigationPoint = NavigationPointType.deserialize(navigationPointsListNBT.getCompound(x));
+            INavigationPoint navigationPoint = NavigationPointType.deserialize(this,
+                    navigationPointsListNBT.getCompound(x));
             if (navigationPoint != null) {
                 this.navigationPoints.put(navigationPoint.getUniqueId(), navigationPoint);
             }

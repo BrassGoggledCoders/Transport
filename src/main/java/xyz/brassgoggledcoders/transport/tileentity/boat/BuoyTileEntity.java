@@ -5,8 +5,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import xyz.brassgoggledcoders.transport.api.TransportCapabilities;
+import xyz.brassgoggledcoders.transport.api.navigation.INavigationNetwork;
 import xyz.brassgoggledcoders.transport.api.navigation.INavigationPoint;
 import xyz.brassgoggledcoders.transport.content.TransportNavigationPoints;
+import xyz.brassgoggledcoders.transport.navigation.NavigationNetwork;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -50,9 +52,10 @@ public class BuoyTileEntity extends TileEntity {
         if (this.getWorld() != null) {
             this.navigationPointUniqueId = this.getWorld().getCapability(TransportCapabilities.NAVIGATION_NETWORK)
                     .resolve()
-                    .flatMap(network -> this.createNavigationPoint(pos)
+                    .flatMap(network -> this.createNavigationPoint(network)
                             .map(navigationPoint -> {
                                 network.addNavigationPoint(navigationPoint);
+                                navigationPoint.setPosition(this.getPos());
                                 if (playerEntity != null) {
                                     network.setKnownNavigationPoint(playerEntity, navigationPoint, true);
                                 }
@@ -63,7 +66,7 @@ public class BuoyTileEntity extends TileEntity {
         }
     }
 
-    protected Optional<INavigationPoint> createNavigationPoint(BlockPos blockPos) {
-        return TransportNavigationPoints.CONNECTOR.map(connector -> connector.create(blockPos));
+    protected Optional<INavigationPoint> createNavigationPoint(INavigationNetwork navigationNetwork) {
+        return TransportNavigationPoints.RANDOM.map(navigationNetwork::createPoint);
     }
 }
