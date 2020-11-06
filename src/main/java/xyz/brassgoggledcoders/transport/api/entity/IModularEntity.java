@@ -94,4 +94,6 @@ public interface IModularEntity extends IItemProvider, INBTSerializable<Compound
     <T> List<LazyOptional<T>> getCapabilities(@Nonnull Capability<T> cap, @Nullable Direction side, @Nullable ModuleSlot priority);
 
     void invalidateCapabilities();
+
+    void sendClientUpdate(ModuleInstance<?> moduleInstance, int type, CompoundNBT compoundNBT);
 }

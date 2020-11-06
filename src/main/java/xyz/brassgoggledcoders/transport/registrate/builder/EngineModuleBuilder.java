@@ -1,7 +1,6 @@
 package xyz.brassgoggledcoders.transport.registrate.builder;
 
 import com.tterrag.registrate.AbstractRegistrate;
-import com.tterrag.registrate.builders.AbstractBuilder;
 import com.tterrag.registrate.builders.BuilderCallback;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullBiFunction;
@@ -12,18 +11,14 @@ import xyz.brassgoggledcoders.transport.api.item.ModuleItem;
 
 import javax.annotation.Nonnull;
 
-public class EngineModuleBuilder<E extends EngineModule, I extends Item, P> extends AbstractBuilder<EngineModule, E, P,
+public class EngineModuleBuilder<E extends EngineModule, I extends Item, P> extends ModuleBuilder<EngineModule, E, P,
         EngineModuleBuilder<E, I, P>> {
-    public final NonNullSupplier<E> cargoCreator;
+    public final NonNullSupplier<E> engineCreator;
 
     public EngineModuleBuilder(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback,
-                               NonNullSupplier<E> cargoCreator) {
-        super(owner, parent, name, callback, EngineModule.class);
-        this.cargoCreator = cargoCreator;
-    }
-
-    public EngineModuleBuilder<E, I, P> lang(String name) {
-        return this.lang(EngineModule::getTranslationKey, name);
+                               NonNullSupplier<E> engineCreator) {
+        super(owner, parent, name, callback, EngineModule.class, engineCreator);
+        this.engineCreator = engineCreator;
     }
 
     public ItemBuilder<I, EngineModuleBuilder<E, I, P>> item(NonNullBiFunction<NonNullSupplier<E>, Item.Properties, I> itemCreator) {
@@ -45,6 +40,6 @@ public class EngineModuleBuilder<E extends EngineModule, I extends Item, P> exte
     @Override
     @Nonnull
     protected E createEntry() {
-        return cargoCreator.get();
+        return engineCreator.get();
     }
 }

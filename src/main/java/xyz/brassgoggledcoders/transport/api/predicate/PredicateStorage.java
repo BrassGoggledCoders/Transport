@@ -33,7 +33,7 @@ public class PredicateStorage {
                         CompoundNBT bookNBT = book.getTag();
                         ListNBT pagesNBT = bookNBT.getList("pages", Constants.NBT.TAG_STRING);
                         String currentPage = pagesNBT.getString(lecternTileEntity.getPage());
-                        ITextComponent textComponent = TextComponent.Serializer.func_240643_a_(currentPage);
+                        ITextComponent textComponent = TextComponent.Serializer.getComponentFromJson(currentPage);
                         if (textComponent != null) {
                             routingString = textComponent.getString();
                         }

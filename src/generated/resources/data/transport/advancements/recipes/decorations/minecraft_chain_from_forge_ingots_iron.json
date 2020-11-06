@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "transport:cargo_minecart"
+      "transport:minecraft_chain_from_forge_ingots_iron"
     ]
   },
   "criteria": {
@@ -11,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "item": "minecraft:minecart"
+            "item": "minecraft:chain"
           }
         ]
       }
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "transport:cargo_minecart"
+        "recipe": "transport:minecraft_chain_from_forge_ingots_iron"
       }
     }
   },

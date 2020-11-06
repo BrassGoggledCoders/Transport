@@ -5,11 +5,12 @@ import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -30,7 +31,6 @@ import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
 import xyz.brassgoggledcoders.transport.api.predicate.StringPredicate;
 import xyz.brassgoggledcoders.transport.compat.immersiveengineering.TransportIE;
-import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
@@ -55,20 +55,29 @@ import static xyz.brassgoggledcoders.transport.Transport.ID;
 public class Transport {
     public static final String ID = "transport";
     public static final Logger LOGGER = LogManager.getLogger(ID);
-
     public static final LocatorType ENTITY = new LocatorType("entity", EntityLocatorInstance::new);
-    public static final Lazy<TransportRegistrate> TRANSPORT_REGISTRATE = Lazy.of(() -> TransportRegistrate.create(ID)
-            .addDataGenerator(ProviderType.BLOCK_TAGS, TransportAdditionalData::generateBlockTags)
-            .addDataGenerator(ProviderType.ITEM_TAGS, TransportAdditionalData::generateItemTags)
-            .addDataGenerator(ProviderType.RECIPE, TransportAdditionalData::generateRecipes)
-            .itemGroup(() -> new TransportItemGroup(ID, () -> TransportBlocks.HOLDING_RAIL.orElseThrow(
+
+    public static final NonNullLazy<ItemGroup> ITEM_GROUP = NonNullLazy.of(() ->
+            new TransportItemGroup(ID, () -> TransportBlocks.HOLDING_RAIL.orElseThrow(
                     () -> new IllegalStateException("Got Item too early")
-            )))
+            ))
     );
+
+    public static final NonNullLazy<TransportRegistrate> TRANSPORT_REGISTRATE = NonNullLazy.of(() ->
+            TransportRegistrate.create(ID)
+                    .addDataGenerator(ProviderType.BLOCK_TAGS, TransportAdditionalData::generateBlockTags)
+                    .addDataGenerator(ProviderType.ITEM_TAGS, TransportAdditionalData::generateItemTags)
+                    .addDataGenerator(ProviderType.RECIPE, TransportAdditionalData::generateRecipes)
+                    .addDataGenerator(ProviderType.LANG, TransportAdditionalData::generateLang)
+                    .itemGroup(ITEM_GROUP::get)
+    );
+
+    private static boolean registriesSetup = false;
 
     public static Transport instance;
 
     public final NetworkHandler networkHandler;
+
 
     public Transport() {
         instance = this;
@@ -83,11 +92,7 @@ public class Transport {
         this.networkHandler = new NetworkHandler();
         TransportAPI.setNetworkHandler(this.networkHandler);
 
-        makeRegistry("module_type", ModuleType.class);
-        makeRegistry("cargo", CargoModule.class);
-        makeRegistry("engine", EngineModule.class);
-        makeRegistry("module_slot", ModuleSlot.class);
-        makeRegistry("hull_type", HullType.class);
+        this.setupRegistries();
 
         TransportBlocks.setup();
         TransportContainers.register(modBus);
@@ -103,7 +108,17 @@ public class Transport {
 
         TransportVanilla.setup();
         TransportIE.setup();
-        TransportQuark.setup();
+    }
+
+    public static void setupRegistries() {
+        if (!registriesSetup) {
+            makeRegistry("module_type", ModuleType.class);
+            makeRegistry("cargo", CargoModule.class);
+            makeRegistry("engine", EngineModule.class);
+            makeRegistry("module_slot", ModuleSlot.class);
+            makeRegistry("hull_type", HullType.class);
+            registriesSetup = true;
+        }
     }
 
     public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {

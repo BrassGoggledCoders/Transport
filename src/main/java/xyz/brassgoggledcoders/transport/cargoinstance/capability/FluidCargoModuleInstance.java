@@ -10,6 +10,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -24,8 +25,12 @@ public class FluidCargoModuleInstance extends CapabilityCargoModuleInstance<IFlu
     private final LazyOptional<IFluidHandler> lazyFluidTank;
 
     public FluidCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity) {
+        this(cargoModule, modularEntity, 10);
+    }
+
+    public FluidCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity, int buckets) {
         super(cargoModule, modularEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
-        this.fluidTank = new FluidTankComponent<>("Tank", 10000, 80, 28);
+        this.fluidTank = new FluidTankComponent<>("Tank", buckets * FluidAttributes.BUCKET_VOLUME, 80, 28);
         this.lazyFluidTank = LazyOptional.of(() -> fluidTank);
     }
 

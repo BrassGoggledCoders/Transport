@@ -23,7 +23,7 @@ public class TransportEntities {
             .object("cargo_minecart")
             .<CargoCarrierMinecartEntity>entity(CargoCarrierMinecartEntity::new, EntityClassification.MISC)
             .lang("Modular Minecart")
-            .properties(properties -> properties.func_233606_a_(8).size(0.98F, 0.7F))
+            .properties(properties -> properties.trackingRange(8).size(0.98F, 0.7F))
             .register();
 
     public static RegistryEntry<EntityType<ModularBoatEntity>> MODULAR_BOAT = Transport.getRegistrate()
@@ -38,16 +38,6 @@ public class TransportEntities {
             .item(CargoCarrierMinecartItem::new)
             .model((context, provider) -> {
             })
-            .recipe((context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get())
-                    .patternLine(" S ")
-                    .patternLine("RMR")
-                    .patternLine(" S ")
-                    .key('S', Ingredient.fromTag(Tags.Items.SLIMEBALLS))
-                    .key('R', Ingredient.fromTag(Tags.Items.DUSTS_REDSTONE))
-                    .key('M', Ingredient.fromItems(Items.MINECART))
-                    .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.MINECART))
-                    .build(provider)
-            )
             .lang("Modular Minecart")
             .register();
 
@@ -68,7 +58,7 @@ public class TransportEntities {
             .register();
 
     private static <T extends Entity> NonNullConsumer<EntityType.Builder<T>> boatSetup() {
-        return tBuilder -> tBuilder.func_233606_a_(10).size(1.375F, 0.5625F);
+        return tBuilder -> tBuilder.trackingRange(10).size(1.375F, 0.5625F);
     }
 
     public static void setup() {

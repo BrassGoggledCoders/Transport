@@ -10,13 +10,13 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import xyz.brassgoggledcoders.transport.capability.FluidHandlerDirectional;
-import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import java.util.List;
 
@@ -26,7 +26,8 @@ public class FluidLoaderTileEntity extends BasicLoaderTileEntity<IFluidHandler> 
 
     public FluidLoaderTileEntity(TileEntityType<? extends FluidLoaderTileEntity> tileEntityType) {
         super(tileEntityType, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
-        this.fluidTankComponent = new FluidTankComponent<>("Loader", 10000, 80, 28);
+        this.fluidTankComponent = new FluidTankComponent<>("Loader", 10 * FluidAttributes.BUCKET_VOLUME,
+                80, 28);
         this.lazyFluid = LazyOptional.of(() -> fluidTankComponent);
     }
 

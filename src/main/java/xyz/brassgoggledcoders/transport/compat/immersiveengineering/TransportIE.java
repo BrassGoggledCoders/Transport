@@ -12,7 +12,7 @@ import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateRecipes;
 public class TransportIE {
     public static RegistryEntry<HullType> TREATED_WOOD_HULL = Transport.getRegistrate()
             .object("treated_wood")
-            .hullType(itemSupplier -> new HullType(itemSupplier, Transport.rl("treated_wood_boat.png")))
+            .hullType(itemSupplier -> new HullType(itemSupplier::get, Transport.rl("treated_wood_boat.png")))
             .lang("Treated Wood Hull")
             .defaultRecipe(TransportEntities.MODULAR_BOAT_ITEM::get)
             .item("boat", HulledBoatItem::new, itemBuilder -> itemBuilder

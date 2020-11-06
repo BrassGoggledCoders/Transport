@@ -1,9 +1,9 @@
 package xyz.brassgoggledcoders.transport.hulltype;
 
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.NonNullSupplier;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 
 public class VanillaBoatHullType extends HullType {

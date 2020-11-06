@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.content;
 
 import com.google.common.collect.Lists;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import net.minecraft.block.Block;
@@ -10,6 +11,7 @@ import net.minecraft.item.Items;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.Tags;
 import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.recipe.jobsite.RailWorkerBenchRecipeBuilder;
@@ -26,6 +28,10 @@ public class TransportAdditionalData {
         railBenchRecipes(recipeProvider, itemTagList, TransportItemTags.RAILS_REGULAR, false);
         railBenchRecipes(recipeProvider, itemTagList, TransportItemTags.RAILS_POWERED, true);
         railBenchRecipes(recipeProvider, itemTagList, TransportItemTags.RAILS_STRUCTURE, true);
+
+        RailWorkerBenchRecipeBuilder.create(Tags.Items.INGOTS_IRON, Items.CHAIN)
+                .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.CHAIN))
+                .build(recipeProvider, Transport.rl("minecraft_chain_from_forge_ingots_iron"));
     }
 
     public static void railBenchRecipes(RegistrateRecipeProvider recipeProvider, List<Pair<IItemProvider, ITag<Item>>> itemTagList,
@@ -73,6 +79,10 @@ public class TransportAdditionalData {
         itemTagsProvider.getOrCreateBuilder(TransportItemTags.RAILS)
                 .addTag(TransportItemTags.RAILS_IRON)
                 .addTag(TransportItemTags.RAILS_GOLD);
+    }
+
+    public static void generateLang(RegistrateLangProvider langProvider) {
+        langProvider.add("screen.transport.jei.category.rail_workers_bench", "Rail Worker's Bench");
     }
 
     public static List<Pair<IItemProvider, ITag<Item>>> getTagInfoList() {
