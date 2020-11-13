@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraftforge.common.Tags;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.item.NavigationChartItem;
 import xyz.brassgoggledcoders.transport.item.RailBreakerItem;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateRecipes;
 
@@ -41,6 +42,15 @@ public class TransportItems {
             .lang("Gold Rail")
             .tag(TransportItemTags.RAILS_GOLD)
             .recipe(TransportRegistrateRecipes.railRecipes(Tags.Items.INGOTS_GOLD, Items.POWERED_RAIL, 24, true))
+            .register();
+
+    public static final ItemEntry<NavigationChartItem> NAVIGATION_CHART = Transport.getRegistrate()
+            .object("navigation_chart")
+            .item(NavigationChartItem::new)
+            .lang("Navigation Chart")
+            .model((context, provider) -> provider.generated(context, provider.modLoc("item/navigation_chart"),
+                    provider.modLoc("item/navigation_chart_markings")
+            ))
             .register();
 
     public static void setup() {
