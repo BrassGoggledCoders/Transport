@@ -177,7 +177,11 @@ public class TransportBlocks {
             .register();
 
     public static final BlockEntry<BumperRailBlock> BUMPER_RAIL =
-            createRail("bumper_rail", "Bumper Rail", BumperRailBlock::new)
+            createRail("bumper_rail", "Bumper Rail", BumperRailBlock::new, properties ->
+                    properties.hardnessAndResistance(0.7F)
+                            .notSolid()
+                            .sound(SoundType.METAL)
+            )
                     .recipe((context, provider) -> ShapedRecipeBuilder.shapedRecipe(context.get(), 3)
                             .patternLine("WRW")
                             .patternLine("I I")
@@ -441,17 +445,22 @@ public class TransportBlocks {
     }
 
     private static <B extends Block> ItemBuilder<BlockItem, BlockBuilder<B, TransportRegistrate>> createRail(
-            String name, String lang, NonNullFunction<AbstractBlock.Properties, B> blockCreator) {
+            String name, String lang, NonNullFunction<AbstractBlock.Properties, B> blockCreator,
+            NonNullUnaryOperator<AbstractBlock.Properties> properties) {
         return Transport.getRegistrate()
                 .object(name)
                 .block(Material.MISCELLANEOUS, blockCreator)
-                .properties(railProperties())
+                .properties(properties)
                 .lang(lang)
                 .tag(BlockTags.RAILS)
                 .item()
                 .tag(ItemTags.RAILS)
                 .model(TransportRegistrateModels.railItem());
+    }
 
+    private static <B extends Block> ItemBuilder<BlockItem, BlockBuilder<B, TransportRegistrate>> createRail(
+            String name, String lang, NonNullFunction<AbstractBlock.Properties, B> blockCreator) {
+        return createRail(name, lang, blockCreator, railProperties());
     }
 
     public static void setup() {
