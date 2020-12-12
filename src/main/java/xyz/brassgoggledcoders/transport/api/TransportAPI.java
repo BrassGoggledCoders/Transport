@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.connection.IConnectionChecker;
+import xyz.brassgoggledcoders.transport.api.connection.ListConnectionChecker;
 import xyz.brassgoggledcoders.transport.api.connection.NoConnectionChecker;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
@@ -46,7 +47,7 @@ public class TransportAPI {
     @CapabilityInject(IModularEntity.class)
     public static Capability<IModularEntity> MODULAR_ENTITY;
 
-    private static IConnectionChecker connectionChecker = new NoConnectionChecker();
+    private static IConnectionChecker connectionChecker = null;
     private static INetworkHandler networkHandler;
 
     private static final Map<Block, IPointMachineBehavior> POINT_MACHINE_BEHAVIORS = Maps.newHashMap();
@@ -163,11 +164,24 @@ public class TransportAPI {
 
     @Nonnull
     public static IConnectionChecker getConnectionChecker() {
+        if (TransportAPI.connectionChecker == null) {
+            TransportAPI.connectionChecker = new NoConnectionChecker();
+        }
         return connectionChecker;
     }
 
     public static void setConnectionChecker(@Nonnull IConnectionChecker connectionChecker) {
-        TransportAPI.connectionChecker = connectionChecker;
+        if (TransportAPI.connectionChecker == null) {
+            TransportAPI.connectionChecker = connectionChecker;
+        } else if (TransportAPI.connectionChecker instanceof ListConnectionChecker) {
+            ((ListConnectionChecker) TransportAPI.connectionChecker).getConnectionCheckers()
+                    .add(connectionChecker);
+        } else {
+            ListConnectionChecker listConnectionChecker = new ListConnectionChecker();
+            listConnectionChecker.getConnectionCheckers().add(TransportAPI.connectionChecker);
+            listConnectionChecker.getConnectionCheckers().add(connectionChecker);
+            TransportAPI.connectionChecker = listConnectionChecker;
+        }
     }
 
     public static ModuleSlot getModuleSlot(String moduleSlot) {

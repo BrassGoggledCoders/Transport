@@ -164,8 +164,8 @@ dependencies {
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
 
-    //compile fg.deobf("vazkii.autoreglib:AutoRegLib:${auto_reg_lib_version}")
-    //compile fg.deobf("vazkii.quark:Quark:${quark_version}")
+    compile fg.deobf("vazkii.autoreglib:AutoRegLib:${auto_reg_lib_version}")
+    compile fg.deobf("vazkii.quark:Quark:${quark_version}")
 
     compile fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${minecraft_version}-${immersive_engineering_version}")
 
