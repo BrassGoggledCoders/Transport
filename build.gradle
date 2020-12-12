@@ -33,7 +33,7 @@ repositories {
         url = "http://files.minecraftforge.net/maven"
     }
     maven {
-        name = "The Loader"
+        name = "CraftTweaker, IE, Quark, Patchouli"
         url = "https://maven.blamejared.com"
     }
     maven {
@@ -47,10 +47,6 @@ repositories {
     maven {
         name = "JEI"
         url = "https://dvs1.progwml6.com/files/maven"
-    }
-    maven {
-        name = "FTB Gui"
-        url = "https://maven.latmod.com/"
     }
 }
 
@@ -157,13 +153,10 @@ build.dependsOn reobfShadowJar
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    if (findProject(':Titanium') != null) {
-        compile project(':Titanium')
-    } else {
-        compile fg.deobf(project.dependencies.create("com.hrznstudio:titanium:${minecraft_version}-${titanium_version}") {
-            transitive = false
-        })
-    }
+    compile fg.deobf(project.dependencies.create("com.hrznstudio:titanium:${minecraft_version}-${titanium_version}") {
+        transitive = false
+    })
+
     def registrate = "com.tterrag.registrate:Registrate:MC1.16.2-${registrate_version}"
     implementation fg.deobf(registrate)
     shade registrate
@@ -180,8 +173,6 @@ dependencies {
 
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
-
-    compileOnly fg.deobf('com.feed_the_beast.mods:ftb-gui-library:1.0.0.18')
 
     testImplementation('org.junit.jupiter:junit-jupiter:5.6.1')
 }
