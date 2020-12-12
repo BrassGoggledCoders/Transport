@@ -30,13 +30,6 @@ public class ElevatorSwitchRailBlock extends AbstractRailBlock {
         super(true, properties);
     }
 
-    public ElevatorSwitchRailBlock() {
-        this(Properties.create(Material.MISCELLANEOUS)
-                .doesNotBlockMovement()
-                .hardnessAndResistance(0.7F)
-                .sound(SoundType.METAL));
-    }
-
     public static BlockState oppositeAscend(BlockState railState) {
         switch (railState.get(SHAPE)) {
             case ASCENDING_EAST:
