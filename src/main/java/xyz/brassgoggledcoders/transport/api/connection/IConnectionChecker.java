@@ -2,8 +2,12 @@ package xyz.brassgoggledcoders.transport.api.connection;
 
 import net.minecraft.entity.Entity;
 
-public interface IConnectionChecker {
-    boolean areConnected(Entity one, Entity two);
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-    Entity getLeader(Entity entity);
+public interface IConnectionChecker {
+    boolean areConnected(@Nonnull Entity one, @Nonnull Entity two);
+
+    @Nullable
+    Entity getLeader(@Nullable Entity entity);
 }

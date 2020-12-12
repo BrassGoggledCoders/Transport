@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "The $(item)Wye Switch Rail$() sends carts left by default. When activated by a $(l:concepts/point_machine)Point Machine$() it will divert carts to the right."
+      "text": "The $(item)Wye Switch Rail$() sends carts left by default. When activated by a $(thing)Point Machine$() it will divert carts to the right."
     },
     {
       "type": "crafting",

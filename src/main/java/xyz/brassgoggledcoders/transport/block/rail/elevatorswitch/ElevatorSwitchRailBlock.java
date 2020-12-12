@@ -22,18 +22,12 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ElevatorSwitchRailBlock extends AbstractRailBlock {
-    public static final EnumProperty<RailShape> SHAPE = EnumProperty.create("shape", RailShape.class, RailShape::isAscending);
+    public static final EnumProperty<RailShape> SHAPE = EnumProperty.create("shape", RailShape.class, railShape ->
+            railShape.isAscending() || railShape == RailShape.NORTH_SOUTH || railShape == RailShape.EAST_WEST);
     public static final BooleanProperty TOP = BooleanProperty.create("top");
 
     public ElevatorSwitchRailBlock(Properties properties) {
         super(true, properties);
-    }
-
-    public ElevatorSwitchRailBlock() {
-        this(Properties.create(Material.MISCELLANEOUS)
-                .doesNotBlockMovement()
-                .hardnessAndResistance(0.7F)
-                .sound(SoundType.METAL));
     }
 
     public static BlockState oppositeAscend(BlockState railState) {

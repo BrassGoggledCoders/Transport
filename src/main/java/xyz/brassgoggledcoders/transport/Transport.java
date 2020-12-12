@@ -31,6 +31,7 @@ import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
 import xyz.brassgoggledcoders.transport.api.predicate.StringPredicate;
 import xyz.brassgoggledcoders.transport.compat.immersiveengineering.TransportIE;
+import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
@@ -92,7 +93,7 @@ public class Transport {
         this.networkHandler = new NetworkHandler();
         TransportAPI.setNetworkHandler(this.networkHandler);
 
-        this.setupRegistries();
+        setupRegistries();
 
         TransportBlocks.setup();
         TransportContainers.register(modBus);
@@ -108,6 +109,7 @@ public class Transport {
 
         TransportVanilla.setup();
         TransportIE.setup();
+        TransportQuark.setup();
     }
 
     public static void setupRegistries() {
