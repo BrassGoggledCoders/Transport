@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "The $(item)Switch Rail$() sends carts straight on by default. When activated by a $(l:concepts/point_machine)Point Machine$() it will divert carts onto the perpendicular track."
+      "text": "The $(item)Switch Rail$() sends carts straight on by default. When activated by a $(thing)Point Machine$() it will divert carts onto the perpendicular track."
     },
     {
       "type": "crafting",

@@ -60,15 +60,7 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
     public void tick() {
         if (!this.getModularEntity().getTheWorld().isRemote()) {
             if (burnTime > 0) {
-                switch (this.getPoweredState()) {
-                    case RUNNING:
-                        burnTime--;
-                    case IDLE:
-                        burnTime--;
-                        break;
-                    default:
-                        break;
-                }
+                burnTime -= this.getPoweredState().getBurnAmount();
             }
 
             if (burnTime <= 0) {
