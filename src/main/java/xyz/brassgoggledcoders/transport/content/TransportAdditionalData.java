@@ -11,6 +11,7 @@ import net.minecraft.item.Items;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.Tags;
 import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.capability.supervisor.NonnullDirection;
@@ -29,6 +30,10 @@ public class TransportAdditionalData {
         railBenchRecipes(recipeProvider, itemTagList, TransportItemTags.RAILS_REGULAR, false);
         railBenchRecipes(recipeProvider, itemTagList, TransportItemTags.RAILS_POWERED, true);
         railBenchRecipes(recipeProvider, itemTagList, TransportItemTags.RAILS_STRUCTURE, true);
+
+        RailWorkerBenchRecipeBuilder.create(Tags.Items.INGOTS_IRON, Items.CHAIN)
+                .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.CHAIN))
+                .build(recipeProvider, Transport.rl("minecraft_chain_from_forge_ingots_iron"));
     }
 
     public static void railBenchRecipes(RegistrateRecipeProvider recipeProvider, List<Pair<IItemProvider, ITag<Item>>> itemTagList,

@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.math.vector.Quaternion;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 
-public class ItemModuleRenderer implements IModuleRenderer{
+public class ItemModuleRenderer implements IModuleRenderer {
     @Override
     public void render(ModuleInstance<?> moduleInstance, float entityYaw, float partialTicks, MatrixStack matrixStack,
                        IRenderTypeBuffer buffer, int packedLight) {

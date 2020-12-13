@@ -19,8 +19,11 @@ public class EnergyCargoModuleInstance extends CapabilityCargoModuleInstance<IEn
     private final LazyOptional<IEnergyStorage> lazyEnergy;
 
     public EnergyCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity) {
+        this(cargoModule, modularEntity, 10000);
+    }
+    public EnergyCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity, int energyAmount) {
         super(cargoModule, modularEntity, CapabilityEnergy.ENERGY);
-        this.energy = new EnergyStorageComponent<>(10000, 79, 24);
+        this.energy = new EnergyStorageComponent<>(energyAmount, 79, 24);
         this.lazyEnergy = LazyOptional.of(() -> energy);
     }
 

@@ -9,6 +9,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -46,6 +47,10 @@ public class ModuleInstance<MOD extends Module<MOD>>
         return LazyOptional.empty();
     }
 
+    public void onActivatorPass(boolean receivingPower) {
+
+    }
+
     @Override
     public CompoundNBT serializeNBT() {
         return new CompoundNBT();
@@ -59,6 +64,9 @@ public class ModuleInstance<MOD extends Module<MOD>>
         return module;
     }
 
+    public World getWorld() {
+        return this.getModularEntity().getTheWorld();
+    }
 
     public ModuleType getModuleType() {
         return this.getModule().getType();
@@ -74,6 +82,14 @@ public class ModuleInstance<MOD extends Module<MOD>>
 
     public ItemStack asItemStack() {
         return new ItemStack(this.getModule().asItem());
+    }
+
+    public void receiveClientUpdate(int type, @Nullable CompoundNBT compoundNBT) {
+
+    }
+
+    public void sendClientUpdate(int type, @Nullable CompoundNBT compoundNBT) {
+        this.getModularEntity().sendClientUpdate(this, type, compoundNBT);
     }
 
     public void invalidateCapabilities() {

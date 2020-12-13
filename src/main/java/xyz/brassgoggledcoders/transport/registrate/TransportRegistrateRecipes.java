@@ -34,7 +34,7 @@ public class TransportRegistrateRecipes {
     public static <T extends Item> NonNullBiConsumer<DataGenContext<Item, T>, RegistrateRecipeProvider> vehicleShape(
             String tagName) {
         return (context, recipeProvider) -> {
-            ITag.INamedTag<Item> material = ItemTags.makeWrapperTag(tagName);
+            ITag.INamedTag<Item> material = ItemTags.createOptional(new ResourceLocation(tagName));
             ConditionalRecipe.builder()
                     .addCondition(new NotCondition(new TagEmptyCondition(tagName)))
                     .addRecipe(ShapedRecipeBuilder.shapedRecipe(context.get())

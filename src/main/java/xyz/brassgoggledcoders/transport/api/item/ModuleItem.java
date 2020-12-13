@@ -1,13 +1,12 @@
 package xyz.brassgoggledcoders.transport.api.item;
 
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.util.NonNullSupplier;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 
 import javax.annotation.Nonnull;
-import java.util.function.Supplier;
 
 public class ModuleItem<M extends Module<M>> extends Item {
     private final NonNullSupplier<M> module;

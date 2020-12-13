@@ -33,7 +33,7 @@ repositories {
         url = "http://files.minecraftforge.net/maven"
     }
     maven {
-        name = "The Loader"
+        name = "CraftTweaker, IE, Quark, Patchouli"
         url = "https://maven.blamejared.com"
     }
     maven {
@@ -90,6 +90,9 @@ minecraft {
     runs {
         client {
             workingDirectory project.file("run")
+
+            properties 'mixin.env.disableRefMap': 'true'
+
             mods {
                 transport {
                     source(sourceSets.main)
@@ -99,6 +102,9 @@ minecraft {
 
         server {
             workingDirectory project.file("run")
+
+            properties 'mixin.env.disableRefMap': 'true'
+
             mods {
                 transport {
                     source(sourceSets.main)
@@ -108,8 +114,11 @@ minecraft {
 
         data {
             workingDirectory project.file("run")
+
             environment 'target', 'fmluserdevdata'
+
             properties 'fml.earlyprogresswindow': 'false'
+            properties 'mixin.env.disableRefMap': 'true'
 
             args '--all', '--output', file('src/generated/resources/'),
                     '--reports',
@@ -144,28 +153,26 @@ build.dependsOn reobfShadowJar
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    if (findProject(':Titanium') != null) {
-        compile project(':Titanium')
-    } else {
-        compile fg.deobf(project.dependencies.create("com.hrznstudio:titanium:${minecraft_version}-${titanium_version}") {
-            transitive = false
-        })
-    }
-    def registrate = "com.tterrag.registrate:Registrate:MC${minecraft_version}-${registrate_version}"
+    compile fg.deobf(project.dependencies.create("com.hrznstudio:titanium:${minecraft_version}-${titanium_version}") {
+        transitive = false
+    })
+
+    def registrate = "com.tterrag.registrate:Registrate:MC1.16.2-${registrate_version}"
     implementation fg.deobf(registrate)
     shade registrate
 
-    compile fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
 
     compile fg.deobf("vazkii.autoreglib:AutoRegLib:${auto_reg_lib_version}")
     compile fg.deobf("vazkii.quark:Quark:${quark_version}")
 
-    compile fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.16.1-${immersive_engineering_version}")
+    compile fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${minecraft_version}-${immersive_engineering_version}")
 
     compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
     testImplementation('org.junit.jupiter:junit-jupiter:5.6.1')
 }
@@ -198,6 +205,7 @@ jar {
 artifacts {
     archives javadocJar
     archives srcJar
+    archives shadowJar
 }
 
 uploadArchives {

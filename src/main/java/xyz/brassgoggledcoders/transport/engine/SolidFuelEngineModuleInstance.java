@@ -60,15 +60,7 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
     public void tick() {
         if (!this.getModularEntity().getTheWorld().isRemote()) {
             if (burnTime > 0) {
-                switch (this.getPoweredState()) {
-                    case RUNNING:
-                        burnTime--;
-                    case IDLE:
-                        burnTime--;
-                        break;
-                    default:
-                        break;
-                }
+                burnTime -= this.getPoweredState().getBurnAmount();
             }
 
             if (burnTime <= 0) {
@@ -105,11 +97,13 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         return itemStackHandler.getScreenAddons();
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
         return itemStackHandler.getContainerAddons();
     }

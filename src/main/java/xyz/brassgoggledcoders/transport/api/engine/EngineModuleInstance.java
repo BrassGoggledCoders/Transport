@@ -11,6 +11,8 @@ import javax.annotation.Nonnull;
 public abstract class EngineModuleInstance extends ModuleInstance<EngineModule> implements IHoldable {
     private PoweredState poweredState = PoweredState.RUNNING;
 
+    private Long lastForced;
+
     protected EngineModuleInstance(EngineModule engineModule, IModularEntity componentCarrier) {
         super(engineModule, componentCarrier);
     }
@@ -21,28 +23,35 @@ public abstract class EngineModuleInstance extends ModuleInstance<EngineModule> 
 
     @Nonnull
     public PoweredState getPoweredState() {
+        if (this.poweredState == PoweredState.FORCED_IDLE) {
+            if (this.lastForced == null || this.lastForced + 5 < this.getWorld().getGameTime()) {
+                this.poweredState = PoweredState.RUNNING;
+            }
+        }
         return poweredState;
     }
 
     public void setPoweredState(@Nonnull PoweredState poweredState) {
         this.poweredState = poweredState;
+        if (poweredState == PoweredState.FORCED_IDLE) {
+            this.lastForced = this.getWorld().getGameTime();
+        } else {
+            this.lastForced = null;
+        }
     }
 
     protected void handleParticles(IParticleData particleData, int runningAmount) {
-        if (this.getPoweredState() == PoweredState.IDLE) {
-            runningAmount *= 2;
-        }
+        runningAmount *= this.poweredState.getRunningModifier();
         if (this.isRunning() && this.getModularEntity().getTheWorld().rand.nextInt(runningAmount) == 0) {
             this.getModularEntity().getTheWorld().addParticle(particleData, this.getModularEntity().getSelf().getPosX(),
                     this.getModularEntity().getSelf().getPosY() + this.getModularEntity().getSelf().getEyeHeight() + 0.6,
                     this.getModularEntity().getSelf().getPosZ(), 0.0D, 0.0D, 0.0D);
         }
-
     }
 
     @Override
     public void onHeld() {
-        this.setPoweredState(PoweredState.IDLE);
+        this.setPoweredState(PoweredState.FORCED_IDLE);
     }
 
     @Override

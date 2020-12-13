@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.transport.api.entity;
 
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.container.PlayerContainer;
@@ -12,6 +11,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 

@@ -25,8 +25,12 @@ public class FluidCargoModuleInstance extends CapabilityCargoModuleInstance<IFlu
     private final LazyOptional<IFluidHandler> lazyFluidTank;
 
     public FluidCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity) {
+        this(cargoModule, modularEntity, 10);
+    }
+
+    public FluidCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity, int buckets) {
         super(cargoModule, modularEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
-        this.fluidTank = new FluidTankComponent<>("Tank", 10 * FluidAttributes.BUCKET_VOLUME, 80, 28);
+        this.fluidTank = new FluidTankComponent<>("Tank", buckets * FluidAttributes.BUCKET_VOLUME, 80, 28);
         this.lazyFluidTank = LazyOptional.of(() -> fluidTank);
     }
 

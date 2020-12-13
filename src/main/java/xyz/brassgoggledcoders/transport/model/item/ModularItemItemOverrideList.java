@@ -18,7 +18,7 @@ public class ModularItemItemOverrideList extends ItemOverrideList {
 
     @Override
     @ParametersAreNonnullByDefault
-    public IBakedModel func_239290_a_(IBakedModel bakedModel, ItemStack itemStack, @Nullable ClientWorld clientWorld, @Nullable LivingEntity livingEntity) {
+    public IBakedModel getOverrideModel(IBakedModel bakedModel, ItemStack itemStack, @Nullable ClientWorld clientWorld, @Nullable LivingEntity livingEntity) {
         if (itemStack.getItem() instanceof IHulledItem) {
             return Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(
                     ((IHulledItem) itemStack.getItem()).getHullType(itemStack).asItem());

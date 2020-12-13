@@ -1,7 +1,9 @@
 package xyz.brassgoggledcoders.transport.block.rail;
 
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.AbstractRailBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
@@ -18,13 +20,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ScaffoldingRailBlock extends AbstractRailBlock {
     public static final EnumProperty<RailShape> SHAPE = EnumProperty.create("shape", RailShape.class);
-
-    public ScaffoldingRailBlock() {
-        this(Block.Properties.create(Material.MISCELLANEOUS)
-                .doesNotBlockMovement()
-                .hardnessAndResistance(0.7F)
-                .sound(SoundType.METAL));
-    }
 
     public ScaffoldingRailBlock(Properties properties) {
         super(false, properties);
