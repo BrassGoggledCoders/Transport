@@ -1,7 +1,6 @@
 package xyz.brassgoggledcoders.transport.registrate;
 
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
-import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import net.minecraft.block.Block;
 import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.loot.*;
