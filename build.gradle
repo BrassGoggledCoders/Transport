@@ -144,13 +144,6 @@ shadowJar {
     classifier ''
 }
 
-reobf {
-    shadowJar {}
-}
-
-build.dependsOn shadowJar
-build.dependsOn reobfShadowJar
-
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     compile fg.deobf(project.dependencies.create("com.hrznstudio:titanium:${minecraft_version}-${titanium_version}") {
@@ -187,6 +180,12 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
+task registrateJar(type: Jar, dependsOn: javadoc) {
+    classifier = "registrate"
+    from sourceSets.main.allSource
+    include 'xyz/brassgoggledcoders/transport/registrate/**'
+}
+
 jar {
     classifier = "nodep"
     manifest {
@@ -202,10 +201,21 @@ jar {
     }
 }
 
+reobf {
+    shadowJar {}
+    registrateJar {}
+}
+
+build.dependsOn shadowJar
+build.dependsOn reobfShadowJar
+build.dependsOn registrateJar
+build.dependsOn reobfRegistrateJar
+
 artifacts {
     archives javadocJar
     archives srcJar
     archives shadowJar
+    archives registrateJar
 }
 
 uploadArchives {
