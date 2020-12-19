@@ -1,0 +1,6 @@
+{
+  "parent": "transport:block/ender_loader",
+  "textures": {
+    "chevron": "transport:block/chevron_iron"
+  }
+}

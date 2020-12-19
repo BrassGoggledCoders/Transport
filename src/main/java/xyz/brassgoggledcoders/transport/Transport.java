@@ -6,9 +6,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.event.RegistryEvent;
@@ -35,7 +33,7 @@ import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
-import xyz.brassgoggledcoders.transport.event.EventHandler;
+import xyz.brassgoggledcoders.transport.event.ForgeEventHandler;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
 import xyz.brassgoggledcoders.transport.nbt.CompoundNBTStorage;
 import xyz.brassgoggledcoders.transport.nbt.EmptyStorage;
@@ -87,8 +85,6 @@ public class Transport {
 
         modBus.addListener(this::commonSetup);
         modBus.addListener(this::newRegistry);
-        MinecraftForge.EVENT_BUS.addGenericListener(TileEntity.class, EventHandler::onAttachTileEntityCapabilities);
-        MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, EventHandler::onAttachEntityCapabilities);
 
         this.networkHandler = new NetworkHandler();
         TransportAPI.setNetworkHandler(this.networkHandler);

@@ -21,6 +21,7 @@ import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.functional.ThrowingFunction;
+import xyz.brassgoggledcoders.transport.api.loading.BlockLoaderRegistry;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
@@ -56,6 +57,8 @@ public class TransportAPI {
     private static final Map<String, ThrowingFunction<PredicateParser, Predicate<String>, PredicateParserException>>
             STRING_PREDICATE_CREATORS = Maps.newHashMap();
     private static final Map<Item, Module<?>> ITEM_TO_MODULE = Maps.newHashMap();
+
+    private static final BlockLoaderRegistry blockLoadingRegistry = new BlockLoaderRegistry();
 
     public static Lazy<ForgeRegistry<CargoModule>> CARGO = Lazy.of(() -> (ForgeRegistry<CargoModule>) RegistryManager.ACTIVE.getRegistry(CargoModule.class));
     public static Lazy<IForgeRegistry<EngineModule>> ENGINES = Lazy.of(() -> RegistryManager.ACTIVE.getRegistry(EngineModule.class));
@@ -190,5 +193,9 @@ public class TransportAPI {
 
     public static ModuleSlot getModuleSlot(ResourceLocation resourceLocation) {
         return TransportAPI.MODULE_SLOT.get().getValue(resourceLocation);
+    }
+
+    public static BlockLoaderRegistry getBlockLoadingRegistry() {
+        return blockLoadingRegistry;
     }
 }

@@ -37,10 +37,11 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.block.BuoyBlock;
-import xyz.brassgoggledcoders.transport.block.DockBlock;
 import xyz.brassgoggledcoders.transport.block.ModuleConfiguratorBlock;
 import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
+import xyz.brassgoggledcoders.transport.block.EnderLoaderBlock;
+import xyz.brassgoggledcoders.transport.block.DockBlock;
+import xyz.brassgoggledcoders.transport.block.BuoyBlock;
 import xyz.brassgoggledcoders.transport.block.jobsite.RailWorkerBenchBlock;
 import xyz.brassgoggledcoders.transport.block.loader.EnergyLoaderBlock;
 import xyz.brassgoggledcoders.transport.block.loader.FluidLoaderBlock;
@@ -436,6 +437,20 @@ public class TransportBlocks {
 
     public static final RegistryEntry<ContainerType<RailWorkerBenchContainer>> RAIL_WORKER_BENCH_CONTAINER =
             RAIL_WORKER_BENCH.getSibling(ForgeRegistries.CONTAINERS);
+
+    public static final BlockEntry<EnderLoaderBlock> BLOCK_LOADER = Transport.getRegistrate()
+            .object("block_loader")
+            .block(properties -> new EnderLoaderBlock(properties, EnderLoaderBlock::tryMoveBlock))
+            .initialProperties(Material.IRON)
+            .properties(AbstractBlock.Properties::notSolid)
+            .blockstate((context, provider) -> provider.directionalBlock(context.get(),
+                    provider.models()
+                            .withExistingParent("block/block_loader", provider.modLoc("block/ender_loader"))
+                    .texture("chevron", provider.modLoc("block/chevron_iron"))
+            ))
+            .item()
+            .build()
+            .register();
     //endregion
 
     private static NonNullUnaryOperator<AbstractBlock.Properties> railProperties() {
