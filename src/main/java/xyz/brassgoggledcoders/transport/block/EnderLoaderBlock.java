@@ -4,13 +4,20 @@ import com.google.common.collect.Maps;
 import com.mojang.datafixers.util.Function3;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.Entity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -23,10 +30,12 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.loading.IBlockEntityLoading;
 import xyz.brassgoggledcoders.transport.api.loading.IEntityBlockLoading;
 
 import javax.annotation.Nonnull;
@@ -36,9 +45,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class EnderLoaderBlock extends Block {
+public class EnderLoaderBlock extends Block implements IWaterLoggable {
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static final BooleanProperty TRIGGERED = BlockStateProperties.TRIGGERED;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     private static final EnumMap<Axis, VoxelShape> CHEVRON_SHAPES = Util.make(Maps.newEnumMap(Axis.class),
             map -> {
@@ -57,13 +67,14 @@ public class EnderLoaderBlock extends Block {
                 .getBaseState()
                 .with(TRIGGERED, false)
                 .with(FACING, Direction.NORTH)
+                .with(WATERLOGGED, false)
         );
         this.tryMove = tryMove;
     }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(FACING, TRIGGERED);
+        builder.add(FACING, TRIGGERED, WATERLOGGED);
     }
 
     @Override
@@ -114,6 +125,47 @@ public class EnderLoaderBlock extends Block {
         return CHEVRON_SHAPES.get(state.get(FACING).getAxis());
     }
 
+    @Override
+    @Nonnull
+    @SuppressWarnings("deprecation")
+    public FluidState getFluidState(BlockState state) {
+        return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public boolean receiveFluid(IWorld worldIn, BlockPos pos, BlockState state, FluidState fluidState) {
+        return IWaterLoggable.super.receiveFluid(worldIn, pos, state, fluidState);
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public boolean canContainFluid(IBlockReader world, BlockPos pos, BlockState state, Fluid fluid) {
+        return IWaterLoggable.super.canContainFluid(world, pos, state, fluid);
+    }
+
+    @Override
+    @Nonnull
+    @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
+    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+        if (stateIn.get(WATERLOGGED)) {
+            worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+        }
+
+        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
+    public boolean allowsMovement(BlockState state, IBlockReader world, BlockPos pos, PathType type) {
+        if (type == PathType.WATER) {
+            return world.getFluidState(pos).isTagged(FluidTags.WATER);
+        }
+        return false;
+    }
+
     @SuppressWarnings("deprecation")
     public static boolean tryMoveBlock(BlockState blockState, World world, BlockPos loaderPos) {
         Direction facing = blockState.get(FACING);
@@ -131,17 +183,23 @@ public class EnderLoaderBlock extends Block {
                 movingPair = Pair.of(movingState, world.getTileEntity(movingPos));
             } else {
                 List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(movingPos));
-                if (entities.isEmpty() && !movingState.isIn(BlockTags.RAILS)) {
+                if (entities.isEmpty() && !movingState.isIn(BlockTags.RAILS) && !movingState.isAir()) {
                     movingPair = Pair.of(movingState, world.getTileEntity(movingPos));
                 } else if (!entities.isEmpty()) {
                     Iterator<Entity> entityIterator = entities.iterator();
                     while (movingPair == null && entityIterator.hasNext()) {
                         Entity entity = entityIterator.next();
-                        IEntityBlockLoading entityBlockLoading = TransportAPI.getBlockLoadingRegistry().getBlockLoadingFor(entity);
-                        if (entityBlockLoading != null) {
+                        Iterator<IEntityBlockLoading> potentialEntityBlockLoading = TransportAPI.getBlockLoadingRegistry()
+                                .getBlockLoadingFor(entity)
+                                .iterator();
+                        while (movingPair == null && potentialEntityBlockLoading.hasNext()) {
+                            IEntityBlockLoading entityBlockLoading = potentialEntityBlockLoading.next();
                             movingPair = entityBlockLoading.attemptUnload(entity);
-                            loadingMethod = entityBlockLoading;
-                            attemptedEntity = entity;
+                            if (movingPair != null) {
+                                loadingMethod = entityBlockLoading;
+                                attemptedEntity = entity;
+                            }
+
                         }
                     }
                 }
@@ -152,10 +210,31 @@ public class EnderLoaderBlock extends Block {
                 boolean loaded = false;
                 while (!loaded && entities.hasNext()) {
                     Entity entity = entities.next();
-                    IEntityBlockLoading entityBlockLoading = TransportAPI.getBlockLoadingRegistry().getBlockLoadingFor(entity);
-                    if (entityBlockLoading != null) {
-                        if (entityBlockLoading.attemptLoad(entity, movingPair.getLeft(), movingPair.getRight())) {
+                    CompoundNBT entityNBT = entity.writeWithoutTypeId(new CompoundNBT());
+                    entityNBT.remove("UUID");
+
+                    Iterator<IEntityBlockLoading> potentialEntityBlockLoading = TransportAPI.getBlockLoadingRegistry()
+                            .getBlockLoadingFor(entity)
+                            .iterator();
+                    while (!loaded && potentialEntityBlockLoading.hasNext()) {
+                        Entity newEntity = potentialEntityBlockLoading.next().attemptLoad(entity, entityNBT,
+                                movingPair.getLeft(), movingPair.getRight());
+                        if (newEntity != null) {
                             loaded = true;
+                            entity.remove();
+                            world.addEntity(newEntity);
+                        }
+                    }
+                    Iterator<IBlockEntityLoading> potentialBlockEntityLoading = TransportAPI.getBlockLoadingRegistry()
+                            .getEntityLoadingFor(movingPair.getLeft().getBlock())
+                            .iterator();
+                    while (!loaded && potentialBlockEntityLoading.hasNext()) {
+                        Entity newEntity = potentialBlockEntityLoading.next().attemptLoad(movingPair.getLeft(),
+                                movingPair.getRight(), entity, entityNBT);
+                        if (newEntity != null) {
+                            loaded = true;
+                            entity.remove();
+                            world.addEntity(newEntity);
                         }
                     }
                 }
@@ -168,7 +247,13 @@ public class EnderLoaderBlock extends Block {
 
                 if (loaded) {
                     if (attemptedEntity != null) {
-                        loadingMethod.unload(attemptedEntity);
+                        CompoundNBT entityNBT = attemptedEntity.writeWithoutTypeId(new CompoundNBT());
+                        entityNBT.remove("UUID");
+                        Entity newEntity = loadingMethod.unload(attemptedEntity, entityNBT);
+                        if (newEntity != null) {
+                            attemptedEntity.remove();
+                            world.addEntity(newEntity);
+                        }
                     } else {
                         world.removeBlock(movingPos, false);
                     }
