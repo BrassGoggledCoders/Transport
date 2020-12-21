@@ -22,7 +22,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullConsumer;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.transport.block.loader.LoadType;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
@@ -35,6 +34,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements ITickableTileEntity, IComponentHarness,
@@ -42,11 +42,15 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
 
     private final Capability<CAP> capability;
     private final EnumMap<Direction, LazyOptional<CAP>> lazyOptionals;
+    private final BiConsumer<CAP, CAP> transfer;
     private int run = 20;
 
-    public <T extends BasicLoaderTileEntity<CAP>> BasicLoaderTileEntity(TileEntityType<T> tileEntityType, Capability<CAP> capability) {
+    public <T extends BasicLoaderTileEntity<CAP>> BasicLoaderTileEntity(TileEntityType<T> tileEntityType,
+                                                                        Capability<CAP> capability,
+                                                                        BiConsumer<CAP, CAP> transfer) {
         super(tileEntityType);
         this.capability = capability;
+        this.transfer = transfer;
         this.lazyOptionals = Maps.newEnumMap(Direction.class);
     }
 
@@ -97,7 +101,9 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
         }
     }
 
-    protected abstract void transfer(CAP from, CAP to);
+    protected void transfer(CAP from, CAP to) {
+        transfer.accept(from, to);
+    }
 
     private LazyOptional<CAP> getNeighborCap(Direction side, BlockPos neighborPos, Stream<Entity> entitiesOnSide) {
         LazyOptional<CAP> capLazyOptional;

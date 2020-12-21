@@ -10,8 +10,9 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import xyz.brassgoggledcoders.transport.capability.EnergyStorageDirectional;
-import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.util.TransferUtils;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class EnergyLoaderTileEntity extends BasicLoaderTileEntity<IEnergyStorage> {
@@ -19,21 +20,10 @@ public class EnergyLoaderTileEntity extends BasicLoaderTileEntity<IEnergyStorage
     private final LazyOptional<IEnergyStorage> lazyEnergy;
 
     public EnergyLoaderTileEntity(TileEntityType<? extends EnergyLoaderTileEntity> tileEntityType) {
-        super(tileEntityType, CapabilityEnergy.ENERGY);
+        super(tileEntityType, CapabilityEnergy.ENERGY, TransferUtils::transferEnergy);
         this.energyComponent = new EnergyStorageComponent<>(10000, 79, 24);
         this.lazyEnergy = LazyOptional.of(() -> energyComponent);
 
-    }
-
-    @Override
-    protected void transfer(IEnergyStorage from, IEnergyStorage to) {
-        int amountSimPulled = from.extractEnergy(5000, true);
-        if (amountSimPulled > 0) {
-            int amountSimPushed = to.receiveEnergy(amountSimPulled, true);
-            if (amountSimPushed > 0) {
-                to.receiveEnergy(from.extractEnergy(amountSimPushed, false), false);
-            }
-        }
     }
 
     @Override
@@ -62,11 +52,13 @@ public class EnergyLoaderTileEntity extends BasicLoaderTileEntity<IEnergyStorage
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         return energyComponent.getScreenAddons();
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
         return energyComponent.getContainerAddons();
     }

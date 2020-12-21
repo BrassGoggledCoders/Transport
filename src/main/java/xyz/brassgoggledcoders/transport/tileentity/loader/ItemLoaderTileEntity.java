@@ -13,7 +13,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.ItemHandlerDirectional;
-import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.util.TransferUtils;
 
 import java.util.List;
 
@@ -23,26 +23,9 @@ public class ItemLoaderTileEntity extends BasicLoaderTileEntity<IItemHandler>
     private final LazyOptional<IItemHandler> internalLazyOptional;
 
     public ItemLoaderTileEntity(TileEntityType<ItemLoaderTileEntity> tileEntityType) {
-        super(tileEntityType, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        super(tileEntityType, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, TransferUtils::transferInventory);
         this.inventoryComponent = new InventoryComponent<>("inventory", 44, 35, 5);
         this.internalLazyOptional = LazyOptional.of(() -> inventoryComponent);
-    }
-
-    @Override
-    protected void transfer(IItemHandler from, IItemHandler to) {
-        int moved = 0;
-        int slotNumber = 0;
-        do {
-            ItemStack itemStack = from.extractItem(slotNumber, 16, true);
-            if (!itemStack.isEmpty()) {
-                if (ItemHandlerHelper.insertItem(to, itemStack, true).isEmpty()) {
-                    ItemStack movedItemStack = from.extractItem(slotNumber, 16, false);
-                    moved += movedItemStack.getCount();
-                    ItemHandlerHelper.insertItem(to, movedItemStack, false);
-                }
-            }
-            slotNumber++;
-        } while (slotNumber < from.getSlots() && moved < 32);
     }
 
     @Override

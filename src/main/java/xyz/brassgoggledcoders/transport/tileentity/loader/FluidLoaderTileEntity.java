@@ -17,6 +17,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import xyz.brassgoggledcoders.transport.capability.FluidHandlerDirectional;
+import xyz.brassgoggledcoders.transport.util.TransferUtils;
 
 import java.util.List;
 
@@ -25,21 +26,10 @@ public class FluidLoaderTileEntity extends BasicLoaderTileEntity<IFluidHandler> 
     private final LazyOptional<IFluidHandler> lazyFluid;
 
     public FluidLoaderTileEntity(TileEntityType<? extends FluidLoaderTileEntity> tileEntityType) {
-        super(tileEntityType, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+        super(tileEntityType, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, TransferUtils::transferFluid);
         this.fluidTankComponent = new FluidTankComponent<>("Loader", 10 * FluidAttributes.BUCKET_VOLUME,
                 80, 28);
         this.lazyFluid = LazyOptional.of(() -> fluidTankComponent);
-    }
-
-    @Override
-    protected void transfer(IFluidHandler from, IFluidHandler to) {
-        FluidStack output = from.drain(5000, FluidAction.SIMULATE);
-        if (!output.isEmpty()) {
-            int filledAmount = to.fill(output, FluidAction.SIMULATE);
-            if (filledAmount > 0) {
-                to.fill(from.drain(filledAmount, FluidAction.EXECUTE), FluidAction.EXECUTE);
-            }
-        }
     }
 
     @Override
