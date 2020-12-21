@@ -12,15 +12,13 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 
 public interface IEntityBlockLoading {
-    @Nullable
-    Entity attemptLoad(@Nonnull Entity entity, @Nonnull CompoundNBT entityNBT, @Nonnull BlockState blockState,
+    boolean attemptLoad(@Nonnull ILoading loading, @Nonnull Entity entity, @Nonnull BlockState blockState,
                         @Nullable TileEntity tileEntity);
 
     @Nullable
     Pair<BlockState, TileEntity> attemptUnload(@Nonnull Entity entity);
 
-    @Nullable
-    Entity unload(@Nonnull Entity entity, @Nonnull CompoundNBT entityNBT);
+    void unload(@Nonnull ILoading loading, @Nonnull Entity entity);
 
     Collection<EntityType<?>> getSupportedEntities();
 }

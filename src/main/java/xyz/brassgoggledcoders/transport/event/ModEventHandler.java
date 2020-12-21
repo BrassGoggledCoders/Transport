@@ -16,7 +16,9 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.loading.BlockLoaderRegistry;
 import xyz.brassgoggledcoders.transport.api.loading.IBlockEntityLoading;
 import xyz.brassgoggledcoders.transport.api.loading.IEntityBlockLoading;
+import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.loading.ContainerMinecartLoading;
+import xyz.brassgoggledcoders.transport.loading.ModularVehicleLoading;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -26,8 +28,12 @@ import java.util.stream.Stream;
 public class ModEventHandler {
     @SubscribeEvent
     public static void interModEnqueue(InterModEnqueueEvent event) {
-        sendLoaderCom(new ContainerMinecartLoading<>(Blocks.CHEST, EntityType.CHEST_MINECART,  ChestTileEntity::new));
+        sendLoaderCom(new ContainerMinecartLoading<>(Blocks.CHEST, EntityType.CHEST_MINECART, ChestTileEntity::new));
         sendLoaderCom(new ContainerMinecartLoading<>(Blocks.HOPPER, EntityType.HOPPER_MINECART, HopperTileEntity::new));
+        sendLoaderCom(new ModularVehicleLoading(
+                TransportEntities.CARGO_MINECART.get(),
+                TransportEntities.MODULAR_BOAT.get()
+        ));
     }
 
     @SubscribeEvent

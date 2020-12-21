@@ -37,6 +37,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.loading.IBlockEntityLoading;
 import xyz.brassgoggledcoders.transport.api.loading.IEntityBlockLoading;
+import xyz.brassgoggledcoders.transport.api.loading.ILoading;
+import xyz.brassgoggledcoders.transport.loading.Loading;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -173,6 +175,7 @@ public class EnderLoaderBlock extends Block implements IWaterLoggable {
         BlockState finishState = world.getBlockState(finishPos);
 
         if (!finishState.isSolid()) {
+            ILoading loading = new Loading(blockState);
             BlockPos movingPos = loaderPos.offset(facing.getOpposite());
             BlockState movingState = world.getBlockState(movingPos);
 
@@ -210,31 +213,22 @@ public class EnderLoaderBlock extends Block implements IWaterLoggable {
                 boolean loaded = false;
                 while (!loaded && entities.hasNext()) {
                     Entity entity = entities.next();
-                    CompoundNBT entityNBT = entity.writeWithoutTypeId(new CompoundNBT());
-                    entityNBT.remove("UUID");
-
                     Iterator<IEntityBlockLoading> potentialEntityBlockLoading = TransportAPI.getBlockLoadingRegistry()
                             .getBlockLoadingFor(entity)
                             .iterator();
                     while (!loaded && potentialEntityBlockLoading.hasNext()) {
-                        Entity newEntity = potentialEntityBlockLoading.next().attemptLoad(entity, entityNBT,
-                                movingPair.getLeft(), movingPair.getRight());
-                        if (newEntity != null) {
+                        if (potentialEntityBlockLoading.next().attemptLoad(loading, entity, movingPair.getLeft(),
+                                movingPair.getRight())) {
                             loaded = true;
-                            entity.remove();
-                            world.addEntity(newEntity);
                         }
                     }
                     Iterator<IBlockEntityLoading> potentialBlockEntityLoading = TransportAPI.getBlockLoadingRegistry()
                             .getEntityLoadingFor(movingPair.getLeft().getBlock())
                             .iterator();
                     while (!loaded && potentialBlockEntityLoading.hasNext()) {
-                        Entity newEntity = potentialBlockEntityLoading.next().attemptLoad(movingPair.getLeft(),
-                                movingPair.getRight(), entity, entityNBT);
-                        if (newEntity != null) {
+                        if (potentialBlockEntityLoading.next().attemptLoad(loading, movingPair.getLeft(),
+                                movingPair.getRight(), entity)) {
                             loaded = true;
-                            entity.remove();
-                            world.addEntity(newEntity);
                         }
                     }
                 }
@@ -249,11 +243,7 @@ public class EnderLoaderBlock extends Block implements IWaterLoggable {
                     if (attemptedEntity != null) {
                         CompoundNBT entityNBT = attemptedEntity.writeWithoutTypeId(new CompoundNBT());
                         entityNBT.remove("UUID");
-                        Entity newEntity = loadingMethod.unload(attemptedEntity, entityNBT);
-                        if (newEntity != null) {
-                            attemptedEntity.remove();
-                            world.addEntity(newEntity);
-                        }
+                        loadingMethod.unload(loading, attemptedEntity);
                     } else {
                         world.removeBlock(movingPos, false);
                     }

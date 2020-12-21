@@ -11,6 +11,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.util.TransferUtils;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -20,7 +21,7 @@ public class ItemCargoModuleInstance extends CapabilityCargoModuleInstance<IItem
     private final LazyOptional<IItemHandler> lazyInventory;
 
     public ItemCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity) {
-        super(cargoModule, modularEntity, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        super(cargoModule, modularEntity, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, TransferUtils::transferInventory);
         this.inventory = new InventoryComponent<>("Inventory", 44, 35, 5);
         this.lazyInventory = LazyOptional.of(() -> inventory);
     }

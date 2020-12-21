@@ -7,12 +7,12 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.ContainerMinecartEntity;
 import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.NonNullSupplier;
 import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.api.loading.IBlockEntityLoading;
 import xyz.brassgoggledcoders.transport.api.loading.IEntityBlockLoading;
+import xyz.brassgoggledcoders.transport.api.loading.ILoading;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,10 +38,9 @@ public class ContainerMinecartLoading<T extends TileEntity & IInventory, E exten
     }
 
     @Override
-    @Nullable
-    public Entity attemptLoad(@Nonnull Entity entity, @Nonnull CompoundNBT entityNBT,
-                              @Nonnull BlockState blockState, @Nullable TileEntity tileEntity) {
-        return null;
+    public boolean attemptLoad(@Nonnull ILoading loading, @Nonnull Entity entity, @Nonnull BlockState blockState,
+                               @Nullable TileEntity tileEntity) {
+        return false;
     }
 
     @Nullable
@@ -60,14 +59,12 @@ public class ContainerMinecartLoading<T extends TileEntity & IInventory, E exten
     }
 
     @Override
-    public Entity unload(@Nonnull Entity entity, @Nonnull CompoundNBT entityNBT) {
+    public void unload(@Nonnull ILoading loading, @Nonnull Entity entity) {
         if (entity.getType() == entityType.get()) {
-            MinecartEntity minecartEntity = new MinecartEntity(entity.getEntityWorld(), entity.getPosX(), entity.getPosY(),
-                    entity.getPosZ());
-            minecartEntity.read(entityNBT);
-            return minecartEntity;
-        } else {
-            return null;
+            MinecartEntity minecartEntity = loading.recreateEntity(EntityType.MINECART, entity);
+            if (minecartEntity != null) {
+                loading.swap(minecartEntity, entity);
+            }
         }
     }
 
@@ -77,12 +74,11 @@ public class ContainerMinecartLoading<T extends TileEntity & IInventory, E exten
     }
 
     @Override
-    public Entity attemptLoad(@Nonnull BlockState blockState, @Nullable TileEntity tileEntity, @Nonnull Entity entity,
-                              @Nonnull CompoundNBT entityNBT) {
+    public boolean attemptLoad(@Nonnull ILoading loading, @Nonnull BlockState blockState, @Nullable TileEntity tileEntity,
+                               @Nonnull Entity entity) {
         if (blockState.isIn(block.get()) && entity.getType() == EntityType.MINECART) {
-            E newEntity = entityType.get().create(entity.getEntityWorld());
+            E newEntity = loading.recreateEntity(entityType.get(), entity);
             if (newEntity != null) {
-                newEntity.read(entityNBT);
                 if (tileEntity instanceof IInventory) {
                     IInventory inventory = (IInventory) tileEntity;
                     int maxInventory = Math.min(newEntity.getSizeInventory(), inventory.getSizeInventory());
@@ -90,10 +86,11 @@ public class ContainerMinecartLoading<T extends TileEntity & IInventory, E exten
                         newEntity.setInventorySlotContents(i, inventory.removeStackFromSlot(i));
                     }
                 }
+                loading.swap(newEntity, entity);
             }
-            return newEntity;
+            return true;
         }
-        return null;
+        return false;
     }
 
     @Override

@@ -11,8 +11,8 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 
 public interface IBlockEntityLoading {
-    Entity attemptLoad(@Nonnull BlockState blockState, @Nullable TileEntity tileEntity, @Nonnull Entity entity,
-                       @Nonnull CompoundNBT entityNBT);
+    boolean attemptLoad(@Nonnull ILoading loading, @Nonnull BlockState blockState, @Nullable TileEntity tileEntity,
+                       @Nonnull Entity entity);
 
     Collection<Block> getSupportedBlocks();
 }

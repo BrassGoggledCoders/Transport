@@ -10,6 +10,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.util.TransferUtils;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -22,7 +23,7 @@ public class EnergyCargoModuleInstance extends CapabilityCargoModuleInstance<IEn
         this(cargoModule, modularEntity, 10000);
     }
     public EnergyCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity, int energyAmount) {
-        super(cargoModule, modularEntity, CapabilityEnergy.ENERGY);
+        super(cargoModule, modularEntity, CapabilityEnergy.ENERGY, TransferUtils::transferEnergy);
         this.energy = new EnergyStorageComponent<>(energyAmount, 79, 24);
         this.lazyEnergy = LazyOptional.of(() -> energy);
     }

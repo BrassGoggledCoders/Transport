@@ -4,6 +4,7 @@ import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -14,18 +15,23 @@ import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.container.ModuleContainerProvider;
+import xyz.brassgoggledcoders.transport.util.TransferUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 public abstract class CapabilityCargoModuleInstance<CAP> extends CargoModuleInstance implements IScreenAddonProvider,
         IContainerAddonProvider {
     private final Capability<CAP> capability;
+    private final BiConsumer<CAP, CAP> transfer;
 
-    public CapabilityCargoModuleInstance(CargoModule cargoModule, IModularEntity entity, Capability<CAP> capability) {
+    public CapabilityCargoModuleInstance(CargoModule cargoModule, IModularEntity entity, Capability<CAP> capability,
+                                         BiConsumer<CAP, CAP> transfer) {
         super(cargoModule, entity);
         this.capability = capability;
+        this.transfer = transfer;
     }
 
     @Nonnull
@@ -73,5 +79,20 @@ public abstract class CapabilityCargoModuleInstance<CAP> extends CargoModuleInst
     public void invalidateCapabilities() {
         super.invalidateCapabilities();
         this.getLazyOptional().invalidate();
+    }
+
+    @Nullable
+    @Override
+    public TileEntity asTileEntity() {
+        TileEntity tileEntity = super.asTileEntity();
+        if (tileEntity != null) {
+            TransferUtils.tryTransfer(transfer, this.getLazyOptional(), tileEntity.getCapability(capability));
+        }
+        return tileEntity;
+    }
+
+    @Override
+    public void fromTileEntity(@Nonnull TileEntity tileEntity) {
+        TransferUtils.tryTransfer(transfer, tileEntity.getCapability(capability), this.getLazyOptional());
     }
 }

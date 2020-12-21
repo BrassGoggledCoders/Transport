@@ -16,6 +16,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.util.TransferUtils;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -29,7 +30,7 @@ public class FluidCargoModuleInstance extends CapabilityCargoModuleInstance<IFlu
     }
 
     public FluidCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity, int buckets) {
-        super(cargoModule, modularEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+        super(cargoModule, modularEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, TransferUtils::transferFluid);
         this.fluidTank = new FluidTankComponent<>("Tank", buckets * FluidAttributes.BUCKET_VOLUME, 80, 28);
         this.lazyFluidTank = LazyOptional.of(() -> fluidTank);
     }

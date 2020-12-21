@@ -80,6 +80,11 @@ public class CargoModule extends Module<CargoModule> {
     }
 
     @Override
+    public boolean isValidFor(IModularEntity modularEntity) {
+        return modularEntity.getSelf().getPassengers().isEmpty();
+    }
+
+    @Override
     @Nonnull
     public Item asItem() {
         return this.itemLazy.get();
