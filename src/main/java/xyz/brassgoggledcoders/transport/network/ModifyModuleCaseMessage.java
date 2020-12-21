@@ -16,30 +16,34 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class AddModuleCaseMessage {
+public class ModifyModuleCaseMessage {
     private final int entityId;
     private final Module<?> module;
     private final ModuleSlot moduleSlot;
+    private final boolean add;
 
-    public AddModuleCaseMessage(IModularEntity modularEntity, ModuleInstance<?> moduleInstance, ModuleSlot moduleSlot) {
-        this(modularEntity.getSelf().getEntityId(), moduleInstance.getModule(), moduleSlot);
+    public ModifyModuleCaseMessage(IModularEntity modularEntity, ModuleInstance<?> moduleInstance, ModuleSlot moduleSlot,
+                                   boolean add) {
+        this(modularEntity.getSelf().getEntityId(), moduleInstance.getModule(), moduleSlot, add);
     }
 
-    public AddModuleCaseMessage(int entityId, Module<?> module, ModuleSlot moduleSlot) {
+    public ModifyModuleCaseMessage(int entityId, Module<?> module, ModuleSlot moduleSlot, boolean add) {
         this.entityId = entityId;
         this.module = module;
         this.moduleSlot = moduleSlot;
+        this.add = add;
     }
 
-    public static AddModuleCaseMessage decode(PacketBuffer packetBuffer) {
-        return new AddModuleCaseMessage(packetBuffer.readInt(), Module.fromPacketBuffer(packetBuffer),
-                TransportAPI.getModuleSlot(packetBuffer.readResourceLocation()));
+    public static ModifyModuleCaseMessage decode(PacketBuffer packetBuffer) {
+        return new ModifyModuleCaseMessage(packetBuffer.readInt(), Module.fromPacketBuffer(packetBuffer),
+                TransportAPI.getModuleSlot(packetBuffer.readResourceLocation()), packetBuffer.readBoolean());
     }
 
     public void encode(PacketBuffer packetBuffer) {
         packetBuffer.writeInt(entityId);
         Module.toPacketBuffer(module, packetBuffer);
         packetBuffer.writeResourceLocation(Objects.requireNonNull(moduleSlot.getRegistryName()));
+        packetBuffer.writeBoolean(add);
     }
 
     public void consume(Supplier<NetworkEvent.Context> contextSupplier) {
@@ -47,9 +51,15 @@ public class AddModuleCaseMessage {
         contextSupplier.get().enqueueWork(() -> {
             if (module != null && moduleSlot != null) {
                 Optional<Entity> entity = LogicalSidedProvider.CLIENTWORLD.<Optional<World>>get(side)
-                    .map(world -> world.getEntityByID(entityId));
+                        .map(world -> world.getEntityByID(entityId));
                 entity.ifPresent(value -> value.getCapability(TransportAPI.MODULAR_ENTITY)
-                        .ifPresent(modularEntity -> modularEntity.add(module, moduleSlot, false)));
+                        .ifPresent(modularEntity -> {
+                            if (add) {
+                                modularEntity.add(module, moduleSlot, false);
+                            } else {
+                                modularEntity.remove(moduleSlot, false);
+                            }
+                        }));
             }
         });
         contextSupplier.get().setPacketHandled(true);

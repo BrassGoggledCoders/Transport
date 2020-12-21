@@ -28,6 +28,7 @@ import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
+import xyz.brassgoggledcoders.transport.content.TransportModuleTypes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -93,7 +94,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
             byModuleSlot.put(moduleSlot, moduleInstance);
             byModuleType.put(moduleInstance.getModuleType(), moduleInstance);
             if (sendUpdate) {
-                TransportAPI.getNetworkHandler().sendAddModuleCase(this, moduleInstance, moduleSlot);
+                TransportAPI.getNetworkHandler().sendModifyModuleCase(this, moduleInstance, moduleSlot, true);
             }
             return moduleInstance;
         } else {
@@ -207,8 +208,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
         if (moduleInstance != null) {
             byModuleType.remove(moduleInstance.getModuleType());
             if (sendUpdate) {
-                //TODO need send?
-                //TransportAPI.getNetworkHandler().sendAddModuleCase(modularEntity, moduleInstance, false);
+                TransportAPI.getNetworkHandler().sendModifyModuleCase(this, moduleInstance, moduleSlot, false);
             }
         }
     }
@@ -260,7 +260,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
 
     @Override
     public void sendClientUpdate(ModuleInstance<?> moduleInstance, int type, CompoundNBT compoundNBT) {
-        for (Entry<ModuleSlot, ModuleInstance<?>> entry: byModuleSlot.entrySet()) {
+        for (Entry<ModuleSlot, ModuleInstance<?>> entry : byModuleSlot.entrySet()) {
             if (entry.getValue() == moduleInstance) {
                 TransportAPI.getNetworkHandler().sendModuleInstanceUpdate(this, entry.getKey(), type, compoundNBT);
             }

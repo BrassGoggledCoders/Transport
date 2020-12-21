@@ -25,10 +25,10 @@ public class NetworkHandler implements INetworkHandler {
                 VERSION::equals
         );
 
-        this.channel.messageBuilder(AddModuleCaseMessage.class, 0)
-                .decoder(AddModuleCaseMessage::decode)
-                .encoder(AddModuleCaseMessage::encode)
-                .consumer(AddModuleCaseMessage::consume)
+        this.channel.messageBuilder(ModifyModuleCaseMessage.class, 0)
+                .decoder(ModifyModuleCaseMessage::decode)
+                .encoder(ModifyModuleCaseMessage::encode)
+                .consumer(ModifyModuleCaseMessage::consume)
                 .add();
 
         this.channel.messageBuilder(UpdateModuleInstanceMessage.class, 1)
@@ -39,10 +39,11 @@ public class NetworkHandler implements INetworkHandler {
     }
 
     @Override
-    public void sendAddModuleCase(IModularEntity entity, ModuleInstance<?> moduleInstance, ModuleSlot moduleSlot) {
+    public void sendModifyModuleCase(IModularEntity entity, ModuleInstance<?> moduleInstance, ModuleSlot moduleSlot,
+                                     boolean add) {
         if (!entity.getTheWorld().isRemote()) {
             this.channel.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity::getSelf),
-                    new AddModuleCaseMessage(entity, moduleInstance, moduleSlot));
+                    new ModifyModuleCaseMessage(entity, moduleInstance, moduleSlot, add));
         }
     }
 
