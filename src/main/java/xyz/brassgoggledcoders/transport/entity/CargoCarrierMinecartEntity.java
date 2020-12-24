@@ -1,5 +1,7 @@
 package xyz.brassgoggledcoders.transport.entity;
 
+import net.minecraft.block.AbstractRailBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
@@ -9,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -317,7 +320,7 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
     @Override
     public void onActivatorRailPass(int x, int y, int z, boolean receivingPower) {
         super.onActivatorRailPass(x, y, z, receivingPower);
-        for (ModuleInstance<?> moduleInstance: this.modularEntity.getModuleInstances()) {
+        for (ModuleInstance<?> moduleInstance : this.modularEntity.getModuleInstances()) {
             moduleInstance.onActivatorPass(receivingPower);
         }
     }
@@ -328,10 +331,30 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
         return cargoModuleInstance != null ? cargoModuleInstance.getComparatorLevel() : -1;
     }
 
-    @Override
-    protected double getMaximumSpeed() {
+    protected double getEngineMaxSpeed() {
         return this.modularEntity.<EngineModule, EngineModuleInstance, Double>callModule(TransportObjects.ENGINE_TYPE,
                 EngineModuleInstance::getMaximumSpeed, () -> 0.4D);
+    }
+
+    @Override
+    protected double getMaximumSpeed() {
+        return this.getEngineMaxSpeed();
+    }
+
+    @Override
+    public double getMaxSpeedWithRail() {
+        if (canUseRail()) {
+            BlockPos pos = this.getCurrentRailPosition();
+            BlockState state = getMinecart().world.getBlockState(pos);
+            Block block = state.getBlock();
+            if (state.isIn(BlockTags.RAILS) && block instanceof AbstractRailBlock) {
+                float railMaxSpeed = ((AbstractRailBlock) block).getRailMaxSpeed(state, this.getEntityWorld(), pos, this);
+                double maxSpeed = Math.min(railMaxSpeed, this.getEngineMaxSpeed());
+                return Math.min(maxSpeed, getCurrentCartSpeedCapOnRail());
+            }
+        }
+
+        return getMaximumSpeed();
     }
 
     @Override
