@@ -142,7 +142,6 @@ shadowJar {
     configurations = [project.configurations.shade]
     relocate 'com.tterrag.registrate', 'xyz.brassgoggledcoders.transport.repack.registrate'
     classifier ''
-    minimize()
 }
 
 dependencies {
