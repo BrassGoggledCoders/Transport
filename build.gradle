@@ -142,6 +142,7 @@ shadowJar {
     configurations = [project.configurations.shade]
     relocate 'com.tterrag.registrate', 'xyz.brassgoggledcoders.transport.repack.registrate'
     classifier ''
+    minimize()
 }
 
 dependencies {
@@ -183,6 +184,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 task registrateJar(type: Jar, dependsOn: javadoc) {
     classifier = "registrate"
     from sourceSets.main.allSource
+    exclude '**/**'
     include 'xyz/brassgoggledcoders/transport/registrate/**'
 }
 
