@@ -2,7 +2,7 @@ package xyz.brassgoggledcoders.transport.compat.quark;
 
 import com.google.common.collect.Sets;
 import net.minecraft.entity.Entity;
-import vazkii.quark.automation.base.ChainHandler;
+import vazkii.quark.content.automation.base.ChainHandler;
 import xyz.brassgoggledcoders.transport.api.connection.IConnectionChecker;
 
 import javax.annotation.Nonnull;
