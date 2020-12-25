@@ -8,13 +8,13 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.math.BlockPos;
-import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.entity.LocomotiveEntity;
 
 import javax.annotation.Nonnull;
 
 public class LocomotiveItem extends BasicMinecartItem {
     private final NonNullSupplier<EntityType<LocomotiveEntity>> entityTypeSupplier;
+
     public LocomotiveItem(NonNullSupplier<EntityType<LocomotiveEntity>> entityTypeSupplier, Properties builder) {
         super(builder);
         this.entityTypeSupplier = entityTypeSupplier;
@@ -29,8 +29,12 @@ public class LocomotiveItem extends BasicMinecartItem {
     @Nonnull
     protected AbstractMinecartEntity create(ItemUseContext itemUseContext, double heightOffset) {
         BlockPos blockPos = itemUseContext.getPos();
-        return new LocomotiveEntity(entityTypeSupplier.get(), itemUseContext.getWorld(),
+        LocomotiveEntity locomotiveEntity = new LocomotiveEntity(entityTypeSupplier.get(), itemUseContext.getWorld(),
                 (double) blockPos.getX() + 0.5D, blockPos.getY() + 0.0625D + heightOffset,
                 (double) blockPos.getZ() + 0.5D);
+
+        locomotiveEntity.onPlaced(itemUseContext);
+
+        return locomotiveEntity;
     }
 }

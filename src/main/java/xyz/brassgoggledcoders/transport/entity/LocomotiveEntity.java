@@ -1,16 +1,19 @@
 package xyz.brassgoggledcoders.transport.entity;
 
+import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -131,5 +134,30 @@ public class LocomotiveEntity extends AbstractMinecartEntity {
 
     protected void setMinecartPowered(boolean powered) {
         this.dataManager.set(POWERED, powered);
+    }
+
+    public void onPlaced(ItemUseContext context) {
+        boolean positive = context.getPlacementHorizontalFacing().getAxisDirection() ==
+                Direction.AxisDirection.POSITIVE;
+        BlockState blockState = world.getBlockState(context.getPos());
+        if (AbstractRailBlock.isRail(blockState)) {
+            RailShape railShape = ((AbstractRailBlock) blockState.getBlock()).getRailDirection(blockState, world,
+                    context.getPos(), this);
+            switch (railShape) {
+                case EAST_WEST:
+                case ASCENDING_EAST:
+                case ASCENDING_WEST:
+                    this.rotationYaw = positive ? 0F : 180F;
+                    break;
+                case NORTH_SOUTH:
+                case ASCENDING_NORTH:
+                case ASCENDING_SOUTH:
+                    this.rotationYaw = positive ? 90F : 270F;
+                    break;
+                default:
+                    break;
+            }
+        }
+
     }
 }
