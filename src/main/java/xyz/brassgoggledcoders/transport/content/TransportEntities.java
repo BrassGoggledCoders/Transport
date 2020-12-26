@@ -7,7 +7,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.entity.*;
+import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
+import xyz.brassgoggledcoders.transport.entity.HulledBoatEntity;
+import xyz.brassgoggledcoders.transport.entity.ModularBoatEntity;
+import xyz.brassgoggledcoders.transport.entity.TugBoatEntity;
+import xyz.brassgoggledcoders.transport.entity.locomotive.DieselLocomotiveEntity;
+import xyz.brassgoggledcoders.transport.entity.locomotive.SteamLocomotiveEntity;
 import xyz.brassgoggledcoders.transport.item.CargoCarrierMinecartItem;
 import xyz.brassgoggledcoders.transport.item.LocomotiveItem;
 import xyz.brassgoggledcoders.transport.item.ModularBoatItem;
@@ -54,17 +59,18 @@ public class TransportEntities {
             .properties(boatSetup())
             .register();
 
-    public static RegistryEntry<LocomotiveItem> DIESEL_LOCOMOTIVE_ITEM = Transport.getRegistrate()
-            .object("diesel_locomotive")
-            .item(builder -> new LocomotiveItem(TransportEntities.DIESEL_LOCOMOTIVE, builder))
-            .lang("Diesel Locomotive")
-            .model((context, provider) -> {
-            })
-            .register();
+    public static RegistryEntry<LocomotiveItem<DieselLocomotiveEntity>> DIESEL_LOCOMOTIVE_ITEM =
+            Transport.getRegistrate()
+                    .object("diesel_locomotive")
+                    .item(builder -> new LocomotiveItem<>(TransportEntities.DIESEL_LOCOMOTIVE, builder))
+                    .lang("Diesel Locomotive")
+                    .model((context, provider) -> {
+                    })
+                    .register();
 
-    public static RegistryEntry<EntityType<LocomotiveEntity>> DIESEL_LOCOMOTIVE = Transport.getRegistrate()
+    public static RegistryEntry<EntityType<DieselLocomotiveEntity>> DIESEL_LOCOMOTIVE = Transport.getRegistrate()
             .object("diesel_locomotive")
-            .<LocomotiveEntity>entity(LocomotiveEntity::new, EntityClassification.MISC)
+            .entity(DieselLocomotiveEntity::new, EntityClassification.MISC)
             .lang("Diesel Locomotive")
             .properties(properties -> properties.trackingRange(8).size(1.2F, 1.8F))
             .renderer(() -> renderManager -> new LocomotiveRenderer<>(DIESEL_LOCOMOTIVE_ITEM, 0.085F, 5,
@@ -88,21 +94,24 @@ public class TransportEntities {
                     Transport.rl("textures/entity/diesel_boat.png"), renderManager))
             .register();
 
-    public static RegistryEntry<LocomotiveItem> STEAM_LOCOMOTIVE_ITEM = Transport.getRegistrate()
-            .object("steam_locomotive")
-            .item(builder -> new LocomotiveItem(TransportEntities.STEAM_LOCOMOTIVE, builder))
-            .lang("Steam Locomotive")
-            .model((context, provider) -> {
-            })
-            .register();
+    public static RegistryEntry<LocomotiveItem<SteamLocomotiveEntity>> STEAM_LOCOMOTIVE_ITEM =
+            Transport.getRegistrate()
+                    .object("steam_locomotive")
+                    .item(builder -> new LocomotiveItem<>(TransportEntities.STEAM_LOCOMOTIVE, builder))
+                    .lang("Steam Locomotive")
+                    .model((context, provider) -> {
+                    })
+                    .register();
 
-    public static RegistryEntry<EntityType<LocomotiveEntity>> STEAM_LOCOMOTIVE = Transport.getRegistrate()
-            .object("steam_locomotive")
-            .<LocomotiveEntity>entity(LocomotiveEntity::new, EntityClassification.MISC)
-            .lang("Steam Locomotive")
-            .renderer(() -> renderManager -> new LocomotiveRenderer<>(STEAM_LOCOMOTIVE_ITEM, 1F, 0.4F,
-                    Transport.rl("textures/entity/steam_locomotive.png"), renderManager))
-            .register();
+    public static RegistryEntry<EntityType<SteamLocomotiveEntity>> STEAM_LOCOMOTIVE =
+            Transport.getRegistrate()
+                    .object("steam_locomotive")
+                    .entity(SteamLocomotiveEntity::new, EntityClassification.MISC)
+                    .properties(properties -> properties.trackingRange(8).size(1.4F, 1.8F))
+                    .lang("Steam Locomotive")
+                    .renderer(() -> renderManager -> new LocomotiveRenderer<>(STEAM_LOCOMOTIVE_ITEM, 1F,
+                            0.4F, Transport.rl("textures/entity/steam_locomotive.png"), renderManager))
+                    .register();
 
     public static RegistryEntry<TugBoatItem<TugBoatEntity>> STEAM_BOAT_ITEM = Transport.getRegistrate()
             .object("steam_boat")
@@ -116,7 +125,7 @@ public class TransportEntities {
             .object("steam_boat")
             .<TugBoatEntity>entity(TugBoatEntity::new, EntityClassification.MISC)
             .lang("Steam Tug Boat")
-            .properties(properies -> properies.trackingRange(10).size(2.0F, 0.5625F))
+            .properties(properties -> properties.trackingRange(10).size(2.0F, 0.5625F))
             .renderer(() -> renderManager -> new TugBoatRenderer<>(STEAM_BOAT_ITEM, 1F,
                     Transport.rl("textures/entity/steam_boat.png"), renderManager))
             .register();

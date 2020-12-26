@@ -16,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
-import xyz.brassgoggledcoders.transport.entity.LocomotiveEntity;
+import xyz.brassgoggledcoders.transport.entity.locomotive.LocomotiveEntity;
 import xyz.brassgoggledcoders.transport.model.item.EntityItemModelCache;
 import xyz.brassgoggledcoders.transport.util.CachedValue;
 

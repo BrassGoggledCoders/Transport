@@ -13,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public abstract class BasicMinecartItem extends MinecartItem {
     public BasicMinecartItem(Properties builder) {
@@ -38,12 +39,14 @@ public abstract class BasicMinecartItem extends MinecartItem {
                     heightOffset = 0.5D;
                 }
 
-                AbstractMinecartEntity abstractminecartentity = create(context, heightOffset);
-                if (itemstack.hasDisplayName()) {
-                    abstractminecartentity.setCustomName(itemstack.getDisplayName());
-                }
+                AbstractMinecartEntity minecartEntity = create(context, heightOffset);
+                if (minecartEntity != null) {
+                    if (itemstack.hasDisplayName()) {
+                        minecartEntity.setCustomName(itemstack.getDisplayName());
+                    }
 
-                world.addEntity(abstractminecartentity);
+                    world.addEntity(minecartEntity);
+                }
             }
 
             itemstack.shrink(1);
@@ -51,6 +54,6 @@ public abstract class BasicMinecartItem extends MinecartItem {
         }
     }
 
-    @Nonnull
+    @Nullable
     protected abstract AbstractMinecartEntity create(ItemUseContext itemUseContext, double heightOffset);
 }
