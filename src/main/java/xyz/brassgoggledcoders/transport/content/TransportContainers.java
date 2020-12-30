@@ -7,9 +7,11 @@ import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.locator.instance.EmptyLocatorInstance;
 import com.tterrag.registrate.builders.ContainerBuilder;
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IWorldPosCallable;
@@ -25,7 +27,9 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
+import xyz.brassgoggledcoders.transport.container.locomotive.SteamLocomotiveContainer;
 import xyz.brassgoggledcoders.transport.container.navigation.NavigationChartContainer;
+import xyz.brassgoggledcoders.transport.screen.locomotive.SteamLocomotiveScreen;
 import xyz.brassgoggledcoders.transport.screen.navigation.NavigationChartScreen;
 
 import javax.annotation.Nonnull;
@@ -94,6 +98,12 @@ public class TransportContainers {
                             return new NavigationChartContainer(containerType, i);
                         }
                     }, () -> NavigationChartScreen::new)
+                    .register();
+
+    public static final RegistryEntry<ContainerType<SteamLocomotiveContainer>> STEAM_LOCOMOTIVE =
+            Transport.getRegistrate()
+                    .object("steam_locomotive")
+                    .container(SteamLocomotiveContainer::new, () -> SteamLocomotiveScreen::new)
                     .register();
 
     public static void register(IEventBus eventBus) {

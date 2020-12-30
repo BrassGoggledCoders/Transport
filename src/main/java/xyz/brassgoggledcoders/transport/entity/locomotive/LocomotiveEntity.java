@@ -39,8 +39,12 @@ public class LocomotiveEntity extends AbstractMinecartEntity {
     private double pushX;
     private double pushZ;
 
+    private boolean on;
+
     private EngineState previousMovingEngineState = EngineState.FORWARD_1;
     private EngineState engineState = EngineState.NEUTRAL;
+
+    private int onSwap = 200;
 
     public LocomotiveEntity(EntityType<? extends LocomotiveEntity> type, World world) {
         super(type, world);
@@ -67,6 +71,11 @@ public class LocomotiveEntity extends AbstractMinecartEntity {
     @Override
     public void tick() {
         super.tick();
+        onSwap--;
+        if (onSwap <= 0) {
+            onSwap = 200;
+            on = !on;
+        }
     }
 
     @Override
@@ -158,6 +167,7 @@ public class LocomotiveEntity extends AbstractMinecartEntity {
         compound.putDouble("pushX", this.pushX);
         compound.putDouble("pushZ", this.pushZ);
 
+        compound.putBoolean("on", this.on);
         compound.putString("engineState", this.engineState.toString());
         compound.putString("previousMovingEngineState", this.previousMovingEngineState.toString());
     }
@@ -173,6 +183,7 @@ public class LocomotiveEntity extends AbstractMinecartEntity {
         this.pushX = compound.getDouble("pushX");
         this.pushZ = compound.getDouble("pushZ");
 
+        this.on = compound.getBoolean("on");
         this.engineState = EngineState.byName(compound.getString("engineState"));
         this.previousMovingEngineState = EngineState.byName(compound.getString("previousMovingEngineState"));
     }
@@ -260,5 +271,13 @@ public class LocomotiveEntity extends AbstractMinecartEntity {
         BlockPos pushPos = this.getPosition().offset(context.getPlacementHorizontalFacing().getOpposite(), 3);
         this.previousPushX = this.getPosX() - pushPos.getX();
         this.previousPushZ = this.getPosZ() - pushPos.getZ();
+    }
+
+    public boolean isOn() {
+        return on;
+    }
+
+    public void setOn(boolean on) {
+        this.on = on;
     }
 }

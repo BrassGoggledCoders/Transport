@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "transport:flowing_steam",
+    "transport:steam"
+  ]
+}

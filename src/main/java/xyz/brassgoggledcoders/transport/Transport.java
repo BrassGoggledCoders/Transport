@@ -84,7 +84,6 @@ public class Transport {
 
     public final NetworkHandler networkHandler;
 
-
     public Transport() {
         instance = this;
 
@@ -99,6 +98,7 @@ public class Transport {
         setupRegistries();
 
         TransportBlocks.setup();
+        TransportFluids.setup();
         TransportContainers.register(modBus);
         TransportEntities.setup();
         TransportItems.setup();

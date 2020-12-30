@@ -14,12 +14,12 @@
           "function": "minecraft:copy_state",
           "block": "transport:energy_loader",
           "properties": [
+            "east",
             "west",
-            "down",
-            "south",
-            "north",
             "up",
-            "east"
+            "south",
+            "down",
+            "north"
           ]
         },
         {
