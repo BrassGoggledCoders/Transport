@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.content;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
@@ -305,7 +306,7 @@ public class TransportBlocks {
                                     .acceptCondition(BlockStateProperty.builder(scaffoldingSlabBlock)
                                             .fromProperties(StatePropertiesPredicate.Builder.newBuilder()
                                                     .withBoolProp(ScaffoldingSlabBlock.RAILED, false)))
-                                    .addEntry(TransportRegistrateBlockLootTables.withExplosionDecay(
+                                    .addEntry(RegistrateBlockLootTables.withExplosionDecay(
                                             scaffoldingSlabBlock, ItemLootEntry.builder(scaffoldingSlabBlock)
                                                     .acceptFunction(SetCount.builder(ConstantRange.of(2))
                                                             .acceptCondition(BlockStateProperty.builder(scaffoldingSlabBlock)
@@ -385,7 +386,7 @@ public class TransportBlocks {
                                             .withProp(BuoyBlock.HALF, DoubleBlockHalf.LOWER)
                                     )
                             )
-                            .addEntry(TransportRegistrateBlockLootTables.withExplosionDecay(buoyBlock,
+                            .addEntry(RegistrateBlockLootTables.withExplosionDecay(buoyBlock,
                                     ItemLootEntry.builder(buoyBlock)))
                     )
             ))

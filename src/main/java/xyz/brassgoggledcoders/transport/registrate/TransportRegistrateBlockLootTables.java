@@ -12,12 +12,7 @@ import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
 
 import java.util.stream.IntStream;
 
-public class TransportRegistrateBlockLootTables extends BlockLootTables {
-
-    public static <T> T withExplosionDecay(IItemProvider item, ILootFunctionConsumer<T> function) {
-        return BlockLootTables.withExplosionDecay(item, function);
-    }
-
+public class TransportRegistrateBlockLootTables {
     public static <T extends Block>  void registerLoader(RegistrateBlockLootTables blockLootTables, T loader) {
         CopyBlockState.Builder copyBlockStateBuilder = CopyBlockState.func_227545_a_(loader);
 
