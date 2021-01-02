@@ -12,11 +12,11 @@ import xyz.brassgoggledcoders.transport.Transport;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class UpdateContainerPropertiesMessage {
+public class UpdateClientContainerPropertiesMessage {
     private final short windowId;
     private final List<Triple<PropertyType<?>, Short, Object>> updates;
 
-    public UpdateContainerPropertiesMessage(short windowId, List<Triple<PropertyType<?>, Short, Object>> updates) {
+    public UpdateClientContainerPropertiesMessage(short windowId, List<Triple<PropertyType<?>, Short, Object>> updates) {
         this.windowId = windowId;
         this.updates = updates;
     }
@@ -59,7 +59,7 @@ public class UpdateContainerPropertiesMessage {
         return true;
     }
 
-    public static UpdateContainerPropertiesMessage decode(PacketBuffer packetBuffer) {
+    public static UpdateClientContainerPropertiesMessage decode(PacketBuffer packetBuffer) {
         short windowId = packetBuffer.readShort();
         short updateAmount = packetBuffer.readShort();
         List<Triple<PropertyType<?>, Short, Object>> updates = Lists.newArrayList();
@@ -69,6 +69,6 @@ public class UpdateContainerPropertiesMessage {
             Object object = propertyType.getReader().apply(packetBuffer);
             updates.add(Triple.of(propertyType, propertyLocation, object));
         }
-        return new UpdateContainerPropertiesMessage(windowId, updates);
+        return new UpdateClientContainerPropertiesMessage(windowId, updates);
     }
 }

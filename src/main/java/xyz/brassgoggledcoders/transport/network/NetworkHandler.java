@@ -11,7 +11,8 @@ import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.network.INetworkHandler;
-import xyz.brassgoggledcoders.transport.network.property.UpdateContainerPropertiesMessage;
+import xyz.brassgoggledcoders.transport.network.property.UpdateClientContainerPropertiesMessage;
+import xyz.brassgoggledcoders.transport.network.property.UpdateServerContainerPropertyMessage;
 
 import javax.annotation.Nullable;
 
@@ -39,10 +40,16 @@ public class NetworkHandler implements INetworkHandler {
                 .consumer(UpdateModuleInstanceMessage::consume)
                 .add();
 
-        this.channel.messageBuilder(UpdateContainerPropertiesMessage.class, 2)
-                .decoder(UpdateContainerPropertiesMessage::decode)
-                .encoder(UpdateContainerPropertiesMessage::encode)
-                .consumer(UpdateContainerPropertiesMessage::consume)
+        this.channel.messageBuilder(UpdateClientContainerPropertiesMessage.class, 2)
+                .decoder(UpdateClientContainerPropertiesMessage::decode)
+                .encoder(UpdateClientContainerPropertiesMessage::encode)
+                .consumer(UpdateClientContainerPropertiesMessage::consume)
+                .add();
+
+        this.channel.messageBuilder(UpdateServerContainerPropertyMessage.class, 3)
+                .decoder(UpdateServerContainerPropertyMessage::decode)
+                .encoder(UpdateServerContainerPropertyMessage::encode)
+                .consumer(UpdateServerContainerPropertyMessage::consume)
                 .add();
     }
 
@@ -60,7 +67,11 @@ public class NetworkHandler implements INetworkHandler {
                 new UpdateModuleInstanceMessage(entity.getSelf().getEntityId(), moduleSlot, type, updateInfo));
     }
 
-    public void sendUpdateContainerProperties(ServerPlayerEntity playerEntity, UpdateContainerPropertiesMessage message) {
+    public void sendUpdateClientContainerProperties(ServerPlayerEntity playerEntity, UpdateClientContainerPropertiesMessage message) {
         this.channel.send(PacketDistributor.PLAYER.with(() -> playerEntity), message);
+    }
+
+    public void sendUpdateServerContainerProperties(UpdateServerContainerPropertyMessage message) {
+        this.channel.send(PacketDistributor.SERVER.noArg(), message);
     }
 }

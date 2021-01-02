@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.network.property;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -34,6 +35,16 @@ public final class Property<T> {
     @Nullable
     public T get() {
         return getter.get();
+    }
+
+    @Nonnull
+    public T getOrElse(T other) {
+        T gotten = getter.get();
+        if (gotten != null) {
+            return gotten;
+        } else {
+            return other;
+        }
     }
 
     public void set(T value) {
