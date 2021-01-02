@@ -98,7 +98,6 @@ public class Transport {
         setupRegistries();
 
         TransportBlocks.setup();
-        TransportFluids.setup();
         TransportContainers.register(modBus);
         TransportEntities.setup();
         TransportItems.setup();

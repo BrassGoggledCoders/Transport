@@ -7,7 +7,6 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.FuelItemStackHandler;
-import xyz.brassgoggledcoders.transport.content.TransportFluidTags;
 
 import java.util.function.BooleanSupplier;
 
@@ -15,11 +14,6 @@ public class SteamEngine implements INBTSerializable<CompoundNBT> {
     private final FluidTank waterTank = new FluidTank(
             8 * FluidAttributes.BUCKET_VOLUME,
             fluidStack -> fluidStack.getFluid().isIn(FluidTags.WATER)
-    );
-
-    private final FluidTank steamTank = new FluidTank(
-            8 * FluidAttributes.BUCKET_VOLUME,
-            fluidStack -> fluidStack.getFluid().isIn(TransportFluidTags.STEAM)
     );
 
     private final FuelItemStackHandler fuelHandler = new FuelItemStackHandler(1);
