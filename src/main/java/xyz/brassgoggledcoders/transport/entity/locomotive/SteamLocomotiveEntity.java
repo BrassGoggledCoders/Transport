@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.container.locomotive.SteamLocomotiveContainer;
@@ -35,9 +36,11 @@ public class SteamLocomotiveEntity extends LocomotiveEntity {
     @ParametersAreNonnullByDefault
     public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
         if (!player.isCrouching()) {
-            if (player instanceof ServerPlayerEntity) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, new EntityContainerProvider<>(this,
-                        SteamLocomotiveContainer::new));
+            if (!FluidUtil.interactWithFluidHandler(player, hand, this.steamEngine.getWaterTank())) {
+                if (player instanceof ServerPlayerEntity) {
+                    NetworkHooks.openGui((ServerPlayerEntity) player, new EntityContainerProvider<>(this,
+                            SteamLocomotiveContainer::new));
+                }
             }
             return ActionResultType.func_233537_a_(this.getEntityWorld().isRemote());
         } else {

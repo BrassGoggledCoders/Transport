@@ -8,6 +8,7 @@ import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IWorldPosCallable;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import xyz.brassgoggledcoders.transport.container.slot.FuelSlot;
@@ -30,6 +31,7 @@ public class SteamLocomotiveContainer extends Container implements IPropertyMana
     private final Property<Boolean> on;
     private final Property<Integer> burnRemaining;
     private final Property<Integer> maxBurn;
+    private final Property<FluidStack> water;
 
     public SteamLocomotiveContainer(@Nullable ContainerType<?> type, int windowId, PlayerInventory playerInventory) {
         super(type, windowId);
@@ -37,6 +39,7 @@ public class SteamLocomotiveContainer extends Container implements IPropertyMana
         this.on = this.propertyManager.addTrackedProperty(PropertyTypes.BOOLEAN.create());
         this.burnRemaining = this.propertyManager.addTrackedProperty(PropertyTypes.INTEGER.create());
         this.maxBurn = this.propertyManager.addTrackedProperty(PropertyTypes.INTEGER.create());
+        this.water = this.propertyManager.addTrackedProperty(PropertyTypes.FLUID_STACK.create());
         this.worldPosCallable = IWorldPosCallable.DUMMY;
         this.addSlots(new ItemStackHandler(1), playerInventory);
     }
@@ -49,11 +52,16 @@ public class SteamLocomotiveContainer extends Container implements IPropertyMana
                 locomotiveEntity::isOn,
                 locomotiveEntity::setOn
         ));
+
         this.burnRemaining = this.propertyManager.addTrackedProperty(PropertyTypes.INTEGER.create(
                 locomotiveEntity.getSteamEngine()::getBurnRemaining
         ));
         this.maxBurn = this.propertyManager.addTrackedProperty(PropertyTypes.INTEGER.create(
                 locomotiveEntity.getSteamEngine()::getMaxBurn
+        ));
+
+        this.water = this.propertyManager.addTrackedProperty(PropertyTypes.FLUID_STACK.create(
+                locomotiveEntity.getSteamEngine().getWaterTank()::getFluid
         ));
 
         this.worldPosCallable = new EntityWorldPosCallable(locomotiveEntity);
@@ -109,6 +117,11 @@ public class SteamLocomotiveContainer extends Container implements IPropertyMana
         }
     }
 
+    @Nonnull
+    public FluidStack getWater() {
+        return this.water.getOrElse(FluidStack.EMPTY);
+    }
+
     @Override
     public PropertyManager getPropertyManager() {
         return this.propertyManager;
@@ -145,5 +158,9 @@ public class SteamLocomotiveContainer extends Container implements IPropertyMana
         }
 
         return itemstack;
+    }
+
+    public Property<Boolean> getOn() {
+        return this.on;
     }
 }

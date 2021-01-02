@@ -11,8 +11,10 @@ import xyz.brassgoggledcoders.transport.capability.itemhandler.FuelItemStackHand
 import java.util.function.BooleanSupplier;
 
 public class SteamEngine implements INBTSerializable<CompoundNBT> {
+    public static final int WATER_CAPACITY = 7 * FluidAttributes.BUCKET_VOLUME;
+
     private final FluidTank waterTank = new FluidTank(
-            8 * FluidAttributes.BUCKET_VOLUME,
+            WATER_CAPACITY,
             fluidStack -> fluidStack.getFluid().isIn(FluidTags.WATER)
     );
 
@@ -42,6 +44,10 @@ public class SteamEngine implements INBTSerializable<CompoundNBT> {
         return fuelHandler;
     }
 
+    public FluidTank getWaterTank() {
+        return this.waterTank;
+    }
+
     public int getBurnRemaining() {
         return this.burnRemaining;
     }
@@ -56,6 +62,7 @@ public class SteamEngine implements INBTSerializable<CompoundNBT> {
         nbt.put("fuelHandler", fuelHandler.serializeNBT());
         nbt.putInt("burnRemaining", this.burnRemaining);
         nbt.putInt("maxBurn", this.maxBurn);
+        nbt.put("waterTank", this.waterTank.writeToNBT(new CompoundNBT()));
         return nbt;
     }
 
@@ -64,6 +71,6 @@ public class SteamEngine implements INBTSerializable<CompoundNBT> {
         this.fuelHandler.deserializeNBT(nbt.getCompound("fuelHandler"));
         this.burnRemaining = nbt.getInt("burnRemaining");
         this.maxBurn = nbt.getInt("maxBurn");
+        this.waterTank.readFromNBT(nbt.getCompound("waterTank"));
     }
-
 }

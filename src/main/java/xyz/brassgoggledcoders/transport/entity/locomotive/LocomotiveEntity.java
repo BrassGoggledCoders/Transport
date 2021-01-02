@@ -44,8 +44,6 @@ public class LocomotiveEntity extends AbstractMinecartEntity {
     private EngineState previousMovingEngineState = EngineState.FORWARD_1;
     private EngineState engineState = EngineState.NEUTRAL;
 
-    private int onSwap = 200;
-
     public LocomotiveEntity(EntityType<? extends LocomotiveEntity> type, World world) {
         super(type, world);
     }
@@ -71,11 +69,6 @@ public class LocomotiveEntity extends AbstractMinecartEntity {
     @Override
     public void tick() {
         super.tick();
-        onSwap--;
-        if (onSwap <= 0) {
-            onSwap = 200;
-            on = !on;
-        }
     }
 
     @Override
