@@ -1,11 +1,15 @@
 package xyz.brassgoggledcoders.transport.api.engine;
 
+import javax.annotation.Nullable;
+
 public enum EngineState {
-    FORWARD_3(1.5F, 1.0F, EngineDirection.FORWARD),
-    FORWARD_2(1.2F, 0.60F, EngineDirection.FORWARD),
-    FORWARD_1(1.0F, 0.25F, EngineDirection.FORWARD),
-    NEUTRAL(0.5F, 0.0F, EngineDirection.NEUTRAL),
-    REVERSE_1(1.0F, 0.3F, EngineDirection.REVERSE);
+    FORWARD_3(1.25F, 1.00F, EngineDirection.FORWARD),
+    FORWARD_2(1.00F, 0.60F, EngineDirection.FORWARD),
+    FORWARD_1(0.75F, 0.25F, EngineDirection.FORWARD),
+    NEUTRAL_0(0.50F, 0.00F, EngineDirection.NEUTRAL),
+    REVERSE_1(0.75F, 0.25F, EngineDirection.REVERSE),
+    REVERSE_2(1.00F, 0.60F, EngineDirection.REVERSE),
+    REVERSE_3(1.25F, 1.00F, EngineDirection.REVERSE);
 
     private final float fuelUseModifier;
     private final float maxSpeedModifier;
@@ -29,6 +33,7 @@ public enum EngineState {
         return direction;
     }
 
+    @Nullable
     public static EngineState forward(EngineState prior) {
         switch (prior) {
             case FORWARD_3:
@@ -37,14 +42,19 @@ public enum EngineState {
                 return FORWARD_3;
             case FORWARD_1:
                 return FORWARD_2;
-            case NEUTRAL:
+            case NEUTRAL_0:
                 return FORWARD_1;
             case REVERSE_1:
-                return NEUTRAL;
+                return NEUTRAL_0;
+            case REVERSE_2:
+                return REVERSE_1;
+            case REVERSE_3:
+                return REVERSE_2;
         }
         return null;
     }
 
+    @Nullable
     public static EngineState reverse(EngineState prior) {
         switch (prior) {
             case FORWARD_3:
@@ -52,10 +62,14 @@ public enum EngineState {
             case FORWARD_2:
                 return FORWARD_1;
             case FORWARD_1:
-                return NEUTRAL;
-            case NEUTRAL:
+                return NEUTRAL_0;
+            case NEUTRAL_0:
                 return REVERSE_1;
             case REVERSE_1:
+                return REVERSE_2;
+            case REVERSE_2:
+                return REVERSE_3;
+            case REVERSE_3:
                 return null;
         }
         return null;
@@ -67,6 +81,6 @@ public enum EngineState {
                 return state;
             }
         }
-        return NEUTRAL;
+        return NEUTRAL_0;
     }
 }

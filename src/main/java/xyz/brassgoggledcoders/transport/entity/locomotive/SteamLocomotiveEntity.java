@@ -12,23 +12,15 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.container.locomotive.SteamLocomotiveContainer;
 import xyz.brassgoggledcoders.transport.container.provider.EntityContainerProvider;
+import xyz.brassgoggledcoders.transport.engine.Engine;
 import xyz.brassgoggledcoders.transport.engine.SteamEngine;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class SteamLocomotiveEntity extends LocomotiveEntity {
-    private final SteamEngine steamEngine;
-
+public class SteamLocomotiveEntity extends LocomotiveEntity<SteamEngine> {
     public SteamLocomotiveEntity(EntityType<? extends SteamLocomotiveEntity> type, World world) {
         super(type, world);
-        this.steamEngine = new SteamEngine(this::isOn);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        this.steamEngine.tick();
     }
 
     @Nonnull
@@ -36,7 +28,7 @@ public class SteamLocomotiveEntity extends LocomotiveEntity {
     @ParametersAreNonnullByDefault
     public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
         if (!player.isCrouching()) {
-            if (!FluidUtil.interactWithFluidHandler(player, hand, this.steamEngine.getWaterTank())) {
+            if (!FluidUtil.interactWithFluidHandler(player, hand, this.getEngine().getWaterTank())) {
                 if (player instanceof ServerPlayerEntity) {
                     NetworkHooks.openGui((ServerPlayerEntity) player, new EntityContainerProvider<>(this,
                             SteamLocomotiveContainer::new));
@@ -48,19 +40,8 @@ public class SteamLocomotiveEntity extends LocomotiveEntity {
         }
     }
 
-    public SteamEngine getSteamEngine() {
-        return this.steamEngine;
-    }
-
     @Override
-    protected void writeAdditional(@Nonnull CompoundNBT compound) {
-        super.writeAdditional(compound);
-        compound.put("steamEngine", steamEngine.serializeNBT());
-    }
-
-    @Override
-    protected void readAdditional(@Nonnull CompoundNBT compound) {
-        super.readAdditional(compound);
-        steamEngine.deserializeNBT(compound.getCompound("steamEngine"));
+    public SteamEngine createEngine() {
+        return new SteamEngine(this::isOn);
     }
 }

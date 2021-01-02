@@ -54,18 +54,18 @@ public class SteamLocomotiveContainer extends Container implements IPropertyMana
         ));
 
         this.burnRemaining = this.propertyManager.addTrackedProperty(PropertyTypes.INTEGER.create(
-                locomotiveEntity.getSteamEngine()::getBurnRemaining
+                locomotiveEntity.getEngine()::getBurnRemaining
         ));
         this.maxBurn = this.propertyManager.addTrackedProperty(PropertyTypes.INTEGER.create(
-                locomotiveEntity.getSteamEngine()::getMaxBurn
+                locomotiveEntity.getEngine()::getMaxBurn
         ));
 
         this.water = this.propertyManager.addTrackedProperty(PropertyTypes.FLUID_STACK.create(
-                locomotiveEntity.getSteamEngine().getWaterTank()::getFluid
+                locomotiveEntity.getEngine().getWaterTank()::getFluid
         ));
 
         this.worldPosCallable = new EntityWorldPosCallable(locomotiveEntity);
-        this.addSlots(locomotiveEntity.getSteamEngine().getFuelHandler(), playerInventory);
+        this.addSlots(locomotiveEntity.getEngine().getFuelHandler(), playerInventory);
     }
 
     public void addSlots(IItemHandler handler, PlayerInventory playerInventory) {

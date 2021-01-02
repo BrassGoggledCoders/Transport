@@ -24,11 +24,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.transport.api.engine.EngineState;
 import xyz.brassgoggledcoders.transport.content.TransportItemTags;
+import xyz.brassgoggledcoders.transport.engine.Engine;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class LocomotiveEntity extends AbstractMinecartEntity {
+public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecartEntity {
     private static final DataParameter<Boolean> POWERED = EntityDataManager.createKey(LocomotiveEntity.class,
             DataSerializers.BOOLEAN);
 
@@ -39,13 +40,15 @@ public class LocomotiveEntity extends AbstractMinecartEntity {
     private double pushX;
     private double pushZ;
 
+    private final T engine;
     private boolean on;
 
     private EngineState previousMovingEngineState = EngineState.FORWARD_1;
-    private EngineState engineState = EngineState.NEUTRAL;
+    private EngineState engineState = EngineState.NEUTRAL_0;
 
     public LocomotiveEntity(EntityType<? extends LocomotiveEntity> type, World world) {
         super(type, world);
+        this.engine = this.createEngine();
     }
 
     @Override
@@ -69,6 +72,7 @@ public class LocomotiveEntity extends AbstractMinecartEntity {
     @Override
     public void tick() {
         super.tick();
+        this.engine.tick();
     }
 
     @Override
@@ -163,6 +167,7 @@ public class LocomotiveEntity extends AbstractMinecartEntity {
         compound.putBoolean("on", this.on);
         compound.putString("engineState", this.engineState.toString());
         compound.putString("previousMovingEngineState", this.previousMovingEngineState.toString());
+        compound.put("engine", this.engine.serializeNBT());
     }
 
     @Override
@@ -179,6 +184,7 @@ public class LocomotiveEntity extends AbstractMinecartEntity {
         this.on = compound.getBoolean("on");
         this.engineState = EngineState.byName(compound.getString("engineState"));
         this.previousMovingEngineState = EngineState.byName(compound.getString("previousMovingEngineState"));
+        this.engine.deserializeNBT(compound.getCompound("engine"));
     }
 
     public boolean increaseForward() {
@@ -273,4 +279,10 @@ public class LocomotiveEntity extends AbstractMinecartEntity {
     public void setOn(boolean on) {
         this.on = on;
     }
+
+    public T getEngine() {
+        return this.engine;
+    }
+
+    public abstract T createEngine();
 }
