@@ -272,6 +272,10 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
         this.previousPushZ = this.getPosZ() - pushPos.getZ();
     }
 
+    public EngineState getEngineState() {
+        return engineState;
+    }
+
     public boolean isOn() {
         return on;
     }

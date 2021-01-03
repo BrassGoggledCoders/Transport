@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.screen.locomotive;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluids;
@@ -11,7 +12,6 @@ import net.minecraftforge.fluids.FluidStack;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.container.locomotive.SteamLocomotiveContainer;
 import xyz.brassgoggledcoders.transport.engine.SteamEngine;
-import xyz.brassgoggledcoders.transport.screen.PowerButton;
 import xyz.brassgoggledcoders.transport.screen.util.FluidRenderer;
 
 import javax.annotation.Nonnull;
@@ -29,6 +29,8 @@ public class SteamLocomotiveScreen extends ContainerScreen<SteamLocomotiveContai
         super.init();
         this.addButton(new PowerButton(guiLeft + 73, guiTop + 36, 12, 12, this.getContainer().getOn(),
                 this.getContainer().getPropertyManager()));
+        this.addButton(new SpeedWidget(guiLeft + 94, guiTop + 20, 71, 40,
+                this.getContainer().getSpeed(), this.getContainer().getPropertyManager()));
     }
 
     @Override
@@ -52,15 +54,11 @@ public class SteamLocomotiveScreen extends ContainerScreen<SteamLocomotiveContai
 
         FluidRenderer.renderFluid(matrixStack, this.getContainer().getWater(), SteamEngine.WATER_CAPACITY,
                 i + 30, j + 19, 20, 49);
-        FluidRenderer.renderFluid(matrixStack, new FluidStack(Fluids.WATER, 2500), 2500,
+        FluidRenderer.renderFluid(matrixStack, new FluidStack(Fluids.WATER, 0), 2500,
                 i + 55, j + 21, 7, 47);
         this.getMinecraft().getTextureManager().bindTexture(BACKGROUND);
         this.blit(matrixStack, i + 30, j + 19, 177, 31, 20, 51);
 
-        matrixStack.push();
-        matrixStack.translate(i + 127, j + 15, 0);
-        this.blit(matrixStack, 0, 0, 230, 8, 7, 46);
-        matrixStack.pop();
         RenderSystem.popMatrix();
     }
 
@@ -74,5 +72,18 @@ public class SteamLocomotiveScreen extends ContainerScreen<SteamLocomotiveContai
     @Override
     protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrixStack, int x, int y) {
         this.font.func_243248_b(matrixStack, this.title, (float) this.titleX, (float) this.titleY, 4210752);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (!dragSplitting) {
+            for (IGuiEventListener eventListener : this.getEventListeners()) {
+                if (eventListener.isMouseOver(mouseX, mouseY) &&
+                        eventListener.mouseDragged(mouseX, mouseY, button, dragX, dragY)) {
+                    return true;
+                }
+            }
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 }

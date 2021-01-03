@@ -83,4 +83,12 @@ public enum EngineState {
         }
         return NEUTRAL_0;
     }
+
+    public static EngineState byId(Integer id) {
+        if (id != null && id >= 0 && id < values().length) {
+            return EngineState.values()[id];
+        } else {
+            return EngineState.NEUTRAL_0;
+        }
+    }
 }

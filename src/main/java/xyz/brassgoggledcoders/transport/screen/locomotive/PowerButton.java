@@ -1,9 +1,7 @@
-package xyz.brassgoggledcoders.transport.screen;
+package xyz.brassgoggledcoders.transport.screen.locomotive;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.AbstractButton;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import xyz.brassgoggledcoders.transport.network.property.Property;
 import xyz.brassgoggledcoders.transport.network.property.PropertyManager;
