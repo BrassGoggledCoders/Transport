@@ -30,6 +30,7 @@ public class PropertyManager {
                 propertyId = i;
             }
         }
+        property.set(value);
         Transport.instance.networkHandler.sendUpdateServerContainerProperties(
                 new UpdateServerContainerPropertyMessage(windowId, property.getPropertyType(), propertyId, value));
     }

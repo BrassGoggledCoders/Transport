@@ -20,6 +20,7 @@ public class SpeedWidget extends Widget {
     private final EnumMap<EngineState, Double> stateAngles;
 
     private double angle;
+    private int lastDrug = 0;
 
     public SpeedWidget(int x, int y, int width, int height, Property<Integer> speed, PropertyManager propertyManager) {
         super(x, y, width, height, new StringTextComponent(""));
@@ -36,6 +37,17 @@ public class SpeedWidget extends Widget {
 
     @Override
     public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        Integer speed = this.speed.get();
+        if (--lastDrug <= 0) {
+            EngineState engineState = this.getEngineState();
+            if (engineState == null) {
+                if (speed != null) {
+                    this.angle = this.stateAngles.get(EngineState.byId(speed));
+                }
+            } else if (speed != null && engineState.ordinal() != speed) {
+                this.angle = this.stateAngles.get(EngineState.byId(speed));
+            }
+        }
         matrixStack.push();
         matrixStack.translate(originX + 1, originY - 2, 0);
         matrixStack.rotate(Vector3f.ZN.rotation((float) angle));
@@ -46,6 +58,23 @@ public class SpeedWidget extends Widget {
 
     @Override
     public void onRelease(double mouseX, double mouseY) {
+        EngineState newEngineState = this.getEngineState();
+        Integer currentSpeed = this.speed.get();
+        if (newEngineState != null) {
+            this.angle = stateAngles.get(newEngineState);
+            propertyManager.updateServer(speed, newEngineState.ordinal());
+        } else if (currentSpeed != null) {
+            this.angle = stateAngles.get(EngineState.byId(currentSpeed));
+        }
+    }
+
+    @Override
+    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
+        this.lastDrug = 5;
+        this.angle = Math.atan2(originY - mouseY, mouseX - originX) - (Math.PI / 2);
+    }
+
+    public EngineState getEngineState() {
         EngineState newEngineState = null;
         double shortedDistance = Math.PI / 3;
         for (EngineState engineState : EngineState.values()) {
@@ -55,13 +84,6 @@ public class SpeedWidget extends Widget {
                 newEngineState = engineState;
             }
         }
-        if (newEngineState != null) {
-            propertyManager.updateServer(speed, newEngineState.ordinal());
-        }
-    }
-
-    @Override
-    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
-        this.angle = Math.atan2(originY - mouseY, mouseX - originX) - (Math.PI / 2);
+        return newEngineState;
     }
 }
