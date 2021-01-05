@@ -2,14 +2,17 @@ package xyz.brassgoggledcoders.transport.screen.locomotive;
 
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import xyz.brassgoggledcoders.transport.api.engine.EngineState;
 import xyz.brassgoggledcoders.transport.network.property.Property;
 import xyz.brassgoggledcoders.transport.network.property.PropertyManager;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.EnumMap;
 
 public class SpeedWidget extends Widget {
@@ -37,6 +40,8 @@ public class SpeedWidget extends Widget {
 
     @Override
     public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+
         Integer speed = this.speed.get();
         if (--lastDrug <= 0) {
             EngineState engineState = this.getEngineState();
@@ -70,8 +75,17 @@ public class SpeedWidget extends Widget {
 
     @Override
     protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
-        this.lastDrug = 5;
+        this.lastDrug = 20;
         this.angle = Math.atan2(originY - mouseY, mouseX - originX) - (Math.PI / 2);
+    }
+
+    @Override
+    public void renderToolTip(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY) {
+        EngineState engineState = this.getEngineState();
+        if (engineState != null) {
+            GuiUtils.drawHoveringText(matrixStack, Collections.singletonList(engineState.getDisplayName()), mouseX,
+                    mouseY, width, height, -1, Minecraft.getInstance().fontRenderer);
+        }
     }
 
     public EngineState getEngineState() {

@@ -1,6 +1,11 @@
 package xyz.brassgoggledcoders.transport.api.engine;
 
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.util.NonNullLazy;
+
 import javax.annotation.Nullable;
+import java.util.Locale;
 
 public enum EngineState {
     FORWARD_3(1.25F, 1.00F, EngineDirection.FORWARD),
@@ -15,10 +20,15 @@ public enum EngineState {
     private final float maxSpeedModifier;
     private final EngineDirection direction;
 
+    private final NonNullLazy<String> getTranslationKey;
+    private final NonNullLazy<ITextComponent> getDisplayName;
+
     EngineState(float fuelUseModifier, float maxSpeedModifier, EngineDirection direction) {
         this.fuelUseModifier = fuelUseModifier;
         this.maxSpeedModifier = maxSpeedModifier;
         this.direction = direction;
+        this.getTranslationKey = NonNullLazy.of(() -> "enginestate.transport." + this.name().toLowerCase(Locale.ROOT));
+        this.getDisplayName = NonNullLazy.of(() -> new TranslationTextComponent(this.getTranslationKey()));
     }
 
     public float getFuelUseModifier() {
@@ -75,6 +85,14 @@ public enum EngineState {
         return null;
     }
 
+    public String getTranslationKey() {
+        return this.getTranslationKey.get();
+    }
+
+    public ITextComponent getDisplayName() {
+        return this.getDisplayName.get();
+    }
+
     public static EngineState byName(String name) {
         for (EngineState state : EngineState.values()) {
             if (state.name().equals(name)) {
@@ -91,4 +109,6 @@ public enum EngineState {
             return EngineState.NEUTRAL_0;
         }
     }
+
+
 }

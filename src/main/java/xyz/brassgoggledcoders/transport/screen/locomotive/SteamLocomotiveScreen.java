@@ -19,6 +19,8 @@ import javax.annotation.Nonnull;
 public class SteamLocomotiveScreen extends ContainerScreen<SteamLocomotiveContainer> {
     private static final ResourceLocation BACKGROUND = Transport.rl("textures/screen/steam_locomotive.png");
 
+    private SpeedWidget speedWidget;
+
     public SteamLocomotiveScreen(SteamLocomotiveContainer screenContainer, PlayerInventory playerInventory,
                                  ITextComponent title) {
         super(screenContainer, playerInventory, title);
@@ -29,7 +31,7 @@ public class SteamLocomotiveScreen extends ContainerScreen<SteamLocomotiveContai
         super.init();
         this.addButton(new PowerButton(guiLeft + 73, guiTop + 36, 12, 12, this.getContainer().getOn(),
                 this.getContainer().getPropertyManager()));
-        this.addButton(new SpeedWidget(guiLeft + 94, guiTop + 20, 71, 40,
+        this.addButton(speedWidget = new SpeedWidget(guiLeft + 94, guiTop + 20, 71, 40,
                 this.getContainer().getSpeed(), this.getContainer().getPropertyManager()));
     }
 
@@ -67,6 +69,9 @@ public class SteamLocomotiveScreen extends ContainerScreen<SteamLocomotiveContai
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        if (this.speedWidget.isHovered()) {
+            this.speedWidget.renderToolTip(matrixStack, mouseX, mouseY);
+        }
     }
 
     @Override

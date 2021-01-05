@@ -26,6 +26,8 @@ public class TransportText {
     public static final ITextComponent GUIDE_LANDING_TEXT = Transport.getRegistrate()
             .addRawLang("guide.transport.landing_text", "Importing the Transportation of Goods");
 
+
+
     public static void setup() {
 
     }
