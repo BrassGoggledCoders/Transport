@@ -68,6 +68,7 @@
   "module_type.transport.cargo": "Cargo",
   "module_type.transport.engine": "Engine",
   "screen.transport.jei.category.rail_workers_bench": "Rail Worker's Bench",
+  "screen.transport.speed": "Current Speed: %s",
   "text.transport.hull_type": "Hull Type: %s",
   "text.transport.installed_module": " * %s - %s",
   "text.transport.installed_modules": "Installed Modules",

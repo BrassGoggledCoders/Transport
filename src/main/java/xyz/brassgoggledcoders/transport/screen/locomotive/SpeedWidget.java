@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 import xyz.brassgoggledcoders.transport.api.engine.EngineState;
 import xyz.brassgoggledcoders.transport.network.property.Property;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 
 public class SpeedWidget extends Widget {
+    private final SteamLocomotiveScreen screen;
     private final Property<Integer> speed;
     private final PropertyManager propertyManager;
     private final int originX;
@@ -23,14 +25,14 @@ public class SpeedWidget extends Widget {
     private final EnumMap<EngineState, Double> stateAngles;
 
     private double angle;
-    private int lastDrug = 0;
 
-    public SpeedWidget(int x, int y, int width, int height, Property<Integer> speed, PropertyManager propertyManager) {
+    public SpeedWidget(SteamLocomotiveScreen screen, int x, int y, int width, int height) {
         super(x, y, width, height, new StringTextComponent(""));
+        this.screen = screen;
         this.originX = x + (width / 2);
         this.originY = y + height;
-        this.speed = speed;
-        this.propertyManager = propertyManager;
+        this.speed = screen.getContainer().getSpeed();
+        this.propertyManager = screen.getContainer().getPropertyManager();
         this.stateAngles = Maps.newEnumMap(EngineState.class);
         for (EngineState engineState : EngineState.values()) {
             stateAngles.put(engineState, Math.toRadians(engineState.ordinal() * ((float) 180 / 6) - 90));
@@ -43,7 +45,7 @@ public class SpeedWidget extends Widget {
         this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 
         Integer speed = this.speed.get();
-        if (--lastDrug <= 0) {
+        if (!screen.isDragging()) {
             EngineState engineState = this.getEngineState();
             if (engineState == null) {
                 if (speed != null) {
@@ -75,7 +77,6 @@ public class SpeedWidget extends Widget {
 
     @Override
     protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
-        this.lastDrug = 20;
         this.angle = Math.atan2(originY - mouseY, mouseX - originX) - (Math.PI / 2);
     }
 
@@ -83,8 +84,9 @@ public class SpeedWidget extends Widget {
     public void renderToolTip(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY) {
         EngineState engineState = this.getEngineState();
         if (engineState != null) {
-            GuiUtils.drawHoveringText(matrixStack, Collections.singletonList(engineState.getDisplayName()), mouseX,
-                    mouseY, width, height, -1, Minecraft.getInstance().fontRenderer);
+            GuiUtils.drawHoveringText(matrixStack, Collections.singletonList(
+                    new TranslationTextComponent("screen.transport.speed", engineState.getDisplayName())),
+                    mouseX, mouseY, screen.width, screen.height, -1, Minecraft.getInstance().fontRenderer);
         }
     }
 

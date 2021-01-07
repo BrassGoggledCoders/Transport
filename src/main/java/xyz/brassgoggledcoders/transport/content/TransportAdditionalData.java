@@ -85,6 +85,7 @@ public class TransportAdditionalData {
     public static void generateLang(RegistrateLangProvider langProvider) {
         langProvider.add("screen.transport.jei.category.rail_workers_bench", "Rail Worker's Bench");
 
+        langProvider.add("screen.transport.speed", "Current Speed: %s");
         langProvider.add(EngineState.FORWARD_3.getTranslationKey(), "Forward 3");
         langProvider.add(EngineState.FORWARD_2.getTranslationKey(), "Forward 2");
         langProvider.add(EngineState.FORWARD_1.getTranslationKey(), "Forward 1");

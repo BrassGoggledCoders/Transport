@@ -2,19 +2,24 @@ package xyz.brassgoggledcoders.transport.screen.locomotive;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.api.engine.EngineState;
 import xyz.brassgoggledcoders.transport.container.locomotive.SteamLocomotiveContainer;
 import xyz.brassgoggledcoders.transport.engine.SteamEngine;
 import xyz.brassgoggledcoders.transport.screen.util.FluidRenderer;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 
 public class SteamLocomotiveScreen extends ContainerScreen<SteamLocomotiveContainer> {
     private static final ResourceLocation BACKGROUND = Transport.rl("textures/screen/steam_locomotive.png");
@@ -31,8 +36,7 @@ public class SteamLocomotiveScreen extends ContainerScreen<SteamLocomotiveContai
         super.init();
         this.addButton(new PowerButton(guiLeft + 73, guiTop + 36, 12, 12, this.getContainer().getOn(),
                 this.getContainer().getPropertyManager()));
-        this.addButton(speedWidget = new SpeedWidget(guiLeft + 94, guiTop + 20, 71, 40,
-                this.getContainer().getSpeed(), this.getContainer().getPropertyManager()));
+        this.addButton(speedWidget = new SpeedWidget(this, guiLeft + 91, guiTop + 17, 77, 43));
     }
 
     @Override
@@ -70,7 +74,12 @@ public class SteamLocomotiveScreen extends ContainerScreen<SteamLocomotiveContai
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
         if (this.speedWidget.isHovered()) {
-            this.speedWidget.renderToolTip(matrixStack, mouseX, mouseY);
+            EngineState engineState = speedWidget.getEngineState();
+            if (engineState != null) {
+                GuiUtils.drawHoveringText(matrixStack, Collections.singletonList(
+                        new TranslationTextComponent("screen.transport.speed", engineState.getDisplayName())),
+                        mouseX, mouseY, width, height, -1, Minecraft.getInstance().fontRenderer);
+            }
         }
     }
 
