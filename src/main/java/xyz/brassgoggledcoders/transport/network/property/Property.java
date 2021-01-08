@@ -27,7 +27,7 @@ public final class Property<T> {
 
     public boolean isDirty() {
         T value = this.getter.get();
-        boolean dirty = !propertyType.getEquals().test(value, lastKnownValue);
+        boolean dirty = lastKnownValue == null || !propertyType.getEquals().test(value, lastKnownValue);
         this.lastKnownValue = value;
         return dirty;
     }

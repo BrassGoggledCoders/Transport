@@ -71,8 +71,25 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
 
     @Override
     public void tick() {
-        super.tick();
         this.engine.tick();
+        if (!this.world.isRemote()) {
+            if (this.on && this.engine.pullPower(this.engineState)) {
+                if (this.pushX == 0 || this.pushZ == 0) {
+                    this.pushX = previousPushX;
+                    this.pushZ = previousPushZ;
+                }
+            } else {
+                if (this.pushX != 0) {
+                    this.previousPushX = this.pushX;
+                    this.pushX = 0;
+                }
+                if (this.pushZ != 0) {
+                    this.previousPushZ = this.pushZ;
+                    this.pushZ = 0;
+                }
+            }
+        }
+        super.tick();
     }
 
     @Override

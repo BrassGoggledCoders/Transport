@@ -13,11 +13,13 @@ public class PropertyTypes {
     private static final List<PropertyType<?>> types = Lists.newArrayList();
 
     public static PropertyType<FluidStack> FLUID_STACK = addType("fluid_stack", FluidStack.class,
-            PacketBuffer::readFluidStack, PacketBuffer::writeFluidStack);
+            PacketBuffer::readFluidStack, PacketBuffer::writeFluidStack, FluidStack::isFluidEqual);
     public static PropertyType<Boolean> BOOLEAN = addType("boolean", Boolean.class, PacketBuffer::readBoolean,
             PacketBuffer::writeBoolean);
     public static PropertyType<Integer> INTEGER = addType("integer", Integer.class, PacketBuffer::readInt,
             PacketBuffer::writeInt);
+    public static PropertyType<Double> DOUBLE = addType("double", Double.class, PacketBuffer::readDouble,
+            PacketBuffer::writeDouble);
 
     public static <T> PropertyType<T> addType(String name, Class<T> tClass, Function<PacketBuffer, T> reader,
                                               BiConsumer<PacketBuffer, T> writer) {

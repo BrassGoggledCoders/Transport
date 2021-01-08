@@ -60,8 +60,8 @@ public class SteamLocomotiveScreen extends ContainerScreen<SteamLocomotiveContai
 
         FluidRenderer.renderFluid(matrixStack, this.getContainer().getWater(), SteamEngine.WATER_CAPACITY,
                 i + 30, j + 19, 20, 49);
-        FluidRenderer.renderFluid(matrixStack, new FluidStack(Fluids.WATER, 0), 2500,
-                i + 55, j + 21, 7, 47);
+        FluidRenderer.renderFluid(matrixStack, new FluidStack(Fluids.WATER, this.getContainer().getSteam()),
+                4000, i + 55, j + 21, 7, 47);
         this.getMinecraft().getTextureManager().bindTexture(BACKGROUND);
         this.blit(matrixStack, i + 30, j + 19, 177, 31, 20, 51);
 

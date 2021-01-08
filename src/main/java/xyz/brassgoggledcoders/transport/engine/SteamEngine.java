@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.transport.engine;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -35,22 +34,27 @@ public class SteamEngine extends Engine {
     @Override
     public void tick() {
         if (this.isOn.getAsBoolean()) {
-            if (burnRemaining > 0) {
-                burnRemaining--;
-                if (ticksToNextWater > 0) {
-                    ticksToNextWater--;
-                    steam += 1;
-                } else {
-                    if (!this.waterTank.drain(1, FluidAction.EXECUTE).isEmpty()) {
-                        ticksToNextWater = 20;
-                        steam += 1;
+            int burnAttempts = steam < 4100 ? 2 : 1;
+            if (steam < 4200) {
+                while (burnAttempts-- > 0) {
+                    if (burnRemaining > 0) {
+                        burnRemaining--;
+                        if (ticksToNextWater > 0) {
+                            ticksToNextWater--;
+                            steam += 1;
+                        } else {
+                            if (!this.waterTank.drain(1, FluidAction.EXECUTE).isEmpty()) {
+                                ticksToNextWater = 20;
+                                steam += 1;
+                            }
+                        }
+                    } else {
+                        if (this.waterTank.getFluidAmount() > 0) {
+                            this.maxBurn = this.fuelHandler.burnFuel();
+                            this.burnRemaining = this.maxBurn;
+                        }
                     }
                 }
-
-
-            } else {
-                this.maxBurn = this.fuelHandler.burnFuel();
-                this.burnRemaining = this.maxBurn;
             }
         }
     }
@@ -63,6 +67,10 @@ public class SteamEngine extends Engine {
         return this.waterTank;
     }
 
+    public double getSteam() {
+        return this.steam;
+    }
+
     public int getBurnRemaining() {
         return this.burnRemaining;
     }
@@ -73,19 +81,8 @@ public class SteamEngine extends Engine {
 
     @Override
     public boolean pullPower(EngineState engineState) {
-        if (engineState == EngineState.NEUTRAL_0) {
-            if (steam > 500) {
-                steam -= engineState.getFuelUseModifier();
-            }
-            return true;
-        } else {
-            if (steam > 500) {
-                steam -= engineState.getFuelUseModifier();
-                return true;
-            } else {
-                return false;
-            }
-        }
+        steam -= engineState.getFuelUseModifier();
+        return steam > 2000;
     }
 
     @Override

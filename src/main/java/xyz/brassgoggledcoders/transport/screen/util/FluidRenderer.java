@@ -17,6 +17,9 @@ public class FluidRenderer {
     public static void renderFluid(MatrixStack matrixStack, FluidStack fluidStack, int capacity, int x, int y, int width, int height) {
         if (!fluidStack.isEmpty()) {
             int stored = fluidStack.getAmount();
+            if (stored > capacity) {
+                stored = capacity;
+            }
             int offset = stored * height / capacity;
 
             FluidAttributes fluidAttributes = fluidStack.getFluid()

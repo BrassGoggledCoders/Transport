@@ -34,6 +34,7 @@ public class SteamLocomotiveContainer extends Container implements IPropertyMana
     private final Property<Integer> maxBurn;
     private final Property<FluidStack> water;
     private final Property<Integer> speed;
+    private final Property<Double> steam;
 
     public SteamLocomotiveContainer(@Nullable ContainerType<?> type, int windowId, PlayerInventory playerInventory) {
         super(type, windowId);
@@ -43,6 +44,7 @@ public class SteamLocomotiveContainer extends Container implements IPropertyMana
         this.maxBurn = this.propertyManager.addTrackedProperty(PropertyTypes.INTEGER.create());
         this.water = this.propertyManager.addTrackedProperty(PropertyTypes.FLUID_STACK.create());
         this.speed = this.propertyManager.addTrackedProperty(PropertyTypes.INTEGER.create());
+        this.steam = this.propertyManager.addTrackedProperty(PropertyTypes.DOUBLE.create());
         this.worldPosCallable = IWorldPosCallable.DUMMY;
         this.addSlots(new ItemStackHandler(1), playerInventory);
     }
@@ -70,6 +72,9 @@ public class SteamLocomotiveContainer extends Container implements IPropertyMana
         this.speed = this.propertyManager.addTrackedProperty(PropertyTypes.INTEGER.create(
                 () -> locomotiveEntity.getEngineState().ordinal(),
                 id -> locomotiveEntity.alterEngineState(EngineState.byId(id))
+        ));
+        this.steam = this.propertyManager.addTrackedProperty(PropertyTypes.DOUBLE.create(
+                locomotiveEntity.getEngine()::getSteam
         ));
 
         this.worldPosCallable = new EntityWorldPosCallable(locomotiveEntity);
@@ -125,6 +130,15 @@ public class SteamLocomotiveContainer extends Container implements IPropertyMana
         }
     }
 
+    public int getSteam() {
+        Double steamAmount = this.steam.get();
+        if (steamAmount != null) {
+            return (int) Math.floor(steamAmount);
+        } else {
+            return 0;
+        }
+    }
+
     @Nonnull
     public FluidStack getWater() {
         return this.water.getOrElse(FluidStack.EMPTY);
@@ -141,28 +155,28 @@ public class SteamLocomotiveContainer extends Container implements IPropertyMana
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
-            itemstack = itemstack1.copy();
+            ItemStack slotItemStack = slot.getStack();
+            itemstack = slotItemStack.copy();
             int containerSlots = this.inventorySlots.size() - player.inventory.mainInventory.size();
             if (index < containerSlots) {
-                if (!this.mergeItemStack(itemstack1, containerSlots, this.inventorySlots.size(), true)) {
+                if (!this.mergeItemStack(slotItemStack, containerSlots, this.inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 0, containerSlots, false)) {
+            } else if (!this.mergeItemStack(slotItemStack, 0, containerSlots, false)) {
                 return ItemStack.EMPTY;
             }
 
-            if (itemstack1.getCount() == 0) {
+            if (slotItemStack.getCount() == 0) {
                 slot.putStack(ItemStack.EMPTY);
             } else {
                 slot.onSlotChanged();
             }
 
-            if (itemstack1.getCount() == itemstack.getCount()) {
+            if (slotItemStack.getCount() == itemstack.getCount()) {
                 return ItemStack.EMPTY;
             }
 
-            slot.onTake(player, itemstack1);
+            slot.onTake(player, slotItemStack);
         }
 
         return itemstack;
