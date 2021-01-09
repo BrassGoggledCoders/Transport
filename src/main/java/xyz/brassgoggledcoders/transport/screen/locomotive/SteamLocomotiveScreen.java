@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.screen.locomotive;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -15,11 +16,13 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.engine.EngineState;
 import xyz.brassgoggledcoders.transport.container.locomotive.SteamLocomotiveContainer;
+import xyz.brassgoggledcoders.transport.content.TransportText;
 import xyz.brassgoggledcoders.transport.engine.SteamEngine;
 import xyz.brassgoggledcoders.transport.screen.util.FluidRenderer;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
+import java.util.List;
 
 public class SteamLocomotiveScreen extends ContainerScreen<SteamLocomotiveContainer> {
     private static final ResourceLocation BACKGROUND = Transport.rl("textures/screen/steam_locomotive.png");
@@ -81,6 +84,27 @@ public class SteamLocomotiveScreen extends ContainerScreen<SteamLocomotiveContai
                         mouseX, mouseY, width, height, -1, Minecraft.getInstance().fontRenderer);
             }
         }
+        if (isIn(mouseX, mouseY, 30, 19, 20, 49)) {
+            FluidStack waterStack = this.getContainer().getWater();
+            List<ITextComponent> tooltip;
+            if (!waterStack.isEmpty()) {
+                tooltip = Lists.newArrayList(
+                        waterStack.getDisplayName(),
+                        new TranslationTextComponent("screen.transport.fluid.capacity",
+                                waterStack.getAmount(), SteamEngine.WATER_CAPACITY)
+                );
+            } else {
+                tooltip = Lists.newArrayList(TransportText.SCREEN_FLUID_EMPTY);
+            }
+            GuiUtils.drawHoveringText(matrixStack, tooltip, mouseX, mouseY, width, height, -1,
+                    Minecraft.getInstance().fontRenderer);
+
+        }
+    }
+
+    private boolean isIn(int mouseX, int mouseY, int xOffset, int yOffset, int width, int height) {
+        return mouseX > xOffset + guiLeft && mouseX < xOffset + guiLeft + width &&
+                mouseY > yOffset + guiTop && mouseY < yOffset + guiTop + height;
     }
 
     @Override

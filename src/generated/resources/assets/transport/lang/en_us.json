@@ -67,6 +67,8 @@
   "module_slot.transport.none": "Not a",
   "module_type.transport.cargo": "Cargo",
   "module_type.transport.engine": "Engine",
+  "screen.transport.fluid.capacity": "%s / %s mB",
+  "screen.transport.fluid.empty": "Empty",
   "screen.transport.jei.category.rail_workers_bench": "Rail Worker's Bench",
   "screen.transport.speed": "Current Speed: %s",
   "text.transport.hull_type": "Hull Type: %s",

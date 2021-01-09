@@ -26,7 +26,11 @@ public class TransportText {
     public static final ITextComponent GUIDE_LANDING_TEXT = Transport.getRegistrate()
             .addRawLang("guide.transport.landing_text", "Importing the Transportation of Goods");
 
+    public static final ITextComponent SCREEN_FLUID_EMPTY = Transport.getRegistrate()
+            .addRawLang("screen.transport.fluid.empty", "Empty");
 
+    public static final ITextComponent SCREEN_FLUID_CAPACITY = Transport.getRegistrate()
+            .addRawLang("screen.transport.fluid.capacity", "%s / %s mB");
 
     public static void setup() {
 

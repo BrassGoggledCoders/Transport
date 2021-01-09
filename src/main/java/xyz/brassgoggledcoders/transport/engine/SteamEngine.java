@@ -56,6 +56,13 @@ public class SteamEngine extends Engine {
                     }
                 }
             }
+        } else {
+            if (burnRemaining > 0) {
+                burnRemaining--;
+            }
+            if (steam > 0) {
+                steam -= 0.4;
+            }
         }
     }
 
