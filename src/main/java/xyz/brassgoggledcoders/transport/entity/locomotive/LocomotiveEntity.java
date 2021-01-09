@@ -227,10 +227,12 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
             if (!newEngineState.getDirection().isMoving() && this.engineState.getDirection().isMoving()) {
                 this.previousMovingEngineState = this.engineState;
                 this.engineState = newEngineState;
-                this.previousPushX = this.pushX;
-                this.previousPushZ = this.pushZ;
-                this.pushX = 0;
-                this.pushZ = 0;
+                if (this.pushX != 0 || this.pushZ != 0) {
+                    this.previousPushX = this.pushX;
+                    this.previousPushZ = this.pushZ;
+                    this.pushX = 0;
+                    this.pushZ = 0;
+                }
             } else if (newEngineState.getDirection() != this.previousMovingEngineState.getDirection()) {
                 this.previousMovingEngineState = this.engineState;
                 this.engineState = newEngineState;
@@ -239,9 +241,6 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
                 if (pushX != 0 || pushZ != 0) {
                     this.pushX *= -1;
                     this.pushZ *= -1;
-                } else {
-                    this.pushX = previousPushX;
-                    this.pushZ = previousPushZ;
                 }
             } else {
                 this.previousMovingEngineState = this.engineState;
