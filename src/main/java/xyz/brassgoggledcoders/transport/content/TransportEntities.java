@@ -6,6 +6,11 @@ import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.ConditionalRecipe;
+import net.minecraftforge.common.crafting.conditions.NotCondition;
+import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
+import net.minecraftforge.common.crafting.conditions.TrueCondition;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
 import xyz.brassgoggledcoders.transport.entity.HulledBoatEntity;
@@ -17,6 +22,8 @@ import xyz.brassgoggledcoders.transport.item.CargoCarrierMinecartItem;
 import xyz.brassgoggledcoders.transport.item.LocomotiveItem;
 import xyz.brassgoggledcoders.transport.item.ModularBoatItem;
 import xyz.brassgoggledcoders.transport.item.TugBoatItem;
+import xyz.brassgoggledcoders.transport.recipe.SizedIngredient;
+import xyz.brassgoggledcoders.transport.recipe.jobsite.RailWorkerBenchRecipeBuilder;
 import xyz.brassgoggledcoders.transport.renderer.boat.TugBoatRenderer;
 import xyz.brassgoggledcoders.transport.renderer.minecart.LocomotiveRenderer;
 
@@ -101,6 +108,18 @@ public class TransportEntities {
                     .lang("Steam Locomotive")
                     .model((context, provider) -> {
                     })
+                    .recipe((context, provider) -> ConditionalRecipe.builder()
+                            .addCondition(new NotCondition(new TagEmptyCondition("forge", "storage_blocks/steel")))
+                            .addRecipe(recipeConsumer -> RailWorkerBenchRecipeBuilder.create(
+                                    SizedIngredient.of(TransportItemTags.STORAGE_BLOCKS_STEEL, 2), context.get())
+                                    .build(recipeConsumer, context.getId())
+                            )
+                            .addCondition(TrueCondition.INSTANCE)
+                            .addRecipe(recipeConsumer -> RailWorkerBenchRecipeBuilder.create(
+                                    SizedIngredient.of(Tags.Items.STORAGE_BLOCKS_IRON, 2), context.get())
+                                    .build(recipeConsumer, context.getId()))
+                            .build(provider, context.getId())
+                    )
                     .register();
 
     public static RegistryEntry<EntityType<SteamLocomotiveEntity>> STEAM_LOCOMOTIVE =

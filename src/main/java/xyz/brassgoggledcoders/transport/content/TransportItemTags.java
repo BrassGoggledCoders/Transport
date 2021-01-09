@@ -21,6 +21,8 @@ public class TransportItemTags {
     public static final ITag.INamedTag<Item> RAILS_IRON = forgeTag("rails/iron");
     public static final ITag.INamedTag<Item> RAILS_GOLD = forgeTag("rails/gold");
 
+    public static final ITag.INamedTag<Item> STORAGE_BLOCKS_STEEL = forgeTag("storage_blocks/steel");
+
     public static ITag.INamedTag<Item> transportTag(String path) {
         return ItemTags.createOptional(Transport.rl(path));
     }

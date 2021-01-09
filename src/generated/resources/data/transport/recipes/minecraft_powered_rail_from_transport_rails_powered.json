@@ -3,6 +3,8 @@
   "ingredient": {
     "tag": "transport:rails/powered"
   },
-  "result": "minecraft:powered_rail",
-  "count": 1
+  "result": {
+    "item": "minecraft:powered_rail",
+    "count": 1
+  }
 }

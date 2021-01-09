@@ -3,6 +3,8 @@
   "ingredient": {
     "tag": "transport:rails/structure"
   },
-  "result": "minecraft:rail",
-  "count": 1
+  "result": {
+    "item": "minecraft:rail",
+    "count": 1
+  }
 }

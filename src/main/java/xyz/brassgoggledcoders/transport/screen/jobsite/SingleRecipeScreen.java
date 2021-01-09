@@ -12,11 +12,12 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import xyz.brassgoggledcoders.transport.container.jobsite.SingleRecipeContainer;
+import xyz.brassgoggledcoders.transport.recipe.jobsite.SingleItemSizedRecipe;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class SingleRecipeScreen<T extends SingleRecipeContainer<U>, U extends SingleItemRecipe> extends ContainerScreen<T> {
+public class SingleRecipeScreen<T extends SingleRecipeContainer<U>, U extends SingleItemSizedRecipe> extends ContainerScreen<T> {
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("textures/gui/container/stonecutter.png");
     private float sliderProgress;
     private boolean clickedOnScroll;

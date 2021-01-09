@@ -23,7 +23,7 @@ import xyz.brassgoggledcoders.transport.util.CachedValue;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class LocomotiveRenderer<T extends LocomotiveEntity> extends MinecartRenderer<T> {
+public class LocomotiveRenderer<T extends LocomotiveEntity<?>> extends MinecartRenderer<T> {
     private final ResourceLocation textureLocation;
     private final CachedValue<IBakedModel> cachedBakedModel;
     private final float scale;

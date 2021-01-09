@@ -3,6 +3,8 @@
   "ingredient": {
     "tag": "forge:ingots/gold"
   },
-  "result": "transport:gold_rail",
-  "count": 1
+  "result": {
+    "item": "transport:gold_rail",
+    "count": 1
+  }
 }

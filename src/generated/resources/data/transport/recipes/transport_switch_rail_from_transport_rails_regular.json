@@ -3,6 +3,8 @@
   "ingredient": {
     "tag": "transport:rails/regular"
   },
-  "result": "transport:switch_rail",
-  "count": 1
+  "result": {
+    "item": "transport:switch_rail",
+    "count": 1
+  }
 }
