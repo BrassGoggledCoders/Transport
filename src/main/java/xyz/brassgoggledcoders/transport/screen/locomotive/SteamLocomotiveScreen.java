@@ -16,6 +16,7 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.engine.EngineState;
 import xyz.brassgoggledcoders.transport.container.locomotive.SteamLocomotiveContainer;
+import xyz.brassgoggledcoders.transport.content.TransportFluids;
 import xyz.brassgoggledcoders.transport.content.TransportText;
 import xyz.brassgoggledcoders.transport.engine.SteamEngine;
 import xyz.brassgoggledcoders.transport.screen.util.FluidRenderer;
@@ -63,7 +64,7 @@ public class SteamLocomotiveScreen extends ContainerScreen<SteamLocomotiveContai
 
         FluidRenderer.renderFluid(matrixStack, this.getContainer().getWater(), SteamEngine.WATER_CAPACITY,
                 i + 30, j + 19, 20, 49);
-        FluidRenderer.renderFluid(matrixStack, new FluidStack(Fluids.WATER, this.getContainer().getSteam()),
+        FluidRenderer.renderFluid(matrixStack, new FluidStack(TransportFluids.STEAM.get(), this.getContainer().getSteam()),
                 4000, i + 55, j + 21, 7, 47);
         this.getMinecraft().getTextureManager().bindTexture(BACKGROUND);
         this.blit(matrixStack, i + 30, j + 19, 177, 31, 20, 51);
