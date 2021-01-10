@@ -113,11 +113,9 @@ public class LocomotiveRenderer<T extends LocomotiveEntity<?>> extends MinecartR
             matrixStack.rotate(Vector3f.ZP.rotationDegrees(180));
             matrixStack.rotate(Vector3f.YP.rotationDegrees(90));
             matrixStack.translate(0, -translateDown, 0);
-            RenderHelper.disableStandardItemLighting();
             Minecraft.getInstance().getItemRenderer()
                     .renderModel(model, ItemStack.EMPTY, packedLight, OverlayTexture.NO_OVERLAY, matrixStack,
                             buffer.getBuffer(RenderType.getTranslucent()));
-            RenderHelper.enableStandardItemLighting();
         }
         matrixStack.pop();
     }
