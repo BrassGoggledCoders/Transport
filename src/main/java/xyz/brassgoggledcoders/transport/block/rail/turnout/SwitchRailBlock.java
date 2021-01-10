@@ -11,6 +11,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import xyz.brassgoggledcoders.transport.util.BlockStateHelper;
 
 import javax.annotation.Nonnull;
 
@@ -109,11 +110,11 @@ public class SwitchRailBlock extends AbstractSwitchRailBlock {
                         .func_235896_a_(DIVERGE_SHAPE);
                 break;
             case CLOCKWISE_90:
-                RailShape shape = state.get(STRAIGHT_SHAPE);
+                RailShape clockwiseShape = state.get(STRAIGHT_SHAPE);
                 switch (state.get(DIVERGE_SHAPE)) {
                     case NORTH_EAST:
                     case SOUTH_WEST:
-                        if (shape == RailShape.NORTH_SOUTH) {
+                        if (clockwiseShape == RailShape.NORTH_SOUTH) {
                             state = state.with(STRAIGHT_SHAPE, RailShape.EAST_WEST);
                         } else {
                             state = state.func_235896_a_(DIVERGE_SHAPE);
@@ -121,7 +122,7 @@ public class SwitchRailBlock extends AbstractSwitchRailBlock {
                         break;
                     case SOUTH_EAST:
                     case NORTH_WEST:
-                        if (shape == RailShape.EAST_WEST) {
+                        if (clockwiseShape == RailShape.EAST_WEST) {
                             state = state.with(STRAIGHT_SHAPE, RailShape.NORTH_SOUTH);
                         } else {
                             state = state.func_235896_a_(DIVERGE_SHAPE);
@@ -130,6 +131,25 @@ public class SwitchRailBlock extends AbstractSwitchRailBlock {
                 }
                 break;
             case COUNTERCLOCKWISE_90:
+                RailShape counterClockWiseShape = state.get(STRAIGHT_SHAPE);
+                switch (state.get(DIVERGE_SHAPE)) {
+                    case NORTH_EAST:
+                    case SOUTH_WEST:
+                        if (counterClockWiseShape == RailShape.EAST_WEST) {
+                            state = state.with(STRAIGHT_SHAPE, RailShape.NORTH_SOUTH);
+                        } else {
+                            state = BlockStateHelper.cyclePrevious(state, DIVERGE_SHAPE);
+                        }
+                        break;
+                    case SOUTH_EAST:
+                    case NORTH_WEST:
+                        if (counterClockWiseShape == RailShape.NORTH_SOUTH) {
+                            state = state.with(STRAIGHT_SHAPE, RailShape.EAST_WEST);
+                        } else {
+                            state = BlockStateHelper.cyclePrevious(state, DIVERGE_SHAPE);
+                        }
+                        break;
+                }
                 break;
             case NONE:
                 break;
