@@ -39,6 +39,7 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
     private double previousPushZ;
     private double pushX;
     private double pushZ;
+    private double clientAngle;
 
     private final T engine;
     private boolean on;
@@ -78,6 +79,9 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
                     this.pushX = previousPushX;
                     this.pushZ = previousPushZ;
                 }
+                if (!this.isPowered()) {
+                    this.setPowered(true);
+                }
             } else {
                 if (this.pushX != 0) {
                     this.previousPushX = this.pushX;
@@ -86,6 +90,9 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
                 if (this.pushZ != 0) {
                     this.previousPushZ = this.pushZ;
                     this.pushZ = 0;
+                }
+                if (this.isPowered()) {
+                    this.setPowered(false);
                 }
             }
         }
@@ -298,6 +305,14 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
 
     public void setOn(boolean on) {
         this.on = on;
+    }
+
+    public void setClientAngle(double angle) {
+        this.clientAngle = angle;
+    }
+
+    public double getClientAngle() {
+        return clientAngle;
     }
 
     public T getEngine() {

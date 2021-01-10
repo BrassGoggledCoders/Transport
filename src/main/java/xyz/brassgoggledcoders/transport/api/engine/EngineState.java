@@ -8,13 +8,13 @@ import javax.annotation.Nullable;
 import java.util.Locale;
 
 public enum EngineState {
-    FORWARD_3(1.25F, 1.00F, EngineDirection.FORWARD),
-    FORWARD_2(1.00F, 0.60F, EngineDirection.FORWARD),
-    FORWARD_1(0.75F, 0.25F, EngineDirection.FORWARD),
-    NEUTRAL_0(0.50F, 0.00F, EngineDirection.NEUTRAL),
-    REVERSE_1(0.75F, 0.25F, EngineDirection.REVERSE),
-    REVERSE_2(1.00F, 0.60F, EngineDirection.REVERSE),
-    REVERSE_3(1.25F, 1.00F, EngineDirection.REVERSE);
+    FORWARD_3(1.20F, 1.00F, EngineDirection.FORWARD),
+    FORWARD_2(0.60F, 0.50F, EngineDirection.FORWARD),
+    FORWARD_1(0.30F, 0.25F, EngineDirection.FORWARD),
+    NEUTRAL_0(0.10F, 0.00F, EngineDirection.NEUTRAL),
+    REVERSE_1(0.30F, 0.25F, EngineDirection.REVERSE),
+    REVERSE_2(0.60F, 0.50F, EngineDirection.REVERSE),
+    REVERSE_3(1.20F, 1.00F, EngineDirection.REVERSE);
 
     private final float fuelUseModifier;
     private final float maxSpeedModifier;

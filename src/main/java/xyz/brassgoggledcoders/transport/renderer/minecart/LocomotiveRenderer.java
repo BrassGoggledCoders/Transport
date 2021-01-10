@@ -91,6 +91,8 @@ public class LocomotiveRenderer<T extends LocomotiveEntity<?>> extends MinecartR
             pitch = -pitch;
         }
 
+        entity.setClientAngle(entityYaw);
+
         matrixStack.translate(0.0D, 0.375D, 0.0D);
         matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F - entityYaw));
         matrixStack.rotate(Vector3f.ZP.rotationDegrees(-pitch));
