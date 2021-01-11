@@ -20,13 +20,6 @@ public class WyeSwitchRailBlock extends AbstractSwitchRailBlock {
     public static final EnumProperty<RailShape> SHAPE = TransportBlockStateProperties.STRAIGHT_RAIL_SHAPE;
     public static final BooleanProperty NORTH_WEST = TransportBlockStateProperties.NORTH_WEST;
 
-    public WyeSwitchRailBlock() {
-        this(Block.Properties.create(Material.MISCELLANEOUS)
-                .doesNotBlockMovement()
-                .hardnessAndResistance(0.7F)
-                .sound(SoundType.METAL));
-    }
-
     public WyeSwitchRailBlock(Properties properties) {
         super(true, properties);
         this.setDefaultState(this.getDefaultState()
@@ -55,7 +48,7 @@ public class WyeSwitchRailBlock extends AbstractSwitchRailBlock {
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
         return RailUtils.setRailStateWithFacing(this.getDefaultState(), context);
     }
 
@@ -75,6 +68,7 @@ public class WyeSwitchRailBlock extends AbstractSwitchRailBlock {
 
     @Override
     @Nonnull
+    @SuppressWarnings("deprecation")
     public Property<RailShape> getShapeProperty() {
         return SHAPE;
     }

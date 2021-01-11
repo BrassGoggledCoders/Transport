@@ -87,6 +87,7 @@ public class ElevatorSwitchRailBlock extends AbstractRailBlock {
 
     @Override
     @Nonnull
+    @SuppressWarnings("deprecation")
     public Property<RailShape> getShapeProperty() {
         return SHAPE;
     }

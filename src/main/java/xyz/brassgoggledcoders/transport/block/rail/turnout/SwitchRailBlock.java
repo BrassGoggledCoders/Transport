@@ -108,6 +108,7 @@ public class SwitchRailBlock extends AbstractSwitchRailBlock {
 
     @Override
     @Nonnull
+    @SuppressWarnings("deprecation")
     public Property<RailShape> getShapeProperty() {
         return STRAIGHT_SHAPE;
     }
