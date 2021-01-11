@@ -15,11 +15,11 @@
           "block": "transport:item_loader",
           "properties": [
             "east",
-            "up",
-            "north",
             "west",
+            "up",
             "south",
-            "down"
+            "down",
+            "north"
           ]
         },
         {

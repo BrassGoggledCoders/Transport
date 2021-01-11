@@ -22,4 +22,8 @@ public class PredicateStorageProvider implements ICapabilityProvider {
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         return TransportAPI.PREDICATE_STORAGE.orEmpty(cap, routingStorageLazyOptional);
     }
+
+    public void invalidate() {
+        routingStorageLazyOptional.invalidate();
+    }
 }

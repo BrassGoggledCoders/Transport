@@ -1,0 +1,140 @@
+{
+  "parent": "forge:item/default",
+  "loader": "forge:obj",
+  "model": "transport:models/item/diesel_locomotive.obj",
+  "flip-v": true,
+  "transform": {
+    "ground": {
+      "scale": [
+        0.03725,
+        0.03725,
+        0.03725
+      ],
+      "translation": [
+        -1,
+        -1,
+        -1
+      ]
+    },
+    "gui": {
+      "scale": [
+        0.0275,
+        0.0275,
+        0.0275
+      ],
+      "translation": [
+        -1,
+        -1.2,
+        -1
+      ],
+      "rotation": [
+        {
+          "x": 45
+        },
+        {
+          "y": -45
+        }
+      ]
+    },
+    "thirdperson_righthand": {
+      "scale": [
+        0.015,
+        0.015,
+        0.015
+      ],
+      "rotation": {
+        "y": 180
+      },
+      "translation": [
+        -1.025,
+        -1.05,
+        -1
+      ]
+    },
+    "thirdperson_lefthand": {
+      "scale": [
+        0.015,
+        0.015,
+        0.015
+      ],
+      "rotation": {
+        "y": 180
+      },
+      "translation": [
+        -1.015,
+        -1.05,
+        -1
+      ]
+    },
+    "firstperson_lefthand": {
+      "scale": [
+        0.015,
+        0.015,
+        0.015
+      ],
+      "rotation": [
+        {
+          "x": 45
+        },
+        {
+          "y": 180
+        }
+      ],
+      "translation": [
+        -1,
+        -1.15,
+        -1.25
+      ]
+    },
+    "firstperson_righthand": {
+      "scale": [
+        0.015,
+        0.015,
+        0.015
+      ],
+      "rotation": [
+        {
+          "x": 45
+        },
+        {
+          "y": 180
+        }
+      ],
+      "translation": [
+        -1,
+        -1.15,
+        -1.25
+      ]
+    },
+    "fixed": {
+      "scale": [
+        0.04,
+        0.04,
+        0.04
+      ],
+      "rotation": {
+        "y": 90
+      },
+      "translation": [
+        -0.95,
+        -1.25,
+        -1.15
+      ]
+    },
+    "head": {
+      "scale": [
+        0.03,
+        0.03,
+        0.03
+      ],
+      "rotation": {
+        "y": 180
+      },
+      "translation": [
+        -1.025,
+        -0.5,
+        -1
+      ]
+    }
+  }
+}

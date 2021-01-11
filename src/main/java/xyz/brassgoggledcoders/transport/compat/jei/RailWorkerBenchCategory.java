@@ -16,6 +16,7 @@ import xyz.brassgoggledcoders.transport.recipe.jobsite.RailWorkerBenchRecipe;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
 
 public class RailWorkerBenchCategory implements IRecipeCategory<RailWorkerBenchRecipe> {
     public static final ResourceLocation UID = Transport.rl("rail_workers_bench");
@@ -70,7 +71,7 @@ public class RailWorkerBenchCategory implements IRecipeCategory<RailWorkerBenchR
     @Override
     @ParametersAreNonnullByDefault
     public void setIngredients(RailWorkerBenchRecipe railWorkerBenchRecipe, IIngredients ingredients) {
-        ingredients.setInputIngredients(railWorkerBenchRecipe.getIngredients());
+        ingredients.setInputs(VanillaTypes.ITEM, railWorkerBenchRecipe.getIngredient().getMatchingStacks());
         ingredients.setOutput(VanillaTypes.ITEM, railWorkerBenchRecipe.getRecipeOutput());
     }
 

@@ -3,6 +3,8 @@
   "ingredient": {
     "tag": "transport:rails/regular"
   },
-  "result": "transport:diamond_crossing_rail",
-  "count": 1
+  "result": {
+    "item": "transport:diamond_crossing_rail",
+    "count": 1
+  }
 }

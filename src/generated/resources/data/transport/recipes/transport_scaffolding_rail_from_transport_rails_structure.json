@@ -3,6 +3,8 @@
   "ingredient": {
     "tag": "transport:rails/structure"
   },
-  "result": "transport:scaffolding_rail",
-  "count": 1
+  "result": {
+    "item": "transport:scaffolding_rail",
+    "count": 1
+  }
 }

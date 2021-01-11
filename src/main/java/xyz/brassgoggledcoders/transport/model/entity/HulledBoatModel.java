@@ -3,18 +3,22 @@ package xyz.brassgoggledcoders.transport.model.entity;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.entity.model.SegmentedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.util.math.MathHelper;
-import xyz.brassgoggledcoders.transport.entity.HulledBoatEntity;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.function.Predicate;
 
-public class HulledBoatModel<T extends HulledBoatEntity> extends SegmentedModel<T> {
+public class HulledBoatModel<T extends BoatEntity> extends SegmentedModel<T> {
     private final ModelRenderer[] paddles = new ModelRenderer[2];
     private final ModelRenderer noWater;
     private final ImmutableList<ModelRenderer> field_228243_f_;
 
-    public HulledBoatModel() {
+    private final Predicate<T> renderPaddles;
+
+    public HulledBoatModel(Predicate<T> renderPaddles) {
+        this.renderPaddles = renderPaddles;
         ModelRenderer[] modelRenderers = new ModelRenderer[]{
                 (new ModelRenderer(this, 0, 0)).setTextureSize(128, 64),
                 (new ModelRenderer(this, 0, 19)).setTextureSize(128, 64),
@@ -82,7 +86,7 @@ public class HulledBoatModel<T extends HulledBoatEntity> extends SegmentedModel<
     }
 
     protected void rotatePaddles(T boatEntity, int paddle, float limbSwing) {
-        if (boatEntity.showPaddles()) {
+        if (renderPaddles.test(boatEntity)) {
             float f = boatEntity.getRowingTime(paddle, limbSwing);
             ModelRenderer modelrenderer = this.paddles[paddle];
             modelrenderer.showModel = true;

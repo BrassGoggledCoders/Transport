@@ -83,6 +83,19 @@ public class SwitchRailBlock extends AbstractSwitchRailBlock {
 
     @Override
     @Nonnull
+    @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+        if (TransportItemTags.WRENCHES.contains(player.getHeldItem(hand).getItem())) {
+            world.setBlockState(pos, state.func_235896_a_(DIVERGE_SHAPE), 3);
+            return ActionResultType.SUCCESS;
+        }
+        return super.onBlockActivated(state, world, pos, player, hand, rayTraceResult);
+    }
+
+    @Override
+    @Nonnull
+    @SuppressWarnings("deprecation")
     public Property<RailShape> getShapeProperty() {
         return STRAIGHT_SHAPE;
     }

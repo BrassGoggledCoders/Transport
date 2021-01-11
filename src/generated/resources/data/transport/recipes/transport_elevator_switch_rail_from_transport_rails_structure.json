@@ -3,6 +3,8 @@
   "ingredient": {
     "tag": "transport:rails/structure"
   },
-  "result": "transport:elevator_switch_rail",
-  "count": 1
+  "result": {
+    "item": "transport:elevator_switch_rail",
+    "count": 1
+  }
 }

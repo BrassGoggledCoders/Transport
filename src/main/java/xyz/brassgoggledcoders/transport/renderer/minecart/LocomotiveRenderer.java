@@ -1,34 +1,40 @@
-package xyz.brassgoggledcoders.transport.renderer;
+package xyz.brassgoggledcoders.transport.renderer.minecart;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
-import xyz.brassgoggledcoders.transport.api.TransportClientAPI;
-import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.api.renderer.IModuleRenderer;
-import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
-import xyz.brassgoggledcoders.transport.entity.CargoCarrierMinecartEntity;
+import xyz.brassgoggledcoders.transport.entity.locomotive.LocomotiveEntity;
+import xyz.brassgoggledcoders.transport.model.item.EntityItemModelCache;
+import xyz.brassgoggledcoders.transport.util.CachedValue;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCarrierMinecartEntity> {
-    public CargoCarrierMinecartEntityRenderer(EntityRendererManager renderManager) {
+public class LocomotiveRenderer<T extends LocomotiveEntity<?>> extends MinecartRenderer<T> {
+    private final float scale;
+    private final float translateDown;
+
+    private CachedValue<IBakedModel> cachedBakedModel;
+
+    public LocomotiveRenderer(EntityRendererManager renderManager) {
         super(renderManager);
+        this.scale = 1F;
+        this.translateDown = 0.4F;
     }
 
     @Override
     @ParametersAreNonnullByDefault
-    public void render(CargoCarrierMinecartEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack,
+    public void render(T entity, float entityYaw, float partialTicks, MatrixStack matrixStack,
                        IRenderTypeBuffer buffer, int packedLight) {
         matrixStack.push();
         long i = (long) entity.getEntityId() * 493286711L;
@@ -79,6 +85,8 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
             pitch = -pitch;
         }
 
+        entity.setClientAngle(entityYaw);
+
         matrixStack.translate(0.0D, 0.375D, 0.0D);
         matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F - entityYaw));
         matrixStack.rotate(Vector3f.ZP.rotationDegrees(-pitch));
@@ -92,44 +100,30 @@ public class CargoCarrierMinecartEntityRenderer extends MinecartRenderer<CargoCa
             matrixStack.rotate(Vector3f.XP.rotationDegrees(MathHelper.sin(f5) * f5 * f6 / 10.0F * (float) entity.getRollingDirection()));
         }
 
-        this.renderModules(entity.getModularEntity(), entityYaw, partialTicks, matrixStack, buffer, packedLight);
-
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
-        this.modelMinecart.setRotationAngles(entity, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F);
-        IVertexBuilder ivertexbuilder = buffer.getBuffer(this.modelMinecart.getRenderType(this.getEntityTexture(entity)));
-        this.modelMinecart.render(matrixStack, ivertexbuilder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        IBakedModel model = this.getCachedBakedModel(entity).getValue();
+        if (model != null) {
+            matrixStack.scale(scale, scale, scale);
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(180));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(90));
+            matrixStack.translate(0, -translateDown, 0);
+            Minecraft.getInstance().getItemRenderer()
+                    .renderModel(model, ItemStack.EMPTY, packedLight, OverlayTexture.NO_OVERLAY, matrixStack,
+                            buffer.getBuffer(RenderType.getTranslucent()));
+        }
         matrixStack.pop();
     }
 
     @Override
     @Nonnull
-    public ResourceLocation getEntityTexture(@Nonnull CargoCarrierMinecartEntity entity) {
-        ResourceLocation entityTexture = entity.getHullType().getEntityTexture(entity);
-        return entityTexture != null ? entityTexture : super.getEntityTexture(entity);
+    public ResourceLocation getEntityTexture(@Nonnull T entity) {
+        return entity.getTextureLocation();
     }
 
-    private void renderModules(IModularEntity modularEntity, float entityYaw, float partialTicks, MatrixStack matrixStack,
-                               IRenderTypeBuffer buffer, int packedLight) {
-        ModuleInstance<?> cargoSlotModuleInstance = modularEntity.getModuleInstance(TransportModuleSlots.CARGO.get());
-        if (cargoSlotModuleInstance != null) {
-            IModuleRenderer moduleRenderer = TransportClientAPI.getModuleRenderer(cargoSlotModuleInstance.getModule());
-            if (moduleRenderer != null) {
-                matrixStack.push();
-                moduleRenderer.render(cargoSlotModuleInstance, entityYaw, partialTicks, matrixStack, buffer, packedLight);
-                matrixStack.pop();
-            }
+    public CachedValue<IBakedModel> getCachedBakedModel(@Nonnull T entity) {
+        if (this.cachedBakedModel == null) {
+            this.cachedBakedModel = EntityItemModelCache.getBakedModelCacheFor(entity.getRenderItemStack().getItem());
         }
-
-        ModuleInstance<?> backSlotModuleInstance = modularEntity.getModuleInstance(TransportModuleSlots.BACK.get());
-        if (backSlotModuleInstance != null) {
-            IModuleRenderer moduleRenderer = TransportClientAPI.getModuleRenderer(backSlotModuleInstance.getModule());
-            if (moduleRenderer != null) {
-                matrixStack.push();
-                matrixStack.translate(0.65F, 0F, -0.125F);
-                matrixStack.rotate(new Quaternion(90, 90, 0, true));
-                moduleRenderer.render(backSlotModuleInstance, entityYaw, partialTicks, matrixStack, buffer, packedLight);
-                matrixStack.pop();
-            }
-        }
+        return cachedBakedModel;
     }
 }

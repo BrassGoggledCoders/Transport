@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 
 public class HulledBoatRender<T extends HulledBoatEntity> extends EntityRenderer<T> {
     private static final ResourceLocation DEFAULT_BOAT = new ResourceLocation("textures/entity/boat/oak.png");
-    private final HulledBoatModel<T> boatModel = new HulledBoatModel<>();
+    private final HulledBoatModel<T> boatModel = new HulledBoatModel<>(T::showPaddles);
 
     public HulledBoatRender(EntityRendererManager renderManager) {
         super(renderManager);

@@ -14,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.api.engine.EngineState;
 import xyz.brassgoggledcoders.transport.recipe.jobsite.RailWorkerBenchRecipeBuilder;
 
 import javax.annotation.Nullable;
@@ -83,6 +84,15 @@ public class TransportAdditionalData {
 
     public static void generateLang(RegistrateLangProvider langProvider) {
         langProvider.add("screen.transport.jei.category.rail_workers_bench", "Rail Worker's Bench");
+
+        langProvider.add("screen.transport.speed", "Current Speed: %s");
+        langProvider.add(EngineState.FORWARD_3.getTranslationKey(), "Forward 3");
+        langProvider.add(EngineState.FORWARD_2.getTranslationKey(), "Forward 2");
+        langProvider.add(EngineState.FORWARD_1.getTranslationKey(), "Forward 1");
+        langProvider.add(EngineState.NEUTRAL_0.getTranslationKey(), "Neutral");
+        langProvider.add(EngineState.REVERSE_1.getTranslationKey(), "Reverse 1");
+        langProvider.add(EngineState.REVERSE_2.getTranslationKey(), "Reverse 2");
+        langProvider.add(EngineState.REVERSE_3.getTranslationKey(), "Reverse 3");
     }
 
     public static List<Pair<IItemProvider, ITag<Item>>> getTagInfoList() {

@@ -25,4 +25,8 @@ public class FurnaceMinecartFuelProvider implements ICapabilityProvider {
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, lazyOptional);
     }
+
+    public void invalidate() {
+        lazyOptional.invalidate();
+    }
 }
