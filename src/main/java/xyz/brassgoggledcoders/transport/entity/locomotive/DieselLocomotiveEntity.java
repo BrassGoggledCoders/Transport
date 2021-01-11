@@ -21,6 +21,6 @@ public class DieselLocomotiveEntity extends LocomotiveEntity<DieselEngine> {
     @Nonnull
     @Override
     public ItemStack createItemStack() {
-        return new ItemStack(TransportEntities.DIESEL_LOCOMOTIVE_ITEM.get());
+        return ItemStack.EMPTY;
     }
 }
