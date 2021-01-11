@@ -25,13 +25,14 @@ import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.engine.EngineState;
+import xyz.brassgoggledcoders.transport.api.entity.IHoldable;
 import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 import xyz.brassgoggledcoders.transport.engine.Engine;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecartEntity {
+public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecartEntity implements IHoldable {
     private static final DataParameter<Boolean> POWERED = EntityDataManager.createKey(LocomotiveEntity.class,
             DataSerializers.BOOLEAN);
 
@@ -43,6 +44,7 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
     private double pushX;
     private double pushZ;
     private double clientAngle;
+    private int held;
 
     private final T engine;
     private boolean on;
@@ -78,8 +80,11 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
     @Override
     public void tick() {
         this.engine.tick();
+        if (held > 0) {
+            held--;
+        }
         if (!this.world.isRemote()) {
-            if (this.on && this.engine.pullPower(this.engineState)) {
+            if (this.on && this.engine.pullPower(this.engineState) && held <= 0) {
                 if (this.pushX == 0 || this.pushZ == 0) {
                     this.pushX = previousPushX;
                     this.pushZ = previousPushZ;
@@ -378,5 +383,20 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
         if (compoundNBT.contains("engine")) {
             this.engine.deserializeNBT(compoundNBT.getCompound("engine"));
         }
+    }
+
+    @Override
+    public void onHeld() {
+        this.held = 10;
+    }
+
+    @Override
+    public void onRelease() {
+        this.held = 0;
+    }
+
+    @Override
+    public void push(float xPush, float zPush) {
+
     }
 }
