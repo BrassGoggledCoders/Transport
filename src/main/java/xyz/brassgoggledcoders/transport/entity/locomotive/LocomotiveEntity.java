@@ -6,6 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -14,14 +15,15 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.fml.network.NetworkHooks;
+import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.engine.EngineState;
 import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 import xyz.brassgoggledcoders.transport.engine.Engine;
@@ -33,7 +35,8 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
     private static final DataParameter<Boolean> POWERED = EntityDataManager.createKey(LocomotiveEntity.class,
             DataSerializers.BOOLEAN);
 
-    private float fuel;
+    private final NonNullLazy<ItemStack> getRenderItemStack;
+    private final NonNullLazy<ResourceLocation> getTextureLocation;
 
     private double previousPushX;
     private double previousPushZ;
@@ -50,6 +53,8 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
     public LocomotiveEntity(EntityType<? extends LocomotiveEntity> type, World world) {
         super(type, world);
         this.engine = this.createEngine();
+        this.getRenderItemStack = NonNullLazy.of(this::createItemStack);
+        this.getTextureLocation = NonNullLazy.of(this::createTextureLocation);
     }
 
     @Override
@@ -178,10 +183,26 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
     }
 
     @Override
+    public void killMinecart(@Nonnull DamageSource source) {
+        this.remove();
+        if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
+            ItemStack itemstack = this.createItemStack();
+            if (this.hasCustomName()) {
+                itemstack.setDisplayName(this.getCustomName());
+            }
+            CompoundNBT locomotiveNBT = this.writeItemStackData();
+            if (locomotiveNBT != null) {
+                itemstack.getOrCreateTag().put("locomotiveData", locomotiveNBT);
+            }
+
+            this.entityDropItem(itemstack);
+        }
+
+    }
+
+    @Override
     protected void writeAdditional(@Nonnull CompoundNBT compound) {
         super.writeAdditional(compound);
-
-        compound.putFloat("fuel", this.fuel);
 
         compound.putDouble("previousPushX", this.previousPushX);
         compound.putDouble("previousPushZ", this.previousPushZ);
@@ -197,8 +218,6 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
     @Override
     protected void readAdditional(@Nonnull CompoundNBT compound) {
         super.readAdditional(compound);
-
-        this.fuel = compound.getFloat("fuel");
 
         this.previousPushX = compound.getDouble("previousPushX");
         this.previousPushZ = compound.getDouble("previousPushZ");
@@ -320,4 +339,44 @@ public abstract class LocomotiveEntity<T extends Engine> extends AbstractMinecar
     }
 
     public abstract T createEngine();
+
+    @Nonnull
+    public abstract ItemStack createItemStack();
+
+    public ItemStack getRenderItemStack() {
+        return this.getRenderItemStack.get();
+    }
+
+    @Nonnull
+    public ResourceLocation createTextureLocation() {
+        ResourceLocation registryName = this.getType().getRegistryName();
+        if (registryName == null) {
+            registryName = Transport.rl("unknown");
+        }
+        return new ResourceLocation(registryName.getNamespace(), "textures/entity/" + registryName.getPath() +
+                ".png");
+    }
+
+    public ResourceLocation getTextureLocation() {
+        return this.getTextureLocation.get();
+    }
+
+    public void readFromItemStack(ItemStack item) {
+        CompoundNBT locomotiveItemData = item.getChildTag("locomotiveData");
+        if (locomotiveItemData != null) {
+            this.readItemStackData(locomotiveItemData);
+        }
+    }
+
+    public CompoundNBT writeItemStackData() {
+        CompoundNBT compoundNBT = new CompoundNBT();
+        compoundNBT.put("engine", this.engine.serializeNBT());
+        return compoundNBT;
+    }
+
+    public void readItemStackData(CompoundNBT compoundNBT) {
+        if (compoundNBT.contains("engine")) {
+            this.engine.deserializeNBT(compoundNBT.getCompound("engine"));
+        }
+    }
 }

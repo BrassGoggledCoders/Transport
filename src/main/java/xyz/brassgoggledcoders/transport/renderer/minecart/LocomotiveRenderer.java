@@ -1,16 +1,13 @@
 package xyz.brassgoggledcoders.transport.renderer.minecart;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -24,18 +21,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class LocomotiveRenderer<T extends LocomotiveEntity<?>> extends MinecartRenderer<T> {
-    private final ResourceLocation textureLocation;
-    private final CachedValue<IBakedModel> cachedBakedModel;
     private final float scale;
     private final float translateDown;
 
-    public LocomotiveRenderer(NonNullSupplier<? extends Item> itemSupplier, float scale, float translateDown,
-                              ResourceLocation textureLocation, EntityRendererManager renderManager) {
+    private CachedValue<IBakedModel> cachedBakedModel;
+
+    public LocomotiveRenderer(EntityRendererManager renderManager) {
         super(renderManager);
-        this.cachedBakedModel = EntityItemModelCache.getBakedModelCacheFor(itemSupplier);
-        this.textureLocation = textureLocation;
-        this.scale = scale;
-        this.translateDown = translateDown;
+        this.scale = 1F;
+        this.translateDown = 0.4F;
     }
 
     @Override
@@ -107,7 +101,7 @@ public class LocomotiveRenderer<T extends LocomotiveEntity<?>> extends MinecartR
         }
 
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
-        IBakedModel model = this.cachedBakedModel.getValue();
+        IBakedModel model = this.getCachedBakedModel(entity).getValue();
         if (model != null) {
             matrixStack.scale(scale, scale, scale);
             matrixStack.rotate(Vector3f.ZP.rotationDegrees(180));
@@ -123,6 +117,13 @@ public class LocomotiveRenderer<T extends LocomotiveEntity<?>> extends MinecartR
     @Override
     @Nonnull
     public ResourceLocation getEntityTexture(@Nonnull T entity) {
-        return textureLocation;
+        return entity.getTextureLocation();
+    }
+
+    public CachedValue<IBakedModel> getCachedBakedModel(@Nonnull T entity) {
+        if (this.cachedBakedModel == null) {
+            this.cachedBakedModel = EntityItemModelCache.getBakedModelCacheFor(entity.getRenderItemStack().getItem());
+        }
+        return cachedBakedModel;
     }
 }

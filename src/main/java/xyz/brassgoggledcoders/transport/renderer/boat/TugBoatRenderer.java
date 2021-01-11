@@ -27,13 +27,15 @@ import javax.annotation.Nonnull;
 public class TugBoatRenderer<T extends TugBoatEntity> extends EntityRenderer<T> {
     private static final HulledBoatModel<TugBoatEntity> BOAT_MODEL = new HulledBoatModel<>(entity -> true);
     private final ResourceLocation textureLocation;
-    private final CachedValue<IBakedModel> cachedBakedModel;
     private final float scale;
+    private final NonNullSupplier<? extends Item> itemSupplier;
+
+    private CachedValue<IBakedModel> cachedBakedModel;
 
     public TugBoatRenderer(NonNullSupplier<? extends Item> itemSupplier, float scale, ResourceLocation textureLocation,
                            EntityRendererManager renderManager) {
         super(renderManager);
-        this.cachedBakedModel = EntityItemModelCache.getBakedModelCacheFor(itemSupplier);
+        this.itemSupplier = itemSupplier;
         this.textureLocation = textureLocation;
         this.scale = scale;
         this.shadowSize = 0.8F;
@@ -70,17 +72,15 @@ public class TugBoatRenderer<T extends TugBoatEntity> extends EntityRenderer<T> 
     }
 
     protected void renderBoat(T entity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight) {
-        IBakedModel model = this.cachedBakedModel.getValue();
+        IBakedModel model = this.getCachedBakedModel(entity).getValue();
         if (model != null) {
             matrixStack.push();
             matrixStack.scale(scale, scale, scale);
             matrixStack.rotate(Vector3f.ZP.rotationDegrees(180));
             matrixStack.rotate(Vector3f.YP.rotationDegrees(90));
-            RenderHelper.disableStandardItemLighting();
             Minecraft.getInstance().getItemRenderer()
                     .renderModel(model, ItemStack.EMPTY, packedLight, OverlayTexture.NO_OVERLAY, matrixStack,
                             buffer.getBuffer(RenderType.getTranslucent()));
-            RenderHelper.enableStandardItemLighting();
             if (!entity.canSwim()) {
                 IVertexBuilder vertexBuilder = buffer.getBuffer(RenderType.getWaterMask());
                 matrixStack.scale(0.75F, 0, 2.8F);
@@ -96,5 +96,12 @@ public class TugBoatRenderer<T extends TugBoatEntity> extends EntityRenderer<T> 
     @Nonnull
     public ResourceLocation getEntityTexture(@Nonnull T entity) {
         return textureLocation;
+    }
+
+    public CachedValue<IBakedModel> getCachedBakedModel(@Nonnull T entity) {
+        if (this.cachedBakedModel == null) {
+            this.cachedBakedModel = EntityItemModelCache.getBakedModelCacheFor(itemSupplier.get());
+        }
+        return cachedBakedModel;
     }
 }

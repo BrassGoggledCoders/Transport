@@ -12,7 +12,7 @@ import xyz.brassgoggledcoders.transport.entity.locomotive.LocomotiveEntity;
 
 import javax.annotation.Nullable;
 
-public class LocomotiveItem<T extends LocomotiveEntity> extends BasicMinecartItem {
+public class LocomotiveItem<T extends LocomotiveEntity<?>> extends BasicMinecartItem {
     private final NonNullSupplier<EntityType<T>> entityTypeSupplier;
 
     public LocomotiveItem(NonNullSupplier<EntityType<T>> entityTypeSupplier, Properties builder) {
@@ -38,6 +38,7 @@ public class LocomotiveItem<T extends LocomotiveEntity> extends BasicMinecartIte
             );
 
             locomotiveEntity.onPlaced(itemUseContext);
+            locomotiveEntity.readFromItemStack(itemUseContext.getItem());
         }
         return locomotiveEntity;
     }

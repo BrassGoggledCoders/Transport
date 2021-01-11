@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.entity.locomotive;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -11,6 +12,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.transport.container.locomotive.SteamLocomotiveContainer;
 import xyz.brassgoggledcoders.transport.container.provider.EntityContainerProvider;
+import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.engine.SteamEngine;
 
 import javax.annotation.Nonnull;
@@ -52,5 +54,11 @@ public class SteamLocomotiveEntity extends LocomotiveEntity<SteamEngine> {
     @Override
     public SteamEngine createEngine() {
         return new SteamEngine(this::isOn);
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack createItemStack() {
+        return new ItemStack(TransportEntities.STEAM_LOCOMOTIVE_ITEM.get());
     }
 }
