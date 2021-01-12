@@ -13,16 +13,15 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.SingleItemRecipe;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.world.World;
-import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.recipe.jobsite.SingleItemSizedRecipe;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public abstract class SingleRecipeContainer<T extends SingleItemRecipe> extends Container {
+public abstract class SingleRecipeContainer<T extends SingleItemSizedRecipe> extends Container {
     private final IWorldPosCallable worldPosCallable;
     private final IntReferenceHolder selectedRecipe = IntReferenceHolder.single();
     private final World world;
@@ -43,11 +42,6 @@ public abstract class SingleRecipeContainer<T extends SingleItemRecipe> extends 
     private final IRecipeType<T> recipeType;
 
     public SingleRecipeContainer(ContainerType<? extends SingleRecipeContainer<?>> containerType, int windowId,
-                                 PlayerInventory playerInventoryIn, IRecipeType<T> recipeType) {
-        this(containerType, windowId, playerInventoryIn, IWorldPosCallable.DUMMY, recipeType);
-    }
-
-    public SingleRecipeContainer(ContainerType<? extends SingleRecipeContainer<?>> containerType, int windowId,
                                  PlayerInventory playerInventory, final IWorldPosCallable worldPosCallable,
                                  IRecipeType<T> recipeType) {
         super(containerType, windowId);
@@ -56,7 +50,7 @@ public abstract class SingleRecipeContainer<T extends SingleItemRecipe> extends 
         this.recipeType = recipeType;
         this.inputInventorySlot = this.addSlot(new Slot(this.inputInventory, 0, 20, 33));
         this.outputInventorySlot = this.addSlot(new SingleRecipeOutputSlot(this.inventory, 1, 143,
-                33, this.worldPosCallable, inputInventorySlot, nothing -> this.updateRecipeResultSlot()));
+                33, this.worldPosCallable, this::attemptCraft));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
@@ -200,5 +194,29 @@ public abstract class SingleRecipeContainer<T extends SingleItemRecipe> extends 
         this.inventory.removeStackFromSlot(1);
         this.worldPosCallable.consume((world, blockPos) ->
                 this.clearContainer(player, player.world, this.inputInventory));
+    }
+
+    private boolean attemptCraft() {
+        T recipe = this.recipes.get(this.selectedRecipe.get());
+        ItemStack pulledStack;
+        int requiredCount = recipe.getIngredient().getCount();
+        if (requiredCount > 1) {
+            pulledStack = this.inputInventory.decrStackSize(0, recipe.getIngredient().getCount());
+            if (!pulledStack.isEmpty() && pulledStack.getCount() != requiredCount) {
+                this.inputInventory.getStackInSlot(0).grow(pulledStack.getCount());
+                pulledStack = ItemStack.EMPTY;
+            }
+        } else {
+            ItemStack itemStack = this.inputInventory.getStackInSlot(0);
+            if (itemStack.hasContainerItem()) {
+                this.inputInventory.setInventorySlotContents(0, itemStack.getContainerItem());
+                pulledStack = itemStack;
+            } else {
+                pulledStack = this.inputInventory.decrStackSize(0, 1);
+            }
+        }
+
+        this.updateRecipeResultSlot();
+        return !pulledStack.isEmpty();
     }
 }

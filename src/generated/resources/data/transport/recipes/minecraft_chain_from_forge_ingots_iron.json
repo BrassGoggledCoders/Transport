@@ -3,6 +3,8 @@
   "ingredient": {
     "tag": "forge:ingots/iron"
   },
-  "result": "minecraft:chain",
-  "count": 1
+  "result": {
+    "item": "minecraft:chain",
+    "count": 1
+  }
 }

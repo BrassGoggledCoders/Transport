@@ -54,6 +54,7 @@ public class DiamondCrossingRailBlock extends AbstractRailBlock {
 
     @Nonnull
     @Override
+    @SuppressWarnings("deprecation")
     public Property<RailShape> getShapeProperty() {
         return SHAPE;
     }

@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.block;
+package xyz.brassgoggledcoders.transport.block.boat;
 
 import net.minecraft.block.Block;
 

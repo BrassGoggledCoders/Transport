@@ -3,6 +3,8 @@
   "ingredient": {
     "tag": "transport:rails/powered"
   },
-  "result": "transport:timed_holding_rail",
-  "count": 1
+  "result": {
+    "item": "transport:timed_holding_rail",
+    "count": 1
+  }
 }

@@ -2,24 +2,18 @@ package xyz.brassgoggledcoders.transport.block.rail.turnout;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.RailShape;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
-import xyz.brassgoggledcoders.transport.content.TransportItemTags;
+import net.minecraft.world.IWorld;
+import xyz.brassgoggledcoders.transport.util.BlockStateHelper;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 public class SwitchRailBlock extends AbstractSwitchRailBlock {
     public static final EnumProperty<RailShape> DIVERGE_SHAPE = EnumProperty.create("diverge_shape", RailShape.class,
@@ -27,13 +21,6 @@ public class SwitchRailBlock extends AbstractSwitchRailBlock {
                     railShape == RailShape.SOUTH_WEST || railShape == RailShape.NORTH_WEST);
     public static final EnumProperty<RailShape> STRAIGHT_SHAPE = EnumProperty.create("straight_shape",
             RailShape.class, railShape -> railShape == RailShape.NORTH_SOUTH || railShape == RailShape.EAST_WEST);
-
-    public SwitchRailBlock() {
-        this(Block.Properties.create(Material.MISCELLANEOUS)
-                .doesNotBlockMovement()
-                .hardnessAndResistance(0.7F)
-                .sound(SoundType.METAL));
-    }
 
     public SwitchRailBlock(Properties properties) {
         super(true, properties);
@@ -97,17 +84,6 @@ public class SwitchRailBlock extends AbstractSwitchRailBlock {
     @Override
     @Nonnull
     @SuppressWarnings("deprecation")
-    @ParametersAreNonnullByDefault
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        if (TransportItemTags.WRENCHES.contains(player.getHeldItem(hand).getItem())) {
-            world.setBlockState(pos, state.func_235896_a_(DIVERGE_SHAPE), 3);
-            return ActionResultType.SUCCESS;
-        }
-        return super.onBlockActivated(state, world, pos, player, hand, rayTraceResult);
-    }
-
-    @Override
-    @Nonnull
     public Property<RailShape> getShapeProperty() {
         return STRAIGHT_SHAPE;
     }
@@ -125,5 +101,60 @@ public class SwitchRailBlock extends AbstractSwitchRailBlock {
     @Override
     protected Direction getMotorDirection(SwitchConfiguration switchConfiguration) {
         return switchConfiguration.getDivergentSide().getOpposite();
+    }
+
+    @Override
+    public BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation rotation) {
+        switch (rotation) {
+            case CLOCKWISE_180:
+                state = state.func_235896_a_(DIVERGE_SHAPE)
+                        .func_235896_a_(DIVERGE_SHAPE);
+                break;
+            case CLOCKWISE_90:
+                RailShape clockwiseShape = state.get(STRAIGHT_SHAPE);
+                switch (state.get(DIVERGE_SHAPE)) {
+                    case NORTH_EAST:
+                    case SOUTH_WEST:
+                        if (clockwiseShape == RailShape.NORTH_SOUTH) {
+                            state = state.with(STRAIGHT_SHAPE, RailShape.EAST_WEST);
+                        } else {
+                            state = state.func_235896_a_(DIVERGE_SHAPE);
+                        }
+                        break;
+                    case SOUTH_EAST:
+                    case NORTH_WEST:
+                        if (clockwiseShape == RailShape.EAST_WEST) {
+                            state = state.with(STRAIGHT_SHAPE, RailShape.NORTH_SOUTH);
+                        } else {
+                            state = state.func_235896_a_(DIVERGE_SHAPE);
+                        }
+                        break;
+                }
+                break;
+            case COUNTERCLOCKWISE_90:
+                RailShape counterClockWiseShape = state.get(STRAIGHT_SHAPE);
+                switch (state.get(DIVERGE_SHAPE)) {
+                    case NORTH_EAST:
+                    case SOUTH_WEST:
+                        if (counterClockWiseShape == RailShape.EAST_WEST) {
+                            state = state.with(STRAIGHT_SHAPE, RailShape.NORTH_SOUTH);
+                        } else {
+                            state = BlockStateHelper.cyclePrevious(state, DIVERGE_SHAPE);
+                        }
+                        break;
+                    case SOUTH_EAST:
+                    case NORTH_WEST:
+                        if (counterClockWiseShape == RailShape.NORTH_SOUTH) {
+                            state = state.with(STRAIGHT_SHAPE, RailShape.EAST_WEST);
+                        } else {
+                            state = BlockStateHelper.cyclePrevious(state, DIVERGE_SHAPE);
+                        }
+                        break;
+                }
+                break;
+            case NONE:
+                break;
+        }
+        return state;
     }
 }

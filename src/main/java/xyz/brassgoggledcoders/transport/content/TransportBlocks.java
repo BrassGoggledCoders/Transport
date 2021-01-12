@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.content;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
@@ -37,8 +38,8 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.block.BuoyBlock;
-import xyz.brassgoggledcoders.transport.block.DockBlock;
+import xyz.brassgoggledcoders.transport.block.boat.BuoyBlock;
+import xyz.brassgoggledcoders.transport.block.boat.DockBlock;
 import xyz.brassgoggledcoders.transport.block.ModuleConfiguratorBlock;
 import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
 import xyz.brassgoggledcoders.transport.block.jobsite.RailWorkerBenchBlock;
@@ -58,6 +59,7 @@ import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateModels;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateRecipes;
 import xyz.brassgoggledcoders.transport.screen.jobsite.RailWorkerBenchScreen;
 import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
+import xyz.brassgoggledcoders.transport.tileentity.boat.BuoyTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
@@ -304,7 +306,7 @@ public class TransportBlocks {
                                     .acceptCondition(BlockStateProperty.builder(scaffoldingSlabBlock)
                                             .fromProperties(StatePropertiesPredicate.Builder.newBuilder()
                                                     .withBoolProp(ScaffoldingSlabBlock.RAILED, false)))
-                                    .addEntry(TransportRegistrateBlockLootTables.withExplosionDecay(
+                                    .addEntry(RegistrateBlockLootTables.withExplosionDecay(
                                             scaffoldingSlabBlock, ItemLootEntry.builder(scaffoldingSlabBlock)
                                                     .acceptFunction(SetCount.builder(ConstantRange.of(2))
                                                             .acceptCondition(BlockStateProperty.builder(scaffoldingSlabBlock)
@@ -384,7 +386,7 @@ public class TransportBlocks {
                                             .withProp(BuoyBlock.HALF, DoubleBlockHalf.LOWER)
                                     )
                             )
-                            .addEntry(TransportRegistrateBlockLootTables.withExplosionDecay(buoyBlock,
+                            .addEntry(RegistrateBlockLootTables.withExplosionDecay(buoyBlock,
                                     ItemLootEntry.builder(buoyBlock)))
                     )
             ))
@@ -399,7 +401,12 @@ public class TransportBlocks {
             .item(BuoyBlockItem::new)
             .model((context, provider) -> provider.generated(context, provider.modLoc("item/buoy")))
             .build()
+            .tileEntity(BuoyTileEntity::new)
+            .build()
             .register();
+
+    public static RegistryEntry<TileEntityType<BuoyTileEntity>> BUOY_TILE_ENTITY =
+            BUOY.getSibling(ForgeRegistries.TILE_ENTITIES);
 
     public static final BlockEntry<DockBlock> DOCK = Transport.getRegistrate()
             .object("dock")

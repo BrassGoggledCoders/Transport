@@ -15,11 +15,11 @@
           "block": "transport:fluid_loader",
           "properties": [
             "east",
-            "up",
-            "north",
             "west",
+            "up",
             "south",
-            "down"
+            "down",
+            "north"
           ]
         },
         {

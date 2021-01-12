@@ -10,21 +10,18 @@ import net.minecraft.util.SoundEvents;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 
 public class SingleRecipeOutputSlot extends Slot {
     private final IWorldPosCallable worldPosCallable;
-    private final Slot inputSlot;
-    private final Consumer<Void> onCraft;
+    private final BooleanSupplier craft;
     private long lastOnTake;
 
     public SingleRecipeOutputSlot(IInventory inventory, int index, int xPosition, int yPosition,
-                                  IWorldPosCallable worldPosCallable, Slot inputSlot, Consumer<Void> onCraft) {
+                                  IWorldPosCallable worldPosCallable, BooleanSupplier craft) {
         super(inventory, index, xPosition, yPosition);
         this.worldPosCallable = worldPosCallable;
-        this.inputSlot = inputSlot;
-        this.onCraft = onCraft;
+        this.craft = craft;
     }
 
     @Override
@@ -36,21 +33,20 @@ public class SingleRecipeOutputSlot extends Slot {
     @Nonnull
     @ParametersAreNonnullByDefault
     public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack) {
-        ItemStack itemstack = inputSlot.decrStackSize(1);
-        if (!itemstack.isEmpty()) {
-            onCraft.accept(null);
+        if (this.craft.getAsBoolean()) {
+            stack.getItem().onCreated(stack, thePlayer.world, thePlayer);
+            worldPosCallable.consume((world, blockPos) -> {
+                long l = world.getGameTime();
+                if (lastOnTake != l) {
+                    world.playSound(null, blockPos, SoundEvents.UI_STONECUTTER_TAKE_RESULT,
+                            SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    lastOnTake = l;
+                }
+
+            });
+            return super.onTake(thePlayer, stack);
+        } else {
+            return ItemStack.EMPTY;
         }
-
-        stack.getItem().onCreated(stack, thePlayer.world, thePlayer);
-        worldPosCallable.consume((world, blockPos) -> {
-            long l = world.getGameTime();
-            if (lastOnTake != l) {
-                world.playSound(null, blockPos, SoundEvents.UI_STONECUTTER_TAKE_RESULT,
-                        SoundCategory.BLOCKS, 1.0F, 1.0F);
-                lastOnTake = l;
-            }
-
-        });
-        return super.onTake(thePlayer, stack);
     }
 }

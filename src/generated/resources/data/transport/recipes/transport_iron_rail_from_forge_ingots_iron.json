@@ -3,6 +3,8 @@
   "ingredient": {
     "tag": "forge:ingots/iron"
   },
-  "result": "transport:iron_rail",
-  "count": 1
+  "result": {
+    "item": "transport:iron_rail",
+    "count": 1
+  }
 }

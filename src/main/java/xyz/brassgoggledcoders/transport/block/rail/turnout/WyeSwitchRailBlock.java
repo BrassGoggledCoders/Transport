@@ -2,8 +2,6 @@ package xyz.brassgoggledcoders.transport.block.rail.turnout;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
@@ -11,6 +9,9 @@ import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import xyz.brassgoggledcoders.transport.api.TransportBlockStateProperties;
 import xyz.brassgoggledcoders.transport.util.RailUtils;
 
@@ -19,13 +20,6 @@ import javax.annotation.Nonnull;
 public class WyeSwitchRailBlock extends AbstractSwitchRailBlock {
     public static final EnumProperty<RailShape> SHAPE = TransportBlockStateProperties.STRAIGHT_RAIL_SHAPE;
     public static final BooleanProperty NORTH_WEST = TransportBlockStateProperties.NORTH_WEST;
-
-    public WyeSwitchRailBlock() {
-        this(Block.Properties.create(Material.MISCELLANEOUS)
-                .doesNotBlockMovement()
-                .hardnessAndResistance(0.7F)
-                .sound(SoundType.METAL));
-    }
 
     public WyeSwitchRailBlock(Properties properties) {
         super(true, properties);
@@ -55,7 +49,7 @@ public class WyeSwitchRailBlock extends AbstractSwitchRailBlock {
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
         return RailUtils.setRailStateWithFacing(this.getDefaultState(), context);
     }
 
@@ -75,7 +69,58 @@ public class WyeSwitchRailBlock extends AbstractSwitchRailBlock {
 
     @Override
     @Nonnull
+    @SuppressWarnings("deprecation")
     public Property<RailShape> getShapeProperty() {
         return SHAPE;
+    }
+
+    @Override
+    public BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation direction) {
+        switch (direction) {
+            case CLOCKWISE_180:
+                state = state.with(NORTH_WEST, !state.get(NORTH_WEST));
+                break;
+            case CLOCKWISE_90:
+                if (state.get(NORTH_WEST)) {
+                    if (state.get(SHAPE) == RailShape.NORTH_SOUTH) {
+                        state = state.with(NORTH_WEST, false)
+                                .with(SHAPE, RailShape.EAST_WEST);
+                    } else {
+                        state = state.with(SHAPE, RailShape.NORTH_SOUTH);
+                    }
+                } else {
+                    if (state.get(SHAPE) == RailShape.EAST_WEST) {
+                        state = state.with(NORTH_WEST, false)
+                                .with(SHAPE, RailShape.NORTH_SOUTH);
+                    } else {
+                        state = state.with(NORTH_WEST, true)
+                                .with(SHAPE, RailShape.EAST_WEST);
+                    }
+                }
+                break;
+            case COUNTERCLOCKWISE_90:
+                if (state.get(NORTH_WEST)) {
+                    if (state.get(SHAPE) == RailShape.EAST_WEST) {
+                        state = state.with(NORTH_WEST, false)
+                                .with(SHAPE, RailShape.NORTH_SOUTH);
+                    } else {
+                        state = state.with(SHAPE, RailShape.EAST_WEST);
+                    }
+                } else {
+                    if (state.get(SHAPE) == RailShape.NORTH_SOUTH) {
+                        state = state.with(NORTH_WEST, false)
+                                .with(SHAPE, RailShape.EAST_WEST);
+                    } else {
+                        state = state.with(NORTH_WEST, true)
+                                .with(SHAPE, RailShape.NORTH_SOUTH);
+                    }
+                }
+                break;
+            case NONE:
+                break;
+        }
+
+
+        return state;
     }
 }

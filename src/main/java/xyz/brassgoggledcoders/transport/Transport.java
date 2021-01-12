@@ -6,9 +6,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.event.RegistryEvent;
@@ -27,6 +25,10 @@ import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
+import xyz.brassgoggledcoders.transport.api.navigation.INavigationNetwork;
+import xyz.brassgoggledcoders.transport.api.navigation.INavigator;
+import xyz.brassgoggledcoders.transport.api.navigation.NavigationPointType;
+import xyz.brassgoggledcoders.transport.api.navigation.Navigator;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
 import xyz.brassgoggledcoders.transport.api.predicate.StringPredicate;
@@ -35,8 +37,8 @@ import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
-import xyz.brassgoggledcoders.transport.event.EventHandler;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
+import xyz.brassgoggledcoders.transport.navigation.NavigationNetwork;
 import xyz.brassgoggledcoders.transport.nbt.CompoundNBTStorage;
 import xyz.brassgoggledcoders.transport.nbt.EmptyStorage;
 import xyz.brassgoggledcoders.transport.network.NetworkHandler;
@@ -79,7 +81,6 @@ public class Transport {
 
     public final NetworkHandler networkHandler;
 
-
     public Transport() {
         instance = this;
 
@@ -87,8 +88,6 @@ public class Transport {
 
         modBus.addListener(this::commonSetup);
         modBus.addListener(this::newRegistry);
-        MinecraftForge.EVENT_BUS.addGenericListener(TileEntity.class, EventHandler::onAttachTileEntityCapabilities);
-        MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, EventHandler::onAttachEntityCapabilities);
 
         this.networkHandler = new NetworkHandler();
         TransportAPI.setNetworkHandler(this.networkHandler);
@@ -106,6 +105,8 @@ public class Transport {
         TransportModuleSlots.setup();
         TransportHullTypes.setup();
         TransportText.setup();
+        TransportNavigationPoints.setup();
+        TransportFluids.setup();
 
         TransportVanilla.setup();
         TransportIE.setup();
@@ -119,6 +120,7 @@ public class Transport {
             makeRegistry("engine", EngineModule.class);
             makeRegistry("module_slot", ModuleSlot.class);
             makeRegistry("hull_type", HullType.class);
+            makeRegistry("navigation_point_type", NavigationPointType.class);
             registriesSetup = true;
         }
     }
@@ -164,6 +166,8 @@ public class Transport {
 
         CapabilityManager.INSTANCE.register(PredicateStorage.class, new EmptyStorage<>(), PredicateStorage::new);
         CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () -> null);
+        CapabilityManager.INSTANCE.register(INavigationNetwork.class, new CompoundNBTStorage<>(), NavigationNetwork::new);
+        CapabilityManager.INSTANCE.register(INavigator.class, new EmptyStorage<>(), Navigator::new);
 
         TransportAPI.generateItemToModuleMap();
     }

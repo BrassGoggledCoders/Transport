@@ -1,0 +1,45 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "value": {
+            "tag": "forge:storage_blocks/steel",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ],
+      "recipe": {
+        "type": "transport:rail_workers_bench",
+        "ingredient": {
+          "tag": "forge:storage_blocks/steel",
+          "count": 2
+        },
+        "result": {
+          "item": "transport:steam_locomotive",
+          "count": 1
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "forge:true"
+        }
+      ],
+      "recipe": {
+        "type": "transport:rail_workers_bench",
+        "ingredient": {
+          "tag": "forge:storage_blocks/iron",
+          "count": 2
+        },
+        "result": {
+          "item": "transport:steam_locomotive",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

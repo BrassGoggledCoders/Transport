@@ -183,6 +183,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 task registrateJar(type: Jar, dependsOn: javadoc) {
     classifier = "registrate"
     from sourceSets.main.allSource
+    exclude '**/**'
     include 'xyz/brassgoggledcoders/transport/registrate/**'
 }
 
