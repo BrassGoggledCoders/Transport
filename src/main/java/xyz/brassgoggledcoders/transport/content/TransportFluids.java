@@ -1,7 +1,10 @@
 package xyz.brassgoggledcoders.transport.content;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import net.minecraft.item.Items;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.generators.loaders.DynamicBucketModelBuilder;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import xyz.brassgoggledcoders.transport.Transport;
 
@@ -13,7 +16,13 @@ public class TransportFluids {
             .lang(flowing -> flowing.getAttributes().getTranslationKey(), "Steam")
             .removeTag(FluidTags.WATER)
             .tag(TransportFluidTags.STEAM)
-            .noBucket()
+            .bucket()
+            .properties((p) -> p.containerItem(Items.BUCKET).maxStackSize(1))
+            .model((context, provider) -> provider.withExistingParent(context.getId().getPath(), new ResourceLocation("forge", "item/bucket"))
+                    .customLoader(DynamicBucketModelBuilder::begin)
+                    .fluid(context.get().getFluid()))
+            .lang("Steam Bucket")
+            .build()
             .register();
 
     public static void setup() {
