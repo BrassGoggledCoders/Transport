@@ -1,0 +1,10 @@
+{
+  "type": "transport:module",
+  "module": {
+    "type": "transport:engine",
+    "name": "transport:solid_fuel"
+  },
+  "item": {
+    "item": "transport:solid_fuel_engine"
+  }
+}

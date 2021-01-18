@@ -1,0 +1,10 @@
+{
+  "type": "transport:module",
+  "module": {
+    "type": "transport:cargo",
+    "name": "transport:cake"
+  },
+  "item": {
+    "item": "minecraft:cake"
+  }
+}

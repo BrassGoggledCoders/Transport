@@ -1,0 +1,10 @@
+{
+  "type": "transport:module",
+  "module": {
+    "type": "transport:cargo",
+    "name": "transport:fluid"
+  },
+  "item": {
+    "item": "transport:fluid_loader"
+  }
+}

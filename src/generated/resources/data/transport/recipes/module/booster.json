@@ -1,0 +1,10 @@
+{
+  "type": "transport:module",
+  "module": {
+    "type": "transport:engine",
+    "name": "transport:booster"
+  },
+  "item": {
+    "item": "transport:booster_engine"
+  }
+}
