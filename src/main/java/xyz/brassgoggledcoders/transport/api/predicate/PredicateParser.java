@@ -12,6 +12,7 @@ public class PredicateParser {
     private static final Predicate<String> STRING_PATTERN = Pattern.compile("^\\s*\".+\".*").asPredicate();
     private static final Predicate<String> PREDICATE_START_PATTERN = Pattern.compile("^\\s*\\w+\\s*\\{.*").asPredicate();
     private static final Predicate<String> NUMBER_PATTERN = Pattern.compile("^\\s*\\d*.*").asPredicate();
+    private static final Predicate<String> REGEX_PATTERN = Pattern.compile("^\\s*\\/.+\\/.*").asPredicate();
 
     private final Function<String, ThrowingFunction<PredicateParser, Predicate<Entity>, PredicateParserException>>
             getEntityPredicateCreator;
@@ -49,8 +50,26 @@ public class PredicateParser {
         return parsing.substring(startQuoteIndex + 1, endQuoteIndex);
     }
 
+    public String getNextRegex() throws PredicateParserException {
+        int startQuoteIndex = parsing.indexOf('/', parsedLocation);
+        if (startQuoteIndex < 0) {
+            throw new PredicateParserException("Failed to Find Start of Regex");
+        }
+        int endQuoteIndex = parsing.indexOf('/', startQuoteIndex + 1);
+        if (endQuoteIndex < 0) {
+            throw new PredicateParserException("Failed to Find End of Regex");
+        }
+
+        parsedLocation = endQuoteIndex + 1;
+        return parsing.substring(startQuoteIndex + 1, endQuoteIndex);
+    }
+
     public boolean hasNextString() {
         return STRING_PATTERN.test(parsing.substring(parsedLocation));
+    }
+
+    public boolean hasNextRegex() {
+        return REGEX_PATTERN.test(parsing.substring(parsedLocation));
     }
 
     public int getNextInt() throws PredicateParserException{
