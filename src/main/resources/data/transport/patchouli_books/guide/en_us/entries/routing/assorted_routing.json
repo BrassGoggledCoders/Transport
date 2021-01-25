@@ -13,7 +13,7 @@
     },
     {
       "type": "text",
-      "text": "When a NAME Routing is used, the minecart will only divert if the name of the minecart matches any of the names given. You can also specify a regular expression by using / instead of \". A name can be given to a minecart with an anvil$(br2)ROUTING {$(br)  NAME {$(br)    \"HOME\"$(br)    /MINE[0-9]/  $(br)  }$(br)}"
+      "text": "When a NAME Routing is used, the Minecart will only divert if the name of the minecart matches any of the names give. A name can be given to a minecart with an anvil  $(br2) ROUTING {$(br)  NAME{$(br)    \"HOME\"$(br)    \"MINE\"$(br)  }$(br)}"
     }
   ]
 }
