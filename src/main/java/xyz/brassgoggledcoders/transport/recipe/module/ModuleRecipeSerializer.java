@@ -22,7 +22,7 @@ public class ModuleRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer
         return new ModuleRecipe(
                 recipeId,
                 Module.fromJson(json.get("module")),
-                CraftingHelper.getIngredient(json.get("item"))
+                json.has("item") ? CraftingHelper.getIngredient(json.get("item")) : Ingredient.EMPTY
         );
     }
 

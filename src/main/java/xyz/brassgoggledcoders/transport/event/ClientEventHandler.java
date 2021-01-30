@@ -53,7 +53,6 @@ public class ClientEventHandler {
         RenderTypeLookup.setRenderLayer(TransportBlocks.TIMED_HOLDING_RAIL.get(), RenderType.getCutout());
 
         ScreenManager.registerFactory(TransportContainers.MODULE.get(), BasicAddonScreen::new);
-        ScreenManager.registerFactory(TransportContainers.MODULE_CONFIGURATOR.get(), ModuleConfiguratorScreen::new);
 
         EntityRendererManager rendererManager = Minecraft.getInstance().getRenderManager();
         rendererManager.register(TransportEntities.CARGO_MINECART.get(), new CargoCarrierMinecartEntityRenderer(rendererManager));

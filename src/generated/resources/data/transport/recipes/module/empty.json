@@ -1,8 +1,0 @@
-{
-  "type": "transport:module",
-  "module": {
-    "type": "transport:cargo",
-    "name": "transport:empty"
-  },
-  "item": []
-}

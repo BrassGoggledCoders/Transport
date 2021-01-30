@@ -2,9 +2,6 @@ package xyz.brassgoggledcoders.transport.content;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.block.Blocks;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
@@ -17,6 +14,8 @@ public class TransportCargoModules {
     public static final RegistryEntry<CargoModule> EMPTY = Transport.getRegistrate()
             .object("empty")
             .cargoModule(() -> Blocks.AIR, CargoModuleInstance::new)
+            .recipe((context, provider) -> {
+            })
             .lang("Empty")
             .register();
 
