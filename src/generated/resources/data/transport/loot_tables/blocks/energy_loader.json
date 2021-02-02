@@ -17,9 +17,9 @@
             "east",
             "west",
             "up",
+            "north",
             "south",
-            "down",
-            "north"
+            "down"
           ]
         },
         {

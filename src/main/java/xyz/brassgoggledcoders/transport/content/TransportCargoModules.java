@@ -14,8 +14,6 @@ public class TransportCargoModules {
     public static final RegistryEntry<CargoModule> EMPTY = Transport.getRegistrate()
             .object("empty")
             .cargoModule(() -> Blocks.AIR, CargoModuleInstance::new)
-            .recipe((context, provider) -> {
-            })
             .lang("Empty")
             .register();
 
