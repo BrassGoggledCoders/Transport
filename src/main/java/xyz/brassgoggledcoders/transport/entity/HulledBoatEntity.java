@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.entity;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
@@ -78,5 +79,11 @@ public class HulledBoatEntity extends BoatEntity implements IEntityAdditionalSpa
 
     public boolean showPaddles() {
         return true;
+    }
+    
+    @Override
+    @Nonnull
+    public Item getItemBoat() {
+        return hullType.asItem();
     }
 }
