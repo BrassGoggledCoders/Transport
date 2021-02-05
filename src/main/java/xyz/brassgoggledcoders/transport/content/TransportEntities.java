@@ -17,8 +17,8 @@ import xyz.brassgoggledcoders.transport.entity.HulledBoatEntity;
 import xyz.brassgoggledcoders.transport.entity.ModularBoatEntity;
 import xyz.brassgoggledcoders.transport.entity.locomotive.SteamLocomotiveEntity;
 import xyz.brassgoggledcoders.transport.item.CargoCarrierMinecartItem;
-import xyz.brassgoggledcoders.transport.item.LocomotiveItem;
 import xyz.brassgoggledcoders.transport.item.ModularBoatItem;
+import xyz.brassgoggledcoders.transport.item.locomotive.SteamLocomotiveItem;
 import xyz.brassgoggledcoders.transport.recipe.SizedIngredient;
 import xyz.brassgoggledcoders.transport.recipe.jobsite.RailWorkerBenchRecipeBuilder;
 import xyz.brassgoggledcoders.transport.renderer.minecart.LocomotiveRenderer;
@@ -79,10 +79,10 @@ public class TransportEntities {
                 .renderer(() -> LocomotiveRenderer::new)
                 .register();
     */
-    public static RegistryEntry<LocomotiveItem<SteamLocomotiveEntity>> STEAM_LOCOMOTIVE_ITEM =
+    public static RegistryEntry<SteamLocomotiveItem> STEAM_LOCOMOTIVE_ITEM =
             Transport.getRegistrate()
                     .object("steam_locomotive")
-                    .item(builder -> new LocomotiveItem<>(TransportEntities.STEAM_LOCOMOTIVE, builder))
+                    .item(SteamLocomotiveItem::new)
                     .lang("Steam Locomotive")
                     .model((context, provider) -> {
                     })

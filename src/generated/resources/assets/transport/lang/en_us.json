@@ -71,5 +71,8 @@
   "text.transport.hull_type": "Hull Type: %s",
   "text.transport.installed_module": " * %s - %s",
   "text.transport.installed_modules": "Installed Modules",
-  "text.transport.module_slot": "%s Module Slot"
+  "text.transport.module_slot": "%s Module Slot",
+  "tooltip.transport.contents": "Contents: ",
+  "tooltip.transport.contents.fluid": " * %s mB - %s",
+  "tooltip.transport.contents.item": " * %sx - %s"
 }
