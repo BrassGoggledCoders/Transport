@@ -13,18 +13,18 @@
         {
           "condition": "minecraft:survives_explosion"
         }
-      ],
-      "functions": [
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
         {
-          "function": "minecraft:copy_nbt",
-          "source": "block_entity",
-          "ops": [
-            {
-              "source": "modularInventory",
-              "target": "BlockEntityTag.modularInventory",
-              "op": "replace"
-            }
-          ]
+          "type": "transport:loot_drop"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
         }
       ]
     }

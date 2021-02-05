@@ -13,8 +13,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.ItemHandlerDirectional;
-import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemLoaderTileEntity extends BasicLoaderTileEntity<IItemHandler>
@@ -30,19 +30,21 @@ public class ItemLoaderTileEntity extends BasicLoaderTileEntity<IItemHandler>
 
     @Override
     protected void transfer(IItemHandler from, IItemHandler to) {
-        int moved = 0;
+        boolean moved = false;
         int slotNumber = 0;
         do {
-            ItemStack itemStack = from.extractItem(slotNumber, 16, true);
+            ItemStack itemStack = from.extractItem(slotNumber, 64, true);
             if (!itemStack.isEmpty()) {
-                if (ItemHandlerHelper.insertItem(to, itemStack, true).isEmpty()) {
-                    ItemStack movedItemStack = from.extractItem(slotNumber, 16, false);
-                    moved += movedItemStack.getCount();
+                ItemStack notInserted = ItemHandlerHelper.insertItem(to, itemStack, true);
+                if (notInserted.getCount() != itemStack.getCount()) {
+                    int inserted = itemStack.getCount() - notInserted.getCount();
+                    ItemStack movedItemStack = from.extractItem(slotNumber, inserted, false);
                     ItemHandlerHelper.insertItem(to, movedItemStack, false);
+                    moved = true;
                 }
             }
             slotNumber++;
-        } while (slotNumber < from.getSlots() && moved < 32);
+        } while (slotNumber < from.getSlots() && !moved);
     }
 
     @Override
@@ -71,11 +73,13 @@ public class ItemLoaderTileEntity extends BasicLoaderTileEntity<IItemHandler>
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         return this.inventoryComponent.getScreenAddons();
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
         return inventoryComponent.getContainerAddons();
     }

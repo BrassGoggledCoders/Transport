@@ -38,7 +38,8 @@ public class ModularBoatRenderer extends HulledBoatRender<ModularBoatEntity> {
             IModuleRenderer moduleRenderer = TransportClientAPI.getModuleRenderer(cargoSlotModuleInstance.getModule());
             if (moduleRenderer != null) {
                 matrixStack.push();
-                matrixStack.translate(0F, -0.5F, 0F);
+                matrixStack.rotate(new Quaternion(180, 0, 0, true));
+                matrixStack.translate(0F, -0.05F, 0F);
                 matrixStack.scale(1.2F, 1.2F, 1.2F);
                 moduleRenderer.render(cargoSlotModuleInstance, entityYaw, partialTicks, matrixStack, buffer, packedLight);
                 matrixStack.pop();

@@ -22,11 +22,12 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullConsumer;
+import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.transport.block.loader.LoadType;
 import xyz.brassgoggledcoders.transport.block.loader.LoaderBlock;
 import xyz.brassgoggledcoders.transport.container.LoaderContainerProvider;
+import xyz.brassgoggledcoders.transport.util.WorldHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,28 +43,32 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
 
     private final Capability<CAP> capability;
     private final EnumMap<Direction, LazyOptional<CAP>> lazyOptionals;
+    private final NonNullLazy<AxisAlignedBB> axisAlignedBB;
+
     private int run = 20;
 
     public <T extends BasicLoaderTileEntity<CAP>> BasicLoaderTileEntity(TileEntityType<T> tileEntityType, Capability<CAP> capability) {
         super(tileEntityType);
         this.capability = capability;
         this.lazyOptionals = Maps.newEnumMap(Direction.class);
+        this.axisAlignedBB = NonNullLazy.of(this::getWorkAxisAlignedBB);
     }
 
     @Override
     public void tick() {
-        if (this.getWorld() != null) {
-            if (!this.getWorld().isRemote()) {
-                if (run >= 0) {
-                    run--;
+        World world = this.getWorld();
+        if (world != null) {
+            if (!world.isRemote()) {
+                if (this.run < 0) {
+                    this.run = world.getRandom().nextInt(10);
+                } else if (this.run > 0) {
+                    this.run--;
                 } else {
-                    doWork();
-                    run = 15 + this.getWorld().getRandom().nextInt(10);
+                    this.doWork();
+                    this.run = 10;
                 }
             }
-
         }
-
     }
 
     @Nonnull
@@ -72,8 +77,8 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
     }
 
     private void doWork() {
-        AxisAlignedBB axisAlignedBB = new AxisAlignedBB(this.getPos()).grow(1);
-        List<Entity> entities = this.getTheWorld().getEntitiesInAABBexcluding(null, axisAlignedBB, Entity::isAlive);
+        List<Entity> entities = WorldHelper.getEntitiesWithinAABB(this.getTheWorld(), Entity.class, axisAlignedBB.get(),
+                Entity::isAlive);
 
         for (Direction side : Direction.values()) {
             BlockPos neighborPos = this.getPos().offset(side, 1);
@@ -164,6 +169,11 @@ public abstract class BasicLoaderTileEntity<CAP> extends TileEntity implements I
         }
 
         return super.getCapability(cap, side);
+    }
+
+    @Nonnull
+    protected AxisAlignedBB getWorkAxisAlignedBB() {
+        return new AxisAlignedBB(this.getPos()).grow(1);
     }
 
     protected abstract LazyOptional<CAP> getInternalCAP();

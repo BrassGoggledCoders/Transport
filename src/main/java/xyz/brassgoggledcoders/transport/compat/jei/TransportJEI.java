@@ -10,9 +10,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.compat.jei.module.ModuleCategory;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
 
@@ -33,16 +33,19 @@ public class TransportJEI implements IModPlugin {
     @Override
     public void registerCategories(@Nonnull IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(new RailWorkerBenchCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new ModuleCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
     public void registerRecipes(@Nonnull IRecipeRegistration registration) {
         registration.addRecipes(this.getRecipes(TransportRecipes.RAIL_WORKER_BENCH_TYPE), RailWorkerBenchCategory.UID);
+        registration.addRecipes(ModuleCategory.createRecipes(), ModuleCategory.UID);
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(TransportBlocks.RAIL_WORKER_BENCH.get()), RailWorkerBenchCategory.UID);
+        registration.addRecipeCatalyst(new ItemStack(TransportBlocks.MODULE_CONFIGURATOR.get()), ModuleCategory.UID);
     }
 
     public <T extends IRecipe<?>> Collection<T> getRecipes(IRecipeType<T> recipeType) {

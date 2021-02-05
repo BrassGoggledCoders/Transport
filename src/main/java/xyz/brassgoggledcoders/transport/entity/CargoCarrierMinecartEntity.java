@@ -148,23 +148,29 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
             }
         }
 
-        ActionResultType actionResultType = modularEntity.applyPlayerInteraction(TransportModuleSlots.CARGO, player, vector3d, hand);
-        if (actionResultType != ActionResultType.PASS) {
-            return actionResultType;
-        }
+        return modularEntity.applyPlayerInteraction(TransportModuleSlots.CARGO, player, vector3d, hand);
+    }
 
-        if (this.canBeRidden()) {
-            if (this.isBeingRidden()) {
+    @Override
+    @Nonnull
+    @ParametersAreNonnullByDefault
+    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
+        ActionResultType ret = super.processInitialInteract(player, hand);
+        if (ret.isSuccessOrConsume() || !this.canBeRidden()) {
+            return ret;
+        } else {
+            if (player.isSecondaryUseActive()) {
+                return ActionResultType.PASS;
+            } else if (this.isBeingRidden()) {
                 return ActionResultType.PASS;
             } else if (!this.world.isRemote) {
                 return player.startRiding(this) ? ActionResultType.CONSUME : ActionResultType.PASS;
             } else {
                 return ActionResultType.SUCCESS;
             }
-        } else {
-            return ActionResultType.PASS;
         }
     }
+
 
     @Override
     public boolean isPoweredCart() {

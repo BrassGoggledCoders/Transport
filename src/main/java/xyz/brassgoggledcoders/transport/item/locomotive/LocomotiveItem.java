@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.item;
+package xyz.brassgoggledcoders.transport.item.locomotive;
 
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.entity.Entity;
@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.math.BlockPos;
 import xyz.brassgoggledcoders.transport.entity.locomotive.LocomotiveEntity;
+import xyz.brassgoggledcoders.transport.item.BasicMinecartItem;
 
 import javax.annotation.Nullable;
 

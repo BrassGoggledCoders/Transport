@@ -11,6 +11,7 @@ import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -52,12 +53,15 @@ public class ModuleCaseItemStackHandler implements IItemHandlerModifiable {
         return entity.map(IModularEntity::getModuleSlots)
                 .filter(moduleSlots -> slot >= 0 && slot < moduleSlots.size())
                 .map(moduleSlots -> moduleSlots.get(slot))
-                .orElseGet(TransportModuleSlots.NONE::get);
+                .orElseGet(TransportModuleSlots.NONE);
     }
 
     @Override
     public int getSlots() {
-        return 9;
+        return modularEntity.get()
+                .map(IModularEntity::getModuleSlots)
+                .map(List::size)
+                .orElse(0);
     }
 
     @Nonnull

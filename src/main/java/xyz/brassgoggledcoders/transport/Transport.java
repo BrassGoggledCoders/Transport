@@ -51,6 +51,8 @@ import xyz.brassgoggledcoders.transport.predicate.TimePredicate;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrate;
 
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import static xyz.brassgoggledcoders.transport.Transport.ID;
 
@@ -107,6 +109,7 @@ public class Transport {
         TransportText.setup();
         TransportNavigationPoints.setup();
         TransportFluids.setup();
+        TransportLoots.setup();
 
         TransportVanilla.setup();
         TransportIE.setup();
@@ -163,6 +166,13 @@ public class Transport {
         TransportAPI.addStringPredicateCreator("STARTS_WITH", StringPredicate.create(String::startsWith));
         TransportAPI.addStringPredicateCreator("CONTAINS", StringPredicate.create((predicateString, testString) ->
                 testString.contains(predicateString)));
+        TransportAPI.addStringPredicateCreator("REGEX", StringPredicate.create((regex, testString) -> {
+            try {
+                return Pattern.matches(regex, testString);
+            } catch (PatternSyntaxException e) {
+                return false;
+            }
+        }));
 
         CapabilityManager.INSTANCE.register(PredicateStorage.class, new EmptyStorage<>(), PredicateStorage::new);
         CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () -> null);

@@ -32,6 +32,15 @@ public class TransportText {
     public static final ITextComponent SCREEN_FLUID_CAPACITY = Transport.getRegistrate()
             .addRawLang("screen.transport.fluid.capacity", "%s / %s mB");
 
+    public static final ITextComponent TOOLTIP_CONTENTS_FLUID = Transport.getRegistrate()
+            .addRawLang("tooltip.transport.contents.fluid", " * %s mB - %s");
+
+    public static final ITextComponent TOOLTIP_CONTENTS_ITEM = Transport.getRegistrate()
+            .addRawLang("tooltip.transport.contents.item", " * %sx - %s");
+
+    public static final ITextComponent TOOLTIP_CONTENTS = Transport.getRegistrate()
+            .addRawLang("tooltip.transport.contents", "Contents: ");
+
     public static void setup() {
 
     }

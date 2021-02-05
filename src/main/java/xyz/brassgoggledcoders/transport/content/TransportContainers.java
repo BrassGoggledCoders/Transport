@@ -1,25 +1,17 @@
 package xyz.brassgoggledcoders.transport.content;
 
-import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
-import com.hrznstudio.titanium.network.locator.LocatorFactory;
-import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.locator.instance.EmptyLocatorInstance;
 import com.tterrag.registrate.builders.ContainerBuilder;
+import com.tterrag.registrate.util.entry.ContainerEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.world.World;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
@@ -28,7 +20,9 @@ import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.container.locomotive.SteamLocomotiveContainer;
+import xyz.brassgoggledcoders.transport.container.moduleconfigurator.ModuleConfiguratorContainer;
 import xyz.brassgoggledcoders.transport.container.navigation.NavigationChartContainer;
+import xyz.brassgoggledcoders.transport.screen.ModuleConfiguratorScreen;
 import xyz.brassgoggledcoders.transport.screen.locomotive.SteamLocomotiveScreen;
 import xyz.brassgoggledcoders.transport.screen.navigation.NavigationChartScreen;
 
@@ -64,27 +58,19 @@ public class TransportContainers {
                         windowId);
             }));
 
-    public static final RegistryObject<ContainerType<BasicAddonContainer>> MODULE_CONFIGURATOR = CONTAINERS.register(
-            "modular_configurator", () -> IForgeContainerType.create(new IContainerFactory<BasicAddonContainer>() {
-                @Override
-                public BasicAddonContainer create(int id, PlayerInventory inventory, PacketBuffer packetBuffer) {
-                    LocatorInstance instance = LocatorFactory.readPacketBuffer(packetBuffer);
-                    if (instance != null) {
-                        PlayerEntity playerEntity = inventory.player;
-                        World world = playerEntity.getEntityWorld();
-                        BasicAddonContainer container = instance.locale(playerEntity).map((located) ->
-                                new BasicAddonContainer(located, instance, MODULE_CONFIGURATOR.get(),
-                                        instance.getWorldPosCallable(world), inventory, id))
-                                .orElse(null);
-                        if (container != null) {
-                            return container;
+    public static final ContainerEntry<ModuleConfiguratorContainer> MODULE_CONFIGURATOR =
+            Transport.getRegistrate()
+                    .object("module_configurator")
+                    .container(new ContainerBuilder.ContainerFactory<ModuleConfiguratorContainer>() {
+                        @Override
+                        @Nonnull
+                        @ParametersAreNonnullByDefault
+                        public ModuleConfiguratorContainer create(ContainerType<ModuleConfiguratorContainer> containerType,
+                                                                  int i, PlayerInventory playerInventory) {
+                            return new ModuleConfiguratorContainer(containerType, i, playerInventory);
                         }
-                    }
-
-                    Titanium.LOGGER.error("Failed to find locate instance to create Container for");
-                    return new BasicAddonContainer(new Object(), new EmptyLocatorInstance(), IWorldPosCallable.DUMMY, inventory, id);
-                }
-            }));
+                    }, () -> ModuleConfiguratorScreen::new)
+                    .register();
 
     public static final RegistryEntry<ContainerType<NavigationChartContainer>> NAVIGATION_CHART =
             Transport.getRegistrate()

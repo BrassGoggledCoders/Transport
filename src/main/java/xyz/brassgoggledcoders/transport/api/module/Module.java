@@ -1,8 +1,12 @@
 package xyz.brassgoggledcoders.transport.api.module;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -89,5 +93,33 @@ public abstract class Module<MOD extends Module<MOD>> extends ForgeRegistryEntry
     public static void toCompoundNBT(Module<?> module, CompoundNBT compoundNBT) {
         compoundNBT.putString("type", String.valueOf(module.getType().getRegistryName()));
         compoundNBT.putString("module", String.valueOf(module.getRegistryName()));
+    }
+
+    public static Module<?> fromJson(JsonElement jsonElement) {
+        if (jsonElement != null && jsonElement.isJsonObject()) {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            String moduleTypeName = JSONUtils.getString(jsonObject, "type");
+            ModuleType moduleType = TransportAPI.getModuleType(moduleTypeName);
+            if (moduleType != null) {
+                String moduleName = JSONUtils.getString(jsonObject, "name");
+                Module<?> module = moduleType.load(moduleName);
+                if (module != null) {
+                    return module;
+                } else {
+                    throw new JsonParseException("Failed to find Module for name: " + moduleName);
+                }
+            } else {
+                throw new JsonParseException("Failed to find Module Type for type: " + moduleTypeName);
+            }
+        } else {
+            throw new JsonParseException("module must be an json object");
+        }
+    }
+
+    public static JsonObject toJson(Module<?> module) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("type", Objects.requireNonNull(module.getType().getRegistryName()).toString());
+        jsonObject.addProperty("name", Objects.requireNonNull(module.getRegistryName()).toString());
+        return jsonObject;
     }
 }
