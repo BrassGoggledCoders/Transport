@@ -4,6 +4,18 @@
   "model": "transport:models/item/steam_locomotive.obj",
   "flip-v": true,
   "transform": {
+    "ground": {
+      "scale": [
+        0.15,
+        0.15,
+        0.15
+      ],
+      "translation": [
+        -0.75,
+        -0.75,
+        -0.75
+      ]
+    },
     "gui": {
       "scale": [
         0.275,
