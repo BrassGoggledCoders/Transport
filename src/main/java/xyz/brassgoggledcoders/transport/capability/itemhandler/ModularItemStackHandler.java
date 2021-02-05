@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ModularItemStackHandler implements IItemHandlerModifiable, INBTSerializable<CompoundNBT> {
@@ -258,5 +259,11 @@ public class ModularItemStackHandler implements IItemHandlerModifiable, INBTSeri
         return this.getModularEntity()
                 .map(IModularEntity::getModuleSlots)
                 .orElseGet(Lists::newArrayList);
+    }
+
+    public void forEach(Consumer<ItemStack> itemStackConsumer) {
+        itemStackConsumer.accept(this.modularItemStack);
+        this.modularItemStack = ItemStack.EMPTY;
+        this.onChange();
     }
 }

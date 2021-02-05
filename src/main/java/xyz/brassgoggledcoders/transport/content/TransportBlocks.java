@@ -27,7 +27,6 @@ import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.conditions.BlockStateProperty;
 import net.minecraft.loot.conditions.SurvivesExplosion;
-import net.minecraft.loot.functions.CopyNbt;
 import net.minecraft.loot.functions.SetCount;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.state.properties.SlabType;
@@ -38,10 +37,10 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.block.boat.BuoyBlock;
-import xyz.brassgoggledcoders.transport.block.boat.DockBlock;
 import xyz.brassgoggledcoders.transport.block.ModuleConfiguratorBlock;
 import xyz.brassgoggledcoders.transport.block.ScaffoldingSlabBlock;
+import xyz.brassgoggledcoders.transport.block.boat.BuoyBlock;
+import xyz.brassgoggledcoders.transport.block.boat.DockBlock;
 import xyz.brassgoggledcoders.transport.block.jobsite.RailWorkerBenchBlock;
 import xyz.brassgoggledcoders.transport.block.loader.EnergyLoaderBlock;
 import xyz.brassgoggledcoders.transport.block.loader.FluidLoaderBlock;
@@ -53,6 +52,7 @@ import xyz.brassgoggledcoders.transport.block.rail.turnout.SwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.turnout.WyeSwitchRailBlock;
 import xyz.brassgoggledcoders.transport.container.jobsite.RailWorkerBenchContainer;
 import xyz.brassgoggledcoders.transport.item.BuoyBlockItem;
+import xyz.brassgoggledcoders.transport.loot.entry.LootDropLootEntry;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrate;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateBlockLootTables;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateModels;
@@ -354,10 +354,12 @@ public class TransportBlocks {
                             .addLootPool(LootPool.builder()
                                     .rolls(ConstantRange.of(1))
                                     .acceptCondition(SurvivesExplosion.builder())
-                                    .acceptFunction(CopyNbt.builder(CopyNbt.Source.BLOCK_ENTITY)
-                                            .replaceOperation("modularInventory", "BlockEntityTag.modularInventory")
-                                    )
                                     .addEntry(ItemLootEntry.builder(moduleConfiguratorBlock))
+                            )
+                            .addLootPool(LootPool.builder()
+                                    .rolls(ConstantRange.of(1))
+                                    .acceptCondition(SurvivesExplosion.builder())
+                                    .addEntry(LootDropLootEntry.builder())
                             )
             ))
             .item()

@@ -109,6 +109,7 @@ public class Transport {
         TransportText.setup();
         TransportNavigationPoints.setup();
         TransportFluids.setup();
+        TransportLoots.setup();
 
         TransportVanilla.setup();
         TransportIE.setup();

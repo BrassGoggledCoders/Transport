@@ -6,35 +6,44 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.ModularItemStackHandler;
 import xyz.brassgoggledcoders.transport.container.moduleconfigurator.ModuleConfiguratorContainer;
+import xyz.brassgoggledcoders.transport.loot.entry.ILootDrop;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
+import java.util.function.Consumer;
 
-public class ModuleConfiguratorTileEntity extends TileEntity implements INamedContainerProvider {
+public class ModuleConfiguratorTileEntity extends TileEntity implements INamedContainerProvider, ILootDrop {
     private final ModularItemStackHandler modularItemStackHandler;
+    private final LazyOptional<IItemHandler> lazyOptional;
 
     public ModuleConfiguratorTileEntity(TileEntityType<?> tileEntityType) {
         super(tileEntityType);
         this.modularItemStackHandler = new ModularItemStackHandler(this::getTheWorld, this::onChange);
+        this.lazyOptional = LazyOptional.of(() -> modularItemStackHandler);
     }
 
     public ActionResultType openScreen(PlayerEntity playerEntity) {
@@ -116,5 +125,26 @@ public class ModuleConfiguratorTileEntity extends TileEntity implements INamedCo
     public void onChange() {
         this.getTheWorld().notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(),
                 Constants.BlockFlags.DEFAULT);
+    }
+
+    @Override
+    @Nonnull
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return this.lazyOptional.cast();
+        } else {
+            return super.getCapability(capability, side);
+        }
+    }
+
+    @Override
+    protected void invalidateCaps() {
+        super.invalidateCaps();
+        this.lazyOptional.invalidate();
+    }
+
+    @Override
+    public void onLootDrop(Consumer<ItemStack> itemStackConsumer) {
+        this.modularItemStackHandler.forEach(itemStackConsumer);
     }
 }
