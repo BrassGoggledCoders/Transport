@@ -49,6 +49,7 @@ import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.PredicatePointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
 import xyz.brassgoggledcoders.transport.predicate.NamePredicate;
+import xyz.brassgoggledcoders.transport.predicate.RiderPredicate;
 import xyz.brassgoggledcoders.transport.predicate.TimePredicate;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrate;
 
@@ -150,6 +151,7 @@ public class Transport {
         TransportAPI.addEntityPredicateCreator("NOT", parser -> parser.getNextEntityPredicate().negate());
         TransportAPI.addEntityPredicateCreator("POWERED", parser -> entity -> entity instanceof AbstractMinecartEntity &&
                 ((AbstractMinecartEntity) entity).isPoweredCart());
+        TransportAPI.addEntityPredicateCreator("RIDERS", RiderPredicate::create);
         TransportAPI.addEntityPredicateCreator("TIME", TimePredicate::create);
         TransportAPI.addEntityPredicateCreator("AND", parse -> {
             Predicate<Entity> predicate = parse.getNextEntityPredicate();
