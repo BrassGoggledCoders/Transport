@@ -8,6 +8,8 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.PlayerPredicate;
 import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -399,7 +401,8 @@ public class TransportBlocks {
                     .key('P', Tags.Items.GEMS_PRISMARINE)
                     .key('I', Tags.Items.INGOTS_IRON)
                     .key('R', Tags.Items.DYES_RED)
-                    .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.OAK_BOAT)))
+                    .addCriterion("has_item", RegistrateRecipeProvider.hasItem(Items.OAK_BOAT))
+            )
             .item(BuoyBlockItem::new)
             .model((context, provider) -> provider.generated(context, provider.modLoc("item/buoy")))
             .build()
@@ -410,6 +413,7 @@ public class TransportBlocks {
     public static RegistryEntry<TileEntityType<BuoyTileEntity>> BUOY_TILE_ENTITY =
             BUOY.getSibling(ForgeRegistries.TILE_ENTITIES);
 
+    @SuppressWarnings("unused")
     public static final BlockEntry<DockBlock> DOCK = Transport.getRegistrate()
             .object("dock")
             .block(Material.IRON, DockBlock::new)

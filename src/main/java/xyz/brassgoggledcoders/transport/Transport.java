@@ -11,6 +11,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -34,6 +35,7 @@ import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
 import xyz.brassgoggledcoders.transport.api.predicate.StringPredicate;
 import xyz.brassgoggledcoders.transport.compat.immersiveengineering.TransportIE;
 import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
+import xyz.brassgoggledcoders.transport.compat.theoneprobe.TransportTOP;
 import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
@@ -51,6 +53,7 @@ import xyz.brassgoggledcoders.transport.predicate.TimePredicate;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrate;
 
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -114,6 +117,8 @@ public class Transport {
         TransportVanilla.setup();
         TransportIE.setup();
         TransportQuark.setup();
+
+        handleCompat("theoneprobe", () -> TransportTOP::new);
     }
 
     public static void setupRegistries() {
@@ -195,5 +200,11 @@ public class Transport {
 
     public static ResourceLocation rl(String path) {
         return new ResourceLocation(ID, path);
+    }
+
+    private static void handleCompat(String mod, Supplier<Supplier<?>> compatSupplier) {
+        if (ModList.get().isLoaded(mod)) {
+            compatSupplier.get().get();
+        }
     }
 }
