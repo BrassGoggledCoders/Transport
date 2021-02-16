@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.container;
+package xyz.brassgoggledcoders.transport.container.modular;
 
 import com.hrznstudio.titanium.container.BasicAddonContainer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -9,6 +9,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
+import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
 import xyz.brassgoggledcoders.transport.entity.EntityWorldPosCallable;
 

@@ -23,7 +23,7 @@ import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 import xyz.brassgoggledcoders.transport.api.engine.PoweredState;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.container.ModuleContainerProvider;
+import xyz.brassgoggledcoders.transport.container.modular.ModuleContainerProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

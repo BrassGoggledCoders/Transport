@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.container.ModuleContainerProvider;
+import xyz.brassgoggledcoders.transport.container.modular.ModuleContainerProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
