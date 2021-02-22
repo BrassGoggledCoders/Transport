@@ -123,6 +123,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     }
 
     @Override
+    @Nonnull
     public ItemStack asItemStack() {
         ItemStack itemStack = new ItemStack(this.entity.asItem());
         itemStack.getOrCreateTag().put("modules", this.serializeNBT());
@@ -174,6 +175,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     }
 
     @Override
+    @Nonnull
     public Collection<ModuleInstance<?>> getModuleInstances() {
         return byModuleType.values();
     }
@@ -260,9 +262,25 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
 
     @Override
     public void sendClientUpdate(ModuleInstance<?> moduleInstance, int type, CompoundNBT compoundNBT) {
-        for (Entry<ModuleSlot, ModuleInstance<?>> entry: byModuleSlot.entrySet()) {
+        for (Entry<ModuleSlot, ModuleInstance<?>> entry : byModuleSlot.entrySet()) {
             if (entry.getValue() == moduleInstance) {
                 TransportAPI.getNetworkHandler().sendModuleInstanceUpdate(this, entry.getKey(), type, compoundNBT);
+            }
+        }
+    }
+
+    @Override
+    public void openModuleContainer(@Nullable ModuleInstance<?> moduleInstance, @Nonnull PlayerEntity playerEntity) {
+        if (playerEntity instanceof ServerPlayerEntity) {
+            INamedContainerProvider provider = TransportAPI.createModularContainerProvider(moduleInstance, this);
+            if (provider != null) {
+                NetworkHooks.openGui((ServerPlayerEntity) playerEntity, provider, packetBuffer -> {
+                    packetBuffer.writeInt(getSelf().getEntityId());
+                    packetBuffer.writeBoolean(moduleInstance != null);
+                    if (moduleInstance != null) {
+                        Module.toPacketBuffer(moduleInstance.getModule(), packetBuffer);
+                    }
+                });
             }
         }
     }

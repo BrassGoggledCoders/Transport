@@ -9,7 +9,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.NonNullLazy;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -38,6 +37,7 @@ import xyz.brassgoggledcoders.transport.compat.immersiveengineering.TransportIE;
 import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
+import xyz.brassgoggledcoders.transport.container.modular.ModuleContainerProvider;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
 import xyz.brassgoggledcoders.transport.navigation.NavigationNetwork;
@@ -93,10 +93,10 @@ public class Transport {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         modBus.addListener(this::commonSetup);
-        modBus.addListener(this::newRegistry);
 
         this.networkHandler = new NetworkHandler();
         TransportAPI.setNetworkHandler(this.networkHandler);
+        TransportAPI.setModularContainerConsumer(ModuleContainerProvider::new);
 
         setupRegistries();
 
@@ -122,6 +122,7 @@ public class Transport {
         handleCompat("create", () -> TransportCreate::new);
     }
 
+    @SuppressWarnings("unchecked")
     public static void setupRegistries() {
         if (!registriesSetup) {
             makeRegistry("module_type", ModuleType.class);
@@ -132,10 +133,6 @@ public class Transport {
             makeRegistry("navigation_point_type", NavigationPointType.class);
             registriesSetup = true;
         }
-    }
-
-    public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
-
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {

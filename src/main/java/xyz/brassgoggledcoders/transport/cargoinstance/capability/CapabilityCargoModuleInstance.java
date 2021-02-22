@@ -13,11 +13,9 @@ import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.container.modular.ModuleContainerProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 public abstract class CapabilityCargoModuleInstance<CAP> extends CargoModuleInstance implements IScreenAddonProvider,
         IContainerAddonProvider {
@@ -41,9 +39,7 @@ public abstract class CapabilityCargoModuleInstance<CAP> extends CargoModuleInst
     @Override
     public ActionResultType applyInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
         if (!player.isCrouching()) {
-            this.getModularEntity().openContainer(player, new ModuleContainerProvider(this,
-                    this.getModularEntity()), packetBuffer -> packetBuffer.writeResourceLocation(Objects.requireNonNull(
-                    this.getModule().getType().getRegistryName())));
+            this.getModularEntity().openModuleContainer(this, player);
             return ActionResultType.SUCCESS;
         }
         return super.applyInteraction(player, vec, hand);

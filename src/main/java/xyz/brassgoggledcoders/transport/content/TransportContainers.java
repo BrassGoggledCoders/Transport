@@ -14,7 +14,7 @@ import xyz.brassgoggledcoders.transport.container.modular.ModularContainer;
 import xyz.brassgoggledcoders.transport.container.moduleconfigurator.ModuleConfiguratorContainer;
 import xyz.brassgoggledcoders.transport.container.navigation.NavigationChartContainer;
 import xyz.brassgoggledcoders.transport.screen.ModuleConfiguratorScreen;
-import xyz.brassgoggledcoders.transport.screen.ModularScreen;
+import xyz.brassgoggledcoders.transport.screen.modular.ModularScreen;
 import xyz.brassgoggledcoders.transport.screen.locomotive.SteamLocomotiveScreen;
 import xyz.brassgoggledcoders.transport.screen.navigation.NavigationChartScreen;
 

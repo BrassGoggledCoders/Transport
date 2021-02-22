@@ -15,6 +15,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.module.container.ModuleTab;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -101,5 +102,10 @@ public class ModuleInstance<MOD extends Module<MOD>>
 
     public void write(PacketBuffer packetBuffer) {
 
+    }
+
+    @Nullable
+    public ModuleTab<?> createTab() {
+        return null;
     }
 }

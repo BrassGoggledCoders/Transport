@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.container;
+package xyz.brassgoggledcoders.transport.api.helper;
 
 import com.mojang.datafixers.util.Function4;
 import net.minecraft.entity.player.PlayerEntity;

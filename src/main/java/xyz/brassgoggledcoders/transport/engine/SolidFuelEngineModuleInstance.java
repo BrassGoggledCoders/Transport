@@ -23,12 +23,10 @@ import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 import xyz.brassgoggledcoders.transport.api.engine.PoweredState;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.container.modular.ModuleContainerProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Objects;
 
 public class SolidFuelEngineModuleInstance extends EngineModuleInstance implements IScreenAddonProvider, IContainerAddonProvider {
     private final InventoryComponent<?> itemStackHandler;
@@ -45,10 +43,11 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
 
     @Override
     public ActionResultType applyInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
-        this.getModularEntity().openContainer(player, new ModuleContainerProvider(this,
-                this.getModularEntity()), packetBuffer -> packetBuffer.writeResourceLocation(Objects.requireNonNull(
-                this.getModule().getType().getRegistryName())));
-        return ActionResultType.SUCCESS;
+        if (!player.isCrouching()) {
+            this.getModularEntity().openModuleContainer(this, player);
+            return ActionResultType.func_233537_a_(this.getModularEntity().getTheWorld().isRemote());
+        }
+        return ActionResultType.PASS;
     }
 
     @Override

@@ -7,7 +7,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IWorldPosCallable;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.ModularItemStackHandler;
-import xyz.brassgoggledcoders.transport.container.ContainerHelper;
+import xyz.brassgoggledcoders.transport.api.helper.ContainerHelper;
 import xyz.brassgoggledcoders.transport.container.slot.ModularItemSlot;
 import xyz.brassgoggledcoders.transport.container.slot.ModuleSlotSlot;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
@@ -17,7 +17,6 @@ import javax.annotation.Nonnull;
 
 public class ModuleConfiguratorContainer extends Container {
     private final IWorldPosCallable worldPosCallable;
-    private final ModularItemStackHandler modularItemStackHandler;
 
     public ModuleConfiguratorContainer(ContainerType<ModuleConfiguratorContainer> containerType, int windowId, PlayerInventory playerInventory) {
         this(containerType, windowId, playerInventory, IWorldPosCallable.DUMMY, new ModularItemStackHandler(
@@ -35,7 +34,6 @@ public class ModuleConfiguratorContainer extends Container {
                                        ModularItemStackHandler modularItemStackHandler) {
         super(containerType, windowId);
         this.worldPosCallable = worldPosCallable;
-        this.modularItemStackHandler = modularItemStackHandler;
         this.addSlot(new ModularItemSlot(modularItemStackHandler, 0, 26, 33));
         for (int i = 0; i < 3; i++) {
             this.addSlot(new ModuleSlotSlot(modularItemStackHandler, i, 61, 17 + (i * 18)));
@@ -52,9 +50,5 @@ public class ModuleConfiguratorContainer extends Container {
     @Nonnull
     public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int index) {
         return ContainerHelper.transferStackInSlot(this, player, index, this::mergeItemStack);
-    }
-
-    public void updateSlots() {
-
     }
 }

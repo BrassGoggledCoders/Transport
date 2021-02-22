@@ -77,12 +77,14 @@ public interface IModularEntity extends IItemProvider, INBTSerializable<Compound
         }
     }
 
+    @Nonnull
     ItemStack asItemStack();
 
     void read(PacketBuffer packetBuffer);
 
     void write(PacketBuffer packetBuffer);
 
+    @Nonnull
     Collection<ModuleInstance<?>> getModuleInstances();
 
     default ActionResultType applyPlayerInteraction(Supplier<ModuleSlot> moduleSlot, PlayerEntity player, Vector3d vec, Hand hand) {
@@ -96,4 +98,6 @@ public interface IModularEntity extends IItemProvider, INBTSerializable<Compound
     void invalidateCapabilities();
 
     void sendClientUpdate(ModuleInstance<?> moduleInstance, int type, CompoundNBT compoundNBT);
+
+    void openModuleContainer(ModuleInstance<?> moduleInstance, PlayerEntity playerEntity);
 }

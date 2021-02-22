@@ -41,6 +41,9 @@ public class TransportText {
     public static final ITextComponent TOOLTIP_CONTENTS = Transport.getRegistrate()
             .addRawLang("tooltip.transport.contents", "Contents: ");
 
+    public static final ITextComponent BLANK = Transport.getRegistrate()
+            .addRawLang("screen.transport.blank", "Blank");
+
     public static void setup() {
 
     }
