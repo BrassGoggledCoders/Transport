@@ -16,14 +16,28 @@ public class ModuleScreen<T extends ModuleContainer> {
     private final T moduleContainer;
     private final IModularScreen modularScreen;
 
+    private Minecraft minecraft;
     private FontRenderer fontRenderer;
 
     protected int xSize = 176;
     protected int ySize = 166;
 
+    protected int width;
+    protected int height;
+
+    protected int titleX;
+    protected int titleY;
+    protected int playerInventoryTitleX;
+    protected int playerInventoryTitleY;
+
     public ModuleScreen(IModularScreen modularScreen, T moduleContainer) {
         this.moduleContainer = moduleContainer;
         this.modularScreen = modularScreen;
+
+        this.titleX = 8;
+        this.titleY = 6;
+        this.playerInventoryTitleX = 8;
+        this.playerInventoryTitleY = this.ySize - 94;
     }
 
     public T getModuleContainer() {
@@ -58,23 +72,25 @@ public class ModuleScreen<T extends ModuleContainer> {
                         .getModularContainer()
                         .getActiveTab()
                         .getDisplayName(),
-                8F,
-                6F,
+                titleX,
+                titleY,
                 4210752
         );
         this.getFontRenderer().func_243248_b(
                 matrixStack,
                 this.getPlayerInventory().getDisplayName(),
-                8F,
-                (float) this.getYSize() - 94,
+                playerInventoryTitleX,
+                playerInventoryTitleY,
                 4210752
         );
 
     }
 
-    @SuppressWarnings("unused")
     public void init(Minecraft minecraft, int width, int height) {
+        this.minecraft = minecraft;
         this.fontRenderer = minecraft.fontRenderer;
+        this.width = width;
+        this.height = height;
     }
 
     public void init() {
@@ -105,5 +121,9 @@ public class ModuleScreen<T extends ModuleContainer> {
         return this.getModuleContainer()
                 .getModularContainer()
                 .getPlayerInventory();
+    }
+
+    public Minecraft getMinecraft() {
+        return minecraft;
     }
 }

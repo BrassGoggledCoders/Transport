@@ -112,6 +112,7 @@ public class ModularContainer extends Container implements IModularContainer {
             currentTabs.values().removeIf(Objects::isNull);
             existingModuleTabs.clear();
             existingModuleTabs.putAll(currentTabs);
+            tabs.addAll(existingModuleTabs.values());
         });
         tabs.sort((o1, o2) -> String.CASE_INSENSITIVE_ORDER.compare(
                 o1.getDisplayName().getString(),

@@ -81,6 +81,7 @@ public class ModuleInstance<MOD extends Module<MOD>>
         return this.getModule().getDisplayName();
     }
 
+    @Nonnull
     public ItemStack asItemStack() {
         return new ItemStack(this.getModule().asItem());
     }

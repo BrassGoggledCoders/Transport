@@ -15,7 +15,9 @@ import net.minecraftforge.items.ItemStackHandler;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.container.provider.ChestContainerProvider;
+import xyz.brassgoggledcoders.transport.api.module.container.ModuleTab;
+import xyz.brassgoggledcoders.transport.container.module.ChestModuleContainer;
+import xyz.brassgoggledcoders.transport.screen.module.ChestModuleScreen;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,9 +59,20 @@ public class GenericChestCargoInstance extends CargoModuleInstance {
     @Override
     public ActionResultType applyInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
         if (!player.isCrouching()) {
-            player.openContainer(new ChestContainerProvider(inventory, playerEntity -> true));
+            this.getModularEntity().openModuleContainer(this, player);
             return ActionResultType.SUCCESS;
         }
         return super.applyInteraction(player, vec, hand);
+    }
+
+    @Nullable
+    @Override
+    public ModuleTab<?> createTab() {
+        return new ModuleTab<>(
+                this.getDisplayName(),
+                this::asItemStack,
+                container -> new ChestModuleContainer(3, inventory, container),
+                () -> ChestModuleScreen::new
+        );
     }
 }
