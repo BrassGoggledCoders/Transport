@@ -1,11 +1,11 @@
-package xyz.brassgoggledcoders.transport.screen.module;
+package xyz.brassgoggledcoders.transport.screen.module.cargo;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.util.ResourceLocation;
 import xyz.brassgoggledcoders.transport.api.module.screen.IModularScreen;
 import xyz.brassgoggledcoders.transport.api.module.screen.ModuleScreen;
-import xyz.brassgoggledcoders.transport.container.module.ChestModuleContainer;
+import xyz.brassgoggledcoders.transport.container.module.cargo.ChestModuleContainer;
 
 public class ChestModuleScreen extends ModuleScreen<ChestModuleContainer> {
     private static final ResourceLocation CHEST_GUI_TEXTURE = new ResourceLocation("textures/gui/container/generic_54.png");

@@ -6,9 +6,10 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.api.module.screen.ModuleScreen;
 
 public interface IModularContainer {
+
+    short getId();
 
     void putSlot(Slot slot);
 

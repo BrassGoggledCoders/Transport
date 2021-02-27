@@ -23,6 +23,9 @@ import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 import xyz.brassgoggledcoders.transport.api.engine.PoweredState;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.api.module.container.ModuleTab;
+import xyz.brassgoggledcoders.transport.container.module.engine.SolidFuelModuleContainer;
+import xyz.brassgoggledcoders.transport.screen.module.engine.SolidFuelModuleScreen;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,6 +34,8 @@ import java.util.List;
 public class SolidFuelEngineModuleInstance extends EngineModuleInstance implements IScreenAddonProvider, IContainerAddonProvider {
     private final InventoryComponent<?> itemStackHandler;
     private final LazyOptional<IItemHandler> optionalItemHandler;
+
+    private int maxBurnTime = 0;
     private int burnTime = 0;
 
     public SolidFuelEngineModuleInstance(EngineModule engineModule, IModularEntity powered) {
@@ -75,6 +80,7 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
                                 itemStack.shrink(1);
                             }
                             burnTime += newBurnTime;
+                            maxBurnTime = newBurnTime;
                         }
                     }
                 }
@@ -111,6 +117,7 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
     public CompoundNBT serializeNBT() {
         CompoundNBT compoundNBT = super.serializeNBT();
         compoundNBT.putInt("burnTime", this.burnTime);
+        compoundNBT.putInt("maxBurnTime", this.maxBurnTime);
         compoundNBT.put("itemStackHandler", itemStackHandler.serializeNBT());
         return compoundNBT;
     }
@@ -119,6 +126,7 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
     public void deserializeNBT(CompoundNBT nbt) {
         super.deserializeNBT(nbt);
         this.burnTime = nbt.getInt("burnTime");
+        this.maxBurnTime = nbt.getInt("maxBurnTime");
         this.itemStackHandler.deserializeNBT(nbt.getCompound("itemStackHandler"));
     }
 
@@ -126,5 +134,21 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
     public void invalidateCapabilities() {
         super.invalidateCapabilities();
         this.optionalItemHandler.invalidate();
+    }
+
+    @Nullable
+    @Override
+    public ModuleTab<?> createTab() {
+        return new ModuleTab<>(
+                this.getDisplayName(),
+                this::asItemStack,
+                container -> new SolidFuelModuleContainer(
+                        container,
+                        this.itemStackHandler,
+                        () -> burnTime,
+                        () -> maxBurnTime
+                ),
+                () -> SolidFuelModuleScreen::new
+        );
     }
 }

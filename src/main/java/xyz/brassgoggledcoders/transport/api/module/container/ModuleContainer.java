@@ -1,9 +1,12 @@
 package xyz.brassgoggledcoders.transport.api.module.container;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import xyz.brassgoggledcoders.transport.api.helper.ContainerHelper;
+
+import java.util.Collection;
 
 public class ModuleContainer {
     private final IModularContainer modularContainer;
@@ -13,6 +16,14 @@ public class ModuleContainer {
     }
 
     public void setup() {
+
+    }
+
+    public void addListener(IContainerListener listener) {
+
+    }
+
+    public void detectAndSendChanges(Collection<IContainerListener> listenerList) {
 
     }
 

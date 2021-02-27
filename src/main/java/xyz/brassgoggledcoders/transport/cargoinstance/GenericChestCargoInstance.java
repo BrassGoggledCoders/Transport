@@ -16,8 +16,8 @@ import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.container.ModuleTab;
-import xyz.brassgoggledcoders.transport.container.module.ChestModuleContainer;
-import xyz.brassgoggledcoders.transport.screen.module.ChestModuleScreen;
+import xyz.brassgoggledcoders.transport.container.module.cargo.ChestModuleContainer;
+import xyz.brassgoggledcoders.transport.screen.module.cargo.ChestModuleScreen;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -71,7 +71,7 @@ public class GenericChestCargoInstance extends CargoModuleInstance {
         return new ModuleTab<>(
                 this.getDisplayName(),
                 this::asItemStack,
-                container -> new ChestModuleContainer(3, inventory, container),
+                container -> new ChestModuleContainer(container, 3, inventory),
                 () -> ChestModuleScreen::new
         );
     }

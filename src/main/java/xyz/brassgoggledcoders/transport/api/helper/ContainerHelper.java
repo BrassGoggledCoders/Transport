@@ -17,7 +17,6 @@ public class ContainerHelper {
     }
 
     public static void addPlayerSlots(PlayerInventory playerInventory, Consumer<Slot> addSlot, int startX, int startY) {
-        Transport.LOGGER.warn("addPlayerSlots remote: " + playerInventory.player.getEntityWorld().isRemote() + " startX: " + startX + " startY: " + startY);
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
                 addSlot.accept(new Slot(playerInventory, j + i * 9 + 9, startX + j * 18, startY + i * 18));

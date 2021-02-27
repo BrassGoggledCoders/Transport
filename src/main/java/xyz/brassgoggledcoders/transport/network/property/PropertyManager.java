@@ -36,6 +36,10 @@ public class PropertyManager {
     }
 
     public void sendChanges(Collection<IContainerListener> containerListeners, boolean firstTime) {
+        this.sendChanges(containerListeners, false, firstTime);
+    }
+
+    public void sendChanges(Collection<IContainerListener> containerListeners, boolean hosted, boolean firstTime) {
         List<ServerPlayerEntity> playerListeners = Lists.newArrayList();
         for (IContainerListener listener : containerListeners) {
             if (listener instanceof ServerPlayerEntity) {
@@ -55,16 +59,18 @@ public class PropertyManager {
             if (!dirtyProperties.isEmpty()) {
                 for (ServerPlayerEntity playerEntity : playerListeners) {
                     Transport.instance.networkHandler.sendUpdateClientContainerProperties(playerEntity,
-                            new UpdateClientContainerPropertiesMessage(windowId, dirtyProperties));
+                            new UpdateClientContainerPropertiesMessage(windowId, hosted, dirtyProperties));
                 }
             }
         }
     }
 
     public void update(PropertyType<?> propertyType, short propertyId, Object value) {
-        Property<?> property = properties.get(propertyId);
-        if (property != null && property.getPropertyType() == propertyType) {
-            propertyType.attemptSet(value, property);
+        if (propertyId < properties.size()) {
+            Property<?> property = properties.get(propertyId);
+            if (property != null && property.getPropertyType() == propertyType) {
+                propertyType.attemptSet(value, property);
+            }
         }
     }
 }

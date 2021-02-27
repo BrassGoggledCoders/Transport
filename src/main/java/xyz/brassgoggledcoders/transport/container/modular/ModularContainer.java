@@ -22,10 +22,7 @@ import xyz.brassgoggledcoders.transport.api.module.container.IModularContainer;
 import xyz.brassgoggledcoders.transport.api.module.container.ModuleContainer;
 import xyz.brassgoggledcoders.transport.api.module.container.ModuleTab;
 import xyz.brassgoggledcoders.transport.content.TransportText;
-import xyz.brassgoggledcoders.transport.network.property.IPropertyManaged;
-import xyz.brassgoggledcoders.transport.network.property.Property;
-import xyz.brassgoggledcoders.transport.network.property.PropertyManager;
-import xyz.brassgoggledcoders.transport.network.property.PropertyTypes;
+import xyz.brassgoggledcoders.transport.network.property.*;
 import xyz.brassgoggledcoders.transport.screen.modular.BlankModuleScreen;
 import xyz.brassgoggledcoders.transport.screen.modular.VehicleModuleScreen;
 import xyz.brassgoggledcoders.transport.util.WorldHelper;
@@ -37,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class ModularContainer extends Container implements IModularContainer, IPropertyManaged {
+public class ModularContainer extends Container implements IModularContainer, IPropertyManaged, IHost<ModuleContainer> {
     private static final ModuleTab<BlankModuleContainer> blankTab = new ModuleTab<>(
             TransportText.BLANK,
             () -> ItemStack.EMPTY,
@@ -159,6 +156,11 @@ public class ModularContainer extends Container implements IModularContainer, IP
     }
 
     @Override
+    public short getId() {
+        return (short) windowId;
+    }
+
+    @Override
     public void putSlot(Slot slot) {
         this.addSlot(slot);
     }
@@ -225,12 +227,19 @@ public class ModularContainer extends Container implements IModularContainer, IP
     public void addListener(@Nonnull IContainerListener listener) {
         super.addListener(listener);
         this.propertyManager.sendChanges(Collections.singletonList(listener), true);
+        this.activeContainer.addListener(listener);
     }
 
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
         this.propertyManager.sendChanges(this.listeners, false);
+        this.activeContainer.detectAndSendChanges(this.listeners);
+    }
+
+    @Override
+    public ModuleContainer getHosted() {
+        return this.activeContainer;
     }
 
     @Nonnull

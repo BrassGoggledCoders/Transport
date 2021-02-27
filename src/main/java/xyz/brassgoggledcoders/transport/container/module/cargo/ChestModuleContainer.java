@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.container.module;
+package xyz.brassgoggledcoders.transport.container.module.cargo;
 
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -10,7 +10,7 @@ public class ChestModuleContainer extends ModuleContainer {
     private final IItemHandler itemHandler;
     private final int rows;
 
-    public ChestModuleContainer(int rows, IItemHandler itemHandler, IModularContainer modularContainer) {
+    public ChestModuleContainer(IModularContainer modularContainer, int rows, IItemHandler itemHandler) {
         super(modularContainer);
         this.itemHandler = itemHandler;
         this.rows = rows;
