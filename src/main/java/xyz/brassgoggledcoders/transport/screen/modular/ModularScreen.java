@@ -14,6 +14,7 @@ import xyz.brassgoggledcoders.transport.api.module.container.ModuleTab;
 import xyz.brassgoggledcoders.transport.api.module.screen.IModularScreen;
 import xyz.brassgoggledcoders.transport.api.module.screen.ModuleScreen;
 import xyz.brassgoggledcoders.transport.container.modular.ModularContainer;
+import xyz.brassgoggledcoders.transport.network.property.Property;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
@@ -26,29 +27,23 @@ public class ModularScreen extends ContainerScreen<ModularContainer> implements 
 
     public ModularScreen(ModularContainer screenContainer, PlayerInventory playerInventory, ITextComponent title) {
         super(screenContainer, playerInventory, title);
-        checkActiveScreen();
     }
 
     @Override
     @SuppressWarnings("deprecation")
     protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
-        matrixStack.push();
         List<ModuleTab<?>> moduleTabList = this.getContainer().getExistingModuleTabs();
         ModuleTab<?> activeTab = this.getContainer().getActiveTab();
         loopTabs(matrixStack, moduleTabList, activeTab, false);
-        matrixStack.pop();
-        RenderSystem.pushMatrix();
-        ResourceLocation background = this.activeScreen.getBackgroundTexture();
+        ResourceLocation background = this.getActiveScreen().getBackgroundTexture();
         if (background != null) {
             this.getMinecraft().getTextureManager().bindTexture(background);
             int i = (this.width - this.xSize) / 2;
             int j = (this.height - this.ySize) / 2;
             this.blit(matrixStack, i, j, 0, 0, this.xSize, this.ySize);
         }
-        this.activeScreen.drawBackgroundLayer(matrixStack, partialTicks, x, y);
+        this.getActiveScreen().drawBackgroundLayer(matrixStack, partialTicks, x, y);
         loopTabs(matrixStack, moduleTabList, activeTab, true);
-
-        RenderSystem.popMatrix();
     }
 
     private void loopTabs(MatrixStack matrixStack, List<ModuleTab<?>> tabs, ModuleTab<?> current, boolean selected) {
@@ -81,43 +76,67 @@ public class ModularScreen extends ContainerScreen<ModularContainer> implements 
 
     @Override
     protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrixStack, int x, int y) {
-        this.activeScreen.drawForegroundLayer(matrixStack, x, y);
+        this.getActiveScreen().drawForegroundLayer(matrixStack, x, y);
     }
 
     @Override
     protected void init() {
+        this.getActiveScreen().init();
         super.init();
-        this.activeScreen.init();
     }
 
     @Override
     public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         matrixStack.push();
         this.renderBackground(matrixStack);
-        checkActiveScreen();
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.activeScreen.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.getActiveScreen().render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
         matrixStack.pop();
     }
 
     @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+
+        if (mouseX < this.getLeft() && mouseX > this.getLeft() - 32) {
+            int down = (int) (mouseY - this.getTop());
+            int tab = down / 28;
+            if (tab < this.getContainer().getExistingModuleTabs().size()) {
+                Property<Integer> activeTabIndex = this.getContainer()
+                        .getActiveTabIndexProperty();
+                this.getContainer()
+                        .getPropertyManager()
+                        .updateServer(activeTabIndex, tab);
+            }
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
     public void init(@Nonnull Minecraft minecraft, int width, int height) {
-        this.activeScreen.init(minecraft, width, height);
+        this.getActiveScreen().init(minecraft, width, height);
         super.init(minecraft, width, height);
     }
 
-    private void checkActiveScreen() {
+    private ModuleScreen<?> getActiveScreen() {
         ModularContainer container = this.getContainer();
         if (this.lastActiveContainer != container.getActiveContainer()) {
             this.lastActiveContainer = container.getActiveContainer();
-            this.activeScreen = container.getActiveTab()
+            ModuleScreen<?> moduleScreen = container.getActiveTab()
                     .getModuleScreenCreator()
                     .get()
                     .apply(this, container.getActiveContainer());
-            this.xSize = this.activeScreen.getXSize();
-            this.ySize = this.activeScreen.getYSize();
+            this.xSize = moduleScreen.getXSize();
+            this.ySize = moduleScreen.getYSize();
+            if (this.minecraft != null) {
+                moduleScreen.init(this.getMinecraft(), this.width, this.height);
+                moduleScreen.init();
+                super.init();
+            }
+
+            this.activeScreen = moduleScreen;
         }
+        return this.activeScreen;
     }
 
     @Override

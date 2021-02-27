@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.container.module;
 
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import xyz.brassgoggledcoders.transport.api.helper.ContainerHelper;
 import xyz.brassgoggledcoders.transport.api.module.container.IModularContainer;
 import xyz.brassgoggledcoders.transport.api.module.container.ModuleContainer;
 
@@ -23,7 +24,12 @@ public class ChestModuleContainer extends ModuleContainer {
                 this.addSlot(new SlotItemHandler(itemHandler, k + j * 9, 8 + k * 18, 18 + j * 18));
             }
         }
-        this.addPlayerSlots();
+        ContainerHelper.addPlayerSlots(
+                this.getModularContainer().getPlayerInventory(),
+                this.getModularContainer()::putSlot,
+                8,
+                103 + (this.rows - 4) * 18
+        );
     }
 
     public int getRows() {

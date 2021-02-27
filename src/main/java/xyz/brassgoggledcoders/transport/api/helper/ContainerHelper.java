@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import xyz.brassgoggledcoders.transport.Transport;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -16,6 +17,7 @@ public class ContainerHelper {
     }
 
     public static void addPlayerSlots(PlayerInventory playerInventory, Consumer<Slot> addSlot, int startX, int startY) {
+        Transport.LOGGER.warn("addPlayerSlots remote: " + playerInventory.player.getEntityWorld().isRemote() + " startX: " + startX + " startY: " + startY);
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
                 addSlot.accept(new Slot(playerInventory, j + i * 9 + 9, startX + j * 18, startY + i * 18));
@@ -23,7 +25,7 @@ public class ContainerHelper {
         }
 
         for (int k = 0; k < 9; ++k) {
-            addSlot.accept(new Slot(playerInventory, k, 8 + k * 18, 142));
+            addSlot.accept(new Slot(playerInventory, k, startX + k * 18, startY + 58));
         }
     }
 

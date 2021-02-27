@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -21,17 +22,22 @@ import xyz.brassgoggledcoders.transport.api.module.container.IModularContainer;
 import xyz.brassgoggledcoders.transport.api.module.container.ModuleContainer;
 import xyz.brassgoggledcoders.transport.api.module.container.ModuleTab;
 import xyz.brassgoggledcoders.transport.content.TransportText;
+import xyz.brassgoggledcoders.transport.network.property.IPropertyManaged;
+import xyz.brassgoggledcoders.transport.network.property.Property;
+import xyz.brassgoggledcoders.transport.network.property.PropertyManager;
+import xyz.brassgoggledcoders.transport.network.property.PropertyTypes;
 import xyz.brassgoggledcoders.transport.screen.modular.BlankModuleScreen;
 import xyz.brassgoggledcoders.transport.screen.modular.VehicleModuleScreen;
 import xyz.brassgoggledcoders.transport.util.WorldHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class ModularContainer extends Container implements IModularContainer {
+public class ModularContainer extends Container implements IModularContainer, IPropertyManaged {
     private static final ModuleTab<BlankModuleContainer> blankTab = new ModuleTab<>(
             TransportText.BLANK,
             () -> ItemStack.EMPTY,
@@ -44,6 +50,10 @@ public class ModularContainer extends Container implements IModularContainer {
     private final LazyOptional<IModularEntity> modularEntityLazy;
     private final ModuleTab<VehicleModuleContainer> vehicleTab;
     private final Map<ModuleInstance<?>, ModuleTab<?>> existingModuleTabs;
+
+    private final PropertyManager propertyManager;
+    private final Property<Integer> activeTabIndex;
+
     private ModuleTab<?> activeTab;
     private ModuleContainer activeContainer;
 
@@ -74,13 +84,21 @@ public class ModularContainer extends Container implements IModularContainer {
             tabs.values().removeIf(Objects::isNull);
             return tabs;
         }).orElseGet(Maps::newHashMap);
+
+        this.propertyManager = new PropertyManager((short) id);
+        this.activeTabIndex = this.propertyManager.addTrackedProperty(PropertyTypes.INTEGER.create(
+                this::getActiveTabIndex,
+                this::setActiveTabIndex
+        ));
     }
 
     public void setActiveTab(ModuleTab<?> moduleTab) {
-        this.activeTab = moduleTab;
-        this.inventorySlots.clear();
-        this.activeContainer = moduleTab.getModuleContainerCreator().apply(this);
-        this.activeContainer.setup();
+        if (this.activeTab != moduleTab) {
+            this.activeTab = moduleTab;
+            this.inventorySlots.clear();
+            this.activeContainer = moduleTab.getModuleContainerCreator().apply(this);
+            this.activeContainer.setup();
+        }
     }
 
     public void setActiveTab(ModuleInstance<?> moduleInstance) {
@@ -165,6 +183,56 @@ public class ModularContainer extends Container implements IModularContainer {
         return modularEntityLazy;
     }
 
+    @Override
+    public PropertyManager getPropertyManager() {
+        return propertyManager;
+    }
+
+    @Override
+    @Nonnull
+    public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int index) {
+        return this.activeContainer.transferStackInSlot(player, index);
+    }
+
+    private int getActiveTabIndex() {
+        List<ModuleTab<?>> tabs = this.getExistingModuleTabs();
+        ModuleTab<?> activeTab = this.getActiveTab();
+        int i = 0;
+        for (ModuleTab<?> tab : tabs) {
+            if (tab == activeTab) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+
+    private void setActiveTabIndex(int tabIndex) {
+        if (tabIndex >= 0) {
+            List<ModuleTab<?>> tabs = this.getExistingModuleTabs();
+            if (tabIndex < tabs.size()) {
+                ModuleTab<?> moduleTab = tabs.get(tabIndex);
+                this.setActiveTab(moduleTab);
+            }
+        }
+    }
+
+    public Property<Integer> getActiveTabIndexProperty() {
+        return this.activeTabIndex;
+    }
+
+    @Override
+    public void addListener(@Nonnull IContainerListener listener) {
+        super.addListener(listener);
+        this.propertyManager.sendChanges(Collections.singletonList(listener), true);
+    }
+
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+        this.propertyManager.sendChanges(this.listeners, false);
+    }
+
     @Nonnull
     public static ModularContainer create(ContainerType<ModularContainer> containerType, int windowId,
                                           PlayerInventory playerInventory, @Nullable PacketBuffer packetBuffer) {
@@ -200,11 +268,5 @@ public class ModularContainer extends Container implements IModularContainer {
             Transport.LOGGER.error("No PacketBuffer received for Modular Container");
         }
         return new ModularContainer(containerType, windowId, playerInventory, IWorldPosCallable.DUMMY, LazyOptional.empty());
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int index) {
-        return this.activeContainer.transferStackInSlot(player, index);
     }
 }
