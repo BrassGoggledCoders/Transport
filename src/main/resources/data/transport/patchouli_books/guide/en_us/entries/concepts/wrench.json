@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "The $(item)Rail Breaker$() can be used on loaders and some rails to configure theirs sides/directions. Other lessor wrenches may work as well."
+      "text": "The $(item)Rail Breaker$() can be used on loaders and some rails to configure their sides and directions. Wrenches from other mods may also work."
     },
     {
       "type": "crafting",
