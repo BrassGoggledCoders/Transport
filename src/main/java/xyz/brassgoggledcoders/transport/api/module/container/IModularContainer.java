@@ -21,5 +21,5 @@ public interface IModularContainer {
 
     LazyOptional<IModularEntity> getModularEntity();
 
-    ModuleTab<?> getActiveTab();
+    ModuleTab getActiveTab();
 }

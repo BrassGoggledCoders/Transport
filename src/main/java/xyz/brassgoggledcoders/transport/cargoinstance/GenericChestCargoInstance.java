@@ -1,6 +1,10 @@
 package xyz.brassgoggledcoders.transport.cargoinstance;
 
+import com.mojang.datafixers.util.Function3;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ChestContainer;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -15,9 +19,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.api.module.container.ModuleTab;
-import xyz.brassgoggledcoders.transport.container.module.cargo.ChestModuleContainer;
-import xyz.brassgoggledcoders.transport.screen.module.cargo.ChestModuleScreen;
+import xyz.brassgoggledcoders.transport.capability.itemhandler.InventoryWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -65,14 +67,8 @@ public class GenericChestCargoInstance extends CargoModuleInstance {
         return super.applyInteraction(player, vec, hand);
     }
 
-    @Nullable
-    @Override
-    public ModuleTab<?> createTab() {
-        return new ModuleTab<>(
-                this.getDisplayName(),
-                this::asItemStack,
-                container -> new ChestModuleContainer(container, 3, inventory),
-                () -> ChestModuleScreen::new
-        );
+    public Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> getContainerCreator() {
+        return (id, playerInventory, playerEntity) -> ChestContainer.createGeneric9X3(id, playerInventory,
+                new InventoryWrapper(this.inventory, this.getModularEntity()::canInteractWith));
     }
 }

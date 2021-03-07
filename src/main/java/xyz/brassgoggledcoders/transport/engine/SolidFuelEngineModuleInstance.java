@@ -1,12 +1,10 @@
 package xyz.brassgoggledcoders.transport.engine;
 
-import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
-import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
-import com.hrznstudio.titanium.container.addon.IContainerAddon;
-import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
+import com.mojang.datafixers.util.Function3;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
@@ -29,9 +27,8 @@ import xyz.brassgoggledcoders.transport.screen.module.engine.SolidFuelModuleScre
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
-public class SolidFuelEngineModuleInstance extends EngineModuleInstance implements IScreenAddonProvider, IContainerAddonProvider {
+public class SolidFuelEngineModuleInstance extends EngineModuleInstance {
     private final InventoryComponent<?> itemStackHandler;
     private final LazyOptional<IItemHandler> optionalItemHandler;
 
@@ -102,18 +99,6 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
     }
 
     @Override
-    @Nonnull
-    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        return itemStackHandler.getScreenAddons();
-    }
-
-    @Override
-    @Nonnull
-    public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
-        return itemStackHandler.getContainerAddons();
-    }
-
-    @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT compoundNBT = super.serializeNBT();
         compoundNBT.putInt("burnTime", this.burnTime);
@@ -138,17 +123,7 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
 
     @Nullable
     @Override
-    public ModuleTab<?> createTab() {
-        return new ModuleTab<>(
-                this.getDisplayName(),
-                this::asItemStack,
-                container -> new SolidFuelModuleContainer(
-                        container,
-                        this.itemStackHandler,
-                        () -> burnTime,
-                        () -> maxBurnTime
-                ),
-                () -> SolidFuelModuleScreen::new
-        );
+    public Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> getContainerCreator() {
+        return super.getContainerCreator();
     }
 }

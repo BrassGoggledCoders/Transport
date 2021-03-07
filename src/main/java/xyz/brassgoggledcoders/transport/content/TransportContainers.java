@@ -10,12 +10,12 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.container.locomotive.SteamLocomotiveContainer;
-import xyz.brassgoggledcoders.transport.container.modular.ModularContainer;
+import xyz.brassgoggledcoders.transport.container.module.VehicleModuleContainer;
 import xyz.brassgoggledcoders.transport.container.moduleconfigurator.ModuleConfiguratorContainer;
 import xyz.brassgoggledcoders.transport.container.navigation.NavigationChartContainer;
 import xyz.brassgoggledcoders.transport.screen.ModuleConfiguratorScreen;
-import xyz.brassgoggledcoders.transport.screen.modular.ModularScreen;
 import xyz.brassgoggledcoders.transport.screen.locomotive.SteamLocomotiveScreen;
+import xyz.brassgoggledcoders.transport.screen.module.VehicleModuleScreen;
 import xyz.brassgoggledcoders.transport.screen.navigation.NavigationChartScreen;
 
 import javax.annotation.Nonnull;
@@ -25,10 +25,13 @@ public class TransportContainers {
     private static final DeferredRegister<ContainerType<?>> CONTAINERS =
             DeferredRegister.create(ForgeRegistries.CONTAINERS, Transport.ID);
 
-    public static final ContainerEntry<ModularContainer> MODULE =
+    public static final ContainerEntry<VehicleModuleContainer> MODULE =
             Transport.getRegistrate()
                     .object("module")
-                    .container(ModularContainer::create, () -> ModularScreen::new)
+                    .container(
+                            VehicleModuleContainer::new,
+                            () -> VehicleModuleScreen::new
+                    )
                     .register();
 
     public static final ContainerEntry<ModuleConfiguratorContainer> MODULE_CONFIGURATOR =

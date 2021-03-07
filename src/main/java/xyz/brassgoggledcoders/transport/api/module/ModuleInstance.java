@@ -1,6 +1,9 @@
 package xyz.brassgoggledcoders.transport.api.module;
 
+import com.mojang.datafixers.util.Function3;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -19,15 +22,19 @@ import xyz.brassgoggledcoders.transport.api.module.container.ModuleTab;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class ModuleInstance<MOD extends Module<MOD>>
         implements INBTSerializable<CompoundNBT>, ICapabilityProvider {
     private final MOD module;
     private final IModularEntity modularEntity;
 
+    private UUID uniqueId;
+
     protected ModuleInstance(MOD module, IModularEntity modularEntity) {
         this.module = module;
         this.modularEntity = modularEntity;
+        this.uniqueId = UUID.randomUUID();
     }
 
     public void tick() {
@@ -54,11 +61,16 @@ public class ModuleInstance<MOD extends Module<MOD>>
 
     @Override
     public CompoundNBT serializeNBT() {
-        return new CompoundNBT();
+        CompoundNBT compoundNBT = new CompoundNBT();
+        compoundNBT.putUniqueId("uniqueId", this.uniqueId);
+        return compoundNBT;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
+        if (nbt.hasUniqueId("uniqueId")) {
+            this.uniqueId = nbt.getUniqueId("uniqueId");
+        }
     }
 
     public MOD getModule() {
@@ -98,15 +110,33 @@ public class ModuleInstance<MOD extends Module<MOD>>
     }
 
     public void read(PacketBuffer packetBuffer) {
-
+        this.uniqueId = packetBuffer.readUniqueId();
     }
 
     public void write(PacketBuffer packetBuffer) {
+        packetBuffer.writeUniqueId(this.uniqueId);
+    }
 
+    public UUID getUniqueId() {
+        return uniqueId;
     }
 
     @Nullable
-    public ModuleTab<?> createTab() {
+    public Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> getContainerCreator() {
         return null;
+    }
+
+    @Nullable
+    public ModuleTab createTab() {
+        Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> container = this.getContainerCreator();
+        if (container != null) {
+            return new ModuleTab(
+                    uniqueId, this.getDisplayName(),
+                    this.asItemStack(),
+                    container
+            );
+        } else {
+            return null;
+        }
     }
 }

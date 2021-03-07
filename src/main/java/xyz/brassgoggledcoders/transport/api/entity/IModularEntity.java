@@ -20,6 +20,7 @@ import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
+import xyz.brassgoggledcoders.transport.api.module.container.ModuleTab;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -100,4 +101,6 @@ public interface IModularEntity extends IItemProvider, INBTSerializable<Compound
     void sendClientUpdate(ModuleInstance<?> moduleInstance, int type, CompoundNBT compoundNBT);
 
     void openModuleContainer(ModuleInstance<?> moduleInstance, PlayerEntity playerEntity);
+
+    List<ModuleTab> getModuleTabs();
 }

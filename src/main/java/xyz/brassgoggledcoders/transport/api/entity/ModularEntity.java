@@ -3,9 +3,12 @@ package xyz.brassgoggledcoders.transport.api.entity;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mojang.datafixers.util.Function3;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,10 +27,16 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
+import xyz.brassgoggledcoders.transport.api.container.NamedContainerProvider;
 import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
+import xyz.brassgoggledcoders.transport.api.module.container.ModuleTab;
+import xyz.brassgoggledcoders.transport.capability.itemhandler.ModularItemStackHandler;
+import xyz.brassgoggledcoders.transport.container.module.VehicleModuleContainer;
+import xyz.brassgoggledcoders.transport.content.TransportContainers;
+import xyz.brassgoggledcoders.transport.entity.EntityWorldPosCallable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -270,18 +279,55 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     }
 
     @Override
-    public void openModuleContainer(@Nullable ModuleInstance<?> moduleInstance, @Nonnull PlayerEntity playerEntity) {
+    public void openModuleContainer(@Nonnull ModuleInstance<?> moduleInstance, @Nonnull PlayerEntity playerEntity) {
         if (playerEntity instanceof ServerPlayerEntity) {
-            INamedContainerProvider provider = TransportAPI.createModularContainerProvider(moduleInstance, this);
-            if (provider != null) {
-                NetworkHooks.openGui((ServerPlayerEntity) playerEntity, provider, packetBuffer -> {
-                    packetBuffer.writeInt(getSelf().getEntityId());
-                    packetBuffer.writeBoolean(moduleInstance != null);
-                    if (moduleInstance != null) {
-                        Module.toPacketBuffer(moduleInstance.getModule(), packetBuffer);
-                    }
-                });
+            Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> containerCreate = moduleInstance.getContainerCreator();
+            if (containerCreate != null) {
+                NetworkHooks.openGui((ServerPlayerEntity) playerEntity, new NamedContainerProvider(
+                        moduleInstance.getDisplayName(),
+                        (id, playerInventory, player) -> {
+                            Container container = containerCreate.apply(id, playerInventory, player);
+                            if (container != null) {
+                                TransportAPI.getNetworkHandler()
+                                        .sendModularScreenInfo(
+                                                this,
+                                                moduleInstance,
+                                                container
+                                        );
+                            }
+                            return container;
+                        }
+                ));
+            }
+
+        }
+    }
+
+    @Override
+    public List<ModuleTab> getModuleTabs() {
+        List<ModuleTab> moduleTabList = Lists.newArrayList();
+        for (ModuleInstance<?> moduleInstance : this.getModuleInstances()) {
+            ModuleTab moduleTab = moduleInstance.createTab();
+            if (moduleTab != null) {
+                moduleTabList.add(moduleTab);
             }
         }
+        moduleTabList.add(0, new ModuleTab(
+                this.getSelf().getUniqueID(),
+                this.getSelf().getDisplayName(),
+                this.asItemStack(),
+                (id, playerInventory, player) -> new VehicleModuleContainer(
+                        TransportContainers.MODULE.get(),
+                        id,
+                        playerInventory,
+                        new ModularItemStackHandler(
+                                this::getTheWorld,
+                                () -> {
+                                }
+                        ),
+                        new EntityWorldPosCallable(this.getSelf())
+                )
+        ));
+        return moduleTabList;
     }
 }

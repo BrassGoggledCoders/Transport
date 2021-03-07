@@ -1,31 +1,36 @@
 package xyz.brassgoggledcoders.transport.api.module.container;
 
+import com.mojang.datafixers.util.Function3;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.util.NonNullFunction;
-import net.minecraftforge.common.util.NonNullLazy;
-import net.minecraftforge.common.util.NonNullSupplier;
-import xyz.brassgoggledcoders.transport.api.module.screen.IModularScreen;
-import xyz.brassgoggledcoders.transport.api.module.screen.ModuleScreen;
 
-import java.util.function.BiFunction;
+import javax.annotation.Nullable;
+import java.util.UUID;
 
-public class ModuleTab<T extends ModuleContainer> {
+public class ModuleTab {
+    private final UUID uniqueId;
     private final ITextComponent displayName;
-    private final NonNullLazy<ItemStack> displayStack;
-    private final NonNullFunction<IModularContainer, T> moduleContainerCreator;
-    private final NonNullSupplier<BiFunction<IModularScreen, T, ? extends ModuleScreen<T>>> moduleScreenCreator;
+    private final ItemStack displayStack;
+    private final Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> containerCreator;
 
     public ModuleTab(
+            UUID uniqueId,
             ITextComponent displayName,
-            NonNullSupplier<ItemStack> displayStack,
-            NonNullFunction<IModularContainer, T> moduleContainerCreator,
-            NonNullSupplier<BiFunction<IModularScreen, T, ? extends ModuleScreen<T>>> moduleScreenCreator
+            ItemStack displayStack,
+            Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> containerCreator
     ) {
+        this.uniqueId = uniqueId;
         this.displayName = displayName;
-        this.displayStack = NonNullLazy.of(displayStack);
-        this.moduleContainerCreator = moduleContainerCreator;
-        this.moduleScreenCreator = moduleScreenCreator;
+        this.displayStack = displayStack;
+        this.containerCreator = containerCreator;
+    }
+
+    public UUID getUniqueId() {
+        return uniqueId;
     }
 
     public ITextComponent getDisplayName() {
@@ -33,14 +38,31 @@ public class ModuleTab<T extends ModuleContainer> {
     }
 
     public ItemStack getDisplayStack() {
-        return displayStack.get();
+        return displayStack;
     }
 
-    public NonNullFunction<IModularContainer, T> getModuleContainerCreator() {
-        return moduleContainerCreator;
+    @Nullable
+    public Container create(int id, PlayerInventory playerInventory, PlayerEntity playerEntity) {
+        if (containerCreator != null) {
+            return containerCreator.apply(id, playerInventory, playerEntity);
+        } else {
+            return null;
+        }
     }
 
-    public NonNullSupplier<BiFunction<IModularScreen, T, ? extends ModuleScreen<T>>> getModuleScreenCreator() {
-        return moduleScreenCreator;
+    public void toPacketBuffer(PacketBuffer packetBuffer) {
+        packetBuffer.writeUniqueId(uniqueId);
+        packetBuffer.writeTextComponent(displayName);
+        packetBuffer.writeItemStack(displayStack);
     }
+
+    public static ModuleTab fromPacketBuffer(PacketBuffer packetBuffer) {
+        return new ModuleTab(
+                packetBuffer.readUniqueId(),
+                packetBuffer.readTextComponent(),
+                packetBuffer.readItemStack(),
+                null
+        );
+    }
+
 }

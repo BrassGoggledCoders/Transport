@@ -37,7 +37,6 @@ import xyz.brassgoggledcoders.transport.compat.immersiveengineering.TransportIE;
 import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
 import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
-import xyz.brassgoggledcoders.transport.container.modular.ModuleContainerProvider;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
 import xyz.brassgoggledcoders.transport.navigation.NavigationNetwork;
@@ -96,7 +95,6 @@ public class Transport {
 
         this.networkHandler = new NetworkHandler();
         TransportAPI.setNetworkHandler(this.networkHandler);
-        TransportAPI.setModularContainerConsumer(ModuleContainerProvider::new);
 
         setupRegistries();
 

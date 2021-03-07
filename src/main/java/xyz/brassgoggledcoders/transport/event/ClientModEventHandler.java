@@ -26,7 +26,7 @@ import xyz.brassgoggledcoders.transport.renderer.minecart.CargoCarrierMinecartEn
 import xyz.brassgoggledcoders.transport.renderer.tileentity.ModuleConfiguratorTileEntityRenderer;
 
 @EventBusSubscriber(modid = Transport.ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
-public class ClientEventHandler {
+public class ClientModEventHandler {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         RenderTypeLookup.setRenderLayer(TransportBlocks.HOLDING_RAIL.get(), RenderType.getCutout());

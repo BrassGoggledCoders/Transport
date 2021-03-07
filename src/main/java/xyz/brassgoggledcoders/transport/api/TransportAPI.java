@@ -3,7 +3,6 @@ package xyz.brassgoggledcoders.transport.api;
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -23,7 +22,6 @@ import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.functional.ThrowingFunction;
 import xyz.brassgoggledcoders.transport.api.module.Module;
-import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.api.network.INetworkHandler;
@@ -38,8 +36,6 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 public class TransportAPI {
@@ -53,7 +49,6 @@ public class TransportAPI {
 
     private static IConnectionChecker connectionChecker = null;
     private static INetworkHandler networkHandler;
-    private static BiFunction<ModuleInstance<?>, IModularEntity, INamedContainerProvider> modularContainerProviderCreator;
 
     private static final Map<Block, IPointMachineBehavior> POINT_MACHINE_BEHAVIORS = Maps.newHashMap();
     private static final Map<String, ThrowingFunction<PredicateParser, Predicate<Entity>, PredicateParserException>>
@@ -195,13 +190,5 @@ public class TransportAPI {
 
     public static ModuleSlot getModuleSlot(ResourceLocation resourceLocation) {
         return TransportAPI.MODULE_SLOT.get().getValue(resourceLocation);
-    }
-
-    public static void setModularContainerConsumer(BiFunction<ModuleInstance<?>,IModularEntity,INamedContainerProvider> modularContainerProviderCreator) {
-        TransportAPI.modularContainerProviderCreator = modularContainerProviderCreator;
-    }
-
-    public static INamedContainerProvider createModularContainerProvider(@Nullable ModuleInstance<?> moduleInstance, IModularEntity modularEntity) {
-        return TransportAPI.modularContainerProviderCreator.apply(moduleInstance, modularEntity);
     }
 }

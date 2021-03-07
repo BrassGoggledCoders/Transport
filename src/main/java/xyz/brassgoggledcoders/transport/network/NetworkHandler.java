@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.network;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -51,6 +52,12 @@ public class NetworkHandler implements INetworkHandler {
                 .encoder(UpdateServerContainerPropertyMessage::encode)
                 .consumer(UpdateServerContainerPropertyMessage::consume)
                 .add();
+
+        this.channel.messageBuilder(UpdateModuleScreenInfoMessage.class, 4)
+                .decoder(UpdateModuleScreenInfoMessage::decode)
+                .encoder(UpdateModuleScreenInfoMessage::encode)
+                .consumer(UpdateModuleScreenInfoMessage::consume)
+                .add();
     }
 
     @Override
@@ -65,6 +72,18 @@ public class NetworkHandler implements INetworkHandler {
     public void sendModuleInstanceUpdate(IModularEntity entity, ModuleSlot moduleSlot, int type, @Nullable CompoundNBT updateInfo) {
         this.channel.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity::getSelf),
                 new UpdateModuleInstanceMessage(entity.getSelf().getEntityId(), moduleSlot, type, updateInfo));
+    }
+
+    @Override
+    public void sendModularScreenInfo(IModularEntity entity, ModuleInstance<?> moduleInstance, Container container) {
+        this.channel.send(
+                PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity::getSelf),
+                new UpdateModuleScreenInfoMessage(
+                        (short) container.windowId,
+                        container.getType(),
+                        moduleInstance.getUniqueId(),
+                        entity.getModuleTabs()
+                ));
     }
 
     public void sendUpdateClientContainerProperties(ServerPlayerEntity playerEntity, UpdateClientContainerPropertiesMessage message) {
