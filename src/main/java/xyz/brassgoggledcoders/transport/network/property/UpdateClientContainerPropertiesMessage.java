@@ -14,22 +14,15 @@ import java.util.function.Supplier;
 
 public class UpdateClientContainerPropertiesMessage {
     private final short windowId;
-    private final boolean hosted;
     private final List<Triple<PropertyType<?>, Short, Object>> updates;
 
     public UpdateClientContainerPropertiesMessage(short windowId, List<Triple<PropertyType<?>, Short, Object>> updates) {
-        this(windowId, false, updates);
-    }
-
-    public UpdateClientContainerPropertiesMessage(short windowId, boolean hosted, List<Triple<PropertyType<?>, Short, Object>> updates) {
         this.windowId = windowId;
-        this.hosted = hosted;
         this.updates = updates;
     }
 
     public void encode(PacketBuffer packetBuffer) {
         packetBuffer.writeShort(windowId);
-        packetBuffer.writeBoolean(hosted);
         List<Triple<PropertyType<?>, Short, Object>> validUpdates = Lists.newArrayList();
         for (Triple<PropertyType<?>, Short, Object> update : updates) {
             if (update.getLeft().isValid(update.getRight())) {
@@ -51,21 +44,7 @@ public class UpdateClientContainerPropertiesMessage {
             if (playerEntity != null && playerEntity.openContainer != null) {
                 Container container = playerEntity.openContainer;
                 if (container.windowId == windowId) {
-                    if (hosted) {
-                        if (container instanceof IHost) {
-                            Object hostedValue = ((IHost<?>) container).getHosted();
-                            if (hostedValue instanceof IPropertyManaged) {
-                                PropertyManager propertyManager = ((IPropertyManaged) hostedValue).getPropertyManager();
-                                for (Triple<PropertyType<?>, Short, Object> update : updates) {
-                                    propertyManager.update(update.getLeft(), update.getMiddle(), update.getRight());
-                                }
-                            } else {
-                                Transport.LOGGER.info("Hosted Object is not instance of IPropertyManaged");
-                            }
-                        } else {
-                            Transport.LOGGER.info("Container is not instance of IHost");
-                        }
-                    } else if (container instanceof IPropertyManaged) {
+                    if (container instanceof IPropertyManaged) {
                         PropertyManager propertyManager = ((IPropertyManaged) container).getPropertyManager();
                         for (Triple<PropertyType<?>, Short, Object> update : updates) {
                             propertyManager.update(update.getLeft(), update.getMiddle(), update.getRight());
@@ -81,7 +60,6 @@ public class UpdateClientContainerPropertiesMessage {
 
     public static UpdateClientContainerPropertiesMessage decode(PacketBuffer packetBuffer) {
         short windowId = packetBuffer.readShort();
-        boolean hosted = packetBuffer.readBoolean();
         short updateAmount = packetBuffer.readShort();
         List<Triple<PropertyType<?>, Short, Object>> updates = Lists.newArrayList();
         for (short i = 0; i < updateAmount; i++) {
@@ -90,6 +68,6 @@ public class UpdateClientContainerPropertiesMessage {
             Object object = propertyType.getReader().apply(packetBuffer);
             updates.add(Triple.of(propertyType, propertyLocation, object));
         }
-        return new UpdateClientContainerPropertiesMessage(windowId, hosted, updates);
+        return new UpdateClientContainerPropertiesMessage(windowId, updates);
     }
 }

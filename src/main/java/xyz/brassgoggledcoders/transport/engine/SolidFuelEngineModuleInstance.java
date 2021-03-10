@@ -20,10 +20,10 @@ import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 import xyz.brassgoggledcoders.transport.api.engine.PoweredState;
+import xyz.brassgoggledcoders.transport.api.entity.EntityWorldPosCallable;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.api.module.container.ModuleTab;
 import xyz.brassgoggledcoders.transport.container.module.engine.SolidFuelModuleContainer;
-import xyz.brassgoggledcoders.transport.screen.module.engine.SolidFuelModuleScreen;
+import xyz.brassgoggledcoders.transport.content.TransportContainers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -121,9 +121,25 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance {
         this.optionalItemHandler.invalidate();
     }
 
+    public int getBurnTime() {
+        return burnTime;
+    }
+
+    public int getMaxBurnTime() {
+        return maxBurnTime;
+    }
+
     @Nullable
     @Override
     public Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> getContainerCreator() {
-        return super.getContainerCreator();
+        return (id, playerInventory, playerEntity) -> new SolidFuelModuleContainer(
+                TransportContainers.SOLID_FUEL_MODULE.get(),
+                id,
+                playerInventory,
+                new EntityWorldPosCallable(this.getModularEntity().getSelf()),
+                this.itemStackHandler,
+                this::getBurnTime,
+                this::getMaxBurnTime
+        );
     }
 }

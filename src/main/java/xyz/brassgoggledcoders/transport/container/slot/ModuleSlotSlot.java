@@ -31,7 +31,7 @@ public class ModuleSlotSlot extends Slot {
 
     @Override
     public boolean isItemValid(@Nonnull ItemStack stack) {
-        return !stack.isEmpty() && itemStackHandler.isItemValid(this.getSlotIndex() + 1, stack) && !readOnly;
+        return !stack.isEmpty() && !readOnly && itemStackHandler.isItemValid(this.getSlotIndex() + 1, stack) ;
     }
 
     @Override
@@ -57,10 +57,8 @@ public class ModuleSlotSlot extends Slot {
 
     @Override
     public void putStack(@Nonnull ItemStack stack) {
-        if (!readOnly) {
-            this.itemStackHandler.setStackInSlot(this.getSlotIndex() + 1, stack);
-            this.onSlotChanged();
-        }
+        this.itemStackHandler.setStackInSlot(this.getSlotIndex() + 1, stack);
+        this.onSlotChanged();
     }
 
     @Override

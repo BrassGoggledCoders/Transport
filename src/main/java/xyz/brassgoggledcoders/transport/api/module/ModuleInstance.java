@@ -3,7 +3,10 @@ package xyz.brassgoggledcoders.transport.api.module;
 import com.mojang.datafixers.util.Function3;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerProvider;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -18,7 +21,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.api.module.container.ModuleTab;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -126,14 +128,18 @@ public class ModuleInstance<MOD extends Module<MOD>>
         return null;
     }
 
+    public void onTabClicked(ServerPlayerEntity playerEntity) {
+        this.modularEntity.openModuleContainer(this, playerEntity);
+    }
+
     @Nullable
     public ModuleTab createTab() {
-        Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> container = this.getContainerCreator();
-        if (container != null) {
+        Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> containerCreator = this.getContainerCreator();
+        if (containerCreator != null) {
             return new ModuleTab(
-                    uniqueId, this.getDisplayName(),
-                    this.asItemStack(),
-                    container
+                    this.getUniqueId(),
+                    this.getDisplayName(),
+                    this.asItemStack()
             );
         } else {
             return null;

@@ -11,11 +11,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.container.locomotive.SteamLocomotiveContainer;
 import xyz.brassgoggledcoders.transport.container.module.VehicleModuleContainer;
+import xyz.brassgoggledcoders.transport.container.module.engine.SolidFuelModuleContainer;
 import xyz.brassgoggledcoders.transport.container.moduleconfigurator.ModuleConfiguratorContainer;
 import xyz.brassgoggledcoders.transport.container.navigation.NavigationChartContainer;
 import xyz.brassgoggledcoders.transport.screen.ModuleConfiguratorScreen;
 import xyz.brassgoggledcoders.transport.screen.locomotive.SteamLocomotiveScreen;
 import xyz.brassgoggledcoders.transport.screen.module.VehicleModuleScreen;
+import xyz.brassgoggledcoders.transport.screen.module.engine.SolidFuelModuleScreen;
 import xyz.brassgoggledcoders.transport.screen.navigation.NavigationChartScreen;
 
 import javax.annotation.Nonnull;
@@ -28,10 +30,7 @@ public class TransportContainers {
     public static final ContainerEntry<VehicleModuleContainer> MODULE =
             Transport.getRegistrate()
                     .object("module")
-                    .container(
-                            VehicleModuleContainer::new,
-                            () -> VehicleModuleScreen::new
-                    )
+                    .container(VehicleModuleContainer::new, () -> VehicleModuleScreen::new)
                     .register();
 
     public static final ContainerEntry<ModuleConfiguratorContainer> MODULE_CONFIGURATOR =
@@ -62,10 +61,16 @@ public class TransportContainers {
                     }, () -> NavigationChartScreen::new)
                     .register();
 
-    public static final RegistryEntry<ContainerType<SteamLocomotiveContainer>> STEAM_LOCOMOTIVE =
+    public static final ContainerEntry<SteamLocomotiveContainer> STEAM_LOCOMOTIVE =
             Transport.getRegistrate()
                     .object("steam_locomotive")
                     .container(SteamLocomotiveContainer::new, () -> SteamLocomotiveScreen::new)
+                    .register();
+
+    public static final ContainerEntry<SolidFuelModuleContainer> SOLID_FUEL_MODULE =
+            Transport.getRegistrate()
+                    .object("solid_fuel")
+                    .container(SolidFuelModuleContainer::new, () -> SolidFuelModuleScreen::new)
                     .register();
 
     public static void register(IEventBus eventBus) {

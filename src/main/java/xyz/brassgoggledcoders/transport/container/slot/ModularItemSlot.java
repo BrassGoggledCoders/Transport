@@ -43,8 +43,6 @@ public class ModularItemSlot extends SlotItemHandler {
 
     @Override
     public void putStack(@Nonnull ItemStack stack) {
-        if (!readOnly) {
-            super.putStack(stack);
-        }
+        super.putStack(stack);
     }
 }

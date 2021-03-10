@@ -36,10 +36,6 @@ public class PropertyManager {
     }
 
     public void sendChanges(Collection<IContainerListener> containerListeners, boolean firstTime) {
-        this.sendChanges(containerListeners, false, firstTime);
-    }
-
-    public void sendChanges(Collection<IContainerListener> containerListeners, boolean hosted, boolean firstTime) {
         List<ServerPlayerEntity> playerListeners = Lists.newArrayList();
         for (IContainerListener listener : containerListeners) {
             if (listener instanceof ServerPlayerEntity) {
@@ -59,7 +55,7 @@ public class PropertyManager {
             if (!dirtyProperties.isEmpty()) {
                 for (ServerPlayerEntity playerEntity : playerListeners) {
                     Transport.instance.networkHandler.sendUpdateClientContainerProperties(playerEntity,
-                            new UpdateClientContainerPropertiesMessage(windowId, hosted, dirtyProperties));
+                            new UpdateClientContainerPropertiesMessage(windowId, dirtyProperties));
                 }
             }
         }

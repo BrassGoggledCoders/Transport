@@ -32,6 +32,12 @@ public class ModularItemStackHandler implements IItemHandlerModifiable, INBTSeri
     private LazyOptional<IModularEntity> modularEntity;
     private ItemStack modularItemStack;
 
+    public ModularItemStackHandler(Supplier<World> world) {
+        this(world, () -> {
+
+        });
+    }
+
     public ModularItemStackHandler(Supplier<World> world, Runnable onChange) {
         this.world = world;
         this.onChange = onChange;

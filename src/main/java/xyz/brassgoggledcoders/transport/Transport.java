@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.transport;
 
-import com.hrznstudio.titanium.network.locator.LocatorType;
 import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -36,7 +35,6 @@ import xyz.brassgoggledcoders.transport.compat.create.TransportCreate;
 import xyz.brassgoggledcoders.transport.compat.immersiveengineering.TransportIE;
 import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
-import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
 import xyz.brassgoggledcoders.transport.navigation.NavigationNetwork;
@@ -63,7 +61,6 @@ import static xyz.brassgoggledcoders.transport.Transport.ID;
 public class Transport {
     public static final String ID = "transport";
     public static final Logger LOGGER = LogManager.getLogger(ID);
-    public static final LocatorType ENTITY = new LocatorType("entity", EntityLocatorInstance::new);
 
     public static final NonNullLazy<ItemGroup> ITEM_GROUP = NonNullLazy.of(() ->
             new TransportItemGroup(ID, () -> TransportBlocks.HOLDING_RAIL.orElseThrow(

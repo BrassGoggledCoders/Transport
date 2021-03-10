@@ -11,11 +11,13 @@ import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
+import xyz.brassgoggledcoders.transport.api.module.ModuleTab;
 import xyz.brassgoggledcoders.transport.api.network.INetworkHandler;
 import xyz.brassgoggledcoders.transport.network.property.UpdateClientContainerPropertiesMessage;
 import xyz.brassgoggledcoders.transport.network.property.UpdateServerContainerPropertyMessage;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class NetworkHandler implements INetworkHandler {
     private static final String VERSION = "2";
@@ -58,6 +60,12 @@ public class NetworkHandler implements INetworkHandler {
                 .encoder(UpdateModuleScreenInfoMessage::encode)
                 .consumer(UpdateModuleScreenInfoMessage::consume)
                 .add();
+
+        this.channel.messageBuilder(ModuleTabClickedMessage.class, 5)
+                .decoder(ModuleTabClickedMessage::decode)
+                .encoder(ModuleTabClickedMessage::encode)
+                .consumer(ModuleTabClickedMessage::consume)
+                .add();
     }
 
     @Override
@@ -75,15 +83,27 @@ public class NetworkHandler implements INetworkHandler {
     }
 
     @Override
-    public void sendModularScreenInfo(IModularEntity entity, ModuleInstance<?> moduleInstance, Container container) {
+    public void sendModularScreenInfo(IModularEntity entity, UUID uniqueId, Container container) {
         this.channel.send(
                 PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity::getSelf),
                 new UpdateModuleScreenInfoMessage(
                         (short) container.windowId,
                         container.getType(),
-                        moduleInstance.getUniqueId(),
+                        entity.getSelf()
+                                .getEntityId(),
+                        uniqueId,
                         entity.getModuleTabs()
                 ));
+    }
+
+    public void sendTabClickedMessage(int entityId, ModuleTab moduleTab) {
+        this.channel.send(
+                PacketDistributor.SERVER.noArg(),
+                new ModuleTabClickedMessage(
+                        entityId,
+                        moduleTab.getUniqueId()
+                )
+        );
     }
 
     public void sendUpdateClientContainerProperties(ServerPlayerEntity playerEntity, UpdateClientContainerPropertiesMessage message) {

@@ -10,6 +10,7 @@ import net.minecraft.util.text.ITextComponent;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.container.module.VehicleModuleContainer;
 import xyz.brassgoggledcoders.transport.container.slot.ModuleSlotSlot;
+import xyz.brassgoggledcoders.transport.screen.util.ScreenHelper;
 
 import javax.annotation.Nonnull;
 
@@ -24,11 +25,7 @@ public class VehicleModuleScreen extends ContainerScreen<VehicleModuleContainer>
     @SuppressWarnings("deprecation")
     protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
         RenderSystem.pushMatrix();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.getMinecraft().getTextureManager().bindTexture(BACKGROUND);
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
-        this.blit(matrixStack, i, j, 0, 0, this.xSize, this.ySize);
+        ScreenHelper.renderBackground(this, BACKGROUND, matrixStack);
 
         for (Slot slot : this.getContainer().inventorySlots) {
             if (slot instanceof ModuleSlotSlot && slot.isEnabled()) {

@@ -17,13 +17,8 @@ import javax.annotation.Nonnull;
 public class VehicleModuleContainer extends Container {
     private final IWorldPosCallable worldPosCallable;
 
-    public <T extends Container> VehicleModuleContainer(
-            ContainerType<T> type,
-            int id,
-            PlayerInventory playerInventory,
-            ModularItemStackHandler handler,
-            IWorldPosCallable worldPosCallable
-    ) {
+    public <T extends Container> VehicleModuleContainer(ContainerType<T> type, int id, PlayerInventory playerInventory,
+                                                        ModularItemStackHandler handler, IWorldPosCallable worldPosCallable) {
         super(type, id);
         this.worldPosCallable = worldPosCallable;
 
@@ -35,8 +30,7 @@ public class VehicleModuleContainer extends Container {
     }
 
     public <T extends Container> VehicleModuleContainer(ContainerType<T> type, int id, PlayerInventory playerInventory) {
-        this(type, id, playerInventory, new ModularItemStackHandler(playerInventory.player::getEntityWorld, () -> {
-        }), IWorldPosCallable.DUMMY);
+        this(type, id, playerInventory, new ModularItemStackHandler(playerInventory.player::getEntityWorld), IWorldPosCallable.DUMMY);
     }
 
     @Override

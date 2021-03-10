@@ -14,7 +14,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import xyz.brassgoggledcoders.transport.api.engine.EngineState;
 import xyz.brassgoggledcoders.transport.container.slot.FuelSlot;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
-import xyz.brassgoggledcoders.transport.entity.EntityWorldPosCallable;
+import xyz.brassgoggledcoders.transport.api.entity.EntityWorldPosCallable;
 import xyz.brassgoggledcoders.transport.entity.locomotive.SteamLocomotiveEntity;
 import xyz.brassgoggledcoders.transport.network.property.IPropertyManaged;
 import xyz.brassgoggledcoders.transport.network.property.Property;

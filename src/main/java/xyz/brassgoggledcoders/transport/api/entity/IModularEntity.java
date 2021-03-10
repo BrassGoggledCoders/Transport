@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.api.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -16,16 +17,13 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import xyz.brassgoggledcoders.transport.api.module.Module;
-import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
-import xyz.brassgoggledcoders.transport.api.module.ModuleType;
-import xyz.brassgoggledcoders.transport.api.module.container.ModuleTab;
+import xyz.brassgoggledcoders.transport.api.module.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -57,6 +55,8 @@ public interface IModularEntity extends IItemProvider, INBTSerializable<Compound
     @Nullable
     <T extends Module<T>> ModuleInstance<T> add(Module<T> module, ModuleSlot moduleSlot, boolean sendUpdate);
 
+    <T extends Module<T>> void add(Module<T> module, ModuleSlot moduleSlot, boolean sendUpdate, Consumer<ModuleInstance<?>> addData);
+
     @Nullable
     ModuleInstance<?> getModuleInstance(ModuleSlot moduleSlot);
 
@@ -67,6 +67,8 @@ public interface IModularEntity extends IItemProvider, INBTSerializable<Compound
     default <T extends Module<T>, U extends ModuleInstance<T>> U getModuleInstance(Supplier<ModuleType> moduleType) {
         return getModuleInstance(moduleType.get());
     }
+
+    <T extends Module<T>, U extends ModuleInstance<T>> U getModuleInstance(UUID uniqueId);
 
     default <T extends Module<T>, U extends ModuleInstance<T>, V> V callModule(Supplier<ModuleType> moduleType,
                                                                                Function<U, V> calling, Supplier<V> defaultValue) {
@@ -103,4 +105,6 @@ public interface IModularEntity extends IItemProvider, INBTSerializable<Compound
     void openModuleContainer(ModuleInstance<?> moduleInstance, PlayerEntity playerEntity);
 
     List<ModuleTab> getModuleTabs();
+
+    void onTabClicked(ServerPlayerEntity serverPlayerEntity);
 }
