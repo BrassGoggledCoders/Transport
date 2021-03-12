@@ -1,7 +1,5 @@
 package xyz.brassgoggledcoders.transport.cargoinstance.capability;
 
-import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
-import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
@@ -17,8 +15,7 @@ import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class CapabilityCargoModuleInstance<CAP> extends CargoModuleInstance implements IScreenAddonProvider,
-        IContainerAddonProvider {
+public abstract class CapabilityCargoModuleInstance<CAP> extends CargoModuleInstance {
     private final Capability<CAP> capability;
 
     public CapabilityCargoModuleInstance(CargoModule cargoModule, IModularEntity entity, Capability<CAP> capability) {

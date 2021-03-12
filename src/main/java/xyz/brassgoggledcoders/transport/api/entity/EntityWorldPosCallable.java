@@ -6,7 +6,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
-import javax.swing.text.html.Option;
 import java.lang.ref.WeakReference;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -14,6 +13,10 @@ import java.util.function.BiFunction;
 public class EntityWorldPosCallable implements IWorldPosCallable {
     private final WeakReference<Entity> weakEntity;
     private final WeakReference<World> weakWorld;
+
+    public EntityWorldPosCallable(IModularEntity entity) {
+        this(entity.getSelf());
+    }
 
     public EntityWorldPosCallable(Entity entity) {
         this.weakEntity = new WeakReference<>(entity);

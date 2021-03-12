@@ -1,19 +1,22 @@
 package xyz.brassgoggledcoders.transport.cargoinstance.capability;
 
-import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
-import com.hrznstudio.titanium.container.addon.IContainerAddon;
+import com.mojang.datafixers.util.Function3;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
+import xyz.brassgoggledcoders.transport.api.entity.EntityWorldPosCallable;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.container.loader.ItemLoaderContainer;
+import xyz.brassgoggledcoders.transport.content.TransportContainers;
 
-import javax.annotation.Nonnull;
-import java.util.List;
+import javax.annotation.Nullable;
 
 public class ItemCargoModuleInstance extends CapabilityCargoModuleInstance<IItemHandler> {
     private final InventoryComponent<?> inventory;
@@ -45,15 +48,17 @@ public class ItemCargoModuleInstance extends CapabilityCargoModuleInstance<IItem
         return ItemHandlerHelper.calcRedstoneFromInventory(inventory);
     }
 
+    @Nullable
     @Override
-    @Nonnull
-    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        return inventory.getScreenAddons();
-    }
-
-    @Override
-    @Nonnull
-    public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
-        return inventory.getContainerAddons();
+    public Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> getContainerCreator() {
+        return (id, playerInventory, playerEntity) -> new ItemLoaderContainer(
+                TransportContainers.ITEM_LOADER.get(),
+                id,
+                playerInventory,
+                new EntityWorldPosCallable(
+                        this.getModularEntity().getSelf()
+                ),
+                this.inventory
+        );
     }
 }
