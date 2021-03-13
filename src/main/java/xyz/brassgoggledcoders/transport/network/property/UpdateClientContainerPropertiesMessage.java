@@ -23,7 +23,6 @@ public class UpdateClientContainerPropertiesMessage {
 
     public void encode(PacketBuffer packetBuffer) {
         packetBuffer.writeShort(windowId);
-
         List<Triple<PropertyType<?>, Short, Object>> validUpdates = Lists.newArrayList();
         for (Triple<PropertyType<?>, Short, Object> update : updates) {
             if (update.getLeft().isValid(update.getRight())) {
@@ -51,7 +50,7 @@ public class UpdateClientContainerPropertiesMessage {
                             propertyManager.update(update.getLeft(), update.getMiddle(), update.getRight());
                         }
                     } else {
-                        Transport.LOGGER.warn("Container is not instance of IPropertyManaged");
+                        Transport.LOGGER.info("Container is not instance of IPropertyManaged");
                     }
                 }
             }

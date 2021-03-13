@@ -199,11 +199,12 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
             if (cargoNBT.contains("name")) {
                 CargoModule cargoModule = TransportAPI.getCargo(cargoNBT.getString("name"));
                 if (cargoModule != null) {
-                    ModuleInstance<CargoModule> moduleInstance = this.modularEntity.add(cargoModule,
-                            TransportModuleSlots.CARGO.get(), false);
-                    if (cargoNBT.contains("instance") && moduleInstance != null) {
-                        moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
-                    }
+                    this.modularEntity.add(cargoModule, TransportModuleSlots.CARGO.get(), false, moduleInstance -> {
+                        CompoundNBT compoundNBT = cargoNBT.getCompound("instance");
+                        if (compoundNBT.keySet().size() > 0) {
+                            moduleInstance.deserializeNBT(compoundNBT);
+                        }
+                    });
                 }
             }
         }

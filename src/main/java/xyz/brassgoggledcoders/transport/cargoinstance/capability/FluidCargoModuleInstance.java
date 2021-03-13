@@ -1,10 +1,10 @@
 package xyz.brassgoggledcoders.transport.cargoinstance.capability;
 
-import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
-import com.hrznstudio.titanium.container.addon.IContainerAddon;
+import com.mojang.datafixers.util.Function3;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -15,10 +15,12 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
+import xyz.brassgoggledcoders.transport.api.entity.EntityWorldPosCallable;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.container.loader.FluidLoaderContainer;
+import xyz.brassgoggledcoders.transport.content.TransportContainers;
 
-import javax.annotation.Nonnull;
-import java.util.List;
+import javax.annotation.Nullable;
 
 public class FluidCargoModuleInstance extends CapabilityCargoModuleInstance<IFluidHandler> {
     private final FluidTankComponent<?> fluidTank;
@@ -57,15 +59,16 @@ public class FluidCargoModuleInstance extends CapabilityCargoModuleInstance<IFlu
         fluidTank.readFromNBT(nbt);
     }
 
+    @Nullable
     @Override
-    @Nonnull
-    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        return fluidTank.getScreenAddons();
-    }
-
-    @Override
-    @Nonnull
-    public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
-        return fluidTank.getContainerAddons();
+    public Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> getContainerCreator() {
+        return (id, playerInventory, playerEntity) -> new FluidLoaderContainer(
+                TransportContainers.FLUID_LOADER.get(),
+                id,
+                playerInventory,
+                new EntityWorldPosCallable(this.getModularEntity()),
+                this.fluidTank::getFluid,
+                this.fluidTank.getTankCapacity(0)
+        );
     }
 }

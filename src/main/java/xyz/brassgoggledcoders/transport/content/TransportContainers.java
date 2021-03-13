@@ -1,29 +1,29 @@
 package xyz.brassgoggledcoders.transport.content;
 
-import com.hrznstudio.titanium.container.BasicAddonContainer;
-import com.hrznstudio.titanium.network.locator.instance.EmptyLocatorInstance;
 import com.tterrag.registrate.builders.ContainerBuilder;
 import com.tterrag.registrate.util.entry.ContainerEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.api.module.ModuleType;
-import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
+import xyz.brassgoggledcoders.transport.container.loader.EnergyLoaderContainer;
+import xyz.brassgoggledcoders.transport.container.loader.FluidLoaderContainer;
+import xyz.brassgoggledcoders.transport.container.loader.ItemLoaderContainer;
 import xyz.brassgoggledcoders.transport.container.locomotive.SteamLocomotiveContainer;
+import xyz.brassgoggledcoders.transport.container.module.VehicleModuleContainer;
+import xyz.brassgoggledcoders.transport.container.module.engine.SolidFuelModuleContainer;
 import xyz.brassgoggledcoders.transport.container.moduleconfigurator.ModuleConfiguratorContainer;
 import xyz.brassgoggledcoders.transport.container.navigation.NavigationChartContainer;
 import xyz.brassgoggledcoders.transport.screen.ModuleConfiguratorScreen;
+import xyz.brassgoggledcoders.transport.screen.loader.EnergyLoaderScreen;
+import xyz.brassgoggledcoders.transport.screen.loader.FluidLoaderScreen;
+import xyz.brassgoggledcoders.transport.screen.loader.ItemLoaderScreen;
 import xyz.brassgoggledcoders.transport.screen.locomotive.SteamLocomotiveScreen;
+import xyz.brassgoggledcoders.transport.screen.module.VehicleModuleScreen;
+import xyz.brassgoggledcoders.transport.screen.module.engine.SolidFuelModuleScreen;
 import xyz.brassgoggledcoders.transport.screen.navigation.NavigationChartScreen;
 
 import javax.annotation.Nonnull;
@@ -33,30 +33,11 @@ public class TransportContainers {
     private static final DeferredRegister<ContainerType<?>> CONTAINERS =
             DeferredRegister.create(ForgeRegistries.CONTAINERS, Transport.ID);
 
-    public static final RegistryObject<ContainerType<BasicAddonContainer>> MODULE = CONTAINERS.register("module",
-            () -> IForgeContainerType.create((windowId, inv, data) -> {
-                Entity entity = inv.player.getEntityWorld().getEntityByID(data.readInt());
-                ModuleType moduleType = TransportAPI.getModuleType(data.readResourceLocation());
-
-                if (entity != null && moduleType != null) {
-                    return entity.getCapability(TransportAPI.MODULAR_ENTITY)
-                            .map(modularEntity -> {
-                                ModuleInstance<?> moduleInstance = modularEntity.getModuleInstance(moduleType);
-                                if (moduleInstance != null) {
-                                    return new BasicAddonContainer(moduleInstance, new EntityLocatorInstance(entity),
-                                            IWorldPosCallable.DUMMY, inv, windowId);
-                                } else {
-                                    return new BasicAddonContainer(new Object(), new EmptyLocatorInstance(), IWorldPosCallable.DUMMY, inv,
-                                            windowId);
-                                }
-                            }).orElseGet(() -> new BasicAddonContainer(new Object(), new EmptyLocatorInstance(),
-                                    IWorldPosCallable.DUMMY, inv, windowId));
-                }
-
-                Transport.LOGGER.warn("Failed to find Module for Container");
-                return new BasicAddonContainer(new Object(), new EmptyLocatorInstance(), IWorldPosCallable.DUMMY, inv,
-                        windowId);
-            }));
+    public static final ContainerEntry<VehicleModuleContainer> MODULE =
+            Transport.getRegistrate()
+                    .object("module")
+                    .container(VehicleModuleContainer::new, () -> VehicleModuleScreen::new)
+                    .register();
 
     public static final ContainerEntry<ModuleConfiguratorContainer> MODULE_CONFIGURATOR =
             Transport.getRegistrate()
@@ -86,10 +67,34 @@ public class TransportContainers {
                     }, () -> NavigationChartScreen::new)
                     .register();
 
-    public static final RegistryEntry<ContainerType<SteamLocomotiveContainer>> STEAM_LOCOMOTIVE =
+    public static final ContainerEntry<SteamLocomotiveContainer> STEAM_LOCOMOTIVE =
             Transport.getRegistrate()
                     .object("steam_locomotive")
                     .container(SteamLocomotiveContainer::new, () -> SteamLocomotiveScreen::new)
+                    .register();
+
+    public static final ContainerEntry<SolidFuelModuleContainer> SOLID_FUEL_MODULE =
+            Transport.getRegistrate()
+                    .object("solid_fuel")
+                    .container(SolidFuelModuleContainer::new, () -> SolidFuelModuleScreen::new)
+                    .register();
+
+    public static final ContainerEntry<ItemLoaderContainer> ITEM_LOADER =
+            Transport.getRegistrate()
+                    .object("item_loader")
+                    .container(ItemLoaderContainer::new, () -> ItemLoaderScreen::new)
+                    .register();
+
+    public static final ContainerEntry<FluidLoaderContainer> FLUID_LOADER =
+            Transport.getRegistrate()
+                    .object("fluid_loader")
+                    .container(FluidLoaderContainer::new, () -> FluidLoaderScreen::new)
+                    .register();
+
+    public static final ContainerEntry<EnergyLoaderContainer> ENERGY_LOADER =
+            Transport.getRegistrate()
+                    .object("energy_loader")
+                    .container(EnergyLoaderContainer::new, () -> EnergyLoaderScreen::new)
                     .register();
 
     public static void register(IEventBus eventBus) {

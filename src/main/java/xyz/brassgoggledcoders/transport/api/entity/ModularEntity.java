@@ -3,9 +3,12 @@ package xyz.brassgoggledcoders.transport.api.entity;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mojang.datafixers.util.Function3;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,10 +27,10 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
-import xyz.brassgoggledcoders.transport.api.module.Module;
-import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
-import xyz.brassgoggledcoders.transport.api.module.ModuleType;
+import xyz.brassgoggledcoders.transport.api.container.NamedContainerProvider;
+import xyz.brassgoggledcoders.transport.api.module.*;
+import xyz.brassgoggledcoders.transport.capability.itemhandler.ModularItemStackHandler;
+import xyz.brassgoggledcoders.transport.container.module.VehicleModuleContainer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,6 +44,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     private final ImmutableList<ModuleSlot> moduleSlots;
     private final Map<ModuleSlot, ModuleInstance<?>> byModuleSlot;
     private final Map<ModuleType, ModuleInstance<?>> byModuleType;
+    private final Map<UUID, ModuleInstance<?>> byUniqueId;
 
     @SafeVarargs
     public ModularEntity(ENT entity, Supplier<ModuleSlot>... moduleSlots) {
@@ -54,6 +58,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
         this.moduleSlots = ImmutableList.copyOf(moduleSlots);
         this.byModuleSlot = Maps.newHashMap();
         this.byModuleType = Maps.newHashMap();
+        this.byUniqueId = Maps.newHashMap();
     }
 
     @Override
@@ -87,17 +92,23 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     @Override
     @Nullable
     public <T extends Module<T>> ModuleInstance<T> add(Module<T> module, ModuleSlot moduleSlot, boolean sendUpdate) {
+        this.add(module, moduleSlot, sendUpdate, moduleInstance -> {
+        });
+        return this.getModuleInstance(module.getType());
+    }
+
+    @Override
+    public <T extends Module<T>> void add(Module<T> module, ModuleSlot moduleSlot, boolean sendUpdate, Consumer<ModuleInstance<?>> addData) {
         if (this.canEquip(module) && module.isValidFor(this) && !byModuleSlot.containsKey(moduleSlot)
                 && this.getModuleSlots().contains(moduleSlot)) {
             ModuleInstance<T> moduleInstance = module.createInstance(this);
             byModuleSlot.put(moduleSlot, moduleInstance);
             byModuleType.put(moduleInstance.getModuleType(), moduleInstance);
+            addData.accept(moduleInstance);
+            byUniqueId.put(moduleInstance.getUniqueId(), moduleInstance);
             if (sendUpdate) {
                 TransportAPI.getNetworkHandler().sendAddModuleCase(this, moduleInstance, moduleSlot);
             }
-            return moduleInstance;
-        } else {
-            return null;
         }
     }
 
@@ -115,6 +126,13 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     }
 
     @Override
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public ModuleInstance<?> getModuleInstance(UUID uniqueId) {
+        return byUniqueId.get(uniqueId);
+    }
+
+    @Override
     @Nonnull
     public Item asItem() {
         ItemStack itemStack = new ItemStack(this.entity.asItem());
@@ -123,6 +141,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     }
 
     @Override
+    @Nonnull
     public ItemStack asItemStack() {
         ItemStack itemStack = new ItemStack(this.entity.asItem());
         itemStack.getOrCreateTag().put("modules", this.serializeNBT());
@@ -155,10 +174,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
             ModuleSlot moduleSlot = TransportAPI.getModuleSlot(moduleInstanceNBT.getString("moduleSlot"));
             if (module != null && moduleSlot != null) {
                 CompoundNBT instanceNBT = moduleInstanceNBT.getCompound("instance");
-                ModuleInstance<?> moduleInstance = this.add(module, moduleSlot, false);
-                if (moduleInstance != null) {
-                    moduleInstance.deserializeNBT(instanceNBT);
-                }
+                this.add(module, moduleSlot, false, moduleInstance -> moduleInstance.deserializeNBT(instanceNBT));
             }
         }
     }
@@ -174,6 +190,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
     }
 
     @Override
+    @Nonnull
     public Collection<ModuleInstance<?>> getModuleInstances() {
         return byModuleType.values();
     }
@@ -193,10 +210,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
             Module<?> module = Module.fromPacketBuffer(packetBuffer);
             ModuleSlot moduleSlot = TransportAPI.getModuleSlot(packetBuffer.readResourceLocation());
             if (module != null && moduleSlot != null) {
-                ModuleInstance<?> moduleInstance = this.add(module, moduleSlot, false);
-                if (moduleInstance != null) {
-                    moduleInstance.read(packetBuffer);
-                }
+                this.add(module, moduleSlot, false, moduleInstance -> moduleInstance.read(packetBuffer));
             }
         }
     }
@@ -206,10 +220,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
         ModuleInstance<?> moduleInstance = this.byModuleSlot.remove(moduleSlot);
         if (moduleInstance != null) {
             byModuleType.remove(moduleInstance.getModuleType());
-            if (sendUpdate) {
-                //TODO need send?
-                //TransportAPI.getNetworkHandler().sendAddModuleCase(modularEntity, moduleInstance, false);
-            }
+            //TODO need send?
         }
     }
 
@@ -260,10 +271,76 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
 
     @Override
     public void sendClientUpdate(ModuleInstance<?> moduleInstance, int type, CompoundNBT compoundNBT) {
-        for (Entry<ModuleSlot, ModuleInstance<?>> entry: byModuleSlot.entrySet()) {
+        for (Entry<ModuleSlot, ModuleInstance<?>> entry : byModuleSlot.entrySet()) {
             if (entry.getValue() == moduleInstance) {
                 TransportAPI.getNetworkHandler().sendModuleInstanceUpdate(this, entry.getKey(), type, compoundNBT);
             }
         }
+    }
+
+    @Override
+    public void openModuleContainer(@Nonnull ModuleInstance<?> moduleInstance, @Nonnull PlayerEntity playerEntity) {
+        if (playerEntity instanceof ServerPlayerEntity) {
+            Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> containerCreate = moduleInstance.getContainerCreator();
+            if (containerCreate != null) {
+                NetworkHooks.openGui((ServerPlayerEntity) playerEntity, new NamedContainerProvider(
+                        moduleInstance.getDisplayName(),
+                        (id, playerInventory, player) -> {
+                            Container container = containerCreate.apply(id, playerInventory, player);
+                            if (container != null) {
+                                TransportAPI.getNetworkHandler()
+                                        .sendModularScreenInfo(
+                                                this,
+                                                moduleInstance.getUniqueId(),
+                                                container
+                                        );
+                            }
+                            return container;
+                        }
+                ));
+            }
+        }
+    }
+
+    @Override
+    public List<ModuleTab> getModuleTabs() {
+        List<ModuleTab> moduleTabList = Lists.newArrayList();
+        for (ModuleInstance<?> moduleInstance : this.getModuleInstances()) {
+            ModuleTab moduleTab = moduleInstance.createTab();
+            if (moduleTab != null) {
+                moduleTabList.add(moduleTab);
+            }
+        }
+        moduleTabList.add(0, new ModuleTab(
+                this.getSelf().getUniqueID(),
+                this.getSelf().getDisplayName(),
+                this.asItemStack()
+        ));
+        return moduleTabList;
+    }
+
+    @Override
+    public void onTabClicked(ServerPlayerEntity serverPlayerEntity) {
+        NetworkHooks.openGui(serverPlayerEntity, new NamedContainerProvider(
+                this.getSelf().getDisplayName(),
+                (id, playerInventory, player) -> {
+                    ModularItemStackHandler itemStackHandler = new ModularItemStackHandler(this::getTheWorld);
+                    itemStackHandler.insertItem(0, this.asItemStack(), false);
+                    VehicleModuleContainer container = new VehicleModuleContainer(
+                            TransportObjects.VEHICLE.get(),
+                            id,
+                            playerInventory,
+                            itemStackHandler,
+                            new EntityWorldPosCallable(this.getSelf())
+                    );
+                    TransportAPI.getNetworkHandler()
+                            .sendModularScreenInfo(
+                                    this,
+                                    this.getSelf().getUniqueID(),
+                                    container
+                            );
+                    return container;
+                }
+        ));
     }
 }

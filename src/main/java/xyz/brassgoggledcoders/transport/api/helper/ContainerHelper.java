@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.container;
+package xyz.brassgoggledcoders.transport.api.helper;
 
 import com.mojang.datafixers.util.Function4;
 import net.minecraft.entity.player.PlayerEntity;
@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import xyz.brassgoggledcoders.transport.Transport;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -23,7 +24,7 @@ public class ContainerHelper {
         }
 
         for (int k = 0; k < 9; ++k) {
-            addSlot.accept(new Slot(playerInventory, k, 8 + k * 18, 142));
+            addSlot.accept(new Slot(playerInventory, k, startX + k * 18, startY + 58));
         }
     }
 

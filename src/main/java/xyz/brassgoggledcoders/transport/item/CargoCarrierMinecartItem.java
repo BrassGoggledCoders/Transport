@@ -4,13 +4,14 @@ import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.Items;
+import net.minecraft.item.MinecartItem;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -18,17 +19,12 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
-import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.item.IModularItem;
-import xyz.brassgoggledcoders.transport.api.module.Module;
-import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
-import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.content.TransportHullTypes;
 import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
@@ -38,7 +34,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static net.minecraft.entity.item.minecart.AbstractMinecartEntity.Type.CHEST;
@@ -90,13 +85,13 @@ public class CargoCarrierMinecartItem extends MinecartItem implements IModularIt
                 if (cargoNBT != null && cargoNBT.contains("name")) {
                     CargoModule cargoModule = TransportAPI.getCargo(cargoNBT.getString("name"));
                     if (cargoModule != null) {
-                        modularEntity.ifPresent(value -> {
-                            ModuleInstance<?> moduleInstance = value.add(cargoModule, TransportModuleSlots.CARGO.get(),
-                                    false);
-                            if (moduleInstance != null && cargoNBT.contains("instance")) {
-                                moduleInstance.deserializeNBT(cargoNBT.getCompound("instance"));
-                            }
-                        });
+                        modularEntity.ifPresent(value -> value.add(cargoModule, TransportModuleSlots.CARGO.get(),
+                                false, moduleInstance -> {
+                                    CompoundNBT compoundNBT = cargoNBT.getCompound("instance");
+                                    if (compoundNBT.keySet().size() > 0) {
+                                        moduleInstance.deserializeNBT(compoundNBT);
+                                    }
+                                }));
                     }
                 }
 
