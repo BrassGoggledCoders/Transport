@@ -1,7 +1,9 @@
 package xyz.brassgoggledcoders.transport.content;
 
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.screen.util.FormattedLang;
 
 @SuppressWarnings("unused")
 public class TransportText {
@@ -43,6 +45,22 @@ public class TransportText {
 
     public static final ITextComponent BLANK = Transport.getRegistrate()
             .addRawLang("screen.transport.blank", "Blank");
+
+    public static final ITextComponent FORGE_ENERGY = Transport.getRegistrate()
+            .addRawLang("text.transport.forge_energy", "FE")
+            .mergeStyle(TextFormatting.DARK_AQUA);
+
+    public static final ITextComponent MILLI_BUCKET = Transport.getRegistrate()
+            .addRawLang("text.transport.milli_bucket", "mB")
+            .mergeStyle(TextFormatting.DARK_AQUA);
+
+    public static final FormattedLang FLUID = Transport.getRegistrate()
+            .addFormattedLang("text.transport.fluid", "Fluid: %s")
+            .withFormatting(TextFormatting.GOLD);
+
+    public static final FormattedLang AMOUNT = Transport.getRegistrate()
+            .addFormattedLang("text.transport.amount", "Amount: %1$s/%2$s%3$s")
+            .withFormatting(TextFormatting.GOLD);
 
     public static void setup() {
 

@@ -19,6 +19,7 @@ import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
 import xyz.brassgoggledcoders.transport.registrate.builder.*;
+import xyz.brassgoggledcoders.transport.screen.util.FormattedLang;
 
 import java.util.Collection;
 import java.util.function.BiPredicate;
@@ -110,5 +111,10 @@ public class TransportRegistrate extends AbstractRegistrate<TransportRegistrate>
             P parent, NonNullSupplier<E> engineModuleSupplier) {
         return this.entry((name, builderCallback) -> new EngineModuleBuilder<>(this, parent, this.currentName(),
                 builderCallback, engineModuleSupplier));
+    }
+
+    public FormattedLang addFormattedLang(String translationKey, String translatedText) {
+        this.addRawLang(translationKey, translatedText);
+        return new FormattedLang(translationKey);
     }
 }
