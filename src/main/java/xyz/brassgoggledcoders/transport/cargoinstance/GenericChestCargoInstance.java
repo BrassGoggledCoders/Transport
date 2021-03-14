@@ -1,6 +1,10 @@
 package xyz.brassgoggledcoders.transport.cargoinstance;
 
+import com.mojang.datafixers.util.Function3;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ChestContainer;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -15,7 +19,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.container.provider.ChestContainerProvider;
+import xyz.brassgoggledcoders.transport.capability.itemhandler.InventoryWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,9 +61,14 @@ public class GenericChestCargoInstance extends CargoModuleInstance {
     @Override
     public ActionResultType applyInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
         if (!player.isCrouching()) {
-            player.openContainer(new ChestContainerProvider(inventory, playerEntity -> true));
+            this.getModularEntity().openModuleContainer(this, player);
             return ActionResultType.SUCCESS;
         }
         return super.applyInteraction(player, vec, hand);
+    }
+
+    public Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> getContainerCreator() {
+        return (id, playerInventory, playerEntity) -> ChestContainer.createGeneric9X3(id, playerInventory,
+                new InventoryWrapper(this.inventory, this.getModularEntity()::canInteractWith));
     }
 }

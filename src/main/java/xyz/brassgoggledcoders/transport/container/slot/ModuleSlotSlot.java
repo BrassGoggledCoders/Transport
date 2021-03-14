@@ -5,8 +5,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.ModularItemStackHandler;
 import xyz.brassgoggledcoders.transport.content.TransportModuleSlots;
@@ -19,14 +17,21 @@ public class ModuleSlotSlot extends Slot {
 
     private final ModularItemStackHandler itemStackHandler;
 
+    private final boolean readOnly;
+
     public ModuleSlotSlot(ModularItemStackHandler itemHandler, int index, int xPosition, int yPosition) {
+        this(itemHandler, index, xPosition, yPosition, false);
+    }
+
+    public ModuleSlotSlot(ModularItemStackHandler itemHandler, int index, int xPosition, int yPosition, boolean readOnly) {
         super(EMPTY_INVENTORY, index, xPosition, yPosition);
         this.itemStackHandler = itemHandler;
+        this.readOnly = readOnly;
     }
 
     @Override
     public boolean isItemValid(@Nonnull ItemStack stack) {
-        return !stack.isEmpty() && itemStackHandler.isItemValid(this.getSlotIndex() + 1, stack);
+        return !stack.isEmpty() && !readOnly && itemStackHandler.isItemValid(this.getSlotIndex() + 1, stack) ;
     }
 
     @Override
@@ -41,7 +46,7 @@ public class ModuleSlotSlot extends Slot {
 
     @Override
     public boolean isEnabled() {
-        return this.itemStackHandler.getAvailableModuleSlots().size() > this.getSlotIndex() ;
+        return this.itemStackHandler.getAvailableModuleSlots().size() > this.getSlotIndex();
     }
 
     @Override
@@ -50,7 +55,6 @@ public class ModuleSlotSlot extends Slot {
         return this.itemStackHandler.getStackInSlot(this.getSlotIndex() + 1);
     }
 
-    // Override if your IItemHandler does not implement IItemHandlerModifiable
     @Override
     public void putStack(@Nonnull ItemStack stack) {
         this.itemStackHandler.setStackInSlot(this.getSlotIndex() + 1, stack);
@@ -69,13 +73,13 @@ public class ModuleSlotSlot extends Slot {
 
     @Override
     public boolean canTakeStack(@Nonnull PlayerEntity player) {
-        return !this.itemStackHandler.extractItem(this.getSlotIndex() + 1, 1, true).isEmpty();
+        return !readOnly && !this.itemStackHandler.extractItem(this.getSlotIndex() + 1, 1, true).isEmpty();
     }
 
     @Override
     @Nonnull
     public ItemStack decrStackSize(int amount) {
-        return itemStackHandler.extractItem(this.getSlotIndex() + 1, amount, false);
+        return !readOnly ? itemStackHandler.extractItem(this.getSlotIndex() + 1, amount, false) : ItemStack.EMPTY;
     }
 
     public ModuleSlot getModuleSlot() {

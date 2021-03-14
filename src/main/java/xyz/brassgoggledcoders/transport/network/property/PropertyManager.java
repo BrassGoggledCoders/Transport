@@ -62,9 +62,11 @@ public class PropertyManager {
     }
 
     public void update(PropertyType<?> propertyType, short propertyId, Object value) {
-        Property<?> property = properties.get(propertyId);
-        if (property != null && property.getPropertyType() == propertyType) {
-            propertyType.attemptSet(value, property);
+        if (propertyId < properties.size()) {
+            Property<?> property = properties.get(propertyId);
+            if (property != null && property.getPropertyType() == propertyType) {
+                propertyType.attemptSet(value, property);
+            }
         }
     }
 }

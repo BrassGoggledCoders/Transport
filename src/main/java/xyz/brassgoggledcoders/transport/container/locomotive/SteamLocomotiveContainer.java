@@ -14,12 +14,13 @@ import net.minecraftforge.items.ItemStackHandler;
 import xyz.brassgoggledcoders.transport.api.engine.EngineState;
 import xyz.brassgoggledcoders.transport.container.slot.FuelSlot;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
-import xyz.brassgoggledcoders.transport.entity.EntityWorldPosCallable;
+import xyz.brassgoggledcoders.transport.api.entity.EntityWorldPosCallable;
 import xyz.brassgoggledcoders.transport.entity.locomotive.SteamLocomotiveEntity;
 import xyz.brassgoggledcoders.transport.network.property.IPropertyManaged;
 import xyz.brassgoggledcoders.transport.network.property.Property;
 import xyz.brassgoggledcoders.transport.network.property.PropertyManager;
 import xyz.brassgoggledcoders.transport.network.property.PropertyTypes;
+import xyz.brassgoggledcoders.transport.util.WorldHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -96,10 +97,7 @@ public class SteamLocomotiveContainer extends Container implements IPropertyMana
 
     @Override
     public boolean canInteractWith(@Nonnull PlayerEntity player) {
-        return this.worldPosCallable.applyOrElse((world, blockPos) ->
-                        player.getDistanceSq((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.5D,
-                                (double) blockPos.getZ() + 0.5D) <= 64.0D,
-                true);
+        return this.worldPosCallable.applyOrElse(WorldHelper.isPlayerNear(player)::test, true);
     }
 
     @Override

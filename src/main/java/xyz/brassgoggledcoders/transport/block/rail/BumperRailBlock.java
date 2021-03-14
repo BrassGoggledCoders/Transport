@@ -28,12 +28,6 @@ public class BumperRailBlock extends AbstractRailBlock {
     public static final BooleanProperty NORTH_WEST = TransportBlockStateProperties.NORTH_WEST;
     public static final EnumProperty<RailShape> SHAPE = TransportBlockStateProperties.STRAIGHT_RAIL_SHAPE;
 
-    public BumperRailBlock() {
-        this(Block.Properties.create(Material.MISCELLANEOUS)
-                .notSolid()
-                .hardnessAndResistance(1.0F));
-    }
-
     public BumperRailBlock(Properties properties) {
         super(true, properties);
     }

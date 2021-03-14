@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.network;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -10,11 +11,13 @@ import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleInstance;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
+import xyz.brassgoggledcoders.transport.api.module.ModuleTab;
 import xyz.brassgoggledcoders.transport.api.network.INetworkHandler;
 import xyz.brassgoggledcoders.transport.network.property.UpdateClientContainerPropertiesMessage;
 import xyz.brassgoggledcoders.transport.network.property.UpdateServerContainerPropertyMessage;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class NetworkHandler implements INetworkHandler {
     private static final String VERSION = "2";
@@ -51,6 +54,18 @@ public class NetworkHandler implements INetworkHandler {
                 .encoder(UpdateServerContainerPropertyMessage::encode)
                 .consumer(UpdateServerContainerPropertyMessage::consume)
                 .add();
+
+        this.channel.messageBuilder(UpdateModuleScreenInfoMessage.class, 4)
+                .decoder(UpdateModuleScreenInfoMessage::decode)
+                .encoder(UpdateModuleScreenInfoMessage::encode)
+                .consumer(UpdateModuleScreenInfoMessage::consume)
+                .add();
+
+        this.channel.messageBuilder(ModuleTabClickedMessage.class, 5)
+                .decoder(ModuleTabClickedMessage::decode)
+                .encoder(ModuleTabClickedMessage::encode)
+                .consumer(ModuleTabClickedMessage::consume)
+                .add();
     }
 
     @Override
@@ -65,6 +80,30 @@ public class NetworkHandler implements INetworkHandler {
     public void sendModuleInstanceUpdate(IModularEntity entity, ModuleSlot moduleSlot, int type, @Nullable CompoundNBT updateInfo) {
         this.channel.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity::getSelf),
                 new UpdateModuleInstanceMessage(entity.getSelf().getEntityId(), moduleSlot, type, updateInfo));
+    }
+
+    @Override
+    public void sendModularScreenInfo(IModularEntity entity, UUID uniqueId, Container container) {
+        this.channel.send(
+                PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity::getSelf),
+                new UpdateModuleScreenInfoMessage(
+                        (short) container.windowId,
+                        container.getType(),
+                        entity.getSelf()
+                                .getEntityId(),
+                        uniqueId,
+                        entity.getModuleTabs()
+                ));
+    }
+
+    public void sendTabClickedMessage(int entityId, ModuleTab moduleTab) {
+        this.channel.send(
+                PacketDistributor.SERVER.noArg(),
+                new ModuleTabClickedMessage(
+                        entityId,
+                        moduleTab.getUniqueId()
+                )
+        );
     }
 
     public void sendUpdateClientContainerProperties(ServerPlayerEntity playerEntity, UpdateClientContainerPropertiesMessage message) {

@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.transport;
 
-import com.hrznstudio.titanium.network.locator.LocatorType;
 import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -9,8 +8,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.NonNullLazy;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -32,10 +31,10 @@ import xyz.brassgoggledcoders.transport.api.navigation.Navigator;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
 import xyz.brassgoggledcoders.transport.api.predicate.StringPredicate;
+import xyz.brassgoggledcoders.transport.compat.create.TransportCreate;
 import xyz.brassgoggledcoders.transport.compat.immersiveengineering.TransportIE;
 import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
-import xyz.brassgoggledcoders.transport.container.EntityLocatorInstance;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
 import xyz.brassgoggledcoders.transport.navigation.NavigationNetwork;
@@ -47,10 +46,12 @@ import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.PredicatePointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
 import xyz.brassgoggledcoders.transport.predicate.NamePredicate;
+import xyz.brassgoggledcoders.transport.predicate.RiderPredicate;
 import xyz.brassgoggledcoders.transport.predicate.TimePredicate;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrate;
 
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -60,7 +61,6 @@ import static xyz.brassgoggledcoders.transport.Transport.ID;
 public class Transport {
     public static final String ID = "transport";
     public static final Logger LOGGER = LogManager.getLogger(ID);
-    public static final LocatorType ENTITY = new LocatorType("entity", EntityLocatorInstance::new);
 
     public static final NonNullLazy<ItemGroup> ITEM_GROUP = NonNullLazy.of(() ->
             new TransportItemGroup(ID, () -> TransportBlocks.HOLDING_RAIL.orElseThrow(
@@ -89,7 +89,6 @@ public class Transport {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         modBus.addListener(this::commonSetup);
-        modBus.addListener(this::newRegistry);
 
         this.networkHandler = new NetworkHandler();
         TransportAPI.setNetworkHandler(this.networkHandler);
@@ -114,8 +113,11 @@ public class Transport {
         TransportVanilla.setup();
         TransportIE.setup();
         TransportQuark.setup();
+
+        handleCompat("create", () -> TransportCreate::new);
     }
 
+    @SuppressWarnings("unchecked")
     public static void setupRegistries() {
         if (!registriesSetup) {
             makeRegistry("module_type", ModuleType.class);
@@ -126,10 +128,6 @@ public class Transport {
             makeRegistry("navigation_point_type", NavigationPointType.class);
             registriesSetup = true;
         }
-    }
-
-    public void newRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
-
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
@@ -145,6 +143,7 @@ public class Transport {
         TransportAPI.addEntityPredicateCreator("NOT", parser -> parser.getNextEntityPredicate().negate());
         TransportAPI.addEntityPredicateCreator("POWERED", parser -> entity -> entity instanceof AbstractMinecartEntity &&
                 ((AbstractMinecartEntity) entity).isPoweredCart());
+        TransportAPI.addEntityPredicateCreator("RIDERS", RiderPredicate::create);
         TransportAPI.addEntityPredicateCreator("TIME", TimePredicate::create);
         TransportAPI.addEntityPredicateCreator("AND", parse -> {
             Predicate<Entity> predicate = parse.getNextEntityPredicate();
@@ -195,5 +194,11 @@ public class Transport {
 
     public static ResourceLocation rl(String path) {
         return new ResourceLocation(ID, path);
+    }
+
+    private static void handleCompat(String mod, Supplier<Supplier<?>> compat) {
+        if (ModList.get().isLoaded(mod)) {
+            compat.get().get();
+        }
     }
 }

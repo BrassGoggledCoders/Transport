@@ -2,18 +2,36 @@ package xyz.brassgoggledcoders.transport.util;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.AbstractChunkProvider;
 import net.minecraft.world.chunk.Chunk;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 public class WorldHelper {
+    public static BiPredicate<World, BlockPos> isPlayerNear(PlayerEntity playerEntity) {
+        WeakReference<PlayerEntity> playerEntityWeakReference = new WeakReference<>(playerEntity);
+        return (world, blockPos) -> {
+            PlayerEntity playerReference = playerEntityWeakReference.get();
+            if (playerReference != null) {
+                return playerEntity.getDistanceSq((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.5D,
+                        (double) blockPos.getZ() + 0.5D) <= 64.0D;
+            } else {
+                return false;
+            }
+        };
+    }
+
 
     public static boolean isEntityChunkLoaded(final IWorld world, final ChunkPos pos) {
         return world.getChunkProvider().isChunkLoaded(pos);

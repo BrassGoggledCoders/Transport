@@ -1,12 +1,10 @@
 package xyz.brassgoggledcoders.transport.engine;
 
-import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
-import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
-import com.hrznstudio.titanium.container.addon.IContainerAddon;
-import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
+import com.mojang.datafixers.util.Function3;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
@@ -22,17 +20,19 @@ import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
 import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 import xyz.brassgoggledcoders.transport.api.engine.PoweredState;
+import xyz.brassgoggledcoders.transport.api.entity.EntityWorldPosCallable;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.container.ModuleContainerProvider;
+import xyz.brassgoggledcoders.transport.container.module.engine.SolidFuelModuleContainer;
+import xyz.brassgoggledcoders.transport.content.TransportContainers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Objects;
 
-public class SolidFuelEngineModuleInstance extends EngineModuleInstance implements IScreenAddonProvider, IContainerAddonProvider {
+public class SolidFuelEngineModuleInstance extends EngineModuleInstance {
     private final InventoryComponent<?> itemStackHandler;
     private final LazyOptional<IItemHandler> optionalItemHandler;
+
+    private int maxBurnTime = 0;
     private int burnTime = 0;
 
     public SolidFuelEngineModuleInstance(EngineModule engineModule, IModularEntity powered) {
@@ -45,10 +45,11 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
 
     @Override
     public ActionResultType applyInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
-        this.getModularEntity().openContainer(player, new ModuleContainerProvider(this,
-                this.getModularEntity()), packetBuffer -> packetBuffer.writeResourceLocation(Objects.requireNonNull(
-                this.getModule().getType().getRegistryName())));
-        return ActionResultType.SUCCESS;
+        if (!player.isCrouching()) {
+            this.getModularEntity().openModuleContainer(this, player);
+            return ActionResultType.func_233537_a_(this.getModularEntity().getTheWorld().isRemote());
+        }
+        return ActionResultType.PASS;
     }
 
     @Override
@@ -76,6 +77,7 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
                                 itemStack.shrink(1);
                             }
                             burnTime += newBurnTime;
+                            maxBurnTime = newBurnTime;
                         }
                     }
                 }
@@ -97,21 +99,10 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
     }
 
     @Override
-    @Nonnull
-    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        return itemStackHandler.getScreenAddons();
-    }
-
-    @Override
-    @Nonnull
-    public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
-        return itemStackHandler.getContainerAddons();
-    }
-
-    @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT compoundNBT = super.serializeNBT();
         compoundNBT.putInt("burnTime", this.burnTime);
+        compoundNBT.putInt("maxBurnTime", this.maxBurnTime);
         compoundNBT.put("itemStackHandler", itemStackHandler.serializeNBT());
         return compoundNBT;
     }
@@ -120,6 +111,7 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
     public void deserializeNBT(CompoundNBT nbt) {
         super.deserializeNBT(nbt);
         this.burnTime = nbt.getInt("burnTime");
+        this.maxBurnTime = nbt.getInt("maxBurnTime");
         this.itemStackHandler.deserializeNBT(nbt.getCompound("itemStackHandler"));
     }
 
@@ -127,5 +119,27 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance implemen
     public void invalidateCapabilities() {
         super.invalidateCapabilities();
         this.optionalItemHandler.invalidate();
+    }
+
+    public int getBurnTime() {
+        return burnTime;
+    }
+
+    public int getMaxBurnTime() {
+        return maxBurnTime;
+    }
+
+    @Nullable
+    @Override
+    public Function3<Integer, PlayerInventory, PlayerEntity, ? extends Container> getContainerCreator() {
+        return (id, playerInventory, playerEntity) -> new SolidFuelModuleContainer(
+                TransportContainers.SOLID_FUEL_MODULE.get(),
+                id,
+                playerInventory,
+                new EntityWorldPosCallable(this.getModularEntity().getSelf()),
+                this.itemStackHandler,
+                this::getBurnTime,
+                this::getMaxBurnTime
+        );
     }
 }

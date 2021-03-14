@@ -3,7 +3,6 @@ package xyz.brassgoggledcoders.transport.api;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryManager;
-import xyz.brassgoggledcoders.transport.api.navigation.NavigationPoint;
 import xyz.brassgoggledcoders.transport.api.navigation.NavigationPointType;
 
 public class TransportRegistries {
