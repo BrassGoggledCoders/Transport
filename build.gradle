@@ -25,45 +25,6 @@ version = "${minecraft_version}-" + getVersion()
 group = "${group}"
 archivesBaseName = "${mod_name}"
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        name = "forge"
-        url = "http://files.minecraftforge.net/maven"
-    }
-    maven {
-        name = "CraftTweaker, IE, Quark, Patchouli"
-        url = "https://maven.blamejared.com"
-    }
-    maven {
-        name = "Titanium"
-        url = "https://cdn.hrzn.studio/maven/"
-    }
-    maven {
-        name = "Registrate"
-        url = "http://maven.tterrag.com/"
-    }
-    maven {
-        name = "JEI"
-        url = "https://dvs1.progwml6.com/files/maven"
-    }
-    maven {
-        name = "Create"
-        url "https://www.cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-}
-
-test {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
-}
-
 sourceSets {
     main {
         resources {
@@ -151,6 +112,45 @@ shadowJar {
     classifier ''
 }
 
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        name = "forge"
+        url = "http://files.minecraftforge.net/maven"
+    }
+    maven {
+        name = "CraftTweaker, IE, Quark, Patchouli"
+        url = "https://maven.blamejared.com"
+    }
+    maven {
+        name = "Titanium"
+        url = "https://cdn.hrzn.studio/maven/"
+    }
+    maven {
+        name = "Registrate"
+        url = "http://maven.tterrag.com/"
+    }
+    maven {
+        name = "JEI"
+        url = "https://dvs1.progwml6.com/files/maven"
+    }
+    maven {
+        name = "GraphLib"
+        url = "http://dogforce-games.com/maven"
+        content {
+            includeGroup "gigaherz.graph"
+        }
+    }
+    maven {
+        name = "Create"
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     compile fg.deobf(project.dependencies.create("com.hrznstudio:titanium:${minecraft_version}-${titanium_version}") {
@@ -176,7 +176,9 @@ dependencies {
 
     compile fg.deobf("curse.maven:create-328085:3167531")
 
-    testImplementation('org.junit.jupiter:junit-jupiter:5.6.1')
+    def graphLib = "gigaherz.graph:GraphLib2:2.0.0"
+    implementation(graphLib)
+    shade(graphLib)
 }
 
 task srcJar(type: Jar) {
@@ -187,13 +189,6 @@ task srcJar(type: Jar) {
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = "javadoc"
     from javadoc.destinationDir
-}
-
-task registrateJar(type: Jar, dependsOn: javadoc) {
-    classifier = "registrate"
-    from sourceSets.main.allSource
-    exclude '**/**'
-    include 'xyz/brassgoggledcoders/transport/registrate/**'
 }
 
 jar {
@@ -213,19 +208,14 @@ jar {
 
 reobf {
     shadowJar {}
-    registrateJar {}
 }
 
 build.dependsOn shadowJar
 build.dependsOn reobfShadowJar
-build.dependsOn registrateJar
-build.dependsOn reobfRegistrateJar
 
 artifacts {
     archives javadocJar
     archives srcJar
-    archives shadowJar
-    archives registrateJar
 }
 
 uploadArchives {

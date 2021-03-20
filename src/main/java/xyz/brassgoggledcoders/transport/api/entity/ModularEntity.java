@@ -39,6 +39,7 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unchecked")
 public class ModularEntity<ENT extends Entity & IItemProvider> implements IModularEntity {
     private final ENT entity;
     private final ImmutableList<ModuleSlot> moduleSlots;

@@ -186,6 +186,7 @@ public class Transport {
         return new ResourceLocation(ID, path);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static void handleCompat(String mod, Supplier<Supplier<?>> compat) {
         if (ModList.get().isLoaded(mod)) {
             compat.get().get();

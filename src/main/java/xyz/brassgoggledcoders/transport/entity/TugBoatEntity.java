@@ -15,13 +15,19 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
+import xyz.brassgoggledcoders.transport.routingnetwork.RoutingNetwork;
+import xyz.brassgoggledcoders.transport.routingnetwork.RoutingNetworks;
+import xyz.brassgoggledcoders.transport.routingnetwork.RoutingNode;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Optional;
 
 public class TugBoatEntity extends BoatEntity {
     private static final DataParameter<Optional<BlockPos>> TARGET_POS = EntityDataManager.createKey(TugBoatEntity.class,
             DataSerializers.OPTIONAL_BLOCK_POS);
+
+    private RoutingNode targetStation;
 
     public TugBoatEntity(EntityType<? extends BoatEntity> type, World world) {
         super(type, world);
@@ -72,6 +78,7 @@ public class TugBoatEntity extends BoatEntity {
 
     @Override
     public void tick() {
+        this.checkTargetPos();
         this.previousStatus = this.status;
         this.status = this.getBoatStatus();
         if (this.status != BoatEntity.Status.UNDER_WATER && this.status != BoatEntity.Status.UNDER_FLOWING_WATER) {
@@ -153,16 +160,44 @@ public class TugBoatEntity extends BoatEntity {
                     delta -= 360;
                 }
                 if (delta < 180 && delta > 1) {
-                    this.rotationYaw++;
+                    this.rotationYaw += 1.25;
 
                 } else if (delta > 180 && delta < 359) {
-                    this.rotationYaw--;
+                    this.rotationYaw -= 1.25;
                 }
                 float f = 0.05F;
                 this.setMotion(this.getMotion().add(MathHelper.sin(-this.rotationYaw * ((float) Math.PI / 180F)) * f,
                         0.0D, MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * f));
             }
         });
+    }
+
+    private void checkTargetPos() {
+        Optional<BlockPos> optTargetPos = this.getTargetPos();
+        if (optTargetPos.isPresent()) {
+            BlockPos targetPos = optTargetPos.get();
+            if (targetPos.manhattanDistance(this.getPosition()) < 8) {
+                this.setTargetPos(null);
+            }
+        } else {
+            RoutingNetwork routingNetwork = RoutingNetworks.SHIP.getFor(this.getEntityWorld());
+            if (routingNetwork != null) {
+                RoutingNode nextStation = null;
+                if (targetStation == null || !targetStation.isValid()) {
+                    Optional<RoutingNode> station = routingNetwork.getClosestStation(this.getPosition());
+                    nextStation = station.orElse(null);
+                } else {
+                    List<RoutingNode> stations = routingNetwork.getConnectedStations(targetStation);
+                    if (!stations.isEmpty()) {
+                        nextStation = stations.get(rand.nextInt(stations.size()));
+                    }
+                }
+                if (nextStation != null) {
+                    this.targetStation = nextStation;
+                    this.setTargetPos(nextStation.getPosition());
+                }
+            }
+        }
     }
 
     public void setTargetPos(BlockPos blockPos) {

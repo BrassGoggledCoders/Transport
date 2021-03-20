@@ -60,6 +60,7 @@ import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateRecipes;
 import xyz.brassgoggledcoders.transport.screen.jobsite.RailWorkerBenchScreen;
 import xyz.brassgoggledcoders.transport.tileentity.ModuleConfiguratorTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.boat.BuoyTileEntity;
+import xyz.brassgoggledcoders.transport.tileentity.boat.DockTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.EnergyLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.FluidLoaderTileEntity;
 import xyz.brassgoggledcoders.transport.tileentity.loader.ItemLoaderTileEntity;
@@ -415,7 +416,12 @@ public class TransportBlocks {
             .block(Material.IRON, DockBlock::new)
             .item()
             .build()
+            .tileEntity(DockTileEntity::new)
+            .build()
             .register();
+
+    public static RegistryEntry<TileEntityType<DockTileEntity>> DOCK_TILE_ENTITY =
+            DOCK.getSibling(ForgeRegistries.TILE_ENTITIES);
 
     public static final BlockEntry<RailWorkerBenchBlock> RAIL_WORKER_BENCH = Transport.getRegistrate()
             .object("rail_workers_bench")
