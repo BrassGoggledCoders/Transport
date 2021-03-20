@@ -24,10 +24,6 @@ import xyz.brassgoggledcoders.transport.api.entity.HullType;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
 import xyz.brassgoggledcoders.transport.api.module.ModuleType;
-import xyz.brassgoggledcoders.transport.api.navigation.INavigationNetwork;
-import xyz.brassgoggledcoders.transport.api.navigation.INavigator;
-import xyz.brassgoggledcoders.transport.api.navigation.NavigationPointType;
-import xyz.brassgoggledcoders.transport.api.navigation.Navigator;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
 import xyz.brassgoggledcoders.transport.api.predicate.StringPredicate;
@@ -37,7 +33,6 @@ import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
 import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
-import xyz.brassgoggledcoders.transport.navigation.NavigationNetwork;
 import xyz.brassgoggledcoders.transport.nbt.CompoundNBTStorage;
 import xyz.brassgoggledcoders.transport.nbt.EmptyStorage;
 import xyz.brassgoggledcoders.transport.network.NetworkHandler;
@@ -106,7 +101,6 @@ public class Transport {
         TransportModuleSlots.setup();
         TransportHullTypes.setup();
         TransportText.setup();
-        TransportNavigationPoints.setup();
         TransportFluids.setup();
         TransportLoots.setup();
 
@@ -117,7 +111,6 @@ public class Transport {
         handleCompat("create", () -> TransportCreate::new);
     }
 
-    @SuppressWarnings("unchecked")
     public static void setupRegistries() {
         if (!registriesSetup) {
             makeRegistry("module_type", ModuleType.class);
@@ -125,7 +118,6 @@ public class Transport {
             makeRegistry("engine", EngineModule.class);
             makeRegistry("module_slot", ModuleSlot.class);
             makeRegistry("hull_type", HullType.class);
-            makeRegistry("navigation_point_type", NavigationPointType.class);
             registriesSetup = true;
         }
     }
@@ -175,8 +167,6 @@ public class Transport {
 
         CapabilityManager.INSTANCE.register(PredicateStorage.class, new EmptyStorage<>(), PredicateStorage::new);
         CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () -> null);
-        CapabilityManager.INSTANCE.register(INavigationNetwork.class, new CompoundNBTStorage<>(), NavigationNetwork::new);
-        CapabilityManager.INSTANCE.register(INavigator.class, new EmptyStorage<>(), Navigator::new);
 
         TransportAPI.generateItemToModuleMap();
     }

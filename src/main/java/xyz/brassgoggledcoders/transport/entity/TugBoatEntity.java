@@ -10,37 +10,21 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.CSteerBoatPacket;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
-import xyz.brassgoggledcoders.transport.api.TransportCapabilities;
-import xyz.brassgoggledcoders.transport.api.navigation.INavigationNetwork;
-import xyz.brassgoggledcoders.transport.api.navigation.INavigationPoint;
-import xyz.brassgoggledcoders.transport.api.navigation.INavigator;
-import xyz.brassgoggledcoders.transport.api.navigation.Navigator;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class TugBoatEntity extends BoatEntity {
     private static final DataParameter<Optional<BlockPos>> TARGET_POS = EntityDataManager.createKey(TugBoatEntity.class,
             DataSerializers.OPTIONAL_BLOCK_POS);
 
-    private final INavigator navigator;
-    private final LazyOptional<INavigator> navigatorLazy;
-
-    private LazyOptional<INavigationNetwork> navigationNetwork;
-
     public TugBoatEntity(EntityType<? extends BoatEntity> type, World world) {
         super(type, world);
-        this.navigator = new Navigator();
-        this.navigatorLazy = LazyOptional.of(() -> this.navigator);
     }
 
     public TugBoatEntity(EntityType<? extends TugBoatEntity> entityType, World world, double x, double y, double z) {
@@ -88,30 +72,6 @@ public class TugBoatEntity extends BoatEntity {
 
     @Override
     public void tick() {
-        INavigationNetwork navigationNetwork = this.getEntityWorld()
-                .getCapability(TransportCapabilities.NAVIGATION_NETWORK)
-                .resolve()
-                .orElse(null);
-        if (!this.navigator.getCurrentPoint(navigationNetwork).isPresent()) {
-            this.navigator.setCurrentPoint(this.getEntityWorld()
-                    .getCapability(TransportCapabilities.NAVIGATION_NETWORK)
-                    .map(INavigationNetwork::getNavigationPoints)
-                    .flatMap(collection -> collection.stream().findFirst())
-                    .orElse(null));
-        }
-        Optional<INavigationPoint> currentPoint = this.navigator.getCurrentPoint(navigationNetwork);
-        if (currentPoint.isPresent()) {
-            if (this.getTargetPos().isPresent()) {
-                BlockPos targetPos = this.getTargetPos().get();
-                if (!targetPos.equals(currentPoint.get().getPosition())) {
-                    this.setTargetPos(currentPoint.get().getPosition());
-                }
-            } else {
-                this.setTargetPos(currentPoint.get().getPosition());
-            }
-        } else {
-            this.setTargetPos(null);
-        }
         this.previousStatus = this.status;
         this.status = this.getBoatStatus();
         if (this.status != BoatEntity.Status.UNDER_WATER && this.status != BoatEntity.Status.UNDER_FLOWING_WATER) {
@@ -201,12 +161,6 @@ public class TugBoatEntity extends BoatEntity {
                 float f = 0.05F;
                 this.setMotion(this.getMotion().add(MathHelper.sin(-this.rotationYaw * ((float) Math.PI / 180F)) * f,
                         0.0D, MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * f));
-            } else {
-
-                this.getNavigationNetwork()
-                        .map(this.navigator::getCurrentPoint)
-                        .orElseGet(Optional::empty)
-                        .ifPresent(point -> point.alertApproach(this.navigator, this));
             }
         });
     }
@@ -217,23 +171,5 @@ public class TugBoatEntity extends BoatEntity {
 
     public Optional<BlockPos> getTargetPos() {
         return this.getDataManager().get(TARGET_POS);
-    }
-
-    @Nonnull
-    private LazyOptional<INavigationNetwork> getNavigationNetwork() {
-        if (this.navigationNetwork == null) {
-            this.navigationNetwork = this.getEntityWorld()
-                    .getCapability(TransportCapabilities.NAVIGATION_NETWORK);
-        }
-        return this.navigationNetwork;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == TransportCapabilities.NAVIGATOR) {
-            return navigatorLazy.cast();
-        }
-        return super.getCapability(cap, side);
     }
 }

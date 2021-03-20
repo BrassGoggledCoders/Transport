@@ -5,17 +5,12 @@ import net.minecraft.entity.item.minecart.FurnaceMinecartEntity;
 import net.minecraft.tileentity.LecternTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.api.TransportCapabilities;
-import xyz.brassgoggledcoders.transport.api.navigation.INavigationNetwork;
 import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorageProvider;
-import xyz.brassgoggledcoders.transport.capability.NBTCapabilityProvider;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.furnaceminecart.FurnaceMinecartFuelProvider;
-import xyz.brassgoggledcoders.transport.navigation.NavigationNetwork;
 
 @EventBusSubscriber(modid = Transport.ID, bus = EventBusSubscriber.Bus.FORGE)
 public class EventHandler {
@@ -40,14 +35,5 @@ public class EventHandler {
             attachCapabilitiesEvent.addCapability(PREDICATE_STORAGE, storageProvider);
             attachCapabilitiesEvent.addListener(storageProvider::invalidate);
         }
-    }
-
-    @SubscribeEvent
-    public static void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> attachCapabilitiesEvent) {
-        NBTCapabilityProvider<INavigationNetwork> networkProvider = new NBTCapabilityProvider<>(
-                TransportCapabilities.NAVIGATION_NETWORK, new NavigationNetwork()
-        );
-        attachCapabilitiesEvent.addCapability(NAVIGATION_NETWORK, networkProvider);
-        attachCapabilitiesEvent.addListener(networkProvider::invalidate);
     }
 }
