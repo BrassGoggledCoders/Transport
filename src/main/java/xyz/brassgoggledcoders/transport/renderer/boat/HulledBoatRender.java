@@ -67,7 +67,7 @@ public class HulledBoatRender<T extends HulledBoatEntity> extends EntityRenderer
         this.boatModel.render(matrixStack, ivertexbuilder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         if (!entity.canSwim()) {
             IVertexBuilder vertexBuilder = buffer.getBuffer(RenderType.getWaterMask());
-            this.boatModel.func_228245_c_().render(matrixStack, vertexBuilder, packedLight, OverlayTexture.NO_OVERLAY);
+            this.boatModel.noWater().render(matrixStack, vertexBuilder, packedLight, OverlayTexture.NO_OVERLAY);
         }
     }
 

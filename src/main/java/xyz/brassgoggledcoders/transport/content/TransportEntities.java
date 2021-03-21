@@ -23,6 +23,8 @@ import xyz.brassgoggledcoders.transport.item.TugBoatItem;
 import xyz.brassgoggledcoders.transport.item.locomotive.SteamLocomotiveItem;
 import xyz.brassgoggledcoders.transport.recipe.SizedIngredient;
 import xyz.brassgoggledcoders.transport.recipe.jobsite.RailWorkerBenchRecipeBuilder;
+import xyz.brassgoggledcoders.transport.renderer.boat.DieselTugBoatRenderer;
+import xyz.brassgoggledcoders.transport.renderer.boat.SteamTugBoatRenderer;
 import xyz.brassgoggledcoders.transport.renderer.boat.TugBoatRenderer;
 import xyz.brassgoggledcoders.transport.renderer.minecart.LocomotiveRenderer;
 
@@ -126,8 +128,7 @@ public class TransportEntities {
             .<TugBoatEntity>entity(TugBoatEntity::new, EntityClassification.MISC)
             .lang("Diesel Tug Boat")
             .properties(boatSetup())
-            .renderer(() -> renderManager -> new TugBoatRenderer<>(DIESEL_BOAT_ITEM, 1F,
-                    Transport.rl("textures/entity/diesel_boat.png"), renderManager))
+            .renderer(() -> DieselTugBoatRenderer::new)
             .register();
 
     public static RegistryEntry<TugBoatItem<TugBoatEntity>> STEAM_BOAT_ITEM = Transport.getRegistrate()
@@ -143,8 +144,7 @@ public class TransportEntities {
             .<TugBoatEntity>entity(TugBoatEntity::new, EntityClassification.MISC)
             .lang("Steam Tug Boat")
             .properties(properties -> properties.trackingRange(10).size(2.0F, 0.5625F))
-            .renderer(() -> manager -> new TugBoatRenderer<>(STEAM_BOAT_ITEM, 1F,
-                    Transport.rl("textures/entity/steam_boat.png"), manager))
+            .renderer(() -> SteamTugBoatRenderer::new)
             .register();
 
     private static <T extends Entity> NonNullConsumer<EntityType.Builder<T>> boatSetup() {

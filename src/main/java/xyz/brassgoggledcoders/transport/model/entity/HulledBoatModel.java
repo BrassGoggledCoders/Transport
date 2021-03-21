@@ -74,7 +74,7 @@ public class HulledBoatModel<T extends BoatEntity> extends SegmentedModel<T> {
         return this.field_228243_f_;
     }
 
-    public ModelRenderer func_228245_c_() {
+    public ModelRenderer noWater() {
         return this.noWater;
     }
 
