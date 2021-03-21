@@ -45,6 +45,7 @@ import xyz.brassgoggledcoders.transport.pointmachine.ComparatorPointMachineBehav
 import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.PredicatePointMachineBehavior;
 import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
+import xyz.brassgoggledcoders.transport.predicate.ComparatorPredicate;
 import xyz.brassgoggledcoders.transport.predicate.NamePredicate;
 import xyz.brassgoggledcoders.transport.predicate.RiderPredicate;
 import xyz.brassgoggledcoders.transport.predicate.TimePredicate;
@@ -159,6 +160,7 @@ public class Transport {
             }
             return predicate;
         });
+        TransportAPI.addEntityPredicateCreator("COMPARATOR", ComparatorPredicate::create);
 
 
         TransportAPI.addStringPredicateCreator("ENDS_WITH", StringPredicate.create(String::endsWith));

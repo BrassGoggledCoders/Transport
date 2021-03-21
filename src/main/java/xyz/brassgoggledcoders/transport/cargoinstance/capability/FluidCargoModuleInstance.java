@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.transport.cargoinstance.capability;
 
-import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.mojang.datafixers.util.Function3;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -17,13 +16,14 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.entity.EntityWorldPosCallable;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.capability.fluid.BasicFluidTank;
 import xyz.brassgoggledcoders.transport.container.loader.FluidLoaderContainer;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
 
 import javax.annotation.Nullable;
 
 public class FluidCargoModuleInstance extends CapabilityCargoModuleInstance<IFluidHandler> {
-    private final FluidTankComponent<?> fluidTank;
+    private final BasicFluidTank fluidTank;
     private final LazyOptional<IFluidHandler> lazyFluidTank;
 
     public FluidCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity) {
@@ -32,7 +32,7 @@ public class FluidCargoModuleInstance extends CapabilityCargoModuleInstance<IFlu
 
     public FluidCargoModuleInstance(CargoModule cargoModule, IModularEntity modularEntity, int buckets) {
         super(cargoModule, modularEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
-        this.fluidTank = new FluidTankComponent<>("Tank", buckets * FluidAttributes.BUCKET_VOLUME, 80, 28);
+        this.fluidTank = new BasicFluidTank(buckets * FluidAttributes.BUCKET_VOLUME);
         this.lazyFluidTank = LazyOptional.of(() -> fluidTank);
     }
 
@@ -42,6 +42,11 @@ public class FluidCargoModuleInstance extends CapabilityCargoModuleInstance<IFlu
             return ActionResultType.SUCCESS;
         }
         return super.applyInteraction(player, vec, hand);
+    }
+
+    @Override
+    public int getComparatorLevel() {
+        return fluidTank.getComparatorLevel();
     }
 
     @Override
