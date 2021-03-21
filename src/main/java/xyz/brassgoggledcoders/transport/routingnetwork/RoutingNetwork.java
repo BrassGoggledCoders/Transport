@@ -11,6 +11,8 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
+import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.content.TransportLoots;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -42,11 +44,9 @@ public class RoutingNetwork extends WorldSavedData {
         return wayStations.get(uniqueId);
     }
 
-    public void connect(RoutingNode routingNodeOne, RoutingNode routingNodeTwo) {
-        if (routingNodeOne.getGraph() == null && routingNodeTwo.getGraph() == null) {
-            Graph.integrate(routingNodeOne, Lists.newArrayList());
-        }
-        Graph.connect(routingNodeOne, routingNodeTwo);
+    public void join(RoutingNode routingNodeOne, List<RoutingNode> neighborNodes) {
+        List<GraphObject> neighborObjects = Lists.newArrayList(neighborNodes);
+        Graph.integrate(routingNodeOne, neighborObjects);
         this.markDirty();
     }
 
@@ -54,13 +54,6 @@ public class RoutingNetwork extends WorldSavedData {
         return wayStations.values()
                 .parallelStream()
                 .filter(value -> value != routingNode && value.getPosition().withinDistance(routingNode.getPosition(), distance))
-                .collect(Collectors.toList());
-    }
-
-    public List<RoutingNode> getNear(BlockPos blockPos, int distance) {
-        return wayStations.values()
-                .parallelStream()
-                .filter(value -> value.getPosition().withinDistance(blockPos, distance))
                 .collect(Collectors.toList());
     }
 
@@ -97,17 +90,30 @@ public class RoutingNetwork extends WorldSavedData {
             this.add(RoutingNode.fromNBT(compoundNBT));
         }
 
-        for (int i = 0; i < connectionList.size(); i++) {
+        for (int connectionListPos = 0; connectionListPos < connectionList.size(); connectionListPos++) {
             List<GraphObject> routingNodes = Lists.newArrayList();
-            ListNBT listNBT = connectionList.getList(i);
-            for (int j = 0; j < listNBT.size(); j++) {
-                RoutingNode routingNode = this.wayStations.get(UUID.fromString(listNBT.getString(i)));
+            ListNBT routingNodeListNBT = connectionList.getList(connectionListPos);
+            for (int routingNodeListPos = 0; routingNodeListPos < routingNodeListNBT.size(); routingNodeListPos++) {
+                RoutingNode routingNode = this.wayStations.get(UUID.fromString(routingNodeListNBT.getString(routingNodeListPos)));
                 if (routingNode != null) {
                     routingNodes.add(routingNode);
                 }
             }
-            if (routingNodes.size() > 1) {
-                Graph.integrate(routingNodes.get(0), routingNodes.subList(1, routingNodes.size() - 1));
+            if (!routingNodes.isEmpty()) {
+                GraphObject primaryNode = routingNodes.get(0);
+                Graph.integrate(primaryNode, Collections.emptyList());
+                if (routingNodes.size() > 1) {
+                    Iterator<GraphObject> routingNodeIterator = routingNodes.listIterator(1);
+                    while (routingNodeIterator.hasNext()) {
+                        Graph.connect(primaryNode, routingNodeIterator.next());
+                    }
+                }
+            }
+        }
+        for (RoutingNode routingNode : this.wayStations.values()) {
+            if (routingNode.getGraph() == null) {
+                Graph.integrate(routingNode, Collections.emptyList());
+                Transport.LOGGER.warn("Failed to Handle: " + routingNode.getGraph());
             }
         }
     }

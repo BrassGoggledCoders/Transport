@@ -37,11 +37,7 @@ public class WayStationTileEntity extends TileEntity {
             RoutingNode routingNode = this.createWayStation();
             this.wayStation = routingNode.getUniqueId();
             network.add(routingNode);
-            network.getNear(routingNode, 10)
-                    .forEach(nearWayStation -> {
-                        Transport.LOGGER.info("Connecting to " + nearWayStation.getType());
-                        network.connect(routingNode, nearWayStation);
-                    });
+            network.join(routingNode, network.getNear(routingNode, 100));
         }
     }
 
