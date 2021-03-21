@@ -4,6 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.resources.ReloadListener;
+import net.minecraft.profiler.IProfiler;
+import net.minecraft.resources.IFutureReloadListener;
+import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -19,11 +24,15 @@ import xyz.brassgoggledcoders.transport.api.renderer.ItemModuleRenderer;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.content.TransportModuleTypes;
+import xyz.brassgoggledcoders.transport.model.item.EntityItemModelCache;
 import xyz.brassgoggledcoders.transport.model.item.ModularItemModelLoader;
 import xyz.brassgoggledcoders.transport.renderer.boat.HulledBoatRender;
 import xyz.brassgoggledcoders.transport.renderer.boat.ModularBoatRenderer;
 import xyz.brassgoggledcoders.transport.renderer.minecart.CargoCarrierMinecartEntityRenderer;
 import xyz.brassgoggledcoders.transport.renderer.tileentity.ModuleConfiguratorTileEntityRenderer;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @EventBusSubscriber(modid = Transport.ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ClientModEventHandler {
@@ -50,6 +59,13 @@ public class ClientModEventHandler {
 
         TransportClientAPI.setModuleTypeDefault(TransportModuleTypes.CARGO.get(), new CargoModuleRender());
         TransportClientAPI.setModuleTypeDefault(TransportModuleTypes.ENGINE.get(), new ItemModuleRenderer());
+
+        IResourceManager resourceManager = Minecraft.getInstance()
+                .getResourceManager();
+        if (resourceManager instanceof IReloadableResourceManager) {
+            ((IReloadableResourceManager) resourceManager).addReloadListener(EntityItemModelCache.INSTANCE);
+        }
+
     }
 
     @SubscribeEvent
