@@ -31,6 +31,11 @@ public class CakeCargoModuleInstance extends CargoModuleInstance {
     }
 
     @Override
+    public int getComparatorLevel() {
+        return (7 - this.getBlockState().get(BITES)) * 2;
+    }
+
+    @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = super.serializeNBT();
         nbt.put("cake", NBTUtil.writeBlockState(cakeBlockState));
