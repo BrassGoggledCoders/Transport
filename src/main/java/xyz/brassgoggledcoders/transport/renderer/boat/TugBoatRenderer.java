@@ -73,27 +73,36 @@ public abstract class TugBoatRenderer<T extends TugBoatEntity> extends EntityRen
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
         matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
 
-        this.renderBoat(entity, matrixStack, buffer, packedLight);
+        this.renderBoat(entity, matrixStack, partialTicks, buffer, packedLight);
 
         super.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
         matrixStack.pop();
     }
 
-    protected void renderBoat(T entity, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight) {
+    protected void renderBoat(T entity, MatrixStack matrixStack, float partialTicks, IRenderTypeBuffer buffer, int packedLight) {
         IBakedModel hullModel = this.hull.get(null);
         IBakedModel leftPaddle = this.leftPaddle.get(null);
         IBakedModel rightPaddle = this.rightPaddle.get(null);
+
+        matrixStack.push();
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees(180));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(90));
         if (hullModel != null) {
-            matrixStack.push();
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees(180));
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(90));
             Minecraft.getInstance().getItemRenderer()
                     .renderModel(hullModel, ItemStack.EMPTY, packedLight, OverlayTexture.NO_OVERLAY, matrixStack,
                             buffer.getBuffer(RenderType.getTranslucent()));
             matrixStack.push();
-            matrixStack.rotate(new Quaternion(50F,0,  0, true));
+            float leftPaddleAngle = MathHelper.lerp(partialTicks, entity.getLeftPaddleRotation(), entity.getPreviousLeftPaddleRotation()) % 360;
+            matrixStack.rotate(new Quaternion(-leftPaddleAngle, 0, 0, true));
             Minecraft.getInstance().getItemRenderer()
                     .renderModel(leftPaddle, ItemStack.EMPTY, packedLight, OverlayTexture.NO_OVERLAY, matrixStack,
+                            buffer.getBuffer(RenderType.getTranslucent()));
+            matrixStack.pop();
+            matrixStack.push();
+            float rightPaddleAngle = MathHelper.lerp(partialTicks, entity.getRightPaddleRotation(), entity.getPreviousRightPaddleRotation()) % 360;
+            matrixStack.rotate(new Quaternion(-rightPaddleAngle, 0, 0, true));
+            Minecraft.getInstance().getItemRenderer()
+                    .renderModel(rightPaddle, ItemStack.EMPTY, packedLight, OverlayTexture.NO_OVERLAY, matrixStack,
                             buffer.getBuffer(RenderType.getTranslucent()));
             matrixStack.pop();
             if (!entity.canSwim()) {
@@ -102,8 +111,9 @@ public abstract class TugBoatRenderer<T extends TugBoatEntity> extends EntityRen
                 matrixStack.translate(0, 0, -0.05F);
                 BOAT_MODEL.noWater().render(matrixStack, vertexBuilder, packedLight, OverlayTexture.NO_OVERLAY);
             }
-            matrixStack.pop();
+
         }
+        matrixStack.pop();
     }
 
     @Override
