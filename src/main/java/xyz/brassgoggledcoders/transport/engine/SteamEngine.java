@@ -2,16 +2,26 @@ package xyz.brassgoggledcoders.transport.engine;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Direction;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.api.engine.EngineState;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.FuelItemStackHandler;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.BooleanSupplier;
 
-public class SteamEngine extends Engine {
+public class SteamEngine extends Engine implements ICapabilityProvider {
     public static final int WATER_CAPACITY = 7 * FluidAttributes.BUCKET_VOLUME;
 
     private final FluidTank waterTank = new FluidTank(
@@ -21,6 +31,9 @@ public class SteamEngine extends Engine {
     private final FuelItemStackHandler fuelHandler = new FuelItemStackHandler(1);
     private final BooleanSupplier isOn;
 
+    private final LazyOptional<IFluidHandler> fluidLazy;
+    private final LazyOptional<IItemHandler> itemLazy;
+
     private int burnRemaining;
     private int maxBurn;
     private double steam;
@@ -29,6 +42,8 @@ public class SteamEngine extends Engine {
 
     public SteamEngine(BooleanSupplier isOn) {
         this.isOn = isOn;
+        this.fluidLazy = LazyOptional.of(() -> this.waterTank);
+        this.itemLazy = LazyOptional.of(() -> this.fuelHandler);
     }
 
     @Override
@@ -110,5 +125,22 @@ public class SteamEngine extends Engine {
         this.maxBurn = nbt.getInt("maxBurn");
         this.waterTank.readFromNBT(nbt.getCompound("waterTank"));
         this.steam = nbt.getDouble("steam");
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return itemLazy.cast();
+        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return fluidLazy.cast();
+        } else {
+            return LazyOptional.empty();
+        }
+    }
+
+    public void invalidateCaps() {
+        this.fluidLazy.invalidate();
+        this.itemLazy.invalidate();
     }
 }

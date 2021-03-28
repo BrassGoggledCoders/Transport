@@ -118,7 +118,6 @@ public class Transport {
         handleCompat("create", () -> TransportCreate::new);
     }
 
-    @SuppressWarnings("unchecked")
     public static void setupRegistries() {
         if (!registriesSetup) {
             makeRegistry("module_type", ModuleType.class);
