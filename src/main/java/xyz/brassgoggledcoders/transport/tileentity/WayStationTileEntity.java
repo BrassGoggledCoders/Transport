@@ -4,7 +4,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.routingnetwork.RoutingNetwork;
 import xyz.brassgoggledcoders.transport.routingnetwork.RoutingNetworks;
 import xyz.brassgoggledcoders.transport.routingnetwork.RoutingNode;

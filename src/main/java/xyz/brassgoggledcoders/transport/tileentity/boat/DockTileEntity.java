@@ -12,6 +12,6 @@ public class DockTileEntity extends WayStationTileEntity {
 
     @Override
     protected RoutingNode createWayStation() {
-        return new RoutingNode(this.getPos(), RoutingNodeType.STATION);
+        return new RoutingNode(this.getPos(), RoutingNodeType.STATION, connectedNodes);
     }
 }

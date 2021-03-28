@@ -16,6 +16,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
+import xyz.brassgoggledcoders.transport.routingnetwork.RoutingDevice;
 import xyz.brassgoggledcoders.transport.routingnetwork.RoutingNetwork;
 import xyz.brassgoggledcoders.transport.routingnetwork.RoutingNetworks;
 import xyz.brassgoggledcoders.transport.routingnetwork.RoutingNode;
@@ -23,17 +24,12 @@ import xyz.brassgoggledcoders.transport.routingnetwork.RoutingNode;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public class TugBoatEntity extends BoatEntity {
     private static final DataParameter<Optional<BlockPos>> TARGET_POS = EntityDataManager.createKey(TugBoatEntity.class,
             DataSerializers.OPTIONAL_BLOCK_POS);
 
-    private RoutingNode nextNode;
-    private UUID nextNodeUniqueId;
-
-    private RoutingNode destinationNode;
-    private UUID destinationNodeUniqueId;
+    private final RoutingDevice routingDevice;
 
     private int previousLeftPaddleRotation = 0;
     private int previousRightPaddleRotation = 0;
@@ -43,6 +39,12 @@ public class TugBoatEntity extends BoatEntity {
 
     public TugBoatEntity(EntityType<? extends BoatEntity> type, World world) {
         super(type, world);
+        this.routingDevice = new RoutingDevice(
+                RoutingNetworks.SHIP,
+                world,
+                this::getPosition,
+                routingNode -> this.setTargetPos((routingNode != null) ? routingNode.getPosition() : null)
+        );
     }
 
     public TugBoatEntity(EntityType<? extends TugBoatEntity> entityType, World world, double x, double y, double z) {
@@ -90,6 +92,7 @@ public class TugBoatEntity extends BoatEntity {
 
     @Override
     public void tick() {
+        this.routingDevice.tick();
         this.checkTargetPos();
         this.previousStatus = this.status;
         this.status = this.getBoatStatus();
@@ -188,29 +191,12 @@ public class TugBoatEntity extends BoatEntity {
     }
 
     private void checkTargetPos() {
-        Optional<BlockPos> optTargetPos = this.getTargetPos();
-        if (optTargetPos.isPresent()) {
-            BlockPos targetPos = optTargetPos.get();
-            if (targetPos.manhattanDistance(this.getPosition()) < 8) {
-                this.setTargetPos(null);
-            }
-        } else {
-            RoutingNetwork routingNetwork = RoutingNetworks.SHIP.getFor(this.getEntityWorld());
-            if (routingNetwork != null) {
-                RoutingNode nextStation = this.getDestinationNode();
-
-                if (nextStation == null || !nextStation.isValid()) {
-                    Optional<RoutingNode> station = routingNetwork.getClosestStation(this.getPosition());
-                    nextStation = station.orElse(null);
-                } else {
-                    List<RoutingNode> stations = routingNetwork.getConnectedStations(nextStation);
-                    if (!stations.isEmpty()) {
-                        nextStation = stations.get(rand.nextInt(stations.size()));
-                    }
-                }
-                if (nextStation != null) {
-                    this.setDestinationNode(nextStation);
-                    this.setTargetPos(nextStation.getPosition());
+        RoutingNetwork routingNetwork = RoutingNetworks.SHIP.getFor(this.getEntityWorld());
+        if (routingNetwork != null) {
+            if (this.routingDevice.getDestinationNode() == null && this.routingDevice.getPreviousNode() != null) {
+                List<RoutingNode> stations = routingNetwork.getConnectedStations(this.routingDevice.getPreviousNode());
+                if (stations.size() > 1) {
+                    this.routingDevice.setDestinationNode(stations.get(rand.nextInt(stations.size())));
                 }
             }
         }
@@ -224,62 +210,18 @@ public class TugBoatEntity extends BoatEntity {
         return this.getDataManager().get(TARGET_POS);
     }
 
-    public void setDestinationNode(RoutingNode routingNode) {
-        this.destinationNode = routingNode;
-        this.destinationNodeUniqueId = routingNode.getUniqueId();
-    }
-
-    public RoutingNode getDestinationNode() {
-        if (this.destinationNode == null && this.destinationNodeUniqueId != null) {
-            RoutingNetwork routingNetwork = RoutingNetworks.SHIP.getFor(this.getEntityWorld());
-            if (routingNetwork != null) {
-                this.destinationNode = routingNetwork.get(this.destinationNodeUniqueId);
-            }
-            this.destinationNodeUniqueId = null;
-        }
-        return this.destinationNode;
-    }
-
-    public void setNextNode(RoutingNode routingNode) {
-        this.nextNode = routingNode;
-        this.nextNodeUniqueId = routingNode.getUniqueId();
-    }
-
-    public RoutingNode getNextNode() {
-        if (this.nextNode == null && this.nextNodeUniqueId != null) {
-            RoutingNetwork routingNetwork = RoutingNetworks.SHIP.getFor(this.getEntityWorld());
-            if (routingNetwork != null) {
-                this.nextNode = routingNetwork.get(this.nextNodeUniqueId);
-            }
-            this.nextNodeUniqueId = null;
-        }
-        return this.nextNode;
-    }
-
     @Override
     protected void readAdditional(@Nonnull CompoundNBT compound) {
         super.readAdditional(compound);
-        if (compound.hasUniqueId("destinationNode")) {
-            this.destinationNodeUniqueId = compound.getUniqueId("destinationNode");
-        }
-        if (compound.hasUniqueId("nextNode")) {
-            this.nextNodeUniqueId = compound.getUniqueId("nextNode");
+        if (compound.contains("routingDevice")) {
+            this.routingDevice.deserializeNBT(compound.getCompound("routingDevice"));
         }
     }
 
     @Override
     protected void writeAdditional(@Nonnull CompoundNBT compoundNBT) {
         super.writeAdditional(compoundNBT);
-        if (this.nextNode != null) {
-            compoundNBT.putUniqueId("nextNode", this.nextNode.getUniqueId());
-        } else if (this.nextNodeUniqueId != null) {
-            compoundNBT.putUniqueId("nextNode", this.nextNodeUniqueId);
-        }
-        if (this.destinationNode != null) {
-            compoundNBT.putUniqueId("destinationNode", this.destinationNode.getUniqueId());
-        } else if (this.destinationNodeUniqueId != null) {
-            compoundNBT.putUniqueId("destinationNode", this.destinationNodeUniqueId);
-        }
+        compoundNBT.put("routingDevice", this.routingDevice.serializeNBT());
     }
 
     public int getLeftPaddleRotation() {

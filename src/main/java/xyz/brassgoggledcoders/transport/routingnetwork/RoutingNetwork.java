@@ -12,9 +12,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.content.TransportLoots;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,8 +40,13 @@ public class RoutingNetwork extends WorldSavedData {
         this.markDirty();
     }
 
-    public RoutingNode get(UUID uniqueId) {
-        return wayStations.get(uniqueId);
+    @Nullable
+    public RoutingNode get(@Nullable UUID uniqueId) {
+        if (uniqueId == null) {
+            return null;
+        } else {
+            return wayStations.get(uniqueId);
+        }
     }
 
     public void join(RoutingNode routingNodeOne, List<RoutingNode> neighborNodes) {
@@ -72,6 +77,32 @@ public class RoutingNetwork extends WorldSavedData {
                     .filter(value -> value instanceof RoutingNode)
                     .map(value -> (RoutingNode) value)
                     .filter(value -> value.getType() == RoutingNodeType.STATION)
+                    .collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    public boolean areRoutingNodesConnected(@Nonnull RoutingNode routingNode, RoutingNode... routingNodes) {
+        Graph mainGraph = routingNode.getGraph();
+        if (mainGraph != null) {
+            for (RoutingNode additionalNode : routingNodes) {
+                if (!mainGraph.contains(additionalNode)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public List<RoutingNode> getNeighbors(RoutingNode routingNode) {
+        if (routingNode.getGraph() != null) {
+            return routingNode.getGraph().getNeighbours(routingNode)
+                    .parallelStream()
+                    .filter(value -> value instanceof RoutingNode)
+                    .map(value -> (RoutingNode) value)
                     .collect(Collectors.toList());
         } else {
             return Collections.emptyList();
