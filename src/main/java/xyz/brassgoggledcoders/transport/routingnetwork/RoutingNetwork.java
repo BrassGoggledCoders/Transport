@@ -1,42 +1,43 @@
 package xyz.brassgoggledcoders.transport.routingnetwork;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import gigaherz.graph2.Graph;
-import gigaherz.graph2.GraphObject;
+import com.google.common.graph.EndpointPair;
+import com.google.common.graph.MutableValueGraph;
+import com.google.common.graph.ValueGraphBuilder;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
-import xyz.brassgoggledcoders.transport.Transport;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("UnstableApiUsage")
 public class RoutingNetwork extends WorldSavedData {
     private final Map<UUID, RoutingNode> wayStations;
+    private MutableValueGraph<RoutingNode, Double> internalNetwork;
 
     public RoutingNetwork(String name) {
         super(name);
         this.wayStations = Maps.newHashMap();
+        this.internalNetwork = ValueGraphBuilder.undirected()
+                .build();
     }
 
     public void add(RoutingNode routingNode) {
         this.wayStations.put(routingNode.getUniqueId(), routingNode);
+        this.internalNetwork.addNode(routingNode);
         this.markDirty();
     }
 
     public void remove(RoutingNode routingNode) {
         this.wayStations.remove(routingNode.getUniqueId());
+        this.internalNetwork.removeNode(routingNode);
         routingNode.setValid(false);
-        if (routingNode.getGraph() != null) {
-            routingNode.getGraph().remove(routingNode);
-        }
         this.markDirty();
     }
 
@@ -49,9 +50,13 @@ public class RoutingNetwork extends WorldSavedData {
         }
     }
 
-    public void join(RoutingNode routingNodeOne, List<RoutingNode> neighborNodes) {
-        List<GraphObject> neighborObjects = Lists.newArrayList(neighborNodes);
-        Graph.integrate(routingNodeOne, neighborObjects);
+    public void join(RoutingNode routingNode, Collection<RoutingNode> neighborNodes) {
+        for (RoutingNode neighborNode : neighborNodes) {
+            double distance = routingNode.getPosition().distanceSq(neighborNode.getPosition());
+            if (distance < 200) {
+                internalNetwork.putEdgeValue(routingNode, neighborNode, distance);
+            }
+        }
         this.markDirty();
     }
 
@@ -69,118 +74,58 @@ public class RoutingNetwork extends WorldSavedData {
                 .min(Comparator.comparingInt(value -> value.getPosition().manhattanDistance(blockPos)));
     }
 
-    public List<RoutingNode> getConnectedStations(RoutingNode routingNode) {
-        if (routingNode.getGraph() != null) {
-            return routingNode.getGraph()
-                    .getObjects()
-                    .parallelStream()
-                    .filter(value -> value instanceof RoutingNode)
-                    .map(value -> (RoutingNode) value)
-                    .filter(value -> value.getType() == RoutingNodeType.STATION)
-                    .collect(Collectors.toList());
-        } else {
-            return Collections.emptyList();
-        }
+    public Collection<RoutingNode> getConnectedStations(RoutingNode routingNode) {
+        return internalNetwork.adjacentNodes(routingNode);
     }
 
-    public boolean areRoutingNodesConnected(@Nonnull RoutingNode routingNode, RoutingNode... routingNodes) {
-        Graph mainGraph = routingNode.getGraph();
-        if (mainGraph != null) {
-            for (RoutingNode additionalNode : routingNodes) {
-                if (!mainGraph.contains(additionalNode)) {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public List<RoutingNode> getNeighbors(RoutingNode routingNode) {
-        if (routingNode.getGraph() != null) {
-            return routingNode.getGraph().getNeighbours(routingNode)
-                    .parallelStream()
-                    .filter(value -> value instanceof RoutingNode)
-                    .map(value -> (RoutingNode) value)
-                    .collect(Collectors.toList());
-        } else {
-            return Collections.emptyList();
-        }
+    public Collection<RoutingNode> getNeighbors(RoutingNode routingNode) {
+        return internalNetwork.adjacentNodes(routingNode);
     }
 
     @Override
     public void read(@Nonnull CompoundNBT nbt) {
         ListNBT wayStationListNBT = nbt.getList("wayStations", Constants.NBT.TAG_COMPOUND);
-        ListNBT connectionList = nbt.getList("connectedUUIDs", Constants.NBT.TAG_LIST);
+        ListNBT connectionList = nbt.getList("edges", Constants.NBT.TAG_STRING);
 
         this.wayStations.clear();
-
+        this.internalNetwork = ValueGraphBuilder.undirected()
+                .build();
         for (int i = 0; i < wayStationListNBT.size(); i++) {
             CompoundNBT compoundNBT = wayStationListNBT.getCompound(i);
             this.add(RoutingNode.fromNBT(compoundNBT));
         }
 
-        for (int connectionListPos = 0; connectionListPos < connectionList.size(); connectionListPos++) {
-            List<GraphObject> routingNodes = Lists.newArrayList();
-            ListNBT routingNodeListNBT = connectionList.getList(connectionListPos);
-            for (int routingNodeListPos = 0; routingNodeListPos < routingNodeListNBT.size(); routingNodeListPos++) {
-                RoutingNode routingNode = this.wayStations.get(UUID.fromString(routingNodeListNBT.getString(routingNodeListPos)));
-                if (routingNode != null) {
-                    routingNodes.add(routingNode);
+        for (int i = 0; i < connectionList.size(); i++) {
+            String[] nodeIds = connectionList.getString(i).split(" ");
+            if (nodeIds.length == 2) {
+                RoutingNode routingNodeU = this.get(UUID.fromString(nodeIds[0]));
+                RoutingNode routingNodeV = this.get(UUID.fromString(nodeIds[1]));
+                if (routingNodeU != null && routingNodeV != null) {
+                    this.internalNetwork.putEdgeValue(
+                            routingNodeU,
+                            routingNodeV,
+                            routingNodeU.getPosition().distanceSq(routingNodeV.getPosition())
+                    );
                 }
             }
-            if (!routingNodes.isEmpty()) {
-                GraphObject primaryNode = routingNodes.get(0);
-                Graph.integrate(primaryNode, Collections.emptyList());
-                if (routingNodes.size() > 1) {
-                    Iterator<GraphObject> routingNodeIterator = routingNodes.listIterator(1);
-                    while (routingNodeIterator.hasNext()) {
-                        Graph.connect(primaryNode, routingNodeIterator.next());
-                    }
-                }
-            }
-        }
-        for (RoutingNode routingNode : this.wayStations.values()) {
-            if (routingNode.getGraph() == null) {
-                Graph.integrate(routingNode, Collections.emptyList());
-                Transport.LOGGER.warn("Failed to Handle: " + routingNode.getGraph());
-            }
+
         }
     }
 
     @Override
     @Nonnull
     public CompoundNBT write(@Nonnull CompoundNBT compound) {
-        Set<Graph> graphs = Sets.newHashSet();
-
         ListNBT wayStationListNBT = new ListNBT();
-        ListNBT connectionListNBT = new ListNBT();
-
         for (RoutingNode routingNode : wayStations.values()) {
             wayStationListNBT.add(routingNode.toNBT());
-            Graph graph = routingNode.getGraph();
-            if (graph != null) {
-                graphs.add(graph);
-            }
         }
-
-        for (Graph graph : graphs) {
-            Collection<GraphObject> graphObjects = graph.getObjects();
-            if (!graphObjects.isEmpty()) {
-                ListNBT connectedUUIDs = new ListNBT();
-                for (GraphObject graphObject : graphObjects) {
-                    if (graphObject instanceof RoutingNode) {
-                        connectedUUIDs.add(StringNBT.valueOf(((RoutingNode) graphObject).getUniqueId().toString()));
-                    }
-                }
-                connectionListNBT.add(connectedUUIDs);
-            }
-
-        }
-
         compound.put("wayStations", wayStationListNBT);
-        compound.put("connectedUUIDs", connectionListNBT);
+
+        ListNBT edgeListNBT = new ListNBT();
+        for (EndpointPair<RoutingNode> endpointPair : internalNetwork.edges()) {
+            edgeListNBT.add(StringNBT.valueOf(endpointPair.nodeU().getUniqueId() + " " + endpointPair.nodeV().getUniqueId()));
+        }
+        compound.put("edges", edgeListNBT);
 
         return compound;
     }

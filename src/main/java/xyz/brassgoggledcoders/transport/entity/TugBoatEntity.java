@@ -22,7 +22,7 @@ import xyz.brassgoggledcoders.transport.routingnetwork.RoutingNetworks;
 import xyz.brassgoggledcoders.transport.routingnetwork.RoutingNode;
 
 import javax.annotation.Nonnull;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 public class TugBoatEntity extends BoatEntity {
@@ -194,9 +194,12 @@ public class TugBoatEntity extends BoatEntity {
         RoutingNetwork routingNetwork = RoutingNetworks.SHIP.getFor(this.getEntityWorld());
         if (routingNetwork != null) {
             if (this.routingDevice.getDestinationNode() == null && this.routingDevice.getPreviousNode() != null) {
-                List<RoutingNode> stations = routingNetwork.getConnectedStations(this.routingDevice.getPreviousNode());
+                Collection<RoutingNode> stations = routingNetwork.getConnectedStations(this.routingDevice.getPreviousNode());
                 if (stations.size() > 1) {
-                    this.routingDevice.setDestinationNode(stations.get(rand.nextInt(stations.size())));
+                    stations.stream()
+                            .skip(rand.nextInt(stations.size()))
+                            .findAny()
+                            .ifPresent(this.routingDevice::setDestinationNode);
                 }
             }
         }

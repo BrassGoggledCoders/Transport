@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -112,19 +113,15 @@ public class RoutingDevice implements INBTSerializable<CompoundNBT> {
                     this.setDestinationNode(null);
                 }
                 if (this.getNextNode() != null) {
-                    if (!routingNetwork.areRoutingNodesConnected(this.getDestinationNode(), this.getNextNode())) {
-                        this.setDestinationNode(null);
-                    } else {
-                        BlockPos currentPosition = this.blockPosSupplier.get();
-                        if (currentPosition.manhattanDistance(this.getNextNode().getPosition()) < 8) {
-                            this.reachedNextNode();
-                        }
+                    BlockPos currentPosition = this.blockPosSupplier.get();
+                    if (currentPosition.manhattanDistance(this.getNextNode().getPosition()) < 8) {
+                        this.reachedNextNode();
                     }
                 } else {
                     if (this.currentRoute.isEmpty()) {
                         if (this.potentialRoutes.isEmpty()) {
                             if (this.getPreviousNode() != null) {
-                                List<RoutingNode> neighbors = routingNetwork.getNeighbors(this.getPreviousNode());
+                                Collection<RoutingNode> neighbors = routingNetwork.getNeighbors(this.getPreviousNode());
                                 for (RoutingNode neighbor : neighbors) {
                                     this.potentialRoutes.add(Lists.newArrayList(
                                             this.getPreviousNode().getUniqueId(), neighbor.getUniqueId()
@@ -142,7 +139,7 @@ public class RoutingDevice implements INBTSerializable<CompoundNBT> {
                                 List<UUID> routeToCheck = routesToCheck.next();
                                 RoutingNode lastInRoute = routingNetwork.get(Iterables.getLast(routeToCheck, null));
                                 if (lastInRoute != null) {
-                                    List<RoutingNode> neighbors = routingNetwork.getNeighbors(lastInRoute);
+                                    Collection<RoutingNode> neighbors = routingNetwork.getNeighbors(lastInRoute);
                                     for (RoutingNode neighbor : neighbors) {
                                         if (neighbor == this.getDestinationNode()) {
                                             this.currentRoute.addAll(routeToCheck);

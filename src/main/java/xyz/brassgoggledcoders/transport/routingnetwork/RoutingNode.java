@@ -1,20 +1,17 @@
 package xyz.brassgoggledcoders.transport.routingnetwork;
 
-import gigaherz.graph2.Graph;
-import gigaherz.graph2.GraphObject;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.UUID;
 
-public class RoutingNode implements GraphObject {
+public class RoutingNode {
     private final BlockPos position;
     private final UUID uniqueId;
     private final RoutingNodeType type;
 
     private boolean valid = true;
-    private Graph graph;
 
     public RoutingNode(BlockPos position, RoutingNodeType type) {
         this.position = position;
@@ -30,16 +27,6 @@ public class RoutingNode implements GraphObject {
 
     public BlockPos getPosition() {
         return position;
-    }
-
-    @Override
-    public Graph getGraph() {
-        return graph;
-    }
-
-    @Override
-    public void setGraph(Graph graph) {
-        this.graph = graph;
     }
 
     public UUID getUniqueId() {
