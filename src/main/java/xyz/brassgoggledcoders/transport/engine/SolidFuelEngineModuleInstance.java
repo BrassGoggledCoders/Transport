@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.transport.engine;
 
-import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.mojang.datafixers.util.Function3;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -22,6 +21,7 @@ import xyz.brassgoggledcoders.transport.api.engine.EngineModuleInstance;
 import xyz.brassgoggledcoders.transport.api.engine.PoweredState;
 import xyz.brassgoggledcoders.transport.api.entity.EntityWorldPosCallable;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
+import xyz.brassgoggledcoders.transport.capability.itemhandler.FuelItemStackHandler;
 import xyz.brassgoggledcoders.transport.container.module.engine.SolidFuelModuleContainer;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
 
@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class SolidFuelEngineModuleInstance extends EngineModuleInstance {
-    private final InventoryComponent<?> itemStackHandler;
+    private final FuelItemStackHandler itemStackHandler;
     private final LazyOptional<IItemHandler> optionalItemHandler;
 
     private int maxBurnTime = 0;
@@ -38,8 +38,7 @@ public class SolidFuelEngineModuleInstance extends EngineModuleInstance {
     public SolidFuelEngineModuleInstance(EngineModule engineModule, IModularEntity powered) {
         super(engineModule, powered);
 
-        this.itemStackHandler = new InventoryComponent<>("engine", 80, 35, 1)
-                .setInputFilter((stack, slot) -> ForgeHooks.getBurnTime(stack) > 0);
+        this.itemStackHandler = new FuelItemStackHandler(1);
         this.optionalItemHandler = LazyOptional.of(() -> itemStackHandler);
     }
 
