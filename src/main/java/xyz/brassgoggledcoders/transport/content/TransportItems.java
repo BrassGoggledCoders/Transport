@@ -9,8 +9,10 @@ import net.minecraftforge.common.Tags;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.item.NavigationChartItem;
 import xyz.brassgoggledcoders.transport.item.RailBreakerItem;
+import xyz.brassgoggledcoders.transport.item.routing.RoutingToolItem;
 import xyz.brassgoggledcoders.transport.registrate.TransportRegistrateRecipes;
 
+@SuppressWarnings("unused")
 public class TransportItems {
     public static final ItemEntry<RailBreakerItem> RAIL_BREAKER = Transport.getRegistrate()
             .object("rail_breaker")
@@ -49,6 +51,17 @@ public class TransportItems {
             .item(NavigationChartItem::new)
             .lang("Navigation Chart")
             .model((context, provider) -> provider.generated(context, provider.modLoc("item/navigation_chart"),
+                    provider.modLoc("item/navigation_chart_markings")
+            ))
+            .register();
+
+    public static final ItemEntry<RoutingToolItem> ROUTING_TOOL = Transport.getRegistrate()
+            .object("routing_tool")
+            .item(RoutingToolItem::new)
+            .lang("Routing Tool")
+            .model((context, provider) -> provider.generated(
+                    context,
+                    provider.modLoc("item/navigation_chart"),
                     provider.modLoc("item/navigation_chart_markings")
             ))
             .register();

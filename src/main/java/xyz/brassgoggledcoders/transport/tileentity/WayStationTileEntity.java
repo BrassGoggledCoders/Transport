@@ -56,7 +56,17 @@ public class WayStationTileEntity extends TileEntity {
     @Override
     @Nonnull
     public CompoundNBT write(@Nonnull CompoundNBT compound) {
-        compound.putUniqueId("wayStation", this.wayStation);
+        if (this.wayStation != null) {
+            compound.putUniqueId("wayStation", this.wayStation);
+        }
         return super.write(compound);
+    }
+
+    public RoutingNode getRoutingNode() {
+        RoutingNetwork routingNetwork = RoutingNetworks.SHIP.getFor(this.world);
+        if (routingNetwork != null) {
+            return routingNetwork.get(this.wayStation);
+        }
+        return null;
     }
 }

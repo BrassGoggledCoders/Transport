@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.routingnetwork;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.UUID;
@@ -58,6 +59,20 @@ public class RoutingNode {
                 NBTUtil.readBlockPos(compoundNBT.getCompound("location")),
                 compoundNBT.getUniqueId("uniqueId"),
                 RoutingNodeType.valueOf(compoundNBT.getString("type"))
+        );
+    }
+
+    public void toBuffer(PacketBuffer packetBuffer) {
+        packetBuffer.writeUniqueId(this.uniqueId);
+        packetBuffer.writeBlockPos(this.position);
+        packetBuffer.writeEnumValue(this.type);
+    }
+
+    public static RoutingNode fromBuffer(PacketBuffer packetBuffer) {
+        return new RoutingNode(
+                packetBuffer.readBlockPos(),
+                packetBuffer.readUniqueId(),
+                packetBuffer.readEnumValue(RoutingNodeType.class)
         );
     }
 }

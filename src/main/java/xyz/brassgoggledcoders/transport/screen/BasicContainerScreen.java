@@ -21,6 +21,7 @@ public abstract class BasicContainerScreen<T extends Container> extends Containe
     public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.midRender(matrixStack, mouseX, mouseY, partialTicks);
         this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
         for (IGuiEventListener eventListener : this.children) {
             if (eventListener instanceof IHoverableWidget && eventListener.isMouseOver(mouseX, mouseY)) {
@@ -28,5 +29,9 @@ public abstract class BasicContainerScreen<T extends Container> extends Containe
                         mouseX, mouseY, width, height, -1, Minecraft.getInstance().fontRenderer);
             }
         }
+    }
+
+    protected void midRender(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+
     }
 }
