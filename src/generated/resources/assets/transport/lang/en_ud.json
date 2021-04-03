@@ -69,6 +69,7 @@
   "screen.transport.jei.category.module_configurator": "\u0279o\u0287\u0250\u0279nb\u0131\u025Fuo\u0186 \u01DD\u05DFnpoW",
   "screen.transport.jei.category.rail_workers_bench": "\u0265\u0254u\u01DD\u15FA s,\u0279\u01DD\u029E\u0279oM \u05DF\u0131\u0250\u1D1A",
   "screen.transport.speed": "%s :p\u01DD\u01DDdS \u0287u\u01DD\u0279\u0279n\u0186",
+  "subtitle.transport.whistle": "\u01DD\u05DF\u0287s\u0131\u0265\u028D u\u0131\u0250\u0279\u27D8",
   "text.transport.amount": "%2$s%3$s/%1$s :\u0287uno\u026F\u2C6F",
   "text.transport.fluid": "%s :p\u0131n\u05DF\u2132",
   "text.transport.forge_energy": "\u018E\u2132",
