@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.transport.event;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.FurnaceMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.properties.NoteBlockInstrument;
 import net.minecraft.tags.BlockTags;
@@ -12,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -64,10 +64,23 @@ public class EventHandler {
         if (playEvent.getInstrument().equals(NoteBlockInstrument.HARP) && playEvent.getWorld().getBlockState(playEvent.getPos().down()).isIn(BlockTags.RAILS)) {
             playEvent.setCanceled(true);
             int i = playEvent.getVanillaNoteId();
-            float f = (float)Math.pow(2.0D, (double)(i - 12) / 12.0D);
+            float f = (float) Math.pow(2.0D, (double) (i - 12) / 12.0D);
             BlockPos pos = playEvent.getPos();
-            playEvent.getWorld().playSound(null, pos,TransportSounds.WHISTLE.get(), SoundCategory.RECORDS, 3.0F, f);
-            playEvent.getWorld().addParticle(ParticleTypes.NOTE, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.2D, (double)pos.getZ() + 0.5D, (double)i / 24.0D, 0.0D, 0.0D);
+            playEvent.getWorld().playSound(null, pos, TransportSounds.WHISTLE.get(), SoundCategory.RECORDS, 3.0F, f);
+            if (playEvent.getWorld() instanceof ServerWorld) {
+                ((ServerWorld) playEvent.getWorld()).spawnParticle(
+                        ParticleTypes.NOTE,
+                        (double) pos.getX() + 0.5D,
+                        (double) pos.getY() + 1.2D,
+                        (double) pos.getZ() + 0.5D,
+                        1,
+                        0.0D,
+                        1.0D,
+                        0.0D,
+                        (double) i / 24.0D
+                );
+            }
+
         }
     }
 }

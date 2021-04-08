@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.properties.NoteBlockInstrument;
 import net.minecraft.tags.BlockTags;
@@ -17,6 +18,7 @@ import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.content.TransportSounds;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class NoteBlockCargoModuleInstance extends CargoModuleInstance {
@@ -69,11 +71,13 @@ public class NoteBlockCargoModuleInstance extends CargoModuleInstance {
     @Override
     public void onActivatorPass(boolean receivingPower) {
         if (receivingPower && lastNote <= 0) {
-            int i = note;
-            float f = (float) Math.pow(2.0D, (double) (i - 12) / 12.0D);
+            float f = (float) Math.pow(2.0D, (double) (note - 12) / 12.0D);
             BlockPos pos = this.getModularEntity().getSelf().getPosition();
             this.getWorld().playSound(null, pos, soundEvent, SoundCategory.RECORDS, 3.0F, f);
-            this.getWorld().addParticle(ParticleTypes.NOTE, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.6D, (double) pos.getZ() + 0.5D, (double) i / 24.0D, 0.0D, 0.0D);
+            CompoundNBT compoundNBT = new CompoundNBT();
+            compoundNBT.put("blockPos", NBTUtil.writeBlockPos(pos));
+            compoundNBT.putInt("note", note);
+            this.sendClientUpdate(0, compoundNBT);
         }
         lastNote = 20;
     }
@@ -93,6 +97,16 @@ public class NoteBlockCargoModuleInstance extends CargoModuleInstance {
         this.soundEvent = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation(nbt.getString("soundEvent")));
         if (this.soundEvent == null) {
             this.soundEvent = NoteBlockInstrument.HARP.getSound();
+        }
+    }
+
+    @Override
+    public void receiveClientUpdate(int type, @Nullable CompoundNBT compoundNBT) {
+        super.receiveClientUpdate(type, compoundNBT);
+        if (type == 0 && compoundNBT != null) {
+            BlockPos pos = NBTUtil.readBlockPos(compoundNBT.getCompound("blockPos"));
+            int note = compoundNBT.getInt("note");
+            this.getWorld().addParticle(ParticleTypes.NOTE, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.2D, (double)pos.getZ() + 0.5D, (double)note / 24.0D, 0.0D, 0.0D);
         }
     }
 }
