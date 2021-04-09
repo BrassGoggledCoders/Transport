@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "xyz.brassgoggledcoders.transport.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "transport.refmap.json",
+  "mixins": [
+    "entity.AbstractMinecartEntityMixin"
+  ],
+  "client": [
+
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}

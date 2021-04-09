@@ -6,9 +6,14 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
+        maven {
+            name = "mixin"
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
     }
     dependencies {
         classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
+        classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT"
     }
 }
 
@@ -100,6 +105,8 @@ minecraft {
 
             properties 'mixin.env.disableRefMap': 'true'
 
+            arg "-mixin.config=transport.mixins.json"
+
             mods {
                 transport {
                     source(sourceSets.main)
@@ -111,6 +118,8 @@ minecraft {
             workingDirectory project.file("run")
 
             properties 'mixin.env.disableRefMap': 'true'
+
+            arg "-mixin.config=transport.mixins.json"
 
             mods {
                 transport {
@@ -126,6 +135,8 @@ minecraft {
 
             properties 'fml.earlyprogresswindow': 'false'
             properties 'mixin.env.disableRefMap': 'true'
+
+            arg "-mixin.config=transport.mixins.json"
 
             args '--all', '--output', file('src/generated/resources/'),
                     '--reports',
@@ -177,6 +188,8 @@ dependencies {
     compile fg.deobf("curse.maven:create-328085:3167531")
 
     testImplementation('org.junit.jupiter:junit-jupiter:5.6.1')
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
 }
 
 task srcJar(type: Jar) {
@@ -206,7 +219,8 @@ jar {
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : "${version}",
                 "Implementation-Vendor"   : "${team}",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs"            : "transport.mixins.json"
         ])
     }
 }
@@ -266,5 +280,21 @@ static String getBuildNumber() {
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {
         options.compilerArgs << "-Xmaxerrs" << "10000"
+    }
+}
+
+apply plugin: 'org.spongepowered.mixin'
+
+mixin {
+    add sourceSets.main, "transport.refmap.json"
+}
+
+// Prevent Mixin annotation processor from getting into IDEA's annotation processor settings
+// Copied from Botania
+if (System.getProperty("idea.sync.active") == "true") {
+    afterEvaluate {
+        tasks.withType(JavaCompile).all {
+            it.options.annotationProcessorPath = files()
+        }
     }
 }

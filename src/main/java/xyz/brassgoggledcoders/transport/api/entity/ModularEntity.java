@@ -29,6 +29,7 @@ import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.container.NamedContainerProvider;
 import xyz.brassgoggledcoders.transport.api.module.*;
+import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.ModularItemStackHandler;
 import xyz.brassgoggledcoders.transport.container.module.VehicleModuleContainer;
 
@@ -155,7 +156,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
         for (Entry<ModuleSlot, ModuleInstance<?>> entrySet : byModuleSlot.entrySet()) {
             CompoundNBT moduleInstanceNBT = new CompoundNBT();
             ModuleInstance<?> moduleInstance = entrySet.getValue();
-            Module.toCompoundNBT(moduleInstance.getModule(), moduleInstanceNBT);
+            xyz.brassgoggledcoders.transport.api.module.Module.toCompoundNBT(moduleInstance.getModule(), moduleInstanceNBT);
             CompoundNBT instanceNBT = moduleInstance.serializeNBT();
             moduleInstanceNBT.put("instance", instanceNBT);
             moduleInstanceNBT.putString("moduleSlot", String.valueOf(entrySet.getKey().getRegistryName()));
@@ -170,7 +171,7 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
         ListNBT moduleInstancesNBT = nbt.getList("moduleInstances", Constants.NBT.TAG_COMPOUND);
         for (int x = 0; x < moduleInstancesNBT.size(); x++) {
             CompoundNBT moduleInstanceNBT = moduleInstancesNBT.getCompound(x);
-            Module<?> module = Module.fromCompoundNBT(moduleInstanceNBT);
+            xyz.brassgoggledcoders.transport.api.module.Module<?> module = Module.fromCompoundNBT(moduleInstanceNBT);
             ModuleSlot moduleSlot = TransportAPI.getModuleSlot(moduleInstanceNBT.getString("moduleSlot"));
             if (module != null && moduleSlot != null) {
                 CompoundNBT instanceNBT = moduleInstanceNBT.getCompound("instance");
