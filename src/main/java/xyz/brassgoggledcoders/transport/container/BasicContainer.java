@@ -4,7 +4,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IWorldPosCallable;
+import xyz.brassgoggledcoders.transport.api.helper.ContainerHelper;
 import xyz.brassgoggledcoders.transport.network.property.IPropertyManaged;
 import xyz.brassgoggledcoders.transport.network.property.PropertyManager;
 import xyz.brassgoggledcoders.transport.util.WorldHelper;
@@ -37,11 +39,17 @@ public class BasicContainer extends Container implements IPropertyManaged {
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
-        this.getPropertyManager().sendChanges(this.listeners,false);
+        this.getPropertyManager().sendChanges(this.listeners, false);
     }
 
     @Override
     public PropertyManager getPropertyManager() {
         return this.propertyManager;
+    }
+
+    @Override
+    @Nonnull
+    public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int index) {
+        return ContainerHelper.transferStackInSlot(this, player, index, this::mergeItemStack);
     }
 }

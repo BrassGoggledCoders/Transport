@@ -2,11 +2,13 @@ package xyz.brassgoggledcoders.transport.compat.vanilla;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.block.Blocks;
+import net.minecraftforge.event.world.NoteBlockEvent;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.cargoinstance.CakeCargoModuleInstance;
 import xyz.brassgoggledcoders.transport.cargoinstance.GenericChestCargoInstance;
+import xyz.brassgoggledcoders.transport.compat.vanilla.module.cargo.NoteBlockCargoModuleInstance;
 
 public class TransportVanilla {
 
@@ -23,6 +25,11 @@ public class TransportVanilla {
     public static final RegistryEntry<CargoModule> CHEST = Transport.getRegistrate()
             .object("chest")
             .cargoModule(() -> Blocks.CHEST, GenericChestCargoInstance::new, true)
+            .register();
+
+    public static final RegistryEntry<CargoModule> NOTE_BLOCK = Transport.getRegistrate()
+            .object("note_block")
+            .cargoModule(() -> Blocks.NOTE_BLOCK, NoteBlockCargoModuleInstance::new, true)
             .register();
 
     public static void setup() {

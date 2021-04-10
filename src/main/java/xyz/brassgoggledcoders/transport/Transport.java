@@ -110,6 +110,7 @@ public class Transport {
         TransportNavigationPoints.setup();
         TransportFluids.setup();
         TransportLoots.setup();
+        TransportSounds.setup();
 
         TransportVanilla.setup();
         TransportIE.setup();
@@ -118,7 +119,6 @@ public class Transport {
         handleCompat("create", () -> TransportCreate::new);
     }
 
-    @SuppressWarnings("unchecked")
     public static void setupRegistries() {
         if (!registriesSetup) {
             makeRegistry("module_type", ModuleType.class);
