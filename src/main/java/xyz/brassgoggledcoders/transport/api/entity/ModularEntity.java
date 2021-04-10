@@ -29,6 +29,7 @@ import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.container.NamedContainerProvider;
 import xyz.brassgoggledcoders.transport.api.module.*;
+import xyz.brassgoggledcoders.transport.api.module.Module;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.ModularItemStackHandler;
 import xyz.brassgoggledcoders.transport.container.module.VehicleModuleContainer;
 
