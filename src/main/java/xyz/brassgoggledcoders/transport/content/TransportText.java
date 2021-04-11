@@ -62,6 +62,9 @@ public class TransportText {
             .addFormattedLang("text.transport.amount", "Amount: %1$s/%2$s%3$s")
             .withFormatting(TextFormatting.GOLD);
 
+    public static final ITextComponent WHISTLE_SUBTITLE = Transport.getRegistrate()
+            .addRawLang("subtitle.transport.whistle", "Train whistle");
+
     public static void setup() {
 
     }

@@ -18,6 +18,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.transport.api.module.*;
+import xyz.brassgoggledcoders.transport.api.module.Module;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

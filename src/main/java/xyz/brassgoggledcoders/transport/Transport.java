@@ -104,6 +104,7 @@ public class Transport {
         TransportText.setup();
         TransportFluids.setup();
         TransportLoots.setup();
+        TransportSounds.setup();
 
         TransportVanilla.setup();
         TransportIE.setup();
