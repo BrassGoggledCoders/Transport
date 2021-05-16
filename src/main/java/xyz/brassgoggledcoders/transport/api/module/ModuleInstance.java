@@ -145,4 +145,8 @@ public class ModuleInstance<MOD extends Module<MOD>>
             return null;
         }
     }
+
+    public void readFromItemStack(ItemStack itemStack) {
+
+    }
 }

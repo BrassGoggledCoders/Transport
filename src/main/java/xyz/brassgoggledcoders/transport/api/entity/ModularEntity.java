@@ -28,8 +28,8 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.cargo.CargoModuleInstance;
 import xyz.brassgoggledcoders.transport.api.container.NamedContainerProvider;
-import xyz.brassgoggledcoders.transport.api.module.*;
 import xyz.brassgoggledcoders.transport.api.module.Module;
+import xyz.brassgoggledcoders.transport.api.module.*;
 import xyz.brassgoggledcoders.transport.capability.itemhandler.ModularItemStackHandler;
 import xyz.brassgoggledcoders.transport.container.module.VehicleModuleContainer;
 
@@ -272,9 +272,11 @@ public class ModularEntity<ENT extends Entity & IItemProvider> implements IModul
 
     @Override
     public void sendClientUpdate(ModuleInstance<?> moduleInstance, int type, CompoundNBT compoundNBT) {
-        for (Entry<ModuleSlot, ModuleInstance<?>> entry : byModuleSlot.entrySet()) {
-            if (entry.getValue() == moduleInstance) {
-                TransportAPI.getNetworkHandler().sendModuleInstanceUpdate(this, entry.getKey(), type, compoundNBT);
+        if (!this.getTheWorld().isRemote()) {
+            for (Entry<ModuleSlot, ModuleInstance<?>> entry : byModuleSlot.entrySet()) {
+                if (entry.getValue() == moduleInstance) {
+                    TransportAPI.getNetworkHandler().sendModuleInstanceUpdate(this, entry.getKey(), type, compoundNBT);
+                }
             }
         }
     }
