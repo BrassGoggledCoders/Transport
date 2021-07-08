@@ -4,7 +4,7 @@ buildscript {
         jcenter()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net"
         }
     }
     dependencies {
@@ -30,7 +30,7 @@ repositories {
     mavenCentral()
     maven {
         name = "forge"
-        url = "http://files.minecraftforge.net/maven"
+        url = "https://maven.minecraftforge.net"
     }
     maven {
         name = "CraftTweaker, IE, Quark, Patchouli"
