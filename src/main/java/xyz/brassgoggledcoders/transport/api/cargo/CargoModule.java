@@ -7,8 +7,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.common.util.NonNullSupplier;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
 import xyz.brassgoggledcoders.transport.api.TransportObjects;
 import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
 import xyz.brassgoggledcoders.transport.api.module.Module;
@@ -100,5 +104,12 @@ public class CargoModule extends Module<CargoModule> {
                                              boolean useContentTranslation) {
         return new CargoModule(blockStateSupplier::get, () -> blockStateSupplier.get().getBlock().asItem(),
                 cargoInstanceCreator, useContentTranslation);
+    }
+
+    public static CargoModule fromBlockName(ResourceLocation name,
+                                            BiFunction<CargoModule, IModularEntity, ? extends CargoModuleInstance> cargoInstanceCreator,
+                                            boolean useContentTranslation) {
+        RegistryObject<Block> registryObject = RegistryObject.of(name, ForgeRegistries.BLOCKS);
+        return new CargoModule(() -> registryObject.orElse(Blocks.AIR), cargoInstanceCreator, useContentTranslation);
     }
 }

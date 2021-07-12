@@ -41,13 +41,10 @@ public class TransportIE {
     }
 
     public static RegistryEntry<CargoModule> createCapacitor(String name, int amount) {
-        RegistryObject<Block> registryObject = RegistryObject.of(new ResourceLocation("immersiveengineering", "capacitor_" + name),
-                ForgeRegistries.BLOCKS);
-
         return Transport.getRegistrate()
                 .object("immersiveengineering/capacitor_" + name)
-                .cargoModule(() -> new CargoModule(
-                        () -> registryObject.orElse(Blocks.AIR),
+                .cargoModule(() -> CargoModule.fromBlockName(
+                        new ResourceLocation("immersiveengineering", "capacitor_" + name),
                         (cargoModule, iModularEntity) -> new EnergyCargoModuleInstance(cargoModule, iModularEntity, amount),
                         true
                 ))
