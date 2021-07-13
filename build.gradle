@@ -4,7 +4,7 @@ buildscript {
         jcenter()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net"
         }
     }
     dependencies {
@@ -30,7 +30,7 @@ repositories {
     mavenCentral()
     maven {
         name = "forge"
-        url = "http://files.minecraftforge.net/maven"
+        url = "https://maven.minecraftforge.net"
     }
     maven {
         name = "CraftTweaker, IE, Quark, Patchouli"
@@ -157,7 +157,7 @@ dependencies {
         transitive = false
     })
 
-    def registrate = "com.tterrag.registrate:Registrate:MC1.16.2-${registrate_version}"
+    def registrate = "com.tterrag.registrate:Registrate:MC1.16.5-${registrate_version}"
     implementation fg.deobf(registrate)
     shade registrate
 

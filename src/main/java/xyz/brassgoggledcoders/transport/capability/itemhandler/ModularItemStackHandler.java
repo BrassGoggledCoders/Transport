@@ -59,7 +59,10 @@ public class ModularItemStackHandler implements IItemHandlerModifiable, INBTSeri
                                 Module<?> module = TransportAPI.getModuleFromItem(stack.getItem());
                                 if (module != null) {
                                     value.remove(moduleSlot, false);
-                                    value.add(module, moduleSlot, false);
+                                    ModuleInstance<?> moduleInstance = value.add(module, moduleSlot, false);
+                                    if (moduleInstance != null) {
+                                        moduleInstance.readFromItemStack(stack);
+                                    }
                                     this.writeChanges(value);
                                     this.onChange();
                                 }

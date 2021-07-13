@@ -289,14 +289,16 @@ public class CargoCarrierMinecartEntity extends AbstractMinecartEntity implement
 
     @Override
     protected void applyDrag() {
-        double d0 = this.pushX * this.pushX + this.pushZ * this.pushZ;
-        if (d0 > 1.0E-7D) {
-            d0 = MathHelper.sqrt(d0);
-            this.pushX /= d0;
-            this.pushZ /= d0;
-            this.setMotion(this.getMotion().mul(0.8D, 0.0D, 0.8D).add(this.pushX, 0.0D, this.pushZ));
-        } else {
-            this.setMotion(this.getMotion().mul(0.98D, 0.0D, 0.98D));
+        if (this.isPoweredCart()) {
+            double d0 = this.pushX * this.pushX + this.pushZ * this.pushZ;
+            if (d0 > 1.0E-7D) {
+                d0 = MathHelper.sqrt(d0);
+                this.pushX /= d0;
+                this.pushZ /= d0;
+                this.setMotion(this.getMotion().mul(0.8D, 0.0D, 0.8D).add(this.pushX, 0.0D, this.pushZ));
+            } else {
+                this.setMotion(this.getMotion().mul(0.98D, 0.0D, 0.98D));
+            }
         }
 
         super.applyDrag();
