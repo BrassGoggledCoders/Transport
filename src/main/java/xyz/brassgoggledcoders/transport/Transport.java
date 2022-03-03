@@ -1,60 +1,16 @@
 package xyz.brassgoggledcoders.transport;
 
-import com.tterrag.registrate.providers.ProviderType;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.capabilities.CapabilityManager;
+import com.tterrag.registrate.Registrate;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.util.NonNullLazy;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.IForgeRegistryEntry;
-import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.cargo.CargoModule;
-import xyz.brassgoggledcoders.transport.api.engine.EngineModule;
-import xyz.brassgoggledcoders.transport.api.entity.HullType;
-import xyz.brassgoggledcoders.transport.api.entity.IModularEntity;
-import xyz.brassgoggledcoders.transport.api.module.ModuleSlot;
-import xyz.brassgoggledcoders.transport.api.module.ModuleType;
-import xyz.brassgoggledcoders.transport.api.navigation.INavigationNetwork;
-import xyz.brassgoggledcoders.transport.api.navigation.INavigator;
-import xyz.brassgoggledcoders.transport.api.navigation.NavigationPointType;
-import xyz.brassgoggledcoders.transport.api.navigation.Navigator;
-import xyz.brassgoggledcoders.transport.api.predicate.PredicateParser;
-import xyz.brassgoggledcoders.transport.api.predicate.PredicateStorage;
-import xyz.brassgoggledcoders.transport.api.predicate.StringPredicate;
-import xyz.brassgoggledcoders.transport.compat.create.TransportCreate;
-import xyz.brassgoggledcoders.transport.compat.immersiveengineering.TransportIE;
-import xyz.brassgoggledcoders.transport.compat.quark.TransportQuark;
-import xyz.brassgoggledcoders.transport.compat.vanilla.TransportVanilla;
-import xyz.brassgoggledcoders.transport.content.*;
-import xyz.brassgoggledcoders.transport.item.TransportItemGroup;
-import xyz.brassgoggledcoders.transport.navigation.NavigationNetwork;
-import xyz.brassgoggledcoders.transport.nbt.CompoundNBTStorage;
-import xyz.brassgoggledcoders.transport.nbt.EmptyStorage;
-import xyz.brassgoggledcoders.transport.network.NetworkHandler;
-import xyz.brassgoggledcoders.transport.pointmachine.ComparatorPointMachineBehavior;
-import xyz.brassgoggledcoders.transport.pointmachine.LeverPointMachineBehavior;
-import xyz.brassgoggledcoders.transport.pointmachine.PredicatePointMachineBehavior;
-import xyz.brassgoggledcoders.transport.pointmachine.RedstonePointMachineBehavior;
-import xyz.brassgoggledcoders.transport.predicate.ComparatorPredicate;
-import xyz.brassgoggledcoders.transport.predicate.NamePredicate;
-import xyz.brassgoggledcoders.transport.predicate.RiderPredicate;
-import xyz.brassgoggledcoders.transport.predicate.TimePredicate;
-import xyz.brassgoggledcoders.transport.registrate.TransportRegistrate;
 
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
+import javax.annotation.Nonnull;
 
 import static xyz.brassgoggledcoders.transport.Transport.ID;
 
@@ -63,144 +19,30 @@ public class Transport {
     public static final String ID = "transport";
     public static final Logger LOGGER = LogManager.getLogger(ID);
 
-    public static final NonNullLazy<ItemGroup> ITEM_GROUP = NonNullLazy.of(() ->
-            new TransportItemGroup(ID, () -> TransportBlocks.HOLDING_RAIL.orElseThrow(
-                    () -> new IllegalStateException("Got Item too early")
-            ))
+    public static final NonNullLazy<CreativeModeTab> CREATIVE_TAB = NonNullLazy.of(() ->
+            new CreativeModeTab(ID) {
+                @Override
+                @Nonnull
+                public ItemStack makeIcon() {
+                    return new ItemStack(Items.MINECART);
+                }
+            }
     );
 
-    public static final NonNullLazy<TransportRegistrate> TRANSPORT_REGISTRATE = NonNullLazy.of(() ->
-            TransportRegistrate.create(ID)
-                    .addDataGenerator(ProviderType.BLOCK_TAGS, TransportAdditionalData::generateBlockTags)
-                    .addDataGenerator(ProviderType.ITEM_TAGS, TransportAdditionalData::generateItemTags)
-                    .addDataGenerator(ProviderType.RECIPE, TransportAdditionalData::generateRecipes)
-                    .addDataGenerator(ProviderType.LANG, TransportAdditionalData::generateLang)
-                    .itemGroup(ITEM_GROUP::get)
+    public static final NonNullLazy<Registrate> TRANSPORT_REGISTRATE = NonNullLazy.of(() ->
+            Registrate.create(ID)
+                    .creativeModeTab(CREATIVE_TAB::get)
     );
-
-    private static boolean registriesSetup = false;
-
-    public static Transport instance;
-
-    public final NetworkHandler networkHandler;
 
     public Transport() {
-        instance = this;
 
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        modBus.addListener(this::commonSetup);
-
-        this.networkHandler = new NetworkHandler();
-        TransportAPI.setNetworkHandler(this.networkHandler);
-
-        setupRegistries();
-
-        TransportBlocks.setup();
-        TransportContainers.register(modBus);
-        TransportEntities.setup();
-        TransportItems.setup();
-        TransportRecipes.setup();
-        TransportModuleTypes.setup();
-        TransportCargoModules.setup();
-        TransportEngineModules.setup();
-        TransportModuleSlots.setup();
-        TransportHullTypes.setup();
-        TransportText.setup();
-        TransportNavigationPoints.setup();
-        TransportFluids.setup();
-        TransportLoots.setup();
-        TransportSounds.setup();
-
-        TransportVanilla.setup();
-        TransportIE.setup();
-        TransportQuark.setup();
-
-        handleCompat("create", () -> TransportCreate::new);
     }
 
-    public static void setupRegistries() {
-        if (!registriesSetup) {
-            makeRegistry("module_type", ModuleType.class);
-            makeRegistry("cargo", CargoModule.class);
-            makeRegistry("engine", EngineModule.class);
-            makeRegistry("module_slot", ModuleSlot.class);
-            makeRegistry("hull_type", HullType.class);
-            makeRegistry("navigation_point_type", NavigationPointType.class);
-            registriesSetup = true;
-        }
-    }
-
-    public void commonSetup(FMLCommonSetupEvent event) {
-        TransportAPI.addPointMachineBehavior(Blocks.LEVER, new LeverPointMachineBehavior());
-        TransportAPI.addPointMachineBehavior(Blocks.REPEATER, new RedstonePointMachineBehavior());
-        TransportAPI.addPointMachineBehavior(Blocks.COMPARATOR, new ComparatorPointMachineBehavior());
-        TransportAPI.addPointMachineBehavior(Blocks.LECTERN, new PredicatePointMachineBehavior());
-
-        TransportAPI.addEntityPredicateCreator("ROUTING", PredicateParser::getNextEntityPredicate);
-        TransportAPI.addEntityPredicateCreator("TRUE", parser -> entity -> true);
-        TransportAPI.addEntityPredicateCreator("FALSE", parser -> entity -> false);
-        TransportAPI.addEntityPredicateCreator("NAME", NamePredicate::create);
-        TransportAPI.addEntityPredicateCreator("NOT", parser -> parser.getNextEntityPredicate().negate());
-        TransportAPI.addEntityPredicateCreator("POWERED", parser -> entity -> entity instanceof AbstractMinecartEntity &&
-                ((AbstractMinecartEntity) entity).isPoweredCart());
-        TransportAPI.addEntityPredicateCreator("RIDERS", RiderPredicate::create);
-        TransportAPI.addEntityPredicateCreator("TIME", TimePredicate::create);
-        TransportAPI.addEntityPredicateCreator("AND", parse -> {
-            Predicate<Entity> predicate = parse.getNextEntityPredicate();
-            while (parse.hasNextPredicate()) {
-                predicate = predicate.and(parse.getNextEntityPredicate());
-            }
-            return predicate;
-        });
-        TransportAPI.addEntityPredicateCreator("OR", parse -> {
-            Predicate<Entity> predicate = parse.getNextEntityPredicate();
-            while (parse.hasNextPredicate()) {
-                predicate = predicate.or(parse.getNextEntityPredicate());
-            }
-            return predicate;
-        });
-        TransportAPI.addEntityPredicateCreator("COMPARATOR", ComparatorPredicate::create);
-
-
-        TransportAPI.addStringPredicateCreator("ENDS_WITH", StringPredicate.create(String::endsWith));
-        TransportAPI.addStringPredicateCreator("STARTS_WITH", StringPredicate.create(String::startsWith));
-        TransportAPI.addStringPredicateCreator("CONTAINS", StringPredicate.create((predicateString, testString) ->
-                testString.contains(predicateString)));
-        TransportAPI.addStringPredicateCreator("REGEX", StringPredicate.create((regex, testString) -> {
-            try {
-                return Pattern.matches(regex, testString);
-            } catch (PatternSyntaxException e) {
-                return false;
-            }
-        }));
-
-        CapabilityManager.INSTANCE.register(PredicateStorage.class, new EmptyStorage<>(), PredicateStorage::new);
-        CapabilityManager.INSTANCE.register(IModularEntity.class, new CompoundNBTStorage<>(), () -> null);
-        CapabilityManager.INSTANCE.register(INavigationNetwork.class, new CompoundNBTStorage<>(), NavigationNetwork::new);
-        CapabilityManager.INSTANCE.register(INavigator.class, new EmptyStorage<>(), Navigator::new);
-
-        TransportAPI.generateItemToModuleMap();
-    }
-
-    private static <T extends IForgeRegistryEntry<T>> void makeRegistry(String name, Class<T> type) {
-        new RegistryBuilder<T>()
-                .setName(new ResourceLocation("transport", name))
-                .setType(type)
-                .create();
-    }
-
-    public static TransportRegistrate getRegistrate() {
+    public static Registrate getRegistrate() {
         return TRANSPORT_REGISTRATE.get();
     }
 
     public static ResourceLocation rl(String path) {
         return new ResourceLocation(ID, path);
-    }
-
-    private static void handleCompat(String mod, Supplier<Supplier<?>> compat) {
-        if (ModList.get().isLoaded(mod)) {
-            compat.get().get();
-        }
     }
 }
