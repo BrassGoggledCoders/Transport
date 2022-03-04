@@ -1,7 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "transport:elevator_switch_rail",
-    "transport:scaffolding_rail"
-  ]
-}

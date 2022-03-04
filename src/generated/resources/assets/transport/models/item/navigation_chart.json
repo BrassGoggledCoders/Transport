@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "transport:item/navigation_chart",
-    "layer1": "transport:item/navigation_chart_markings"
-  }
-}

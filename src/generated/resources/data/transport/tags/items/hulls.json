@@ -1,7 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "#transport:hulls/boat",
-    "#transport:hulls/minecart"
-  ]
-}
