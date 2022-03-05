@@ -1,6 +1,0 @@
-{
-  "parent": "block/rail_flat",
-  "textures": {
-    "rail": "transport:block/rail/switch_rail_diverge_left"
-  }
-}

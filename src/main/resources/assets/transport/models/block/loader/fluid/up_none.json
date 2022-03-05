@@ -1,6 +1,0 @@
-{
-  "parent": "transport:block/loader/up_parent",
-  "textures": {
-    "texture": "transport:block/loader/fluid/fluid_loader_up_none"
-  }
-}

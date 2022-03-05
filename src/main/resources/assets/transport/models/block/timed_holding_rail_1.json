@@ -1,7 +1,0 @@
-{
-  "parent": "transport:block/repeater_rail/repeater_rail_1",
-  "textures": {
-    "rail": "transport:block/rail/timed_holding_rail",
-    "torch": "minecraft:block/redstone_torch_off"
-  }
-}
