@@ -9,6 +9,7 @@ import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import javax.annotation.Nonnull;
 
@@ -31,11 +32,11 @@ public class Transport {
 
     public static final NonNullLazy<Registrate> TRANSPORT_REGISTRATE = NonNullLazy.of(() ->
             Registrate.create(ID)
-                    .creativeModeTab(CREATIVE_TAB::get)
+                    .creativeModeTab(CREATIVE_TAB::get, "Transport")
     );
 
     public Transport() {
-
+        TransportBlocks.setup();
     }
 
     public static Registrate getRegistrate() {
