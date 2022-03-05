@@ -36,6 +36,11 @@ public class DumpRailBlock<T> extends BaseRailBlock implements EntityBlock {
 
     public DumpRailBlock(Properties pProperties, Capability<T> capability, BiConsumer<T, T> transferMethod) {
         super(true, pProperties);
+        this.registerDefaultState(this.stateDefinition.any().
+                setValue(RAIL_SHAPE, RailShape.NORTH_SOUTH)
+                .setValue(POWERED, Boolean.FALSE)
+                .setValue(WATERLOGGED, Boolean.FALSE)
+        );
         this.capability = capability;
         this.transferMethod = transferMethod;
     }
@@ -47,9 +52,21 @@ public class DumpRailBlock<T> extends BaseRailBlock implements EntityBlock {
 
     @Override
     public void onMinecartPass(BlockState state, Level level, BlockPos pos, AbstractMinecart cart) {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof DumpRailBlockEntity dumpRailBlockEntity) {
-            dumpRailBlockEntity.tryDump(cart, capability, transferMethod);
+        if (!state.getValue(POWERED)) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof DumpRailBlockEntity dumpRailBlockEntity) {
+                dumpRailBlockEntity.tryDump(cart, capability, transferMethod);
+            }
+        }
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    protected void updateState(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock) {
+        boolean poweredState = pState.getValue(POWERED);
+        boolean hasPower = pLevel.hasNeighborSignal(pPos);
+        if (hasPower != poweredState) {
+            pLevel.setBlock(pPos, pState.setValue(POWERED, hasPower), 3);
         }
     }
 
