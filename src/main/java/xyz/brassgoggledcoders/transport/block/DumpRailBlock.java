@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.block;
 
+import com.mojang.datafixers.util.Function3;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
@@ -18,23 +19,22 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.BiConsumer;
+import java.util.OptionalInt;
 
 public class DumpRailBlock<T> extends BaseRailBlock implements EntityBlock {
     public static final Property<RailShape> RAIL_SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     private final Capability<T> capability;
-    private final BiConsumer<T, T> transferMethod;
+    private final Function3<T, T, OptionalInt, OptionalInt> transferMethod;
 
-    public DumpRailBlock(Properties pProperties, Capability<T> capability, BiConsumer<T, T> transferMethod) {
+    public DumpRailBlock(Properties pProperties, Capability<T> capability, Function3<T, T, OptionalInt, OptionalInt> transferMethod) {
         super(true, pProperties);
         this.registerDefaultState(this.stateDefinition.any().
                 setValue(RAIL_SHAPE, RailShape.NORTH_SOUTH)
@@ -81,9 +81,10 @@ public class DumpRailBlock<T> extends BaseRailBlock implements EntityBlock {
         return new DumpRailBlock<>(
                 properties,
                 CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                (from, to) -> {
-                    int slots = Math.min(from.getSlots(), 128);
-                    for (int slotNumber = 0; slotNumber < slots; slotNumber++) {
+                (from, to, index) -> {
+                    int currentSlot = index.orElse(0);
+                    int maxSlot = Math.min(from.getSlots(), currentSlot + 16);
+                    for (int slotNumber = currentSlot; slotNumber < maxSlot; slotNumber++) {
                         ItemStack itemStack = from.extractItem(slotNumber, 64, true);
                         if (!itemStack.isEmpty()) {
                             ItemStack notInserted = ItemHandlerHelper.insertItem(to, itemStack, true);
@@ -94,6 +95,7 @@ public class DumpRailBlock<T> extends BaseRailBlock implements EntityBlock {
                             }
                         }
                     }
+                    return maxSlot == from.getSlots() ? OptionalInt.empty() : OptionalInt.of(maxSlot);
                 }
         );
     }
