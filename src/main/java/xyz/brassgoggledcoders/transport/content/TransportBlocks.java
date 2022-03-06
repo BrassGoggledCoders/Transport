@@ -31,7 +31,7 @@ public class TransportBlocks {
             .object("item_dump_rail")
             .block(DumpRailBlock::itemDumpRail)
             .transform(TransportBlocks::defaultRail)
-            .blockstate((TransportBlocks::straightRailBlockState))
+            .blockstate((TransportBlocks::straightPoweredRailBlockState))
             .transform(TransportBlocks::defaultRailItem)
             .register();
 
@@ -60,27 +60,40 @@ public class TransportBlocks {
                 .build();
     }
 
-    public static <T extends BaseRailBlock> void straightRailBlockState(DataGenContext<Block, T> context, RegistrateBlockstateProvider provider) {
-        ModelFile flatRail = provider.models().getBuilder("block/" + context.getName() + "_flat")
+    public static <T extends BaseRailBlock> void straightPoweredRailBlockState(DataGenContext<Block, T> context, RegistrateBlockstateProvider provider) {
+        ModelFile flatRailUnpowered = provider.models().getBuilder("block/" + context.getName() + "_flat")
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
                 .texture("rail", provider.modLoc("block/rail/" + context.getName()));
 
-        ModelFile raisedRail = provider.models().getBuilder("block/" + context.getName() + "_raised")
+        ModelFile flatRailPowered = provider.models().getBuilder("block/" + context.getName() + "_flat_powered")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/rail_flat"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_powered"));
+
+        ModelFile raisedRailUnpowered = provider.models().getBuilder("block/" + context.getName() + "_raised")
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/template_rail_raised_ne"))
                 )
                 .texture("rail", provider.modLoc("block/rail/" + context.getName()));
 
+        ModelFile raisedRailPowered = provider.models().getBuilder("block/" + context.getName() + "_raised_powered")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/template_rail_raised_ne"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_powered"));
+
         provider.getVariantBuilder(context.get())
                 .forAllStatesExcept(blockState -> {
                     RailShape railShape = blockState.getValue(BlockStateProperties.RAIL_SHAPE_STRAIGHT);
+                    boolean powered = blockState.getValue(BlockStateProperties.POWERED);
                     ConfiguredModel.Builder<?> modelBuilder = ConfiguredModel.builder();
                     if (railShape.isAscending()) {
-                        modelBuilder.modelFile(raisedRail);
+                        modelBuilder.modelFile(powered ? raisedRailPowered : raisedRailUnpowered);
                     } else {
-                        modelBuilder.modelFile(flatRail);
+                        modelBuilder.modelFile(powered ? flatRailPowered : flatRailUnpowered);
                     }
 
                     modelBuilder.rotationY(switch (railShape) {
@@ -91,7 +104,7 @@ public class TransportBlocks {
                     });
 
                     return modelBuilder.build();
-                }, BlockStateProperties.WATERLOGGED, BlockStateProperties.POWERED);
+                }, BlockStateProperties.WATERLOGGED);
     }
 
     public static void setup() {
