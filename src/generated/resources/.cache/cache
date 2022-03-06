@@ -5,4 +5,5 @@ c3597c2637b665e168f7bff3e3c1b75b6aca84c7 assets/transport/models/block/item_dump
 fd1432171697d5af06f1f2835656b121c7c003e3 assets/transport/models/block/item_dump_rail_raised.json
 e786efb0402f587daee29fc8c5969642063d5a16 assets/transport/models/item/item_dump_rail.json
 e95d82d8df852daf224c4df8053a092aebe1f05b data/minecraft/tags/blocks/rails.json
+e95d82d8df852daf224c4df8053a092aebe1f05b data/minecraft/tags/items/rails.json
 17b2781b5663a5781b5252593a0ff1536763f090 data/transport/loot_tables/blocks/item_dump_rail.json

@@ -102,7 +102,7 @@ public class DumpRailBlock<T> extends BaseRailBlock implements EntityBlock {
     @Override
     @ParametersAreNonnullByDefault
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return TransportBlocks.ITEM_DUMP_RAIL.getSibling(ForgeRegistries.BLOCK_ENTITIES)
+        return TransportBlocks.DUMP_RAIL_BLOCK_ENTITY
                 .map(type -> type.create(pPos, pState))
                 .orElse(null);
     }

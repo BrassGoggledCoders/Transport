@@ -1,15 +1,21 @@
 package xyz.brassgoggledcoders.transport.content;
 
+import com.tterrag.registrate.Registrate;
+import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.RailShape;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.items.IItemHandler;
@@ -17,20 +23,42 @@ import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.DumpRailBlock;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
 
+import javax.annotation.Nonnull;
+
 public class TransportBlocks {
 
     public static final BlockEntry<DumpRailBlock<IItemHandler>> ITEM_DUMP_RAIL = Transport.getRegistrate()
             .object("item_dump_rail")
             .block(DumpRailBlock::itemDumpRail)
-            .properties(BlockBehaviour.Properties::noCollission)
-            .addLayer(() -> RenderType::cutout)
+            .transform(TransportBlocks::defaultRail)
             .blockstate((TransportBlocks::straightRailBlockState))
-            .tag(BlockTags.RAILS)
-            .simpleBlockEntity(DumpRailBlockEntity::new)
-            .item()
-            .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/item_dump_rail")))
-            .build()
+            .transform(TransportBlocks::defaultRailItem)
             .register();
+
+    public static final RegistryEntry<BlockEntityType<DumpRailBlockEntity>> DUMP_RAIL_BLOCK_ENTITY = Transport.getRegistrate()
+            .blockEntity(DumpRailBlockEntity::new)
+            .validBlock(ITEM_DUMP_RAIL)
+            .register();
+
+
+    @Nonnull
+    public static <T extends BaseRailBlock> BlockBuilder<T, Registrate> defaultRail(BlockBuilder<T, Registrate> builder) {
+        return builder.initialProperties(Material.DECORATION)
+                .properties(properties -> properties.noCollission()
+                        .strength(0.7F)
+                        .sound(SoundType.METAL)
+                )
+                .addLayer(() -> RenderType::cutout)
+                .tag(BlockTags.RAILS);
+    }
+
+    @Nonnull
+    public static <T extends BaseRailBlock> BlockBuilder<T, Registrate> defaultRailItem(BlockBuilder<T, Registrate> builder) {
+        return builder.item()
+                .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/" + context.getName())))
+                .tag(ItemTags.RAILS)
+                .build();
+    }
 
     public static <T extends BaseRailBlock> void straightRailBlockState(DataGenContext<Block, T> context, RegistrateBlockstateProvider provider) {
         ModelFile flatRail = provider.models().getBuilder("block/" + context.getName() + "_flat")
