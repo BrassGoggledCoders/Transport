@@ -26,6 +26,20 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/generated/resources'
+        }
+    }
+    gametest {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
+}
+
 minecraft {
     mappings channel: 'parchment', version: '2022.02.13-1.18.1'
 
@@ -42,6 +56,7 @@ minecraft {
             mods {
                 transport {
                     source sourceSets.main
+                    source sourceSets.gametest
                 }
             }
         }
@@ -74,6 +89,7 @@ minecraft {
             mods {
                 transport {
                     source sourceSets.main
+                    source sourceSets.gametest
                 }
             }
         }
@@ -95,8 +111,6 @@ minecraft {
         }
     }
 }
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 configurations {
     shade
