@@ -11,8 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import org.lwjgl.system.CallbackI;
-import xyz.brassgoggledcoders.transport.block.DumpRailBlock;
+import xyz.brassgoggledcoders.transport.block.rail.DumpRailBlock;
 
 import javax.annotation.Nullable;
 import java.util.Map;

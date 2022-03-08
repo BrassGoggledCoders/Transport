@@ -1,0 +1,6 @@
+{
+  "parent": "transport:block/template_rail_raised_ne_inverted",
+  "textures": {
+    "rail": "transport:block/rail/one_way_booster_rail_powered"
+  }
+}

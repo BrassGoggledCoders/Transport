@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "transport:block/rail/one_way_booster_rail"
+  }
+}

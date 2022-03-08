@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.block;
+package xyz.brassgoggledcoders.transport.block.rail;
 
 import com.mojang.datafixers.util.Function3;
 import net.minecraft.core.BlockPos;
