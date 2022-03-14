@@ -125,7 +125,9 @@ public class DumpRailBlock<T> extends BaseRailBlock implements EntityBlock {
                         int filledAmount = to.fill(output, FluidAction.SIMULATE);
                         if (filledAmount > 0) {
                             to.fill(from.drain(filledAmount, FluidAction.EXECUTE), FluidAction.EXECUTE);
-                            return OptionalInt.of(0);
+                            if (output.getAmount() == filledAmount) {
+                                return OptionalInt.of(0);
+                            }
                         }
                     }
                     return OptionalInt.empty();
