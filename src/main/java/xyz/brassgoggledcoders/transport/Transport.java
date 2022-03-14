@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.content.TransportShellContentTypes;
 
 import javax.annotation.Nonnull;
@@ -38,6 +39,7 @@ public class Transport {
 
     public Transport() {
         TransportBlocks.setup();
+        TransportEntities.setup();
         TransportShellContentTypes.setup();
     }
 
