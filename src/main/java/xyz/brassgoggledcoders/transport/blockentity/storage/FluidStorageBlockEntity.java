@@ -13,12 +13,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
-public class BlockEntityFluidStorage extends BlockEntityCapabilityStorage<IFluidHandler, FluidTank> {
-    public BlockEntityFluidStorage(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
+public class FluidStorageBlockEntity extends CapabilityStorageBlockEntity<IFluidHandler, FluidTank> {
+    public FluidStorageBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
         super(pType, pWorldPosition, pBlockState);
     }
 
-    public BlockEntityFluidStorage(BlockPos pWorldPos, BlockState pBlockState) {
+    public FluidStorageBlockEntity(BlockPos pWorldPos, BlockState pBlockState) {
         this(
                 TransportBlocks.FLUID_STORAGE
                         .getSibling(ForgeRegistries.BLOCK_ENTITIES)
