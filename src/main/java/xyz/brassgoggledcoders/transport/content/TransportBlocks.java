@@ -15,8 +15,10 @@ import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.rail.DumpRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.OneWayBoosterRailBlock;
+import xyz.brassgoggledcoders.transport.block.storage.BlockCapabilityStorage;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
-import xyz.brassgoggledcoders.transport.util.RailModelHelper;
+import xyz.brassgoggledcoders.transport.blockentity.storage.BlockEntityFluidStorage;
+import xyz.brassgoggledcoders.transport.util.BlockModelHelper;
 
 import javax.annotation.Nonnull;
 
@@ -26,7 +28,7 @@ public class TransportBlocks {
             .object("item_dump_rail")
             .block(DumpRailBlock::itemDumpRail)
             .transform(TransportBlocks::defaultRail)
-            .blockstate(RailModelHelper::straightPoweredRailBlockState)
+            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
             .register();
 
@@ -36,12 +38,23 @@ public class TransportBlocks {
             .validBlock(ITEM_DUMP_RAIL)
             .register();
 
-    public static final RegistryEntry<OneWayBoosterRailBlock> ONE_WAY_BOOSTER_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<OneWayBoosterRailBlock> ONE_WAY_BOOSTER_RAIL = Transport.getRegistrate()
             .object("one_way_booster_rail")
             .block(OneWayBoosterRailBlock::new)
             .transform(TransportBlocks::defaultRail)
-            .blockstate(RailModelHelper::straightPoweredInvertedRailBlockState)
+            .blockstate(BlockModelHelper::straightPoweredInvertedRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
+            .register();
+
+
+    public static final BlockEntry<BlockCapabilityStorage<BlockEntityFluidStorage>> FLUID_STORAGE = Transport.getRegistrate()
+            .object("fluid_storage")
+            .block(properties -> new BlockCapabilityStorage<>(properties, BlockEntityFluidStorage::new))
+            .blockstate(BlockModelHelper::storageBlock)
+            .item()
+            .build()
+            .blockEntity(BlockEntityFluidStorage::new)
+            .build()
             .register();
 
     @Nonnull

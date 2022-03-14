@@ -10,8 +10,8 @@ import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import xyz.brassgoggledcoders.transport.block.rail.OneWayBoosterRailBlock;
 
-public class RailModelHelper {
-    public static <T extends BaseRailBlock> void straightPoweredRailBlockState(DataGenContext<Block, T> context, RegistrateBlockstateProvider provider) {
+public class BlockModelHelper {
+    public static void straightPoweredRailBlockState(DataGenContext<Block, ? extends BaseRailBlock> context, RegistrateBlockstateProvider provider) {
         ModelFile flatRailUnpowered = provider.models().getBuilder("block/" + context.getName() + "_flat")
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
@@ -58,7 +58,7 @@ public class RailModelHelper {
                 }, BlockStateProperties.WATERLOGGED);
     }
 
-    public static void straightPoweredInvertedRailBlockState(DataGenContext<Block, OneWayBoosterRailBlock> context,
+    public static void straightPoweredInvertedRailBlockState(DataGenContext<Block, ? extends BaseRailBlock> context,
                                                              RegistrateBlockstateProvider provider) {
         ModelFile flatRailUnpowered = provider.models().getBuilder("block/" + context.getName() + "_flat")
                 .parent(provider.models()
@@ -121,5 +121,15 @@ public class RailModelHelper {
 
                     return modelBuilder.build();
                 }, BlockStateProperties.WATERLOGGED);
+    }
+
+    public static void storageBlock(DataGenContext<Block, ? extends Block> context, RegistrateBlockstateProvider provider) {
+        provider.simpleBlock(context.get(), provider.models()
+                .cubeColumn(
+                        context.getName(),
+                        provider.modLoc("block/storage/" + context.getName() + "_side"),
+                        provider.modLoc("block/storage/" + context.getName() + "_end")
+                )
+        );
     }
 }

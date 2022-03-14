@@ -126,6 +126,13 @@ repositories {
         name "Registrate"
         url "https://maven.tterrag.com/"
     }
+    maven {
+        name "The One Probe"
+        url "https://cfa2.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
@@ -134,6 +141,8 @@ dependencies {
     def registrate = "com.tterrag.registrate:Registrate:MC1.18-1.0.21"
     implementation fg.deobf(registrate)
     shade registrate
+
+    implementation fg.deobf("curse.maven:the-one-probe-245211:3550084")
 }
 
 jar {
@@ -141,7 +150,7 @@ jar {
         attributes([
                 "Specification-Title"     : "${modId}",
                 "Specification-Vendor"    : "Brass Goggled Coders",
-                "Specification-Version"   : "1", 
+                "Specification-Version"   : "1",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "Brass Goggled Coders",
