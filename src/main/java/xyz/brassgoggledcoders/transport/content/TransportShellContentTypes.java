@@ -19,9 +19,9 @@ public class TransportShellContentTypes {
                     (Supplier<RegistryBuilder<ShellContentType<?, ?>>>) RegistryBuilder::new
             );
 
-    public static RegistryEntry<ShellContentType<FluidStorageShellContentCreator, FluidStorageShellContent>> FLUID_STORAGES =
+    public static RegistryEntry<ShellContentType<FluidStorageShellContentCreator, FluidStorageShellContent>> FLUID_STORAGE =
             Transport.getRegistrate()
-                    .object("shell_content_type")
+                    .object("fluid_storage")
                     .simple(ShellContentType.class, () -> new ShellContentType<>(FluidStorageShellContentCreator.CODEC));
 
     public static void setup() {

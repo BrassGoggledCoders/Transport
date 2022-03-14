@@ -9,4 +9,8 @@ public class ShellContentType<T extends IShellContentCreator<U>, U extends Shell
     public ShellContentType(Codec<T> codec) {
         this.codec = codec;
     }
+
+    public Codec<T> getCodec() {
+        return this.codec;
+    }
 }
