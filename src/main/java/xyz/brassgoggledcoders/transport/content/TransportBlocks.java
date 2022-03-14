@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Material;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.rail.DumpRailBlock;
@@ -32,10 +33,19 @@ public class TransportBlocks {
             .transform(TransportBlocks::defaultRailItem)
             .register();
 
+    public static final BlockEntry<DumpRailBlock<IFluidHandler>> FLUID_DUMP_RAIL = Transport.getRegistrate()
+            .object("fluid_dump_rail")
+            .block(DumpRailBlock::fluidDumpRail)
+            .transform(TransportBlocks::defaultRail)
+            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
+            .transform(TransportBlocks::defaultRailItem)
+            .register();
+
     public static final RegistryEntry<BlockEntityType<DumpRailBlockEntity>> DUMP_RAIL_BLOCK_ENTITY = Transport.getRegistrate()
             .object("dump_rail")
             .blockEntity(DumpRailBlockEntity::new)
             .validBlock(ITEM_DUMP_RAIL)
+            .validBlock(FLUID_DUMP_RAIL)
             .register();
 
     public static final BlockEntry<OneWayBoosterRailBlock> ONE_WAY_BOOSTER_RAIL = Transport.getRegistrate()

@@ -16,6 +16,11 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -76,6 +81,15 @@ public class DumpRailBlock<T> extends BaseRailBlock implements EntityBlock {
         return RAIL_SHAPE;
     }
 
+    @Nullable
+    @Override
+    @ParametersAreNonnullByDefault
+    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+        return TransportBlocks.DUMP_RAIL_BLOCK_ENTITY
+                .map(type -> type.create(pPos, pState))
+                .orElse(null);
+    }
+
     @Nonnull
     public static DumpRailBlock<IItemHandler> itemDumpRail(Properties properties) {
         return new DumpRailBlock<>(
@@ -100,12 +114,22 @@ public class DumpRailBlock<T> extends BaseRailBlock implements EntityBlock {
         );
     }
 
-    @Nullable
-    @Override
-    @ParametersAreNonnullByDefault
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return TransportBlocks.DUMP_RAIL_BLOCK_ENTITY
-                .map(type -> type.create(pPos, pState))
-                .orElse(null);
+    @Nonnull
+    public static DumpRailBlock<IFluidHandler> fluidDumpRail(Properties properties) {
+        return new DumpRailBlock<>(
+                properties,
+                CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
+                (from, to, index) -> {
+                    FluidStack output = from.drain(FluidAttributes.BUCKET_VOLUME * 32, FluidAction.SIMULATE);
+                    if (!output.isEmpty()) {
+                        int filledAmount = to.fill(output, FluidAction.SIMULATE);
+                        if (filledAmount > 0) {
+                            to.fill(from.drain(filledAmount, FluidAction.EXECUTE), FluidAction.EXECUTE);
+                            return OptionalInt.of(0);
+                        }
+                    }
+                    return OptionalInt.empty();
+                }
+        );
     }
 }
