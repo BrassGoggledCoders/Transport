@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.transport.shellcontent.storage.fluid;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -16,11 +15,9 @@ import javax.annotation.Nonnull;
 
 public class FluidStorageShellContent extends ShellContent implements INBTSerializable<CompoundTag> {
     private final FluidTank fluidTank;
-    private final BlockState blockState;
     private final LazyOptional<FluidTank> lazyOptional;
 
-    public FluidStorageShellContent(BlockState blockState, int capacity) {
-        this.blockState = blockState;
+    public FluidStorageShellContent(int capacity) {
         this.fluidTank = new FluidTank(capacity);
         this.lazyOptional = LazyOptional.of(() -> this.fluidTank);
     }
@@ -38,11 +35,6 @@ public class FluidStorageShellContent extends ShellContent implements INBTSerial
     public void invalidateCaps() {
         super.invalidateCaps();
         this.lazyOptional.invalidate();
-    }
-
-    @Override
-    public BlockState getView() {
-        return blockState;
     }
 
     @Override

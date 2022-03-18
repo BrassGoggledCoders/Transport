@@ -6,14 +6,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
+import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
+import xyz.brassgoggledcoders.transport.content.TransportShellContentTypes;
 
 public record FluidStorageShellContentCreator(
-        BlockState blockState,
         int capacity
 ) implements IShellContentCreator<FluidStorageShellContent> {
     public static Codec<FluidStorageShellContentCreator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            BlockState.CODEC.optionalFieldOf("blockState", Blocks.AIR.defaultBlockState())
-                    .forGetter(FluidStorageShellContentCreator::blockState),
             Codec.INT.fieldOf("capacity")
                     .forGetter(FluidStorageShellContentCreator::capacity)
     ).apply(instance, FluidStorageShellContentCreator::new));
@@ -21,6 +20,11 @@ public record FluidStorageShellContentCreator(
     @NotNull
     @Override
     public FluidStorageShellContent get() {
-        return new FluidStorageShellContent(blockState, capacity);
+        return new FluidStorageShellContent(capacity);
+    }
+
+    @Override
+    public ShellContentType<?, ?> getType() {
+        return TransportShellContentTypes.FLUID_STORAGE.get();
     }
 }
