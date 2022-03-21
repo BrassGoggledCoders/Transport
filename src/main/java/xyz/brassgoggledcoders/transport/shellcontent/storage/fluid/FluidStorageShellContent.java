@@ -3,7 +3,6 @@ package xyz.brassgoggledcoders.transport.shellcontent.storage.fluid;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -13,7 +12,7 @@ import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 
 import javax.annotation.Nonnull;
 
-public class FluidStorageShellContent extends ShellContent implements INBTSerializable<CompoundTag> {
+public class FluidStorageShellContent extends ShellContent {
     private final FluidTank fluidTank;
     private final LazyOptional<FluidTank> lazyOptional;
 
@@ -38,14 +37,16 @@ public class FluidStorageShellContent extends ShellContent implements INBTSerial
     }
 
     @Override
+    @Nonnull
     public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
+        CompoundTag tag = super.serializeNBT();
         tag.put("fluid", fluidTank.writeToNBT(new CompoundTag()));
         return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(@Nonnull CompoundTag nbt) {
+        super.deserializeNBT(nbt);
         fluidTank.readFromNBT(nbt.getCompound("fluid"));
     }
 }

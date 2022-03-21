@@ -10,7 +10,7 @@ public class TransportEntities {
 
     public static final EntityEntry<ShellMinecart> SHELL_MINECART = Transport.getRegistrate()
             .object("shell_minecart")
-            .entity(ShellMinecart::new, MobCategory.MISC)
+            .<ShellMinecart>entity(ShellMinecart::new, MobCategory.MISC)
             .renderer(() -> ShellMinecartRenderer::new)
             .register();
 

@@ -12,7 +12,8 @@ import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.content.TransportShellContentTypes;
-import xyz.brassgoggledcoders.transport.json.ShellContentCreatorJsonManager;
+import xyz.brassgoggledcoders.transport.network.NetworkHandler;
+import xyz.brassgoggledcoders.transport.service.ShellContentCreatorServiceImpl;
 
 import javax.annotation.Nonnull;
 
@@ -22,8 +23,6 @@ import static xyz.brassgoggledcoders.transport.Transport.ID;
 public class Transport {
     public static final String ID = "transport";
     public static final Logger LOGGER = LogManager.getLogger(ID);
-
-    public static final ShellContentCreatorJsonManager SHELL_CONTENT_CREATOR_JSON_MANAGER = new ShellContentCreatorJsonManager();
 
     public static final NonNullLazy<CreativeModeTab> CREATIVE_TAB = NonNullLazy.of(() ->
             new CreativeModeTab(ID) {
@@ -39,6 +38,8 @@ public class Transport {
             Registrate.create(ID)
                     .creativeModeTab(CREATIVE_TAB::get, "Transport")
     );
+
+    public static final NetworkHandler NETWORK = new NetworkHandler();
 
     public Transport() {
         TransportBlocks.setup();
