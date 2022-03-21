@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.service;
+package xyz.brassgoggledcoders.transport.api;
 
 import net.minecraftforge.common.util.NonNullLazy;
 import xyz.brassgoggledcoders.transport.api.service.IShellContentCreatorService;
@@ -6,7 +6,7 @@ import xyz.brassgoggledcoders.transport.api.service.IShellNetworkingService;
 
 import java.util.ServiceLoader;
 
-public class ServiceHolder {
+public class TransportAPI {
     public static final NonNullLazy<IShellContentCreatorService> SHELL_CONTENT_CREATOR = NonNullLazy.of(() ->
              ServiceLoader.load(IShellContentCreatorService.class)
                      .findFirst()
