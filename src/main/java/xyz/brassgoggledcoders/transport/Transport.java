@@ -9,11 +9,8 @@ import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xyz.brassgoggledcoders.transport.content.TransportBlocks;
-import xyz.brassgoggledcoders.transport.content.TransportEntities;
-import xyz.brassgoggledcoders.transport.content.TransportShellContentTypes;
+import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.network.NetworkHandler;
-import xyz.brassgoggledcoders.transport.service.ShellContentCreatorServiceImpl;
 
 import javax.annotation.Nonnull;
 
@@ -44,6 +41,8 @@ public class Transport {
     public Transport() {
         TransportBlocks.setup();
         TransportEntities.setup();
+        TransportItems.setup();
+        TransportRecipes.setup();
         TransportShellContentTypes.setup();
     }
 

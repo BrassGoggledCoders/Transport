@@ -1,13 +1,17 @@
 package xyz.brassgoggledcoders.transport.api.shellcontent;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
+import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.content.TransportShellContentTypes;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public record ShellContentCreatorInfo(
         ResourceLocation id,
@@ -30,11 +34,25 @@ public record ShellContentCreatorInfo(
 
     public ShellContent create(@Nullable CompoundTag nbt) {
         ShellContent shellContent = this.contentCreator().get();
-        shellContent.setViewBlockState(this.blockState());
-        shellContent.setCreatorInfo(this.id());
+        shellContent.setCreatorInfo(this);
         if (nbt != null) {
             shellContent.deserializeNBT(nbt);
         }
         return shellContent;
+    }
+
+    public Optional<CompoundTag> asTag() {
+        return ShellContentCreatorInfo.CODEC
+                .encode(this, NbtOps.INSTANCE, NbtOps.INSTANCE.empty())
+                .result()
+                .filter(CompoundTag.class::isInstance)
+                .map(CompoundTag.class::cast);
+    }
+
+    public static ShellContentCreatorInfo fromTag(CompoundTag tag) {
+        return ShellContentCreatorInfo.CODEC.decode(NbtOps.INSTANCE, tag)
+                .resultOrPartial(error -> TransportAPI.LOGGER.warn("Failed to decode Creator info. Error: {}, Tag{}", error, tag))
+                .map(Pair::getFirst)
+                .orElseGet(TransportAPI.SHELL_CONTENT_CREATOR.get()::getEmpty);
     }
 }

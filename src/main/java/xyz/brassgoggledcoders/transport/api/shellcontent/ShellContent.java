@@ -17,7 +17,6 @@ import java.util.Objects;
 public class ShellContent implements ICapabilityProvider {
     private IShell shell;
     private ShellContentCreatorInfo creatorInfo;
-    private BlockState viewBlockState = Blocks.AIR.defaultBlockState();
 
     @NotNull
     @Override
@@ -44,19 +43,15 @@ public class ShellContent implements ICapabilityProvider {
 
     @Nonnull
     public IShell getShell() {
-        return Objects.requireNonNull(shell, "Called get Shell before it was set");
-    }
-
-    public void setViewBlockState(BlockState blockState) {
-        this.viewBlockState = blockState;
+        return Objects.requireNonNull(shell, "Called getShell before it was set");
     }
 
     public BlockState getViewBlockState() {
-        return this.viewBlockState;
+        return this.getCreatorInfo().blockState();
     }
 
     public ShellContentCreatorInfo getCreatorInfo() {
-        return creatorInfo;
+        return Objects.requireNonNull(creatorInfo, "Called getCreatorInfo before it was set");
     }
 
     public void setCreatorInfo(ShellContentCreatorInfo creatorInfo) {

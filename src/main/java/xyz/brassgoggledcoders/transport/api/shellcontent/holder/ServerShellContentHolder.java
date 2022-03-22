@@ -1,14 +1,15 @@
 package xyz.brassgoggledcoders.transport.api.shellcontent.holder;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.service.IShellContentCreatorService;
+import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 public class ServerShellContentHolder implements IShellContentHolder {
     private final IShellContentCreatorService manager;
@@ -35,6 +36,7 @@ public class ServerShellContentHolder implements IShellContentHolder {
             this.shellContent.setShell(this.shell);
 
             this.generation = this.manager.getGeneration();
+            this.shell.newGeneration();
         }
     }
 
@@ -48,6 +50,19 @@ public class ServerShellContentHolder implements IShellContentHolder {
 
     @Override
     public void update(ShellContent shellContent) {
+        this.generation = this.manager.getGeneration();
         this.shellContent = shellContent;
+    }
+
+    @Override
+    public void writeToBuffer(FriendlyByteBuf byteBuf) {
+        Optional<CompoundTag> tag = this.get().getCreatorInfo().asTag();
+        byteBuf.writeBoolean(tag.isPresent());
+        tag.ifPresent(byteBuf::writeNbt);
+    }
+
+    @Override
+    public void readFromBuffer(FriendlyByteBuf byteBuf) {
+
     }
 }

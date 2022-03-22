@@ -1,19 +1,15 @@
 package xyz.brassgoggledcoders.transport.network;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
-import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
-import xyz.brassgoggledcoders.transport.service.ShellContentCreatorServiceImpl;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -24,14 +20,10 @@ public record NewGenerationClientMessage(
 ) {
     public void encode(FriendlyByteBuf friendlyByteBuf) {
         friendlyByteBuf.writeInt(entityId);
-        Optional<Tag> tag = ShellContentCreatorInfo.CODEC
-                .encode(shellContentCreatorInfo, NbtOps.INSTANCE, NbtOps.INSTANCE.empty())
-                .result()
-                .filter(CompoundTag.class::isInstance);
+        Optional<CompoundTag> tag = shellContentCreatorInfo.asTag();
 
         friendlyByteBuf.writeBoolean(tag.isPresent());
-        tag.map(CompoundTag.class::cast)
-                .ifPresent(friendlyByteBuf::writeNbt);
+        tag.ifPresent(friendlyByteBuf::writeNbt);
     }
 
     public boolean consume(Supplier<NetworkEvent.Context> contextSupplier) {
@@ -55,13 +47,10 @@ public record NewGenerationClientMessage(
         if (friendlyByteBuf.readBoolean()) {
             return new NewGenerationClientMessage(
                     entityId,
-                    ShellContentCreatorInfo.CODEC.decode(NbtOps.INSTANCE, friendlyByteBuf.readNbt())
-                            .resultOrPartial(error -> Transport.LOGGER.warn(entityId + " failed with error: " + error))
-                            .map(Pair::getFirst)
-                            .orElse(ShellContentCreatorServiceImpl.MISSING)
+                    ShellContentCreatorInfo.fromTag(friendlyByteBuf.readNbt())
             );
         } else {
-            return new NewGenerationClientMessage(entityId, ShellContentCreatorServiceImpl.MISSING);
+            return new NewGenerationClientMessage(entityId, TransportAPI.SHELL_CONTENT_CREATOR.get().getEmpty());
         }
     }
 }

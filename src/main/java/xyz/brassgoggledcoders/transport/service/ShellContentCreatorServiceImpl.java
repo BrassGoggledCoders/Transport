@@ -12,6 +12,7 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.service.IShellContentCreatorService;
@@ -89,5 +90,24 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
         }
 
         return info.create(nbt);
+    }
+
+    @NotNull
+    @Override
+    public ShellContent create(@Nullable CompoundTag nbt) {
+        if (nbt != null) {
+            ResourceLocation id = ResourceLocation.tryParse(nbt.getString("id"));
+            if (id != null) {
+                return this.create(id, nbt.getCompound("data"));
+            } else {
+                return MISSING.create(nbt.getCompound("data"));
+            }
+        }
+        return MISSING.create(null);
+    }
+
+    @Override
+    public ShellContentCreatorInfo getEmpty() {
+        return MISSING;
     }
 }

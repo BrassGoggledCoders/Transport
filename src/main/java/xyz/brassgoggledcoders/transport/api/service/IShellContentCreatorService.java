@@ -20,4 +20,9 @@ public interface IShellContentCreatorService {
 
     @Nonnull
     ShellContent create(ResourceLocation id, @Nullable CompoundTag nbt);
+
+    @Nonnull
+    ShellContent create(@Nullable CompoundTag nbt);
+
+    ShellContentCreatorInfo getEmpty();
 }
