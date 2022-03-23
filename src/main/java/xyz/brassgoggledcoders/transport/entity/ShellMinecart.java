@@ -4,10 +4,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
@@ -100,6 +103,12 @@ public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAd
     @Override
     public void readSpawnData(FriendlyByteBuf additionalData) {
         this.getHolder().readFromBuffer(additionalData);
+    }
+
+    @Override
+    public void destroy(@Nonnull DamageSource pSource) {
+        super.destroy(pSource);
+        this.getContent().destroy(pSource);
     }
 
     @Override

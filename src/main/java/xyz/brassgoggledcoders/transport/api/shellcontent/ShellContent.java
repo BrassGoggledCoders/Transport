@@ -2,7 +2,9 @@ package xyz.brassgoggledcoders.transport.api.shellcontent;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -56,5 +58,16 @@ public class ShellContent implements ICapabilityProvider {
 
     public void setCreatorInfo(ShellContentCreatorInfo creatorInfo) {
         this.creatorInfo = creatorInfo;
+    }
+
+    public void destroy(DamageSource pSource) {
+        if (!pSource.isExplosion() && this.getLevel().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            this.getShell().getSelf().spawnAtLocation(this.getViewBlockState().getBlock());
+        }
+    }
+
+    public Level getLevel() {
+        return this.getShell()
+                .getShellLevel();
     }
 }
