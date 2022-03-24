@@ -3,5 +3,7 @@
   "block.transport.fluid_storage": "\u01DDb\u0250\u0279o\u0287S p\u0131n\u05DF\u2132",
   "block.transport.item_dump_rail": "\u05DF\u0131\u0250\u1D1A d\u026Fn\u15E1 \u026F\u01DD\u0287I",
   "block.transport.one_way_booster_rail": "\u05DF\u0131\u0250\u1D1A \u0279\u01DD\u0287soo\u15FA \u028E\u0250M \u01DDuO",
+  "entity.transport.shell_minecart": "\u0287\u0279\u0250\u0254\u01DDu\u0131W \u05DF\u05DF\u01DD\u0265S",
+  "item.transport.shell_minecart": "\u0287\u0279\u0250\u0254\u01DDu\u0131W \u05DF\u05DF\u01DD\u0265S",
   "itemGroup.transport": "\u0287\u0279odsu\u0250\u0279\u27D8"
 }

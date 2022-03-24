@@ -11,11 +11,11 @@ import net.minecraftforge.common.util.NonNullLazy;
 
 import javax.annotation.Nonnull;
 
-public abstract class BlockEntityCapabilityStorage<T, U extends T> extends BlockEntity {
+public abstract class CapabilityStorageBlockEntity<T, U extends T> extends BlockEntity {
     private final LazyOptional<T> lazyOptional;
     private final NonNullLazy<U> storage;
 
-    protected BlockEntityCapabilityStorage(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
+    protected CapabilityStorageBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
         super(pType, pWorldPosition, pBlockState);
         this.lazyOptional = LazyOptional.of(this::getStorage);
         this.storage = NonNullLazy.of(this::createStorage);

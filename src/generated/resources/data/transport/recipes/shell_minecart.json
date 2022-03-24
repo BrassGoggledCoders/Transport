@@ -1,0 +1,9 @@
+{
+  "type": "transport:shell_items",
+  "input": {
+    "item": "minecraft:minecart"
+  },
+  "output": {
+    "item": "transport:shell_minecart"
+  }
+}

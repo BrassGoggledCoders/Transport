@@ -1,0 +1,9 @@
+{
+  "blockState": {
+    "Name": "transport:fluid_storage"
+  },
+  "content": {
+    "type": "transport:fluid_storage",
+    "capacity": 64000
+  }
+}

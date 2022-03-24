@@ -9,7 +9,8 @@ import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.content.*;
+import xyz.brassgoggledcoders.transport.network.NetworkHandler;
 
 import javax.annotation.Nonnull;
 
@@ -35,8 +36,14 @@ public class Transport {
                     .creativeModeTab(CREATIVE_TAB::get, "Transport")
     );
 
+    public static final NetworkHandler NETWORK = new NetworkHandler();
+
     public Transport() {
         TransportBlocks.setup();
+        TransportEntities.setup();
+        TransportItems.setup();
+        TransportRecipes.setup();
+        TransportShellContentTypes.setup();
     }
 
     public static Registrate getRegistrate() {

@@ -16,9 +16,9 @@ import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.rail.DumpRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.OneWayBoosterRailBlock;
-import xyz.brassgoggledcoders.transport.block.storage.BlockCapabilityStorage;
+import xyz.brassgoggledcoders.transport.block.storage.CapabilityStorageBlock;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
-import xyz.brassgoggledcoders.transport.blockentity.storage.BlockEntityFluidStorage;
+import xyz.brassgoggledcoders.transport.blockentity.storage.FluidStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.util.BlockModelHelper;
 
 import javax.annotation.Nonnull;
@@ -57,13 +57,13 @@ public class TransportBlocks {
             .register();
 
 
-    public static final BlockEntry<BlockCapabilityStorage<BlockEntityFluidStorage>> FLUID_STORAGE = Transport.getRegistrate()
+    public static final BlockEntry<CapabilityStorageBlock<FluidStorageBlockEntity>> FLUID_STORAGE = Transport.getRegistrate()
             .object("fluid_storage")
-            .block(properties -> new BlockCapabilityStorage<>(properties, BlockEntityFluidStorage::new))
+            .block(properties -> new CapabilityStorageBlock<>(properties, FluidStorageBlockEntity::new))
             .blockstate(BlockModelHelper::storageBlock)
             .item()
             .build()
-            .blockEntity(BlockEntityFluidStorage::new)
+            .blockEntity(FluidStorageBlockEntity::new)
             .build()
             .register();
 
