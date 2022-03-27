@@ -1,20 +1,26 @@
 package xyz.brassgoggledcoders.transport.entity;
 
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
@@ -23,6 +29,7 @@ import xyz.brassgoggledcoders.transport.api.shellcontent.holder.IShellContentHol
 import xyz.brassgoggledcoders.transport.api.shellcontent.holder.ServerShellContentHolder;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAdditionalSpawnData {
     private final IShellContentHolder holder;
@@ -30,7 +37,7 @@ public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAd
     public ShellMinecart(EntityType<?> entityType, Level level) {
         super(entityType, level);
         if (level.isClientSide()) {
-            this.holder = new ClientShellContentHolder();
+            this.holder = new ClientShellContentHolder(this);
         } else {
             this.holder = new ServerShellContentHolder(TransportAPI.SHELL_CONTENT_CREATOR.get(), this);
         }
@@ -39,7 +46,7 @@ public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAd
     public ShellMinecart(EntityType<?> entityType, Level level, Vec3 vec3, ShellContent shellContent) {
         super(entityType, level, vec3.x(), vec3.y(), vec3.z());
         if (level.isClientSide()) {
-            this.holder = new ClientShellContentHolder();
+            this.holder = new ClientShellContentHolder(this);
         } else {
             this.holder = new ServerShellContentHolder(TransportAPI.SHELL_CONTENT_CREATOR.get(), this);
         }
@@ -109,6 +116,46 @@ public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAd
     public void destroy(@Nonnull DamageSource pSource) {
         super.destroy(pSource);
         this.getContent().destroy(pSource);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.getContent().invalidateCaps();
+    }
+
+    @Override
+    public void reviveCaps() {
+        super.reviveCaps();
+        this.getContent().reviveCaps();
+    }
+
+    @Override
+    @Nonnull
+    @ParametersAreNonnullByDefault
+    public InteractionResult interact(Player player, InteractionHand hand) {
+        InteractionResult result = super.interact(player, hand);
+        if (result.consumesAction()) {
+            return result;
+        }
+
+        result = this.getContent().interact(player, hand);
+        if (result.consumesAction()) {
+            return result;
+        }
+
+        return InteractionResult.PASS;
+    }
+
+    @NotNull
+    @Override
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        LazyOptional<T> shellCap = this.getContent().getCapability(cap, side);
+        if (shellCap.isPresent()) {
+            return shellCap;
+        }
+
+        return super.getCapability(cap, side);
     }
 
     @Override

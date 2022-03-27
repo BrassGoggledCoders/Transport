@@ -52,6 +52,7 @@ public class ServerShellContentHolder implements IShellContentHolder {
     public void update(ShellContent shellContent) {
         this.generation = this.manager.getGeneration();
         this.shellContent = shellContent;
+        this.shellContent.setShell(this.shell);
     }
 
     @Override
