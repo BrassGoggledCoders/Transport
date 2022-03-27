@@ -55,7 +55,9 @@ public class ItemStorageShellContent extends ShellContent implements MenuProvide
     public InteractionResult interact(Player pPlayer, InteractionHand pHand) {
         if (this.showScreen) {
             InteractionResult ret = super.interact(pPlayer, pHand);
-            if (ret.consumesAction()) return ret;
+            if (ret.consumesAction()) {
+                return ret;
+            }
             pPlayer.openMenu(this);
             if (!pPlayer.level.isClientSide) {
                 this.getLevel().gameEvent(GameEvent.CONTAINER_OPEN, pPlayer);
@@ -71,7 +73,7 @@ public class ItemStorageShellContent extends ShellContent implements MenuProvide
     @Override
     @Nonnull
     public Component getDisplayName() {
-        return this.getViewBlockState().getBlock().getName();
+        return this.getName();
     }
 
     @Nullable
@@ -86,13 +88,5 @@ public class ItemStorageShellContent extends ShellContent implements MenuProvide
                         this::stillValid
                 )
         ) : null;
-    }
-
-    public boolean stillValid(Player pPlayer) {
-        if (this.getShell().getSelf().isRemoved()) {
-            return false;
-        } else {
-            return !(pPlayer.distanceToSqr(this.getShell().getSelf()) > 64.0D);
-        }
     }
 }

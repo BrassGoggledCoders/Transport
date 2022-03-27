@@ -29,7 +29,7 @@ public record ShellItemRecipe(
         return findMatching(pContainer)
                 .map(tuple -> {
                     for (ShellContentCreatorInfo info : TransportAPI.SHELL_CONTENT_CREATOR.get().getAll()) {
-                        if (info.createRecipe() && info.blockState().getBlock().asItem() == tuple.getB().getItem()) {
+                        if (info.createRecipe() && info.viewState().getBlock().asItem() == tuple.getB().getItem()) {
                             return true;
                         }
                     }
@@ -43,7 +43,7 @@ public record ShellItemRecipe(
         return findMatching(pContainer)
                 .map(tuple -> {
                     for (ShellContentCreatorInfo info : TransportAPI.SHELL_CONTENT_CREATOR.get().getAll()) {
-                        if (info.createRecipe() && info.blockState().getBlock().asItem() == tuple.getB().getItem()) {
+                        if (info.createRecipe() && info.viewState().getBlock().asItem() == tuple.getB().getItem()) {
                             ItemStack itemStack = this.output().copy();
                             CompoundTag shellContent = new CompoundTag();
                             shellContent.putString("id", info.id().toString());

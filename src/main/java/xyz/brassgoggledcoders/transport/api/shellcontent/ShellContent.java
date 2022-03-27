@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.api.shellcontent;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -59,7 +60,11 @@ public class ShellContent implements ICapabilityProvider {
     }
 
     public BlockState getViewBlockState() {
-        return this.getCreatorInfo().blockState();
+        return this.getCreatorInfo().viewState();
+    }
+
+    public Component getName() {
+        return this.getCreatorInfo().name();
     }
 
     public ShellContentCreatorInfo getCreatorInfo() {
@@ -79,5 +84,13 @@ public class ShellContent implements ICapabilityProvider {
     public Level getLevel() {
         return this.getShell()
                 .getShellLevel();
+    }
+
+    public boolean stillValid(Player pPlayer) {
+        if (this.getShell().getSelf().isRemoved()) {
+            return false;
+        } else {
+            return !(pPlayer.distanceToSqr(this.getShell().getSelf()) > 64.0D);
+        }
     }
 }
