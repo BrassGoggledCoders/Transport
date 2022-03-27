@@ -25,7 +25,10 @@ public class ShellMinecartRenderer extends MinecartRenderer<ShellMinecart> {
 
     @Override
     @ParametersAreNonnullByDefault
+    @SuppressWarnings("deprecation")
     protected void renderMinecartContents(ShellMinecart pEntity, float pPartialTicks, BlockState pState, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight) {
-        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(pState, pMatrixStack, pBuffer, pPackedLight, OverlayTexture.NO_OVERLAY);
+        Minecraft.getInstance()
+                .getBlockRenderer()
+                .renderSingleBlock(pState, pMatrixStack, pBuffer, pPackedLight, OverlayTexture.NO_OVERLAY);
     }
 }

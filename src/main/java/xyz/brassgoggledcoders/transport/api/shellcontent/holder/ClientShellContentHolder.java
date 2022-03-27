@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.api.shellcontent.holder;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
@@ -11,6 +12,7 @@ import javax.annotation.Nonnull;
 public class ClientShellContentHolder implements IShellContentHolder {
     private final IShell shell;
     private ShellContent shellContent;
+    private Component name;
 
     public ClientShellContentHolder(IShell shell) {
         this.shell = shell;
@@ -20,6 +22,7 @@ public class ClientShellContentHolder implements IShellContentHolder {
     public void update(ShellContent shellContent) {
         this.shellContent = shellContent;
         this.shellContent.setShell(shell);
+        this.name = shell.getWithName(shellContent);
     }
 
     @Override
@@ -34,6 +37,13 @@ public class ClientShellContentHolder implements IShellContentHolder {
                     .create(null)
             );
         }
+    }
+
+    @Override
+    @Nonnull
+    public Component getName() {
+        checkNonnull();
+        return this.name;
     }
 
     private void checkNonnull() {

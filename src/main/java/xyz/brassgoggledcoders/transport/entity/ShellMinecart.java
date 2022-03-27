@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.entity;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -145,6 +146,16 @@ public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAd
         }
 
         return InteractionResult.PASS;
+    }
+
+    @Override
+    @Nonnull
+    public Component getName() {
+        if (this.hasCustomName()) {
+            return super.getName();
+        } else {
+            return this.getHolder().getName();
+        }
     }
 
     @NotNull

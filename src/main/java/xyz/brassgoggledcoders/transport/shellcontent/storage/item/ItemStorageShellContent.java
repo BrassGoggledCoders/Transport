@@ -73,7 +73,7 @@ public class ItemStorageShellContent extends ShellContent implements MenuProvide
     @Override
     @Nonnull
     public Component getDisplayName() {
-        return this.getName();
+        return this.getShell().getSelf().getName();
     }
 
     @Nullable
