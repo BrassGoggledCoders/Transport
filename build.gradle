@@ -38,6 +38,12 @@ sourceSets {
         compileClasspath += main.output
         runtimeClasspath += main.output
     }
+    datagen {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
 }
 
 minecraft {
@@ -106,6 +112,7 @@ minecraft {
             mods {
                 transport {
                     source sourceSets.main
+                    source sourceSets.datagen
                 }
             }
         }

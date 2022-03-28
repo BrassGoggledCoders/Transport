@@ -1,0 +1,12 @@
+{
+  "name": {
+    "translate": "block.transport.fluid_storage"
+  },
+  "content": {
+    "capacity": 100000,
+    "type": "transport:fluid_storage"
+  },
+  "view_state": {
+    "Name": "transport:fluid_storage"
+  }
+}

@@ -52,7 +52,8 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
             String fileName = entry.getKey().toString();
             JsonObject jsonObject = GsonHelper.convertToJsonObject(entry.getValue(), fileName);
             jsonObject.addProperty("id", fileName);
-            ShellContentCreatorInfo.CODEC.decode(JsonOps.INSTANCE, jsonObject)
+            ShellContentCreatorInfo.getCodec()
+                    .decode(JsonOps.INSTANCE, jsonObject)
                     .resultOrPartial(error -> Transport.LOGGER.warn(fileName + " failed with error: " + error))
                     .ifPresent(pair -> newCreators.put(entry.getKey(), pair.getFirst()));
         }

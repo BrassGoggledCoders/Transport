@@ -77,6 +77,7 @@ public class DumpRailBlock<T> extends BaseRailBlock implements EntityBlock {
 
     @Override
     @Nonnull
+    @Deprecated
     public Property<RailShape> getShapeProperty() {
         return RAIL_SHAPE;
     }

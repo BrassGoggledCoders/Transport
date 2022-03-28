@@ -12,6 +12,7 @@ public class TransportItems {
     public static ItemEntry<ShellMinecartItem> SHELL_MINECART = Transport.getRegistrate()
             .object("shell_minecart")
             .item(ShellMinecartItem::new)
+            .properties(properties -> properties.stacksTo(8))
             .model((context, provider) -> provider.generated(context, provider.mcLoc("item/minecart")))
             .recipe((context, provider) -> new ShellItemRecipeBuilder(
                     context.get().getDefaultInstance(),

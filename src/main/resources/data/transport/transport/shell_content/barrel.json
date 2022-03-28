@@ -1,9 +1,0 @@
-{
-  "view_state": {
-    "Name": "minecraft:barrel"
-  },
-  "content": {
-    "type": "transport:item_storage",
-    "size": "THREE_BY_NINE"
-  }
-}
