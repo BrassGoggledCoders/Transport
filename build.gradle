@@ -47,17 +47,17 @@ sourceSets {
 }
 
 minecraft {
-    mappings channel: 'parchment', version: '2022.02.13-1.18.1'
+    mappings channel: 'parchment', version: '2022.03.13-1.18.2'
 
     runs {
         client {
             workingDirectory project.file('run/client')
 
             property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
             property 'forge.enabledGameTestNamespaces', "${modId}"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
                 transport {
@@ -71,10 +71,10 @@ minecraft {
             workingDirectory project.file('run/server')
 
             property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
             property 'forge.enabledGameTestNamespaces', "${modId}"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
                 transport {
@@ -87,10 +87,10 @@ minecraft {
             workingDirectory project.file('run/server')
 
             property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
             property 'forge.enabledGameTestNamespaces', "${modId}"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
                 transport {
@@ -104,8 +104,9 @@ minecraft {
             workingDirectory project.file('run/data')
 
             property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             args '--mod', "${modId}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
@@ -143,13 +144,13 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.1-39.1.2'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.0.32'
 
-    def registrate = "com.tterrag.registrate:Registrate:MC1.18-1.0.21"
+    def registrate = "com.tterrag.registrate:Registrate:MC1.18.2-1.0.24"
     implementation fg.deobf(registrate)
     shade registrate
 
-    implementation fg.deobf("curse.maven:the-one-probe-245211:3550084")
+    implementation fg.deobf("curse.maven:the-one-probe-245211:3671753")
 }
 
 jar {

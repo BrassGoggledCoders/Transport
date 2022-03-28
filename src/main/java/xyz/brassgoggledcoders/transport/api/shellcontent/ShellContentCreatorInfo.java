@@ -32,7 +32,7 @@ public record ShellContentCreatorInfo(
                             .forGetter(creatorInfo -> Optional.of(creatorInfo.name())),
                     Codec.BOOL.optionalFieldOf("createRecipe", Boolean.TRUE)
                             .forGetter(ShellContentCreatorInfo::createRecipe),
-                    RegistryManager.ACTIVE.<ShellContentType<?, ?>>getRegistry(ShellContentType.class)
+                    RegistryManager.ACTIVE.getRegistry(TransportAPI.SHELL_CONTENT_TYPE_KEY)
                             .getCodec()
                             .<IShellContentCreator<?>>dispatch(IShellContentCreator::getType, ShellContentType::getCodec)
                             .fieldOf("content")

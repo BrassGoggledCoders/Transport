@@ -1,9 +1,12 @@
 package xyz.brassgoggledcoders.transport.content;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
 import xyz.brassgoggledcoders.transport.shellcontent.empty.EmptyShellContent;
 import xyz.brassgoggledcoders.transport.shellcontent.empty.EmptyShellContentCreator;
@@ -15,13 +18,16 @@ import xyz.brassgoggledcoders.transport.shellcontent.storage.item.ItemStorageShe
 import java.util.function.Supplier;
 
 public class TransportShellContentTypes {
-    @SuppressWarnings("UnstableApiUsage")
-    public static Supplier<IForgeRegistry<ShellContentType<?, ?>>> SHELL_CONTENT_TYPES = Transport.getRegistrate()
-            .makeRegistry(
-                    "shell_content_type",
-                    ShellContentType.class,
-                    (Supplier<RegistryBuilder<ShellContentType<?, ?>>>) RegistryBuilder::new
-            );
+    public static DeferredRegister<ShellContentType<?, ?>> SHELL_CONTENT_TYPES_DR = DeferredRegister.create(
+            TransportAPI.SHELL_CONTENT_TYPE_KEY,
+            Transport.ID
+    );
+
+    @SuppressWarnings({"unused", "unchecked"})
+    public static Supplier<IForgeRegistry<ShellContentType<?, ?>>> SHELL_CONTENT_TYPES = SHELL_CONTENT_TYPES_DR.makeRegistry(
+            (Class<ShellContentType<?, ?>>) (Class<?>) ShellContentType.class,
+            RegistryBuilder::new
+    );
 
     public static RegistryEntry<ShellContentType<EmptyShellContentCreator, EmptyShellContent>> EMPTY =
             Transport.getRegistrate()
@@ -39,6 +45,6 @@ public class TransportShellContentTypes {
                     .simple(ShellContentType.class, () -> new ShellContentType<>(ItemStorageShellContentCreator.CODEC));
 
     public static void setup() {
-
+        SHELL_CONTENT_TYPES_DR.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }
