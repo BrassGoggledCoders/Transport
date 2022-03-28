@@ -1,0 +1,23 @@
+{
+  "name": {
+    "translate": "block.quark.jungle_chest"
+  },
+  "content": {
+    "size": "THREE_BY_NINE",
+    "type": "transport:item_storage"
+  },
+  "view_state": {
+    "Properties": {
+      "waterlogged": "false",
+      "type": "single",
+      "facing": "north"
+    },
+    "Name": "quark:jungle_chest"
+  },
+  "conditions": [
+    {
+      "modid": "quark",
+      "type": "forge:mod_loaded"
+    }
+  ]
+}

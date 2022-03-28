@@ -141,6 +141,10 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven {
+        name "Botania"
+        url "https://maven.blamejared.com"
+    }
 }
 
 dependencies {
@@ -151,6 +155,9 @@ dependencies {
     shade registrate
 
     implementation fg.deobf("curse.maven:the-one-probe-245211:3671753")
+
+    runtimeOnly fg.deobf("vazkii.quark:Quark:3.2-347.2280")
+    runtimeOnly fg.deobf("vazkii.autoreglib:AutoRegLib:1.7-54.112")
 }
 
 jar {

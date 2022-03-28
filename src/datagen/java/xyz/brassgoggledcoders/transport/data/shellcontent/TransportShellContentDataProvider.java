@@ -5,6 +5,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.data.modcompat.QuarkShellContent;
 import xyz.brassgoggledcoders.transport.data.shellcontent.builders.FluidStorageShellContentBuilder;
 import xyz.brassgoggledcoders.transport.data.shellcontent.builders.ItemStorageShellContentBuilder;
 import xyz.brassgoggledcoders.transport.shellcontent.storage.item.StorageSize;
@@ -26,5 +27,8 @@ public class TransportShellContentDataProvider extends ShellContentDataProvider 
         ShellContentInfoBuilder.of(TransportBlocks.FLUID_STORAGE.get())
                 .withShellContentCreator(FluidStorageShellContentBuilder.ofBuckets(100))
                 .build(consumer);
+
+
+        QuarkShellContent.gather(consumer);
     }
 }
