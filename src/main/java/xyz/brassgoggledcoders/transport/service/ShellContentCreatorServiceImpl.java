@@ -12,6 +12,7 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.Transport;
@@ -52,10 +53,13 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
             String fileName = entry.getKey().toString();
             JsonObject jsonObject = GsonHelper.convertToJsonObject(entry.getValue(), fileName);
             jsonObject.addProperty("id", fileName);
-            ShellContentCreatorInfo.getCodec()
-                    .decode(JsonOps.INSTANCE, jsonObject)
-                    .resultOrPartial(error -> Transport.LOGGER.warn(fileName + " failed with error: " + error))
-                    .ifPresent(pair -> newCreators.put(entry.getKey(), pair.getFirst()));
+            if (CraftingHelper.processConditions(jsonObject, "conditions")) {
+                ShellContentCreatorInfo.getCodec()
+                        .decode(JsonOps.INSTANCE, jsonObject)
+                        .resultOrPartial(error -> Transport.LOGGER.warn(fileName + " failed with error: " + error))
+                        .ifPresent(pair -> newCreators.put(entry.getKey(), pair.getFirst()));
+            }
+
         }
 
         Transport.LOGGER.info("Loaded " + newCreators.size() + " Shell Content Creators");

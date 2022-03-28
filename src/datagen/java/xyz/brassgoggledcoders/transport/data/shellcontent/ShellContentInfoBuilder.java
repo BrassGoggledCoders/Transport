@@ -4,13 +4,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.crafting.conditions.ICondition;
+import org.apache.commons.compress.utils.Lists;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class ShellContentInfoBuilder {
+    private List<ICondition> conditions = Lists.newArrayList();
     private BlockState viewState;
     private Component name;
     private boolean createRecipe = true;
@@ -36,16 +42,21 @@ public class ShellContentInfoBuilder {
         return this;
     }
 
-    public void build(Consumer<ShellContentCreatorInfo> infoConsumer) {
+    public ShellContentInfoBuilder withConditions(ICondition... conditions) {
+        this.conditions.addAll(Arrays.asList(conditions));
+        return this;
+    }
+
+    public void build(BiConsumer<Collection<ICondition>, ShellContentCreatorInfo> infoConsumer) {
         if (this.viewState == null) {
             throw new IllegalStateException("viewState is required");
         }
         build(Objects.requireNonNull(this.viewState.getBlock().getRegistryName()), infoConsumer);
     }
 
-    public void build(@Nonnull ResourceLocation id, Consumer<ShellContentCreatorInfo> infoConsumer) {
+    public void build(@Nonnull ResourceLocation id, BiConsumer<Collection<ICondition>, ShellContentCreatorInfo> infoConsumer) {
         validate();
-        infoConsumer.accept(new ShellContentCreatorInfo(
+        infoConsumer.accept(conditions, new ShellContentCreatorInfo(
                 id,
                 this.viewState,
                 this.name != null ? this.name : this.viewState.getBlock().getName(),

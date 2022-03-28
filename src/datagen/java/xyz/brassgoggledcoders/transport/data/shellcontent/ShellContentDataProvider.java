@@ -1,14 +1,15 @@
 package xyz.brassgoggledcoders.transport.data.shellcontent;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
+import com.google.gson.*;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
@@ -16,8 +17,9 @@ import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public abstract class ShellContentDataProvider implements DataProvider {
     private static final Logger LOGGER = LogManager.getLogger(ShellContentDataProvider.class);
@@ -29,15 +31,16 @@ public abstract class ShellContentDataProvider implements DataProvider {
         this.generator = generator;
     }
 
-    protected abstract void gather(Consumer<ShellContentCreatorInfo> consumer);
+    protected abstract void gather(BiConsumer<Collection<ICondition>, ShellContentCreatorInfo> consumer);
 
     @Override
     public void run(@Nonnull HashCache pCache) {
-        List<ShellContentCreatorInfo> shellContentCreatorInfos = Lists.newArrayList();
-        this.gather(shellContentCreatorInfos::add);
+        List<Pair<Collection<ICondition>, ShellContentCreatorInfo>> shellContentCreatorInfos = Lists.newArrayList();
+        this.gather((conditions, info) -> shellContentCreatorInfos.add(Pair.of(conditions, info)));
 
         Path path = this.generator.getOutputFolder();
-        shellContentCreatorInfos.forEach(shellContentCreatorInfo -> {
+        shellContentCreatorInfos.forEach(shellContentCreatorInfoPair -> {
+            ShellContentCreatorInfo shellContentCreatorInfo = shellContentCreatorInfoPair.getRight();
             Path filePath = createPath(path, shellContentCreatorInfo.id());
 
             try {
@@ -45,7 +48,16 @@ public abstract class ShellContentDataProvider implements DataProvider {
                         .encode(shellContentCreatorInfo, JsonOps.INSTANCE, JsonOps.INSTANCE.empty())
                         .getOrThrow(false, LOGGER::warn);
                 if (jsonElement.isJsonObject()) {
-                    jsonElement.getAsJsonObject().remove("id");
+                    JsonObject jsonObject = jsonElement.getAsJsonObject();
+                    jsonObject.remove("id");
+                    Collection<ICondition> conditions = shellContentCreatorInfoPair.getLeft();
+                    if (!conditions.isEmpty()) {
+                        JsonArray conditionsArray = new JsonArray();
+                        for (ICondition condition : conditions) {
+                            conditionsArray.add(CraftingHelper.serialize(condition));
+                        }
+                        jsonObject.add("conditions", conditionsArray);
+                    }
                 }
                 DataProvider.save(GSON, pCache, jsonElement, filePath);
             } catch (IOException ioexception) {
