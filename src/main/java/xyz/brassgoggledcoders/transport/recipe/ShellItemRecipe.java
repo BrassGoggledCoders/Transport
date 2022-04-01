@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.transport.recipe;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -10,6 +9,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.apache.commons.lang3.tuple.Triple;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
@@ -21,7 +21,9 @@ import java.util.Optional;
 public record ShellItemRecipe(
         ResourceLocation id,
         Ingredient input,
-        ItemStack output
+        ItemStack output,
+        Ingredient glue,
+        boolean glueOptional
 ) implements CraftingRecipe {
     @Override
     @ParametersAreNonnullByDefault
@@ -29,7 +31,7 @@ public record ShellItemRecipe(
         return findMatching(pContainer)
                 .map(tuple -> {
                     for (ShellContentCreatorInfo info : TransportAPI.SHELL_CONTENT_CREATOR.get().getAll()) {
-                        if (info.createRecipe() && info.viewState().getBlock().asItem() == tuple.getB().getItem()) {
+                        if (info.createRecipe() && info.viewState().getBlock().asItem() == tuple.getMiddle().getItem()) {
                             return true;
                         }
                     }
@@ -43,7 +45,7 @@ public record ShellItemRecipe(
         return findMatching(pContainer)
                 .map(tuple -> {
                     for (ShellContentCreatorInfo info : TransportAPI.SHELL_CONTENT_CREATOR.get().getAll()) {
-                        if (info.createRecipe() && info.viewState().getBlock().asItem() == tuple.getB().getItem()) {
+                        if (info.createRecipe() && info.viewState().getBlock().asItem() == tuple.getMiddle().getItem()) {
                             ItemStack itemStack = this.output().copy();
                             CompoundTag shellContent = new CompoundTag();
                             shellContent.putString("id", info.id().toString());
@@ -55,15 +57,22 @@ public record ShellItemRecipe(
                 }).orElse(ItemStack.EMPTY);
     }
 
-    private Optional<Tuple<ItemStack, ItemStack>> findMatching(Container pContainer) {
+    private Optional<Triple<ItemStack, ItemStack, ItemStack>> findMatching(Container pContainer) {
         ItemStack matchesInput = null;
         ItemStack matchesOther = null;
+        ItemStack matchesGlue = null;
         for (int i = 0; i < pContainer.getContainerSize(); i++) {
             ItemStack currentStack = pContainer.getItem(i);
             if (!currentStack.isEmpty()) {
                 if (input.test(currentStack)) {
                     if (matchesInput == null) {
                         matchesInput = currentStack;
+                    } else {
+                        return Optional.empty();
+                    }
+                } else if (glue != null && glue.test(currentStack)) {
+                    if (matchesGlue == null) {
+                        matchesGlue = currentStack;
                     } else {
                         return Optional.empty();
                     }
@@ -76,7 +85,8 @@ public record ShellItemRecipe(
                 }
             }
         }
-        return matchesInput != null && matchesOther != null ? Optional.of(new Tuple<>(matchesInput, matchesOther)) : Optional.empty();
+        return matchesInput != null && matchesOther != null && (matchesGlue != null || glueOptional) ?
+                Optional.of(Triple.of(matchesInput, matchesOther, matchesGlue)) : Optional.empty();
     }
 
     @Override
