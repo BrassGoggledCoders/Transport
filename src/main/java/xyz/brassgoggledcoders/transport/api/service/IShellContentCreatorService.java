@@ -24,5 +24,6 @@ public interface IShellContentCreatorService {
     @Nonnull
     ShellContent create(@Nullable CompoundTag nbt);
 
+    @Nonnull
     ShellContentCreatorInfo getEmpty();
 }

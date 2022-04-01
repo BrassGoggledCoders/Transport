@@ -113,6 +113,7 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
     }
 
     @Override
+    @Nonnull
     public ShellContentCreatorInfo getEmpty() {
         return MISSING;
     }
