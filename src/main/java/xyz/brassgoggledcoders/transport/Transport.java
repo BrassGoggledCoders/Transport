@@ -44,6 +44,7 @@ public class Transport {
         TransportItems.setup();
         TransportRecipes.setup();
         TransportShellContentTypes.setup();
+        TransportText.setup();
     }
 
     public static Registrate getRegistrate() {

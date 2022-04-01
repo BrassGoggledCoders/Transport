@@ -6,5 +6,6 @@
   "entity.transport.shell_minecart": "Shell Minecart",
   "entity.transport.shell_minecart.with": "Minecart with %s",
   "item.transport.shell_minecart": "Shell Minecart",
-  "itemGroup.transport": "Transport"
+  "itemGroup.transport": "Transport",
+  "text.transport.shell_content": "Shell Content: %s"
 }
