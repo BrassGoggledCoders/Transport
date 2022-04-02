@@ -16,14 +16,14 @@ public class TransportAPI {
     public static final String ID = "transport-api";
     public static final Logger LOGGER = LogManager.getLogger(ID);
 
-    public static final ResourceKey<Registry<ShellContentType<?,?>>> SHELL_CONTENT_TYPE_KEY = ResourceKey.createRegistryKey(
+    public static final ResourceKey<Registry<ShellContentType<?, ?>>> SHELL_CONTENT_TYPE_KEY = ResourceKey.createRegistryKey(
             new ResourceLocation("transport", "shell_content_type")
     );
 
     public static final NonNullLazy<IShellContentCreatorService> SHELL_CONTENT_CREATOR = NonNullLazy.of(() ->
-             ServiceLoader.load(IShellContentCreatorService.class)
-                     .findFirst()
-                     .orElseThrow(() -> new IllegalStateException("Failed to find IShellContentCreatorService"))
+            ServiceLoader.load(IShellContentCreatorService.class)
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Failed to find IShellContentCreatorService"))
     );
 
     public static final NonNullLazy<IShellNetworkingService> SHELL_NETWORKING = NonNullLazy.of(() ->

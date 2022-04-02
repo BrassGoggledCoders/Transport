@@ -45,21 +45,6 @@ public class ShellMinecartItem extends Item {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        ShellContentCreatorInfo info = Optional.ofNullable(pStack.getTagElement("shellContent"))
-                .map(nbt -> ResourceLocation.tryParse(nbt.getString("id")))
-                .map(TransportAPI.SHELL_CONTENT_CREATOR.get()::getById)
-                .orElseGet(TransportAPI.SHELL_CONTENT_CREATOR.get()::getEmpty);
-        
-        pTooltipComponents.add(
-                new TranslatableComponent(TransportText.SHELL_CONTENT_COMPONENT.getKey(), info.name())
-                        .withStyle(ChatFormatting.GRAY)
-        );
-    }
-
-    @Override
     @Nonnull
     public InteractionResult useOn(UseOnContext pContext) {
         Level level = pContext.getLevel();
@@ -100,5 +85,20 @@ public class ShellMinecartItem extends Item {
             itemStack.shrink(1);
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+        ShellContentCreatorInfo info = Optional.ofNullable(pStack.getTagElement("shellContent"))
+                .map(nbt -> ResourceLocation.tryParse(nbt.getString("id")))
+                .map(TransportAPI.SHELL_CONTENT_CREATOR.get()::getById)
+                .orElseGet(TransportAPI.SHELL_CONTENT_CREATOR.get()::getEmpty);
+
+        pTooltipComponents.add(
+                new TranslatableComponent(TransportText.SHELL_CONTENT_COMPONENT.getKey(), info.name())
+                        .withStyle(ChatFormatting.GRAY)
+        );
     }
 }

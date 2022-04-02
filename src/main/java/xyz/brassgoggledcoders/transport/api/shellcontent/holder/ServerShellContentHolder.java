@@ -3,7 +3,6 @@ package xyz.brassgoggledcoders.transport.api.shellcontent.holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.service.IShellContentCreatorService;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;

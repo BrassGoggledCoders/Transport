@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
-import xyz.brassgoggledcoders.transport.block.rail.OneWayBoosterRailBlock;
 
 public class BlockModelHelper {
     public static void straightPoweredRailBlockState(DataGenContext<Block, ? extends BaseRailBlock> context, RegistrateBlockstateProvider provider) {

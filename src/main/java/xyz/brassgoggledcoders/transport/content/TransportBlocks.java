@@ -56,7 +56,6 @@ public class TransportBlocks {
             .transform(TransportBlocks::defaultRailItem)
             .register();
 
-
     public static final BlockEntry<CapabilityStorageBlock<FluidStorageBlockEntity>> FLUID_STORAGE = Transport.getRegistrate()
             .object("fluid_storage")
             .block(properties -> new CapabilityStorageBlock<>(properties, FluidStorageBlockEntity::new))

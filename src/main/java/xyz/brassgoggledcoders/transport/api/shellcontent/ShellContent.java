@@ -50,13 +50,13 @@ public class ShellContent implements ICapabilityProvider {
 
     }
 
-    public void setShell(@Nonnull IShell shell) {
-        this.shell = shell;
-    }
-
     @Nonnull
     public IShell getShell() {
         return Objects.requireNonNull(shell, "Called getShell before it was set");
+    }
+
+    public void setShell(@Nonnull IShell shell) {
+        this.shell = shell;
     }
 
     public BlockState getViewBlockState() {

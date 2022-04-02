@@ -86,24 +86,6 @@ public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAd
     }
 
     @Override
-    @Nonnull
-    public Type getMinecartType() {
-        return Type.CHEST;
-    }
-
-    @Override
-    @Nonnull
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    @Override
-    @Nonnull
-    public BlockState getDefaultDisplayBlockState() {
-        return this.getContent().getViewBlockState();
-    }
-
-    @Override
     public void writeSpawnData(FriendlyByteBuf buffer) {
         this.getHolder().writeToBuffer(buffer);
     }
@@ -120,6 +102,46 @@ public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAd
     }
 
     @Override
+    protected void readAdditionalSaveData(@Nonnull CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        CompoundTag shellContents = pCompound.getCompound("shellContent");
+        this.getHolder().update(TransportAPI.SHELL_CONTENT_CREATOR.get()
+                .create(
+                        new ResourceLocation(shellContents.getString("id")),
+                        shellContents.getCompound("data")
+                )
+        );
+    }
+
+    @Override
+    protected void addAdditionalSaveData(@Nonnull CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        ShellContent shellContent = this.getContent();
+        CompoundTag shellContentNbt = new CompoundTag();
+        shellContentNbt.putString("id", shellContent.getCreatorInfo().id().toString());
+        shellContentNbt.put("data", shellContent.serializeNBT());
+        pCompound.put("shellContent", shellContentNbt);
+    }
+
+    @Override
+    @Nonnull
+    public Type getMinecartType() {
+        return Type.CHEST;
+    }
+
+    @Override
+    @Nonnull
+    public BlockState getDefaultDisplayBlockState() {
+        return this.getContent().getViewBlockState();
+    }
+
+    @Override
+    @Nonnull
+    public Packet<?> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    @Override
     public void invalidateCaps() {
         super.invalidateCaps();
         this.getContent().invalidateCaps();
@@ -129,6 +151,17 @@ public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAd
     public void reviveCaps() {
         super.reviveCaps();
         this.getContent().reviveCaps();
+    }
+
+    @NotNull
+    @Override
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        LazyOptional<T> shellCap = this.getContent().getCapability(cap, side);
+        if (shellCap.isPresent()) {
+            return shellCap;
+        }
+
+        return super.getCapability(cap, side);
     }
 
     @Override
@@ -156,38 +189,5 @@ public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAd
         } else {
             return this.getHolder().getName();
         }
-    }
-
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        LazyOptional<T> shellCap = this.getContent().getCapability(cap, side);
-        if (shellCap.isPresent()) {
-            return shellCap;
-        }
-
-        return super.getCapability(cap, side);
-    }
-
-    @Override
-    protected void readAdditionalSaveData(@Nonnull CompoundTag pCompound) {
-        super.readAdditionalSaveData(pCompound);
-        CompoundTag shellContents = pCompound.getCompound("shellContent");
-        this.getHolder().update(TransportAPI.SHELL_CONTENT_CREATOR.get()
-                .create(
-                        new ResourceLocation(shellContents.getString("id")),
-                        shellContents.getCompound("data")
-                )
-        );
-    }
-
-    @Override
-    protected void addAdditionalSaveData(@Nonnull CompoundTag pCompound) {
-        super.addAdditionalSaveData(pCompound);
-        ShellContent shellContent = this.getContent();
-        CompoundTag shellContentNbt = new CompoundTag();
-        shellContentNbt.putString("id", shellContent.getCreatorInfo().id().toString());
-        shellContentNbt.put("data", shellContent.serializeNBT());
-        pCompound.put("shellContent", shellContentNbt);
     }
 }

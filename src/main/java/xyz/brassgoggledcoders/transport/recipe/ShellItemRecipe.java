@@ -57,6 +57,30 @@ public record ShellItemRecipe(
                 }).orElse(ItemStack.EMPTY);
     }
 
+    @Override
+
+    public boolean canCraftInDimensions(int pWidth, int pHeight) {
+        return pHeight * pWidth >= 2;
+    }
+
+    @Override
+    @Nonnull
+    public ItemStack getResultItem() {
+        return output().copy();
+    }
+
+    @Override
+    @Nonnull
+    public ResourceLocation getId() {
+        return this.id();
+    }
+
+    @Override
+    @Nonnull
+    public RecipeSerializer<?> getSerializer() {
+        return TransportRecipes.SHELL_ITEMS.get();
+    }
+
     private Optional<Triple<ItemStack, ItemStack, ItemStack>> findMatching(Container pContainer) {
         ItemStack matchesInput = null;
         ItemStack matchesOther = null;
@@ -87,29 +111,5 @@ public record ShellItemRecipe(
         }
         return matchesInput != null && matchesOther != null && (matchesGlue != null || glueOptional) ?
                 Optional.of(Triple.of(matchesInput, matchesOther, matchesGlue)) : Optional.empty();
-    }
-
-    @Override
-
-    public boolean canCraftInDimensions(int pWidth, int pHeight) {
-        return pHeight * pWidth >= 2;
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getResultItem() {
-        return output().copy();
-    }
-
-    @Override
-    @Nonnull
-    public ResourceLocation getId() {
-        return this.id();
-    }
-
-    @Override
-    @Nonnull
-    public RecipeSerializer<?> getSerializer() {
-        return TransportRecipes.SHELL_ITEMS.get();
     }
 }

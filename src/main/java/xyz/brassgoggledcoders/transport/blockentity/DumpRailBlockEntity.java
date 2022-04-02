@@ -72,10 +72,6 @@ public class DumpRailBlockEntity extends BlockEntity {
         }
     }
 
-    private record DumpState(long lastSeen, DumpType type, OptionalInt counter) {
-
-    }
-
     private enum DumpType {
         UNLOADING {
             @Nullable
@@ -106,5 +102,9 @@ public class DumpRailBlockEntity extends BlockEntity {
                 case LOADING, DONE -> DONE;
             };
         }
+    }
+
+    private record DumpState(long lastSeen, DumpType type, OptionalInt counter) {
+
     }
 }

@@ -31,24 +31,6 @@ public class OneWayBoosterRailBlock extends PoweredRailBlock {
         );
     }
 
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(SHAPE, INVERTED, POWERED, WATERLOGGED);
-    }
-
-    @Override
-    @Nonnull
-    @ParametersAreNonnullByDefault
-    protected BlockState updateState(BlockState pState, Level pLevel, BlockPos pPos, boolean pIsMoving) {
-        BlockState newState = this.updateDir(pLevel, pPos, pState, true);
-
-        newState = checkInvertedOnChange(pState, newState, pLevel, pPos);
-
-        newState.neighborChanged(pLevel, pPos, this, pPos, pIsMoving);
-
-        return newState;
-    }
-
     private BlockState checkInvertedOnChange(BlockState oldBlockState, BlockState newBlockState, Level pLevel, BlockPos pPos) {
         RailShape oldRailShape = oldBlockState.getValue(RAIL_SHAPE);
         RailShape newRailShape = newBlockState.getValue(RAIL_SHAPE);
@@ -73,6 +55,35 @@ public class OneWayBoosterRailBlock extends PoweredRailBlock {
         } else {
             checkInvertedOnChange(pOldState, pState, pLevel, pPos);
         }
+    }
+
+    @Override
+    @Nonnull
+    @ParametersAreNonnullByDefault
+    protected BlockState updateState(BlockState pState, Level pLevel, BlockPos pPos, boolean pIsMoving) {
+        BlockState newState = this.updateDir(pLevel, pPos, pState, true);
+
+        newState = checkInvertedOnChange(pState, newState, pLevel, pPos);
+
+        newState.neighborChanged(pLevel, pPos, this, pPos, pIsMoving);
+
+        return newState;
+    }
+
+    @Override
+    public BlockState getStateForPlacement(@Nonnull BlockPlaceContext context) {
+        BlockState blockState = super.getStateForPlacement(context);
+        if (blockState != null) {
+            Direction horizontalDirection = context.getHorizontalDirection();
+            blockState = blockState.setValue(INVERTED, switch (blockState.getValue(RAIL_SHAPE)) {
+                case ASCENDING_NORTH, NORTH_SOUTH -> horizontalDirection == Direction.SOUTH;
+                case ASCENDING_SOUTH -> horizontalDirection == Direction.NORTH;
+                case ASCENDING_EAST -> horizontalDirection == Direction.WEST;
+                case ASCENDING_WEST, EAST_WEST -> horizontalDirection == Direction.EAST;
+                default -> false;
+            });
+        }
+        return blockState;
     }
 
     @Override
@@ -127,34 +138,6 @@ public class OneWayBoosterRailBlock extends PoweredRailBlock {
     }
 
     @Override
-    public BlockState getStateForPlacement(@Nonnull BlockPlaceContext context) {
-        BlockState blockState = super.getStateForPlacement(context);
-        if (blockState != null) {
-            Direction horizontalDirection = context.getHorizontalDirection();
-            blockState = blockState.setValue(INVERTED, switch (blockState.getValue(RAIL_SHAPE)) {
-                case ASCENDING_NORTH, NORTH_SOUTH -> horizontalDirection == Direction.SOUTH;
-                case ASCENDING_SOUTH -> horizontalDirection == Direction.NORTH;
-                case ASCENDING_EAST -> horizontalDirection == Direction.WEST;
-                case ASCENDING_WEST, EAST_WEST -> horizontalDirection == Direction.EAST;
-                default -> false;
-            });
-        }
-        return blockState;
-    }
-
-    @Override
-    @Nonnull
-    @SuppressWarnings("deprecation")
-    @ParametersAreNonnullByDefault
-    public BlockState mirror(BlockState pState, Mirror pMirror) {
-        BlockState blockState = super.mirror(pState, pMirror);
-        if (pMirror != Mirror.NONE && !blockState.getValue(RAIL_SHAPE).isAscending()) {
-            blockState = blockState.cycle(INVERTED);
-        }
-        return blockState;
-    }
-
-    @Override
     @Nonnull
     @SuppressWarnings("deprecation")
     @ParametersAreNonnullByDefault
@@ -183,5 +166,22 @@ public class OneWayBoosterRailBlock extends PoweredRailBlock {
         }
 
         return newState;
+    }
+
+    @Override
+    @Nonnull
+    @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
+    public BlockState mirror(BlockState pState, Mirror pMirror) {
+        BlockState blockState = super.mirror(pState, pMirror);
+        if (pMirror != Mirror.NONE && !blockState.getValue(RAIL_SHAPE).isAscending()) {
+            blockState = blockState.cycle(INVERTED);
+        }
+        return blockState;
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
+        pBuilder.add(SHAPE, INVERTED, POWERED, WATERLOGGED);
     }
 }

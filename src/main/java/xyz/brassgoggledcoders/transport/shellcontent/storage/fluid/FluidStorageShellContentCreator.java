@@ -2,8 +2,6 @@ package xyz.brassgoggledcoders.transport.shellcontent.storage.fluid;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
