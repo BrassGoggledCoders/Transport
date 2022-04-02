@@ -2,8 +2,12 @@ package xyz.brassgoggledcoders.transport.shellcontent.storage.fluid;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
@@ -15,10 +19,12 @@ import javax.annotation.Nonnull;
 public class FluidStorageShellContent extends ShellContent {
     private final FluidTank fluidTank;
     private final LazyOptional<FluidTank> lazyOptional;
+    private final boolean allowItemInteraction;
 
-    public FluidStorageShellContent(int capacity) {
+    public FluidStorageShellContent(int capacity, boolean allowItemInteraction) {
         this.fluidTank = new FluidTank(capacity);
         this.lazyOptional = LazyOptional.of(() -> this.fluidTank);
+        this.allowItemInteraction = allowItemInteraction;
     }
 
     @Override
@@ -48,5 +54,14 @@ public class FluidStorageShellContent extends ShellContent {
     public void deserializeNBT(@Nonnull CompoundTag nbt) {
         super.deserializeNBT(nbt);
         fluidTank.readFromNBT(nbt.getCompound("fluid"));
+    }
+
+    @Override
+    public InteractionResult interact(Player pPlayer, InteractionHand pHand) {
+        if (allowItemInteraction && FluidUtil.interactWithFluidHandler(pPlayer, pHand, this.fluidTank)) {
+            return InteractionResult.sidedSuccess(this.getLevel().isClientSide());
+        } else {
+            return InteractionResult.PASS;
+        }
     }
 }

@@ -8,17 +8,20 @@ import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
 import xyz.brassgoggledcoders.transport.content.TransportShellContentTypes;
 
 public record FluidStorageShellContentCreator(
-        int capacity
+        int capacity,
+        boolean allowItemInteraction
 ) implements IShellContentCreator<FluidStorageShellContent> {
     public static Codec<FluidStorageShellContentCreator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("capacity")
-                    .forGetter(FluidStorageShellContentCreator::capacity)
+                    .forGetter(FluidStorageShellContentCreator::capacity),
+            Codec.BOOL.optionalFieldOf("allowItemInteraction", true)
+                    .forGetter(FluidStorageShellContentCreator::allowItemInteraction)
     ).apply(instance, FluidStorageShellContentCreator::new));
 
     @NotNull
     @Override
     public FluidStorageShellContent get() {
-        return new FluidStorageShellContent(capacity);
+        return new FluidStorageShellContent(capacity, allowItemInteraction);
     }
 
     @Override

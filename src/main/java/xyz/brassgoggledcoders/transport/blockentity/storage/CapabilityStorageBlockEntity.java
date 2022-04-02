@@ -2,6 +2,9 @@ package xyz.brassgoggledcoders.transport.blockentity.storage;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -53,5 +56,9 @@ public abstract class CapabilityStorageBlockEntity<T, U extends T> extends Block
     protected void saveAdditional(@Nonnull CompoundTag pTag) {
         super.saveAdditional(pTag);
         pTag.put("storage", this.saveStorage());
+    }
+
+    public InteractionResult use(Player pPlayer, InteractionHand pHand) {
+        return InteractionResult.PASS;
     }
 }

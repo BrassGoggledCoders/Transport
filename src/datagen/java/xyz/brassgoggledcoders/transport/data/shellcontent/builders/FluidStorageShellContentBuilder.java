@@ -5,11 +5,25 @@ import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 import xyz.brassgoggledcoders.transport.data.shellcontent.IShellContentCreatorBuilder;
 import xyz.brassgoggledcoders.transport.shellcontent.storage.fluid.FluidStorageShellContentCreator;
 
-public record FluidStorageShellContentBuilder(int capacity) implements IShellContentCreatorBuilder {
+public class FluidStorageShellContentBuilder implements IShellContentCreatorBuilder {
+    private final int capacity;
+    private boolean allowItemInteraction;
+
+    public FluidStorageShellContentBuilder(int capacity) {
+        this.capacity = capacity;
+        this.allowItemInteraction = true;
+    }
+
+    public FluidStorageShellContentBuilder withAllowItemInteraction(boolean allowItemInteraction) {
+        this.allowItemInteraction = allowItemInteraction;
+        return this;
+    }
+
     @Override
     public IShellContentCreator<?> build() {
         return new FluidStorageShellContentCreator(
-                capacity
+                capacity,
+                allowItemInteraction
         );
     }
 
