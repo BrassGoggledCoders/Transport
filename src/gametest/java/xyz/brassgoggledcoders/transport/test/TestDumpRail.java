@@ -8,6 +8,7 @@ import net.minecraftforge.gametest.GameTestHolder;
 import xyz.brassgoggledcoders.transport.Transport;
 
 @GameTestHolder(Transport.ID)
+@SuppressWarnings("unused")
 public class TestDumpRail {
     @GameTest
     public static void itemFlat(GameTestHelper helper) {
