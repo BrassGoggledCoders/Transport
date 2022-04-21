@@ -15,6 +15,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.block.jobsite.RailWorkerBenchBlock;
 import xyz.brassgoggledcoders.transport.block.rail.DumpRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.OneWayBoosterRailBlock;
 import xyz.brassgoggledcoders.transport.block.storage.CapabilityStorageBlock;
@@ -85,6 +86,17 @@ public class TransportBlocks {
             .item()
             .build()
             .blockEntity(EnergyStorageBlockEntity::new)
+            .build()
+            .register();
+
+    public static final BlockEntry<RailWorkerBenchBlock> RAIL_WORKER_BENCH = Transport.getRegistrate()
+            .object("rail_worker_bench")
+            .block(RailWorkerBenchBlock::new)
+            .blockstate((context, provider) -> provider.simpleBlock(
+                    context.get(),
+                    provider.models().getExistingFile(provider.modLoc("block/rail_worker_bench"))
+            ))
+            .item()
             .build()
             .register();
 

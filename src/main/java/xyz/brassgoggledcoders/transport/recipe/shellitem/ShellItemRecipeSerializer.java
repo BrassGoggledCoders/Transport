@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.recipe;
+package xyz.brassgoggledcoders.transport.recipe.shellitem;
 
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;

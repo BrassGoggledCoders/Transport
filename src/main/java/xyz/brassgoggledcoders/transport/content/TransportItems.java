@@ -6,7 +6,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.item.ShellMinecartItem;
-import xyz.brassgoggledcoders.transport.recipe.ShellItemRecipeBuilder;
+import xyz.brassgoggledcoders.transport.recipe.shellitem.ShellItemRecipeBuilder;
 
 public class TransportItems {
 
