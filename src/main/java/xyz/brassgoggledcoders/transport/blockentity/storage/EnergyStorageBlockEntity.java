@@ -8,6 +8,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -19,14 +22,14 @@ import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import java.util.Objects;
 
-public class FluidStorageBlockEntity extends CapabilityStorageBlockEntity<IFluidHandler, FluidTank> {
-    public FluidStorageBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
+public class EnergyStorageBlockEntity extends CapabilityStorageBlockEntity<IEnergyStorage, EnergyStorage> {
+    public EnergyStorageBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
         super(pType, pWorldPosition, pBlockState);
     }
 
-    public FluidStorageBlockEntity(BlockPos pWorldPos, BlockState pBlockState) {
+    public EnergyStorageBlockEntity(BlockPos pWorldPos, BlockState pBlockState) {
         this(
-                TransportBlocks.FLUID_STORAGE
+                TransportBlocks.ENERGY_STORAGE
                         .getSibling(ForgeRegistries.BLOCK_ENTITIES)
                         .get(),
                 pWorldPos,
@@ -35,37 +38,30 @@ public class FluidStorageBlockEntity extends CapabilityStorageBlockEntity<IFluid
     }
 
     @Override
-    public Capability<IFluidHandler> getCapability() {
-        return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+    public Capability<IEnergyStorage> getCapability() {
+        return CapabilityEnergy.ENERGY;
     }
 
     @NotNull
     @Override
-    public FluidTank createStorage() {
-        return new FluidTank(FluidAttributes.BUCKET_VOLUME * 50);
+    public EnergyStorage createStorage() {
+        return new EnergyStorage(50000);
     }
 
     @Override
     public int getAnalogOutputSignal() {
-        return (int) Math.floor(this.getStorage().getFluidAmount() / (double) this.getStorage().getCapacity());
+        return (int) Math.floor(this.getStorage().getEnergyStored() / (double) this.getStorage().getMaxEnergyStored());
     }
 
     @Override
     public CompoundTag saveStorage() {
-        return this.getStorage().writeToNBT(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        compoundTag.put("energy", this.getStorage().serializeNBT());
+        return compoundTag;
     }
 
     @Override
     public void loadStorage(CompoundTag compoundTag) {
-        this.getStorage().readFromNBT(compoundTag);
-    }
-
-    @Override
-    public InteractionResult use(Player pPlayer, InteractionHand pHand) {
-        if (FluidUtil.interactWithFluidHandler(pPlayer, pHand, this.getStorage())) {
-            return InteractionResult.sidedSuccess(Objects.requireNonNull(this.level).isClientSide());
-        } else {
-            return InteractionResult.PASS;
-        }
+        this.getStorage().deserializeNBT(compoundTag.get("energy"));
     }
 }

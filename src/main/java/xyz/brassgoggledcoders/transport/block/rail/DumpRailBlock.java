@@ -16,6 +16,8 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -24,6 +26,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
@@ -127,6 +130,27 @@ public class DumpRailBlock<T> extends BaseRailBlock implements EntityBlock {
                         if (filledAmount > 0) {
                             to.fill(from.drain(filledAmount, FluidAction.EXECUTE), FluidAction.EXECUTE);
                             if (output.getAmount() == filledAmount && filledAmount > 1000) {
+                                return OptionalInt.of(0);
+                            }
+                        }
+                    }
+                    return OptionalInt.empty();
+                }
+        );
+    }
+
+    @NotNull
+    public static DumpRailBlock<IEnergyStorage> energyDumpRail(Properties properties) {
+        return new DumpRailBlock<>(
+                properties,
+                CapabilityEnergy.ENERGY,
+                (from, to, index) -> {
+                    int output = from.extractEnergy(25000, true);
+                    if (output > 0) {
+                        int filledAmount = to.receiveEnergy(output, true);
+                        if (filledAmount > 0) {
+                            to.receiveEnergy(from.extractEnergy(filledAmount, true), true);
+                            if (output == filledAmount && filledAmount > 1000) {
                                 return OptionalInt.of(0);
                             }
                         }

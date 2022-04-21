@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "transport:block/rail/energy_dump_rail"
+  }
+}

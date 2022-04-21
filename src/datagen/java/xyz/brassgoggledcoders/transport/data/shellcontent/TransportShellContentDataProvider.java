@@ -6,8 +6,10 @@ import net.minecraftforge.common.crafting.conditions.ICondition;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.data.modcompat.QuarkShellContent;
+import xyz.brassgoggledcoders.transport.data.shellcontent.builders.EnergyStorageShellContentBuilder;
 import xyz.brassgoggledcoders.transport.data.shellcontent.builders.FluidStorageShellContentBuilder;
 import xyz.brassgoggledcoders.transport.data.shellcontent.builders.ItemStorageShellContentBuilder;
+import xyz.brassgoggledcoders.transport.shellcontent.storage.energy.EnergyStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.shellcontent.storage.item.StorageSize;
 
 import java.util.Collection;
@@ -25,7 +27,11 @@ public class TransportShellContentDataProvider extends ShellContentDataProvider 
                 .build(consumer);
 
         ShellContentInfoBuilder.of(TransportBlocks.FLUID_STORAGE.get())
-                .withShellContentCreator(FluidStorageShellContentBuilder.ofBuckets(100))
+                .withShellContentCreator(FluidStorageShellContentBuilder.ofBuckets(50))
+                .build(consumer);
+
+        ShellContentInfoBuilder.of(TransportBlocks.ENERGY_STORAGE.get())
+                .withShellContentCreator(EnergyStorageShellContentBuilder.of(100000))
                 .build(consumer);
 
 

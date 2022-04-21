@@ -3,7 +3,7 @@
     "translate": "block.transport.fluid_storage"
   },
   "content": {
-    "capacity": 100000,
+    "capacity": 50000,
     "type": "transport:fluid_storage"
   },
   "view_state": {

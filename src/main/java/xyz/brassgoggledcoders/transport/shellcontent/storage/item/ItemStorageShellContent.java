@@ -89,4 +89,10 @@ public class ItemStorageShellContent extends ShellContent implements MenuProvide
                 )
         ) : null;
     }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.itemLazyOptional.invalidate();
+    }
 }

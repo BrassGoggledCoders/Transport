@@ -10,6 +10,8 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
 import xyz.brassgoggledcoders.transport.shellcontent.empty.EmptyShellContent;
 import xyz.brassgoggledcoders.transport.shellcontent.empty.EmptyShellContentCreator;
+import xyz.brassgoggledcoders.transport.shellcontent.storage.energy.EnergyStorageShellContent;
+import xyz.brassgoggledcoders.transport.shellcontent.storage.energy.EnergyStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.shellcontent.storage.fluid.FluidStorageShellContent;
 import xyz.brassgoggledcoders.transport.shellcontent.storage.fluid.FluidStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.shellcontent.storage.item.ItemStorageShellContent;
@@ -43,6 +45,11 @@ public class TransportShellContentTypes {
             Transport.getRegistrate()
                     .object("item_storage")
                     .simple(ShellContentType.class, () -> new ShellContentType<>(ItemStorageShellContentCreator.CODEC));
+
+    public static RegistryEntry<ShellContentType<EnergyStorageShellContentCreator, EnergyStorageShellContent>> ENERGY_STORAGE =
+            Transport.getRegistrate()
+                    .object("energy_storage")
+                    .simple(ShellContentType.class, () -> new ShellContentType<>(EnergyStorageShellContentCreator.CODEC));
 
     public static void setup() {
         SHELL_CONTENT_TYPES_DR.register(FMLJavaModLoadingContext.get().getModEventBus());

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "side": "transport:block/storage/energy_storage_side",
+    "end": "transport:block/storage/energy_storage_end"
+  }
+}
