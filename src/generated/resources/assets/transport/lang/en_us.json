@@ -1,5 +1,6 @@
 {
   "block.transport.energy_dump_rail": "Energy Dump Rail",
+  "block.transport.energy_storage": "Energy Storage",
   "block.transport.fluid_dump_rail": "Fluid Dump Rail",
   "block.transport.fluid_storage": "Fluid Storage",
   "block.transport.item_dump_rail": "Item Dump Rail",

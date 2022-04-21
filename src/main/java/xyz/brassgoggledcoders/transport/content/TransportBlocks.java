@@ -19,6 +19,7 @@ import xyz.brassgoggledcoders.transport.block.rail.DumpRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.OneWayBoosterRailBlock;
 import xyz.brassgoggledcoders.transport.block.storage.CapabilityStorageBlock;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
+import xyz.brassgoggledcoders.transport.blockentity.storage.EnergyStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.FluidStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.util.BlockModelHelper;
 
@@ -74,6 +75,16 @@ public class TransportBlocks {
             .item()
             .build()
             .blockEntity(FluidStorageBlockEntity::new)
+            .build()
+            .register();
+
+    public static final BlockEntry<CapabilityStorageBlock<EnergyStorageBlockEntity>> ENERGY_STORAGE = Transport.getRegistrate()
+            .object("energy_storage")
+            .block(properties -> new CapabilityStorageBlock<>(properties, EnergyStorageBlockEntity::new))
+            .blockstate(BlockModelHelper::storageBlock)
+            .item()
+            .build()
+            .blockEntity(EnergyStorageBlockEntity::new)
             .build()
             .register();
 

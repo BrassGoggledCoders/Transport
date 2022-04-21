@@ -138,7 +138,7 @@ public class DumpRailBlock<T> extends BaseRailBlock implements EntityBlock {
                 }
         );
     }
-    
+
     @NotNull
     public static DumpRailBlock<IEnergyStorage> energyDumpRail(Properties properties) {
         return new DumpRailBlock<>(
