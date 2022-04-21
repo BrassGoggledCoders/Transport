@@ -25,7 +25,7 @@ public class TransportShellContentDataProvider extends ShellContentDataProvider 
                 .build(consumer);
 
         ShellContentInfoBuilder.of(TransportBlocks.FLUID_STORAGE.get())
-                .withShellContentCreator(FluidStorageShellContentBuilder.ofBuckets(100))
+                .withShellContentCreator(FluidStorageShellContentBuilder.ofBuckets(50))
                 .build(consumer);
 
 

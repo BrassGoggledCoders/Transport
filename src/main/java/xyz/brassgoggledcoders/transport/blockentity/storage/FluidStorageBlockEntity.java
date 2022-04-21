@@ -42,7 +42,7 @@ public class FluidStorageBlockEntity extends CapabilityStorageBlockEntity<IFluid
     @NotNull
     @Override
     public FluidTank createStorage() {
-        return new FluidTank(FluidAttributes.BUCKET_VOLUME * 64);
+        return new FluidTank(FluidAttributes.BUCKET_VOLUME * 50);
     }
 
     @Override
