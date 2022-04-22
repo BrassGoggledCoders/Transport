@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -95,6 +96,16 @@ public class TransportBlocks {
             .block(properties -> new CapabilityStorageBlock<>(properties, FluidStorageBlockEntity::new))
             .blockstate(BlockModelHelper::storageBlock)
             .item()
+            .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
+                    .pattern("III")
+                    .pattern("GBG")
+                    .pattern("III")
+                    .define('I', Ingredient.of(Tags.Items.INGOTS_IRON))
+                    .define('G', Ingredient.of(Tags.Items.GLASS))
+                    .define('B', Ingredient.of(Items.BUCKET))
+                    .unlockedBy("has_item", RegistrateRecipeProvider.has(Items.BUCKET))
+                    .save(provider)
+            )
             .build()
             .blockEntity(FluidStorageBlockEntity::new)
             .build()
@@ -105,6 +116,16 @@ public class TransportBlocks {
             .block(properties -> new CapabilityStorageBlock<>(properties, EnergyStorageBlockEntity::new))
             .blockstate(BlockModelHelper::storageBlock)
             .item()
+            .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
+                    .pattern("III")
+                    .pattern("GRG")
+                    .pattern("III")
+                    .define('I', Ingredient.of(Tags.Items.INGOTS_IRON))
+                    .define('G', Ingredient.of(Tags.Items.GLASS))
+                    .define('R', Ingredient.of(Tags.Items.STORAGE_BLOCKS_REDSTONE))
+                    .unlockedBy("has_item", RegistrateRecipeProvider.has(Tags.Items.STORAGE_BLOCKS_REDSTONE))
+                    .save(provider)
+            )
             .build()
             .blockEntity(EnergyStorageBlockEntity::new)
             .build()
