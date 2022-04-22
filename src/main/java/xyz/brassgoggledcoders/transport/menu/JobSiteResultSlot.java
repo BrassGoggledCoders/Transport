@@ -4,15 +4,12 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.StonecutterMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.NotNull;
 
-public class JobSiteResultSlot<T extends Recipe<? extends Container>> extends Slot {
+public class JobSiteResultSlot<T extends Recipe<Container>> extends Slot {
     private final JobSiteMenu<T> jobSiteMenu;
 
     public JobSiteResultSlot(Container pContainer, int pIndex, int pX, int pY, JobSiteMenu<T> jobSiteMenu) {
@@ -29,8 +26,7 @@ public class JobSiteResultSlot<T extends Recipe<? extends Container>> extends Sl
     public void onTake(@NotNull Player pPlayer, ItemStack pStack) {
         pStack.onCraftedBy(pPlayer.level, pPlayer, pStack.getCount());
         jobSiteMenu.getResultContainer().awardUsedRecipes(pPlayer);
-        ItemStack itemstack = jobSiteMenu.inputSlot.remove(1);
-        if (!itemstack.isEmpty()) {
+        if (jobSiteMenu.hasInputItem()) {
             jobSiteMenu.setupResultSlot();
         }
 

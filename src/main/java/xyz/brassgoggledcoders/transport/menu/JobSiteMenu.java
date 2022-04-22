@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.menu;
 
 import com.google.common.collect.Lists;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -33,12 +34,10 @@ public abstract class JobSiteMenu<T extends Recipe<Container>> extends AbstractC
     private final Level level;
     private final List<T> recipes = Lists.newArrayList();
 
-    private ItemStack input = ItemStack.EMPTY;
-    private ItemStack secondaryInput = ItemStack.EMPTY;
+    private final NonNullList<ItemStack> inputs = NonNullList.withSize(2, ItemStack.EMPTY);
 
     private long lastSoundTime;
-    private final Slot inputSlot;
-    private final Slot secondaryInputSlot;
+    private final List<Slot> inputSlots;
     private final Slot resultSlot;
     private Runnable slotUpdateListener = () -> {
     };
@@ -60,8 +59,10 @@ public abstract class JobSiteMenu<T extends Recipe<Container>> extends AbstractC
         super(menuType, menuId);
         this.access = levelAccess;
         this.level = inventory.player.level;
-        this.inputSlot = this.addSlot(new Slot(this.container, 0, 20, 24));
-        this.secondaryInputSlot = this.addSlot(new Slot(this.container, 1, 20, 42));
+        this.inputSlots = Lists.newArrayList(
+                this.addSlot(new Slot(this.container, 0, 20, 24)),
+                this.addSlot(new Slot(this.container, 1, 20, 42))
+        );
         this.resultSlot = this.addSlot(new JobSiteResultSlot<>(this.resultContainer, 1, 143, 33, this));
 
         for (int i = 0; i < 3; ++i) {
@@ -93,7 +94,7 @@ public abstract class JobSiteMenu<T extends Recipe<Container>> extends AbstractC
     }
 
     public boolean hasInputItem() {
-        return this.inputSlot.hasItem() && !this.recipes.isEmpty();
+        return !this.recipes.isEmpty() && this.inputSlots.stream().anyMatch(Slot::hasItem);
     }
 
     @Override
@@ -111,33 +112,40 @@ public abstract class JobSiteMenu<T extends Recipe<Container>> extends AbstractC
         return true;
     }
 
-    private boolean isValidRecipeIndex(int p_40335_) {
-        return p_40335_ >= 0 && p_40335_ < this.recipes.size();
+    private boolean isValidRecipeIndex(int recipeIndex) {
+        return recipeIndex >= 0 && recipeIndex < this.recipes.size();
     }
 
     @Override
     public void slotsChanged(@NotNull Container pInventory) {
-        ItemStack itemstack = this.inputSlot.getItem();
-        if (!itemstack.is(this.input.getItem())) {
-            this.input = itemstack.copy();
-            this.setupRecipeList(pInventory, itemstack);
+        boolean changed = false;
+        for (int i = 0; i < OUTPUT_SLOT; i++) {
+            ItemStack inputStack = this.inputSlots.get(i).getItem();
+            if (!inputStack.is(this.inputs.get(0).getItem())) {
+                this.inputs.set(i, inputStack.copy());
+                changed = true;
+            }
         }
+        if (changed) {
+            this.setupRecipeList(pInventory);
+        }
+
+
 
     }
 
-    private void setupRecipeList(Container pInventory, ItemStack pStack) {
+    private void setupRecipeList(Container pInventory) {
         this.recipes.clear();
         this.selectedRecipeIndex.set(-1);
         this.resultSlot.set(ItemStack.EMPTY);
-        if (!pStack.isEmpty()) {
+        if (this.inputSlots.stream().map(Slot::getItem).anyMatch(itemStack -> !itemStack.isEmpty())) {
             this.recipes.addAll(this.level.getRecipeManager()
                     .getRecipesFor(this.getRecipeType(), pInventory, this.level)
             );
         }
-
     }
 
-    void setupResultSlot() {
+    public void setupResultSlot() {
         if (!this.recipes.isEmpty() && this.isValidRecipeIndex(this.selectedRecipeIndex.get())) {
             T recipe = this.recipes.get(this.selectedRecipeIndex.get());
             this.resultContainer.setRecipeUsed(recipe);

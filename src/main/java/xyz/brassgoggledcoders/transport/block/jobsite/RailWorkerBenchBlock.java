@@ -6,6 +6,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -16,6 +17,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.brassgoggledcoders.transport.menu.RailWorkerBenchMenu;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -45,7 +47,7 @@ public class RailWorkerBenchBlock extends Block {
     @ParametersAreNonnullByDefault
     public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {
         return new SimpleMenuProvider(
-                null,
+                (id, inventory, player) -> new RailWorkerBenchMenu(id, inventory, ContainerLevelAccess.create(pLevel, pPos)),
                 this.getName()
         );
     }

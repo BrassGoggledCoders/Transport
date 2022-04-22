@@ -40,6 +40,7 @@ public class Transport {
 
     public Transport() {
         TransportBlocks.setup();
+        TransportContainers.setup();
         TransportEntities.setup();
         TransportItems.setup();
         TransportRecipes.setup();
