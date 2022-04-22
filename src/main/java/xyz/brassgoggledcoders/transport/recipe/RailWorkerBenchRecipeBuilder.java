@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.data.recipe;
+package xyz.brassgoggledcoders.transport.recipe;
 
 import com.google.gson.JsonObject;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -8,6 +8,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class RailWorkerBenchRecipeBuilder {
@@ -17,6 +18,7 @@ public class RailWorkerBenchRecipeBuilder {
 
     public RailWorkerBenchRecipeBuilder(ItemStack output) {
         this.output = output;
+        this.secondaryInput = Ingredient.EMPTY;
     }
 
     public RailWorkerBenchRecipeBuilder withInput(Ingredient input) {
@@ -30,6 +32,9 @@ public class RailWorkerBenchRecipeBuilder {
     }
 
     public void save(Consumer<FinishedRecipe> pFinishedRecipeConsumer, ResourceLocation pRecipeId) {
+        Objects.requireNonNull(this.input, "input cannot be null");
+        Objects.requireNonNull(this.output, "output cannot be null");
+        Objects.requireNonNull(this.secondaryInput, "secondaryInput cannot be null");
         pFinishedRecipeConsumer.accept(new RailWorkerBenchFinishedRecipe(
                 pRecipeId,
                 this.output,

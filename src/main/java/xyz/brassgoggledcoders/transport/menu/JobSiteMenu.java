@@ -121,7 +121,7 @@ public abstract class JobSiteMenu<T extends Recipe<Container>> extends AbstractC
         boolean changed = false;
         for (int i = 0; i < OUTPUT_SLOT; i++) {
             ItemStack inputStack = this.inputSlots.get(i).getItem();
-            if (!inputStack.is(this.inputs.get(0).getItem())) {
+            if (!inputStack.is(this.inputs.get(i).getItem())) {
                 this.inputs.set(i, inputStack.copy());
                 changed = true;
             }
@@ -129,8 +129,6 @@ public abstract class JobSiteMenu<T extends Recipe<Container>> extends AbstractC
         if (changed) {
             this.setupRecipeList(pInventory);
         }
-
-
 
     }
 

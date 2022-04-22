@@ -1,0 +1,9 @@
+{
+  "type": "transport:rail_worker_bench",
+  "input": {
+    "tag": "forge:ingots/iron"
+  },
+  "output": {
+    "item": "minecraft:minecart"
+  }
+}
