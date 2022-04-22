@@ -2,15 +2,19 @@ package xyz.brassgoggledcoders.transport.content;
 
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Material;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -22,6 +26,7 @@ import xyz.brassgoggledcoders.transport.block.storage.CapabilityStorageBlock;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.EnergyStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.FluidStorageBlockEntity;
+import xyz.brassgoggledcoders.transport.recipe.RailWorkerBenchRecipeBuilder;
 import xyz.brassgoggledcoders.transport.util.BlockModelHelper;
 
 import javax.annotation.Nonnull;
@@ -35,6 +40,10 @@ public class TransportBlocks {
             .transform(TransportBlocks::defaultRail)
             .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
+                    .save(provider)
+            )
             .register();
 
     public static final BlockEntry<DumpRailBlock<IFluidHandler>> FLUID_DUMP_RAIL = Transport.getRegistrate()
@@ -43,6 +52,10 @@ public class TransportBlocks {
             .transform(TransportBlocks::defaultRail)
             .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
+                    .save(provider)
+            )
             .register();
 
     public static final BlockEntry<DumpRailBlock<IEnergyStorage>> ENERGY_DUMP_RAIL = Transport.getRegistrate()
@@ -51,6 +64,10 @@ public class TransportBlocks {
             .transform(TransportBlocks::defaultRail)
             .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
+                    .save(provider)
+            )
             .register();
 
     public static final RegistryEntry<BlockEntityType<DumpRailBlockEntity>> DUMP_RAIL_BLOCK_ENTITY = Transport.getRegistrate()
@@ -67,6 +84,10 @@ public class TransportBlocks {
             .transform(TransportBlocks::defaultRail)
             .blockstate(BlockModelHelper::straightPoweredInvertedRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(TransportItemTags.RAILS_GOLD))
+                    .save(provider)
+            )
             .register();
 
     public static final BlockEntry<CapabilityStorageBlock<FluidStorageBlockEntity>> FLUID_STORAGE = Transport.getRegistrate()
@@ -97,6 +118,14 @@ public class TransportBlocks {
                     provider.models().getExistingFile(provider.modLoc("block/rail_worker_bench"))
             ))
             .item()
+            .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
+                    .pattern("RRR")
+                    .pattern("SSS")
+                    .define('R', ItemTags.RAILS)
+                    .define('S', Tags.Items.STONE)
+                    .unlockedBy("has_item", RegistrateRecipeProvider.has(ItemTags.RAILS))
+                    .save(provider)
+            )
             .build()
             .register();
 

@@ -1,11 +1,13 @@
 package xyz.brassgoggledcoders.transport.recipe;
 
 import com.google.gson.JsonObject;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
 import xyz.brassgoggledcoders.transport.recipe.ingredient.SizedIngredient;
 
@@ -38,6 +40,14 @@ public class RailWorkerBenchRecipeBuilder {
     public RailWorkerBenchRecipeBuilder withSecondaryInput(Ingredient secondaryInput, int count) {
         this.secondaryInput = SizedIngredient.of(secondaryInput, count);
         return this;
+    }
+
+    public void save(Consumer<FinishedRecipe> pFinishedRecipeConsumer) {
+        this.save(pFinishedRecipeConsumer, getDefaultRecipeId(this.output.getItem()));
+    }
+
+    private static ResourceLocation getDefaultRecipeId(ItemLike pItemLike) {
+        return ForgeRegistries.ITEMS.getKey(pItemLike.asItem());
     }
 
     public void save(Consumer<FinishedRecipe> pFinishedRecipeConsumer, ResourceLocation pRecipeId) {
