@@ -4,12 +4,12 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.brassgoggledcoders.transport.recipe.ingredient.SizedIngredient;
 
 public class RailWorkerBenchRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RailWorkerBenchRecipe> {
     @Override
@@ -18,8 +18,8 @@ public class RailWorkerBenchRecipeSerializer extends ForgeRegistryEntry<RecipeSe
         return new RailWorkerBenchRecipe(
                 pRecipeId,
                 CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(pSerializedRecipe, "output"), true),
-                Ingredient.fromJson(pSerializedRecipe.get("input")),
-                pSerializedRecipe.has("secondaryInput") ? Ingredient.fromJson(pSerializedRecipe.get("secondaryInput")) : Ingredient.EMPTY
+                SizedIngredient.fromJson(pSerializedRecipe.get("input")),
+                SizedIngredient.fromJson(pSerializedRecipe.get("secondaryInput"))
         );
     }
 
@@ -29,8 +29,8 @@ public class RailWorkerBenchRecipeSerializer extends ForgeRegistryEntry<RecipeSe
         return new RailWorkerBenchRecipe(
                 pRecipeId,
                 pBuffer.readItem(),
-                Ingredient.fromNetwork(pBuffer),
-                Ingredient.fromNetwork(pBuffer)
+                SizedIngredient.fromNetwork(pBuffer),
+                SizedIngredient.fromNetwork(pBuffer)
         );
     }
 

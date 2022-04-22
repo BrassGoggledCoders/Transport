@@ -10,17 +10,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.menu.JobSiteMenu;
+import xyz.brassgoggledcoders.transport.recipe.IJobSiteRecipe;
 
 import java.util.List;
 import java.util.Objects;
 
-public class JobSiteScreen<T extends JobSiteMenu<U>, U extends Recipe<Container>> extends AbstractContainerScreen<T> {
+public class JobSiteScreen<T extends JobSiteMenu<U>, U extends IJobSiteRecipe> extends AbstractContainerScreen<T> {
     private static final ResourceLocation BG_LOCATION = Transport.rl("textures/screen/rail_worker_bench.png");
 
     private float scrollOffs;

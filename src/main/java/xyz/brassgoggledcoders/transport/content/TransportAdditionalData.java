@@ -47,7 +47,17 @@ public class TransportAdditionalData {
                 .save(recipeProvider, Transport.rl("detector_rail_from_rails_iron"));
 
         RailWorkerBenchRecipeBuilder.of(Items.MINECART)
-                .withInput(Ingredient.of(Tags.Items.INGOTS_IRON))
-                .save(recipeProvider, Transport.rl("minecart_from_ingots_iron"));
+                .withInput(Ingredient.of(Tags.Items.INGOTS_IRON), 3)
+                .save(recipeProvider, Transport.rl("cheaper_minecart"));
+
+        RailWorkerBenchRecipeBuilder.of(Items.RAIL, 32)
+                .withInput(Ingredient.of(Tags.Items.INGOTS_IRON), 4)
+                .withSecondaryInput(Ingredient.of(Tags.Items.RODS_WOODEN))
+                .save(recipeProvider, Transport.rl("cheaper_rail"));
+
+        RailWorkerBenchRecipeBuilder.of(Items.POWERED_RAIL, 12)
+                .withInput(Ingredient.of(Tags.Items.INGOTS_GOLD), 4)
+                .withSecondaryInput(Ingredient.of(Tags.Items.RODS_WOODEN))
+                .save(recipeProvider, Transport.rl("cheaper_powered_rail"));
     }
 }

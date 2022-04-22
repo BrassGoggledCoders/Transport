@@ -7,27 +7,36 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
+import xyz.brassgoggledcoders.transport.recipe.ingredient.SizedIngredient;
 
 import java.util.Objects;
 import java.util.function.Consumer;
 
 public class RailWorkerBenchRecipeBuilder {
     private final ItemStack output;
-    private Ingredient input;
-    private Ingredient secondaryInput;
+    private SizedIngredient input;
+    private SizedIngredient secondaryInput;
 
     public RailWorkerBenchRecipeBuilder(ItemStack output) {
         this.output = output;
-        this.secondaryInput = Ingredient.EMPTY;
+        this.secondaryInput = SizedIngredient.of(Ingredient.EMPTY);
     }
 
     public RailWorkerBenchRecipeBuilder withInput(Ingredient input) {
-        this.input = input;
+        return this.withInput(input, 1);
+    }
+
+    public RailWorkerBenchRecipeBuilder withInput(Ingredient input, int count) {
+        this.input = SizedIngredient.of(input, count);
         return this;
     }
 
     public RailWorkerBenchRecipeBuilder withSecondaryInput(Ingredient secondaryInput) {
-        this.secondaryInput = secondaryInput;
+        return this.withSecondaryInput(secondaryInput, 1);
+    }
+
+    public RailWorkerBenchRecipeBuilder withSecondaryInput(Ingredient secondaryInput, int count) {
+        this.secondaryInput = SizedIngredient.of(secondaryInput, count);
         return this;
     }
 
@@ -52,9 +61,9 @@ public class RailWorkerBenchRecipeBuilder {
     }
 
     public static class RailWorkerBenchFinishedRecipe extends BasicFinishedRecipe {
-        private final Ingredient secondaryInput;
+        private final SizedIngredient secondaryInput;
 
-        public RailWorkerBenchFinishedRecipe(ResourceLocation id, ItemStack output, Ingredient input, Ingredient secondaryInput) {
+        public RailWorkerBenchFinishedRecipe(ResourceLocation id, ItemStack output, SizedIngredient input, SizedIngredient secondaryInput) {
             super(id, output, input, TransportRecipes.RAIL_WORKER_BENCH.get());
             this.secondaryInput = secondaryInput;
         }

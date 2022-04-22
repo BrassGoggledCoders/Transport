@@ -6,10 +6,10 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.transport.recipe.IJobSiteRecipe;
 
-public class JobSiteResultSlot<T extends Recipe<Container>> extends Slot {
+public class JobSiteResultSlot<T extends IJobSiteRecipe> extends Slot {
     private final JobSiteMenu<T> jobSiteMenu;
 
     public JobSiteResultSlot(Container pContainer, int pIndex, int pX, int pY, JobSiteMenu<T> jobSiteMenu) {
@@ -26,19 +26,21 @@ public class JobSiteResultSlot<T extends Recipe<Container>> extends Slot {
     public void onTake(@NotNull Player pPlayer, ItemStack pStack) {
         pStack.onCraftedBy(pPlayer.level, pPlayer, pStack.getCount());
         jobSiteMenu.getResultContainer().awardUsedRecipes(pPlayer);
-        if (jobSiteMenu.hasInputItem()) {
+        if (jobSiteMenu.removeInputs()) {
             jobSiteMenu.setupResultSlot();
+
+            jobSiteMenu.getLevelAccess().execute((level, pos) -> {
+                long l = level.getGameTime();
+                if (jobSiteMenu.getLastSoundTime() != l) {
+                    level.playSound(null, pos, SoundEvents.UI_STONECUTTER_TAKE_RESULT, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    jobSiteMenu.setLastSoundTime(l);
+                }
+
+            });
+            super.onTake(pPlayer, pStack);
         }
 
-        jobSiteMenu.getLevelAccess().execute((level, pos) -> {
-            long l = level.getGameTime();
-            if (jobSiteMenu.getLastSoundTime() != l) {
-                level.playSound(null, pos, SoundEvents.UI_STONECUTTER_TAKE_RESULT, SoundSource.BLOCKS, 1.0F, 1.0F);
-                jobSiteMenu.setLastSoundTime(l);
-            }
 
-        });
-        super.onTake(pPlayer, pStack);
     }
 
 }

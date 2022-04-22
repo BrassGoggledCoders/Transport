@@ -4,21 +4,21 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.brassgoggledcoders.transport.recipe.ingredient.SizedIngredient;
 
 import java.util.Objects;
 
 public class BasicFinishedRecipe implements FinishedRecipe {
     private final ResourceLocation id;
     private final ItemStack output;
-    private final Ingredient input;
+    private final SizedIngredient input;
 
     private final RecipeSerializer<?> recipeSerializer;
 
-    public BasicFinishedRecipe(ResourceLocation id, ItemStack output, Ingredient input, RecipeSerializer<?> recipeSerializer) {
+    public BasicFinishedRecipe(ResourceLocation id, ItemStack output, SizedIngredient input, RecipeSerializer<?> recipeSerializer) {
         this.id = id;
         this.output = output;
         this.input = input;

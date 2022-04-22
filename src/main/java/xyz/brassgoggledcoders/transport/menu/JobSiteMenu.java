@@ -9,15 +9,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.transport.recipe.IJobSiteRecipe;
 
 import java.util.List;
 
-public abstract class JobSiteMenu<T extends Recipe<Container>> extends AbstractContainerMenu {
+public abstract class JobSiteMenu<T extends IJobSiteRecipe> extends AbstractContainerMenu {
     private static final int INPUT_SLOT = 0;
     private static final int SECONDARY_INPUT_SLOT = 1;
     private static final int OUTPUT_SLOT = 2;
@@ -120,9 +120,10 @@ public abstract class JobSiteMenu<T extends Recipe<Container>> extends AbstractC
     public void slotsChanged(@NotNull Container pInventory) {
         boolean changed = false;
         for (int i = 0; i < OUTPUT_SLOT; i++) {
-            ItemStack inputStack = this.inputSlots.get(i).getItem();
-            if (!inputStack.is(this.inputs.get(i).getItem())) {
-                this.inputs.set(i, inputStack.copy());
+            ItemStack inputSlotStack = this.inputSlots.get(i).getItem();
+            ItemStack inputStack = this.inputs.get(i);
+            if (!ItemStack.isSame(inputStack, inputSlotStack) || inputSlotStack.getCount() != inputStack.getCount()) {
+                this.inputs.set(i, inputSlotStack.copy());
                 changed = true;
             }
         }
@@ -237,5 +238,11 @@ public abstract class JobSiteMenu<T extends Recipe<Container>> extends AbstractC
 
     public ResultContainer getResultContainer() {
         return this.resultContainer;
+    }
+
+    public boolean removeInputs() {
+        return this.getRecipes()
+                .get(this.getSelectedRecipeIndex())
+                .reduceContainer(this.container);
     }
 }
