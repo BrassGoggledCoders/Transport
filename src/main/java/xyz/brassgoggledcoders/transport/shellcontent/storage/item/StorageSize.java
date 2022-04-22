@@ -5,11 +5,19 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.DispenserMenu;
+import net.minecraft.world.inventory.MenuType;
 
 import java.util.Optional;
 
 public enum StorageSize {
-    THREE_BY_NINE(3, 9, ChestMenu::threeRows);
+    ONE_BY_NINE(1, 9, (id, inventory, container) -> new ChestMenu(MenuType.GENERIC_9x1, id, inventory, container, 1)),
+    TWO_BY_NINE(2, 9, (id, inventory, container) -> new ChestMenu(MenuType.GENERIC_9x2, id, inventory, container, 2)),
+    THREE_BY_NINE(3, 9, ChestMenu::threeRows),
+    FOUR_BY_NINE(4, 9, (id, inventory, container) -> new ChestMenu(MenuType.GENERIC_9x4, id, inventory, container, 4)),
+    FIVE_BY_NINE(5, 9, (id, inventory, container) -> new ChestMenu(MenuType.GENERIC_9x5, id, inventory, container, 5)),
+    SIX_BY_NINE(6, 9, ChestMenu::sixRows),
+    THREE_BY_THREE(3, 3, DispenserMenu::new);
 
     private final int rows;
     private final int columns;
