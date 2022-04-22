@@ -1,0 +1,14 @@
+{
+  "type": "transport:rail_worker_bench",
+  "input": {
+    "tag": "forge:ingots/gold",
+    "count": 4
+  },
+  "output": {
+    "item": "minecraft:powered_rail",
+    "count": 12
+  },
+  "secondaryInput": {
+    "tag": "forge:rods/wooden"
+  }
+}

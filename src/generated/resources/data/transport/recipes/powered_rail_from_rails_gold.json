@@ -1,0 +1,9 @@
+{
+  "type": "transport:rail_worker_bench",
+  "input": {
+    "tag": "transport:rails/gold"
+  },
+  "output": {
+    "item": "minecraft:powered_rail"
+  }
+}

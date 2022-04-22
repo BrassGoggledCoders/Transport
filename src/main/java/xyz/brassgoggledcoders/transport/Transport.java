@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport;
 
 import com.tterrag.registrate.Registrate;
+import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -34,12 +35,15 @@ public class Transport {
     public static final NonNullLazy<Registrate> TRANSPORT_REGISTRATE = NonNullLazy.of(() ->
             Registrate.create(ID)
                     .creativeModeTab(CREATIVE_TAB::get, "Transport")
+                    .addDataGenerator(ProviderType.ITEM_TAGS, TransportAdditionalData::vanillaItemTags)
+                    .addDataGenerator(ProviderType.RECIPE, TransportAdditionalData::vanillaRecipes)
     );
 
     public static final NetworkHandler NETWORK = new NetworkHandler();
 
     public Transport() {
         TransportBlocks.setup();
+        TransportContainers.setup();
         TransportEntities.setup();
         TransportItems.setup();
         TransportRecipes.setup();
