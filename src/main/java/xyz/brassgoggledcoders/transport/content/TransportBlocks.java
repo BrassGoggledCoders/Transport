@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.content;
 
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
@@ -9,6 +10,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.BaseRailBlock;
@@ -41,6 +43,8 @@ public class TransportBlocks {
             .transform(TransportBlocks::defaultRail)
             .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_IRON)
+            .build()
             .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
                     .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
                     .save(provider)
@@ -53,6 +57,8 @@ public class TransportBlocks {
             .transform(TransportBlocks::defaultRail)
             .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_IRON)
+            .build()
             .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
                     .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
                     .save(provider)
@@ -65,6 +71,8 @@ public class TransportBlocks {
             .transform(TransportBlocks::defaultRail)
             .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_IRON)
+            .build()
             .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
                     .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
                     .save(provider)
@@ -85,10 +93,12 @@ public class TransportBlocks {
             .transform(TransportBlocks::defaultRail)
             .blockstate(BlockModelHelper::straightPoweredInvertedRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_IRON)
             .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
                     .withInput(Ingredient.of(TransportItemTags.RAILS_GOLD))
                     .save(provider)
             )
+            .build()
             .register();
 
     public static final BlockEntry<CapabilityStorageBlock<FluidStorageBlockEntity>> FLUID_STORAGE = Transport.getRegistrate()
@@ -162,11 +172,11 @@ public class TransportBlocks {
     }
 
     @Nonnull
-    public static <T extends BaseRailBlock> BlockBuilder<T, Registrate> defaultRailItem(BlockBuilder<T, Registrate> builder) {
+    public static <T extends BaseRailBlock> ItemBuilder<BlockItem, BlockBuilder<T, Registrate>> defaultRailItem(
+            BlockBuilder<T, Registrate> builder) {
         return builder.item()
                 .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/" + context.getName())))
-                .tag(ItemTags.RAILS)
-                .build();
+                .tag(ItemTags.RAILS);
     }
 
     public static void setup() {
