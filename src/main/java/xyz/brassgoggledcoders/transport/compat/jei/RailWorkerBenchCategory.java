@@ -16,6 +16,7 @@ import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipe;
 
+@SuppressWarnings("ALL") //JEI has deprecated abstract methods, but IDEA complains with "deprecation"
 public class RailWorkerBenchCategory implements IRecipeCategory<RailWorkerBenchRecipe> {
     public static RecipeType<RailWorkerBenchRecipe> JEI_RECIPE_TYPE = new RecipeType<>(
             TransportRecipes.RAIL_WORKER_BENCH.getId(),
