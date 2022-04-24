@@ -47,6 +47,8 @@ public record ShellContentCreatorInfo(
             ))
     );
 
+    public static final String NBT_TAG_ELEMENT = "shellContent";
+
     public ShellContent create(@Nullable CompoundTag nbt) {
         ShellContent shellContent = this.contentCreator().get();
         shellContent.setCreatorInfo(this);
@@ -65,7 +67,7 @@ public record ShellContentCreatorInfo(
     }
 
     public ItemStack embedNBT(ItemStack itemStack) {
-        itemStack.getOrCreateTagElement("shellContent")
+        itemStack.getOrCreateTagElement(NBT_TAG_ELEMENT)
                 .putString("id", this.id().toString());
         return itemStack;
     }

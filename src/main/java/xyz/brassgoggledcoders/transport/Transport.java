@@ -3,17 +3,13 @@ package xyz.brassgoggledcoders.transport;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.content.*;
+import xyz.brassgoggledcoders.transport.item.TransportCreativeModeTab;
 import xyz.brassgoggledcoders.transport.network.NetworkHandler;
-
-import javax.annotation.Nonnull;
 
 import static xyz.brassgoggledcoders.transport.Transport.ID;
 
@@ -22,19 +18,9 @@ public class Transport {
     public static final String ID = "transport";
     public static final Logger LOGGER = LogManager.getLogger(ID);
 
-    public static final NonNullLazy<CreativeModeTab> CREATIVE_TAB = NonNullLazy.of(() ->
-            new CreativeModeTab(ID) {
-                @Override
-                @Nonnull
-                public ItemStack makeIcon() {
-                    return new ItemStack(Items.MINECART);
-                }
-            }
-    );
-
     public static final NonNullLazy<Registrate> TRANSPORT_REGISTRATE = NonNullLazy.of(() ->
             Registrate.create(ID)
-                    .creativeModeTab(CREATIVE_TAB::get, "Transport")
+                    .creativeModeTab(TransportCreativeModeTab::new, "Transport")
                     .addDataGenerator(ProviderType.ITEM_TAGS, TransportAdditionalData::vanillaItemTags)
                     .addDataGenerator(ProviderType.RECIPE, TransportAdditionalData::vanillaRecipes)
     );
