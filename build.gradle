@@ -137,6 +137,9 @@ repositories {
     maven {
         name "Registrate"
         url "https://maven.tterrag.com/"
+        content {
+            includeGroup "com.tterrag.registrate"
+        }
     }
     maven {
         name "The One Probe"
@@ -148,6 +151,16 @@ repositories {
     maven {
         name "Botania"
         url "https://maven.blamejared.com"
+        content {
+            includeGroupByRegex "vazkii.*"
+        }
+    }
+    maven {
+        name = "JEI"
+        url = "https://dvs1.progwml6.com/files/maven"
+        content {
+            includeGroup "mezz.jei"
+        }
     }
 }
 
@@ -159,6 +172,10 @@ dependencies {
     shade registrate
 
     implementation fg.deobf("curse.maven:the-one-probe-245211:3671753")
+
+    compileOnly fg.deobf("mezz.jei:jei-1.18.2-forge-api:10.0.0.184")
+    compileOnly fg.deobf("mezz.jei:jei-1.18.2-common-api:10.0.0.184")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2-forge:10.0.0.184")
 
     runtimeOnly fg.deobf("vazkii.quark:Quark:3.2-347.2280")
     runtimeOnly fg.deobf("vazkii.autoreglib:AutoRegLib:1.7-54.112")
