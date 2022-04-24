@@ -29,7 +29,7 @@ import xyz.brassgoggledcoders.transport.block.storage.CapabilityStorageBlock;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.EnergyStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.FluidStorageBlockEntity;
-import xyz.brassgoggledcoders.transport.recipe.RailWorkerBenchRecipeBuilder;
+import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipeBuilder;
 import xyz.brassgoggledcoders.transport.util.BlockModelHelper;
 
 import javax.annotation.Nonnull;

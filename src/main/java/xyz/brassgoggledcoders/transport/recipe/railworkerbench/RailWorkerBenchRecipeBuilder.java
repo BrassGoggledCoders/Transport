@@ -1,7 +1,6 @@
-package xyz.brassgoggledcoders.transport.recipe;
+package xyz.brassgoggledcoders.transport.recipe.railworkerbench;
 
 import com.google.gson.JsonObject;
-import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -9,6 +8,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
+import xyz.brassgoggledcoders.transport.recipe.BasicFinishedRecipe;
 import xyz.brassgoggledcoders.transport.recipe.ingredient.SizedIngredient;
 
 import java.util.Objects;

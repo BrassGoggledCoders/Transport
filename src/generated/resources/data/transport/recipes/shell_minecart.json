@@ -5,9 +5,5 @@
   },
   "output": {
     "item": "transport:shell_minecart"
-  },
-  "glue": {
-    "tag": "forge:slimeballs"
-  },
-  "glueOptional": true
+  }
 }

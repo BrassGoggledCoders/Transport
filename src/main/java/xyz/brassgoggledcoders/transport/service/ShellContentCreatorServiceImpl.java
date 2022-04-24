@@ -13,6 +13,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.Transport;
@@ -35,6 +36,7 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
             new EmptyShellContentCreator()
     );
 
+    private IContext context;
     private final Map<ResourceLocation, ShellContentCreatorInfo> creators;
     private int generation;
 
@@ -53,7 +55,7 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
             String fileName = entry.getKey().toString();
             JsonObject jsonObject = GsonHelper.convertToJsonObject(entry.getValue(), fileName);
             jsonObject.addProperty("id", fileName);
-            if (CraftingHelper.processConditions(jsonObject, "conditions")) {
+            if (CraftingHelper.processConditions(jsonObject, "conditions", context != null ? context : IContext.EMPTY)) {
                 ShellContentCreatorInfo.getCodec()
                         .decode(JsonOps.INSTANCE, jsonObject)
                         .resultOrPartial(error -> Transport.LOGGER.warn(fileName + " failed with error: " + error))
@@ -116,5 +118,9 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
     @Nonnull
     public ShellContentCreatorInfo getEmpty() {
         return MISSING;
+    }
+
+    public void setContext(IContext context) {
+        this.context = context;
     }
 }

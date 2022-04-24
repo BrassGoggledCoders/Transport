@@ -17,7 +17,7 @@ import xyz.brassgoggledcoders.transport.recipe.IJobSiteRecipe;
 
 import java.util.List;
 
-public abstract class JobSiteMenu<T extends IJobSiteRecipe> extends AbstractContainerMenu {
+public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractContainerMenu {
     private static final int INPUT_SLOT = 0;
     private static final int SECONDARY_INPUT_SLOT = 1;
     private static final int OUTPUT_SLOT = 2;
@@ -244,5 +244,9 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe> extends AbstractCont
         return this.getRecipes()
                 .get(this.getSelectedRecipeIndex())
                 .reduceContainer(this.container);
+    }
+
+    public Container getContainer() {
+        return this.container;
     }
 }

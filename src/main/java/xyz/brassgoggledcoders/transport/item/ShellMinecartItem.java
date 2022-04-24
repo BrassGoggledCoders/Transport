@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -9,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -30,6 +32,7 @@ import xyz.brassgoggledcoders.transport.entity.ShellMinecart;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,5 +103,22 @@ public class ShellMinecartItem extends Item {
                 new TranslatableComponent(TransportText.SHELL_CONTENT_COMPONENT.getKey(), info.name())
                         .withStyle(ChatFormatting.GRAY)
         );
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void fillItemCategory(CreativeModeTab pCategory, NonNullList<ItemStack> pItems) {
+        if (this.allowdedIn(pCategory)) {
+            Collection<ShellContentCreatorInfo> creatorInfos = TransportAPI.SHELL_CONTENT_CREATOR.get().getAll();
+            if (creatorInfos.isEmpty()) {
+                pItems.add(new ItemStack(this));
+            } else {
+                for (ShellContentCreatorInfo info : creatorInfos) {
+                    ItemStack itemStack = new ItemStack(this);
+                    info.embedNBT(itemStack);
+                    pItems.add(itemStack);
+                }
+            }
+        }
     }
 }

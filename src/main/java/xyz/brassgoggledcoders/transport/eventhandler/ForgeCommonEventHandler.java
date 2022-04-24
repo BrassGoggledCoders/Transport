@@ -2,9 +2,9 @@ package xyz.brassgoggledcoders.transport.eventhandler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagManager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -14,6 +14,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.crafting.conditions.ConditionContext;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,6 +23,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.service.ShellContentCreatorServiceImpl;
 import xyz.brassgoggledcoders.transport.util.DirectionHelper;
 import xyz.brassgoggledcoders.transport.util.RailHelper;
 import xyz.brassgoggledcoders.transport.util.RailPlaceResult;
@@ -30,7 +33,16 @@ public class ForgeCommonEventHandler {
 
     @SubscribeEvent
     public static void addReloadListeners(AddReloadListenerEvent event) {
-        if (TransportAPI.SHELL_CONTENT_CREATOR.get() instanceof PreparableReloadListener reloadListener) {
+        if (TransportAPI.SHELL_CONTENT_CREATOR.get() instanceof ShellContentCreatorServiceImpl reloadListener) {
+            ICondition.IContext context = event.getServerResources()
+                    .listeners()
+                    .stream()
+                    .filter(TagManager.class::isInstance)
+                    .map(TagManager.class::cast)
+                    .findFirst()
+                    .<ICondition.IContext>map(ConditionContext::new)
+                    .orElse(ConditionContext.EMPTY);
+            reloadListener.setContext(context);
             event.addListener(reloadListener);
         }
     }

@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.recipe.IJobSiteRecipe;
 
-public class JobSiteResultSlot<T extends IJobSiteRecipe> extends Slot {
+public class JobSiteResultSlot<T extends IJobSiteRecipe<T>> extends Slot {
     private final JobSiteMenu<T> jobSiteMenu;
 
     public JobSiteResultSlot(Container pContainer, int pIndex, int pX, int pY, JobSiteMenu<T> jobSiteMenu) {
