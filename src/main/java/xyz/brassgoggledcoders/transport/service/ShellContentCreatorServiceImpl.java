@@ -32,6 +32,7 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
             Transport.rl("missing"),
             Blocks.BEDROCK.defaultBlockState(),
             Blocks.BEDROCK.getName(),
+            false,
             new EmptyShellContentCreator()
     );
 

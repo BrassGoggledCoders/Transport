@@ -19,7 +19,7 @@ import xyz.brassgoggledcoders.transport.recipe.IJobSiteRecipe;
 import java.util.List;
 import java.util.Objects;
 
-public class JobSiteScreen<T extends JobSiteMenu<U>, U extends IJobSiteRecipe> extends AbstractContainerScreen<T> {
+public class JobSiteScreen<T extends JobSiteMenu<U>, U extends IJobSiteRecipe<U>> extends AbstractContainerScreen<T> {
     private static final ResourceLocation BG_LOCATION = Transport.rl("textures/screen/rail_worker_bench.png");
 
     private float scrollOffs;
@@ -73,7 +73,7 @@ public class JobSiteScreen<T extends JobSiteMenu<U>, U extends IJobSiteRecipe> e
                 int j1 = i + i1 % 4 * 16;
                 int k1 = j + i1 / 4 * 18 + 2;
                 if (pX >= j1 && pX < j1 + 16 && pY >= k1 && pY < k1 + 18) {
-                    this.renderTooltip(pPoseStack, list.get(l).getResultItem(), pX, pY);
+                    this.renderTooltip(pPoseStack, list.get(l).assemble(this.menu.getContainer()), pX, pY);
                 }
             }
         }

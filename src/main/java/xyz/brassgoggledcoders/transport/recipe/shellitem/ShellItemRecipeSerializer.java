@@ -21,9 +21,7 @@ public class ShellItemRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
         return new ShellItemRecipe(
                 pRecipeId,
                 Ingredient.fromJson(pSerializedRecipe.get("input")),
-                CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(pSerializedRecipe, "output"), true),
-                pSerializedRecipe.has("glue") ? Ingredient.fromJson(pSerializedRecipe.get("glue")) : null,
-                !pSerializedRecipe.has("glue") || GsonHelper.getAsBoolean(pSerializedRecipe, "glueOptional", false)
+                CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(pSerializedRecipe, "output"), true)
         );
     }
 
@@ -34,9 +32,7 @@ public class ShellItemRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
         return new ShellItemRecipe(
                 pRecipeId,
                 Ingredient.fromNetwork(pBuffer),
-                pBuffer.readItem(),
-                pBuffer.readBoolean() ? Ingredient.fromNetwork(pBuffer) : null,
-                pBuffer.readBoolean()
+                pBuffer.readItem()
         );
     }
 
@@ -45,10 +41,5 @@ public class ShellItemRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
     public void toNetwork(FriendlyByteBuf pBuffer, ShellItemRecipe pRecipe) {
         pRecipe.input().toNetwork(pBuffer);
         pBuffer.writeItem(pRecipe.output());
-        pBuffer.writeBoolean(pRecipe.glue() != null);
-        if (pRecipe.glue() != null) {
-            pRecipe.glue().toNetwork(pBuffer);
-        }
-        pBuffer.writeBoolean(pRecipe.glueOptional());
     }
 }

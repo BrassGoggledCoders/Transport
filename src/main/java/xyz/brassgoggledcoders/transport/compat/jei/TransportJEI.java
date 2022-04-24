@@ -39,6 +39,9 @@ public class TransportJEI implements IModPlugin {
                 Objects.requireNonNull(Minecraft.getInstance().level)
                         .getRecipeManager()
                         .getAllRecipesFor(TransportRecipes.RAIL_WORKER_BENCH_TYPE.get())
+                        .stream()
+                        .flatMap(recipe -> recipe.getChildren().stream())
+                        .toList()
         );
     }
 

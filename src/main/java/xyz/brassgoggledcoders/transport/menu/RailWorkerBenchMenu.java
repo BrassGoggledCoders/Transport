@@ -8,9 +8,10 @@ import net.minecraft.world.level.block.Block;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
+import xyz.brassgoggledcoders.transport.recipe.railworkerbench.IRailWorkerBenchRecipe;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipe;
 
-public class RailWorkerBenchMenu extends JobSiteMenu<RailWorkerBenchRecipe> {
+public class RailWorkerBenchMenu extends JobSiteMenu<IRailWorkerBenchRecipe> {
     public RailWorkerBenchMenu(int menuId, Inventory inventory, ContainerLevelAccess levelAccess) {
         super(TransportContainers.RAIL_WORKER_BENCH.get(), menuId, inventory, levelAccess);
     }
@@ -25,7 +26,7 @@ public class RailWorkerBenchMenu extends JobSiteMenu<RailWorkerBenchRecipe> {
     }
 
     @Override
-    protected RecipeType<RailWorkerBenchRecipe> getRecipeType() {
+    protected RecipeType<IRailWorkerBenchRecipe> getRecipeType() {
         return TransportRecipes.RAIL_WORKER_BENCH_TYPE.get();
     }
 }

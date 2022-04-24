@@ -10,15 +10,17 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
-import xyz.brassgoggledcoders.transport.recipe.IJobSiteRecipe;
 import xyz.brassgoggledcoders.transport.recipe.ingredient.SizedIngredient;
+
+import java.util.Collection;
+import java.util.Collections;
 
 public record RailWorkerBenchRecipe(
         ResourceLocation id,
         ItemStack output,
         SizedIngredient input,
         SizedIngredient secondaryInput
-) implements IJobSiteRecipe {
+) implements IRailWorkerBenchRecipe {
     @Override
     public boolean matches(@NotNull Container pContainer, @NotNull Level pLevel) {
         return (input().test(pContainer.getItem(0)) && secondaryInput().test(pContainer.getItem(1))) ||
@@ -101,5 +103,20 @@ public record RailWorkerBenchRecipe(
                 return !pContainer.removeItem(index, 1).isEmpty();
             }
         }
+    }
+
+    @Override
+    public Collection<IRailWorkerBenchRecipe> getChildren() {
+        return Collections.singleton(this);
+    }
+
+    @Override
+    public SizedIngredient getInput() {
+        return input();
+    }
+
+    @Override
+    public SizedIngredient getSecondaryInput() {
+        return secondaryInput();
     }
 }

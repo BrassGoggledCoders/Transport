@@ -8,6 +8,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.recipe.railworkerbench.IRailWorkerBenchRecipe;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipe;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipeSerializer;
 import xyz.brassgoggledcoders.transport.recipe.shellitem.ShellItemRecipeSerializer;
@@ -23,7 +24,7 @@ public class TransportRecipes {
             .object("shell_items")
             .simple(RecipeSerializer.class, ShellItemRecipeSerializer::new);
 
-    public static final RegistryObject<RecipeType<RailWorkerBenchRecipe>> RAIL_WORKER_BENCH_TYPE = RECIPE_TYPE_REGISTER.register(
+    public static final RegistryObject<RecipeType<IRailWorkerBenchRecipe>> RAIL_WORKER_BENCH_TYPE = RECIPE_TYPE_REGISTER.register(
             "rail_worker_bench",
             () -> new RecipeType<>() {
                 @Override

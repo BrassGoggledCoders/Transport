@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryManager;
@@ -61,6 +62,12 @@ public record ShellContentCreatorInfo(
                 .result()
                 .filter(CompoundTag.class::isInstance)
                 .map(CompoundTag.class::cast);
+    }
+
+    public ItemStack embedNBT(ItemStack itemStack) {
+        itemStack.getOrCreateTagElement("shellContent")
+                .putString("id", this.id().toString());
+        return itemStack;
     }
 
     public static ShellContentCreatorInfo fromTag(CompoundTag tag) {
