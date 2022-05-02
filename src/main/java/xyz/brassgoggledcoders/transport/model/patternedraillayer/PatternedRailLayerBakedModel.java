@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +15,13 @@ import java.util.List;
 import java.util.Random;
 
 public class PatternedRailLayerBakedModel implements BakedModel {
-    private final PatternedRailLayerItemOverrides itemOverrides = new PatternedRailLayerItemOverrides();
+    private final PatternedRailLayerItemOverrides itemOverrides;
+    private final BakedModel background;
+
+    public PatternedRailLayerBakedModel(BakedModel background) {
+        this.background = background;
+        this.itemOverrides = new PatternedRailLayerItemOverrides(background);
+    }
 
     @Override
     @NotNull
@@ -43,8 +50,9 @@ public class PatternedRailLayerBakedModel implements BakedModel {
     }
 
     @Override
+    @NotNull
     public TextureAtlasSprite getParticleIcon() {
-        return null;
+        return background.getParticleIcon(EmptyModelData.INSTANCE);
     }
 
     @Override

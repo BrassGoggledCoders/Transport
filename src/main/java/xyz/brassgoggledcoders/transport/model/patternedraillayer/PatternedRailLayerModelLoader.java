@@ -1,12 +1,21 @@
 package xyz.brassgoggledcoders.transport.model.patternedraillayer;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.ItemLayerModel;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.Transport;
+
+import java.util.Optional;
 
 public class PatternedRailLayerModelLoader implements IModelLoader<PatternedRailLayerModelGeometry> {
     public static final ResourceLocation ID = Transport.rl("patterned_rail_layer");
@@ -14,7 +23,22 @@ public class PatternedRailLayerModelLoader implements IModelLoader<PatternedRail
     @Override
     @NotNull
     public PatternedRailLayerModelGeometry read(@NotNull JsonDeserializationContext deserializationContext, @NotNull JsonObject modelContents) {
-        return new PatternedRailLayerModelGeometry();
+        ImmutableMap.Builder<String, Material> materialBuilder = ImmutableMap.builder();
+        for (int i = 0; modelContents.has("layer" + i); i++) {
+            String layer = "layer" + i;
+            ResourceLocation resourceLocation = ResourceLocation.tryParse(GsonHelper.getAsString(modelContents, layer));
+            materialBuilder.put(
+                    layer,
+                    Optional.ofNullable(resourceLocation)
+                            .map(name -> new Material(InventoryMenu.BLOCK_ATLAS, name))
+                            .orElseThrow(() -> new JsonParseException(layer + " is an invalid resource location"))
+            );
+        }
+        ImmutableMap<String, Material> materials = materialBuilder.build();
+        if (materials.isEmpty()) {
+            throw new JsonParseException("Did not found any valid resource locations for field 'background' ");
+        }
+        return new PatternedRailLayerModelGeometry(materials);
     }
 
     @Override

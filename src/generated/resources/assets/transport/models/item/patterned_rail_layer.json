@@ -1,3 +1,4 @@
 {
-  "loader": "transport:patterned_rail_layer"
+  "loader": "transport:patterned_rail_layer",
+  "layer0": "minecraft:block/smooth_stone"
 }

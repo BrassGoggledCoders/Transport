@@ -119,4 +119,9 @@ public record RailWorkerBenchRecipe(
     public SizedIngredient getSecondaryInput() {
         return secondaryInput();
     }
+
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
 }

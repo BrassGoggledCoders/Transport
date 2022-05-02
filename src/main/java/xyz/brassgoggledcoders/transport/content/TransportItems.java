@@ -9,6 +9,7 @@ import xyz.brassgoggledcoders.transport.item.ShellMinecartItem;
 import xyz.brassgoggledcoders.transport.model.patternedraillayer.PatternedRailLayerCustomLoaderBuilder;
 import xyz.brassgoggledcoders.transport.recipe.shellitem.ShellItemRecipeBuilder;
 
+@SuppressWarnings("unused")
 public class TransportItems {
     public static ItemEntry<ShellMinecartItem> SHELL_MINECART = Transport.getRegistrate()
             .object("shell_minecart")
@@ -28,6 +29,7 @@ public class TransportItems {
             .properties(properties -> properties.stacksTo(1))
             .model((context, provider) -> provider.getBuilder("item/patterned_rail_layer")
                     .customLoader(PatternedRailLayerCustomLoaderBuilder::new)
+                    .withLayer(provider.mcLoc("block/smooth_stone"))
             )
             .register();
 
