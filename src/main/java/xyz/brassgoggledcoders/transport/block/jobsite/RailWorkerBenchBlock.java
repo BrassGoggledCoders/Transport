@@ -17,7 +17,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.brassgoggledcoders.transport.menu.RailWorkerBenchMenu;
+import xyz.brassgoggledcoders.transport.menu.jobsite.RailWorkerBenchMenu;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.menu;
+package xyz.brassgoggledcoders.transport.menu.jobsite;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -9,9 +9,9 @@ import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.IRailWorkerBenchRecipe;
-import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipe;
 
 public class RailWorkerBenchMenu extends JobSiteMenu<IRailWorkerBenchRecipe> {
+
     public RailWorkerBenchMenu(int menuId, Inventory inventory, ContainerLevelAccess levelAccess) {
         super(TransportContainers.RAIL_WORKER_BENCH.get(), menuId, inventory, levelAccess);
     }

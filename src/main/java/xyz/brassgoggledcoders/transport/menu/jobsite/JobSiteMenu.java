@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.menu;
+package xyz.brassgoggledcoders.transport.menu.jobsite;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
