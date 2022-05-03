@@ -23,18 +23,17 @@ public class PatternedRailLayerModelLoader implements IModelLoader<PatternedRail
     @Override
     @NotNull
     public PatternedRailLayerModelGeometry read(@NotNull JsonDeserializationContext deserializationContext, @NotNull JsonObject modelContents) {
-        ImmutableMap.Builder<String, Material> materialBuilder = ImmutableMap.builder();
+        ImmutableList.Builder<Material> materialBuilder = ImmutableList.builder();
         for (int i = 0; modelContents.has("layer" + i); i++) {
             String layer = "layer" + i;
             ResourceLocation resourceLocation = ResourceLocation.tryParse(GsonHelper.getAsString(modelContents, layer));
-            materialBuilder.put(
-                    layer,
+            materialBuilder.add(
                     Optional.ofNullable(resourceLocation)
                             .map(name -> new Material(InventoryMenu.BLOCK_ATLAS, name))
                             .orElseThrow(() -> new JsonParseException(layer + " is an invalid resource location"))
             );
         }
-        ImmutableMap<String, Material> materials = materialBuilder.build();
+        ImmutableList<Material> materials = materialBuilder.build();
         if (materials.isEmpty()) {
             throw new JsonParseException("Did not found any valid resource locations for field 'background' ");
         }

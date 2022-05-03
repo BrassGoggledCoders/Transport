@@ -1,12 +1,13 @@
 package xyz.brassgoggledcoders.transport.model.patternedraillayer;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,13 +15,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class PatternedRailLayerBakedModel implements BakedModel {
+public class PatternedRailLayerParentBakedModel implements BakedModel {
     private final PatternedRailLayerItemOverrides itemOverrides;
-    private final BakedModel background;
-
-    public PatternedRailLayerBakedModel(BakedModel background) {
-        this.background = background;
+    private final Material particle;
+    public PatternedRailLayerParentBakedModel(ImmutableList<Material> background) {
         this.itemOverrides = new PatternedRailLayerItemOverrides(background);
+        this.particle = background.get(0);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class PatternedRailLayerBakedModel implements BakedModel {
     @Override
     @NotNull
     public TextureAtlasSprite getParticleIcon() {
-        return background.getParticleIcon(EmptyModelData.INSTANCE);
+        return particle.sprite();
     }
 
     @Override
