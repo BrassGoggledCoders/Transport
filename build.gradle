@@ -13,16 +13,16 @@ buildscript {
         classpath 'org.parchmentmc:librarian:1.+'
     }
 }
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+
 plugins {
     id 'eclipse'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
-version = '1.0'
+version = '4.0.1'
 group = "xyz.brassgoggledcoders.${modId}"
 archivesBaseName = "${modId}"
 
@@ -131,6 +131,7 @@ configurations {
 shadowJar {
     configurations = [project.configurations.shade]
     relocate 'com.tterrag.registrate', "xyz.brassgoggledcoders.${modId}.repack.registrate"
+    classifier ''
 }
 
 repositories {
@@ -182,6 +183,7 @@ dependencies {
 }
 
 jar {
+    classifier = "nodep"
     manifest {
         attributes([
                 "Specification-Title"     : "${modId}",
@@ -195,7 +197,18 @@ jar {
     }
 }
 
+reobf {
+    shadowJar {}
+}
+
 jar.finalizedBy('reobfJar')
+
+build.dependsOn shadowJar
+build.dependsOn reobfShadowJar
+
+artifacts {
+    archives shadowJar
+}
 
 publishing {
     publications {
