@@ -28,6 +28,7 @@ public class TransportItems {
             .item(PatternedRailLayerItem::new)
             .properties(properties -> properties.stacksTo(1))
             .model((context, provider) -> provider.getBuilder("item/patterned_rail_layer")
+                    .parent(provider.getExistingFile(provider.mcLoc("item/generated")))
                     .customLoader(PatternedRailLayerCustomLoaderBuilder::new)
                     .withLayer(provider.mcLoc("block/smooth_stone"))
             )

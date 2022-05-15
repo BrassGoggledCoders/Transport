@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PatternedRailLayerCustomLoaderBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T> {
-    private Map<String, ResourceLocation> layers;
+    private final Map<String, ResourceLocation> layers;
 
     public PatternedRailLayerCustomLoaderBuilder(T parent, ExistingFileHelper existingFileHelper) {
         super(PatternedRailLayerModelLoader.ID, parent, existingFileHelper);

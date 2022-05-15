@@ -1,8 +1,11 @@
 package xyz.brassgoggledcoders.transport.model.patternedraillayer;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
@@ -18,8 +21,10 @@ import java.util.Random;
 public class PatternedRailLayerParentBakedModel implements BakedModel {
     private final PatternedRailLayerItemOverrides itemOverrides;
     private final Material particle;
-    public PatternedRailLayerParentBakedModel(ImmutableList<Material> background) {
-        this.itemOverrides = new PatternedRailLayerItemOverrides(background);
+
+    public PatternedRailLayerParentBakedModel(ImmutableList<Material> background,
+                                              ImmutableMap<ItemTransforms.TransformType, Transformation> defaultTransforms) {
+        this.itemOverrides = new PatternedRailLayerItemOverrides(background, defaultTransforms);
         this.particle = background.get(0);
     }
 

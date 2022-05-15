@@ -1,4 +1,5 @@
 {
+  "parent": "minecraft:item/generated",
   "loader": "transport:patterned_rail_layer",
   "layer0": "minecraft:block/smooth_stone"
 }
