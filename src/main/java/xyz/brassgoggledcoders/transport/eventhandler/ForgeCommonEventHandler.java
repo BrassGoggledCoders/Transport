@@ -16,13 +16,17 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.crafting.conditions.ConditionContext;
 import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.items.CapabilityItemHandler;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.capability.IRailProvider;
+import xyz.brassgoggledcoders.transport.content.TransportItemTags;
 import xyz.brassgoggledcoders.transport.service.ShellContentCreatorServiceImpl;
 import xyz.brassgoggledcoders.transport.util.DirectionHelper;
 import xyz.brassgoggledcoders.transport.util.RailHelper;
@@ -51,12 +55,32 @@ public class ForgeCommonEventHandler {
     public static void onRailPlace(PlayerInteractEvent.RightClickBlock rightClickBlock) {
         Player player = rightClickBlock.getPlayer();
         ItemStack itemStack = rightClickBlock.getItemStack();
+
+        ItemStack railStack;
+        Runnable afterPlace = () -> {
+
+        };
+
         if (itemStack.is(ItemTags.RAILS)) {
+            railStack = itemStack;
+        } else if (itemStack.is(TransportItemTags.RAIL_PROVIDERS)) {
+            LazyOptional<IRailProvider> railProvider = itemStack.getCapability(IRailProvider.CAPABILITY);
+
+            railStack = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+                    .resolve()
+                    .flatMap(inventory -> railProvider.map(capability -> capability.findNext(inventory, false)))
+                    .orElse(ItemStack.EMPTY);
+            afterPlace = () -> railProvider.ifPresent(IRailProvider::nextPosition);
+        } else {
+            railStack = ItemStack.EMPTY;
+        }
+
+        if (!railStack.isEmpty()) {
             BlockPos railPos = rightClickBlock.getPos();
             Level level = rightClickBlock.getWorld();
             BlockState blockState = level.getBlockState(railPos);
 
-            if (blockState.is(BlockTags.RAILS) && blockState.getBlock() instanceof BaseRailBlock railBlock) {
+            if (!railStack.isEmpty() && blockState.is(BlockTags.RAILS) && blockState.getBlock() instanceof BaseRailBlock railBlock) {
                 RailShape railShape = railBlock.getRailDirection(blockState, level, railPos, null);
                 Direction closest = DirectionHelper.getClosestVerticalSide(rightClickBlock.getHitVec().getLocation());
                 if (closest.getAxis() != Direction.Axis.Y) {
@@ -68,7 +92,7 @@ public class ForgeCommonEventHandler {
                                 new BlockPlaceContext(
                                         player,
                                         rightClickBlock.getHand(),
-                                        itemStack,
+                                        railStack,
                                         new BlockHitResult(
                                                 Vec3.atCenterOf(newRailPos),
                                                 Direction.UP,
@@ -91,7 +115,7 @@ public class ForgeCommonEventHandler {
                                     placeResult = RailHelper.placeRail(new BlockPlaceContext(
                                                     player,
                                                     rightClickBlock.getHand(),
-                                                    itemStack,
+                                                    railStack,
                                                     new BlockHitResult(
                                                             Vec3.atCenterOf(newRailPos),
                                                             Direction.UP,
@@ -106,6 +130,7 @@ public class ForgeCommonEventHandler {
                         }
                         if (placeResult.consumesAction()) {
                             rightClickBlock.setCanceled(true);
+                            afterPlace.run();
                             player.swing(rightClickBlock.getHand());
                         }
                     }

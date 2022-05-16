@@ -27,6 +27,7 @@ public class TransportItems {
             .object("patterned_rail_layer")
             .item(PatternedRailLayerItem::new)
             .properties(properties -> properties.stacksTo(1))
+            .tag(TransportItemTags.RAIL_PROVIDERS)
             .model((context, provider) -> provider.getBuilder("item/patterned_rail_layer")
                     .parent(provider.getExistingFile(provider.mcLoc("item/generated")))
                     .customLoader(PatternedRailLayerCustomLoaderBuilder::new)
