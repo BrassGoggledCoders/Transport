@@ -11,4 +11,6 @@ public interface IRailProvider {
     });
 
     ItemStack findNext(IItemHandler searchable, boolean simulate);
+
+    void nextPosition();
 }

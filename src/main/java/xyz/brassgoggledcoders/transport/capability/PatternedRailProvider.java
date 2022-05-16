@@ -16,20 +16,38 @@ public class PatternedRailProvider implements IRailProvider {
     @Override
     @NotNull
     public ItemStack findNext(IItemHandler searchable, boolean simulate) {
-        if (simulate) {
-            ItemStack found = ItemStack.EMPTY;
-            int tried = 0;
-            while (found.isEmpty() && tried++ < pattern.getSlots()) {
-                int slot = position + tried;
-                if (slot >= pattern.getSlots()) {
-                    slot -= pattern.getSlots();
-                }
-                found = pattern.getStackInSlot(slot);
+        ItemStack found = ItemStack.EMPTY;
+        int tried = 0;
+        while (found.isEmpty() && tried++ < pattern.getSlots()) {
+            int slot = position + tried;
+            if (slot >= pattern.getSlots()) {
+                slot -= pattern.getSlots();
             }
+            found = pattern.getStackInSlot(slot);
+        }
+        if (simulate) {
             return found;
         } else {
-            return new ItemStack(Items.RAIL);
+            if (found.getCount() > 1) {
+                return found;
+            } else {
+                return ItemStack.EMPTY;
+            }
         }
+    }
+
+    @Override
+    public void nextPosition() {
+        int tries = 0;
+        ItemStack nextFound;
+        do {
+            position++;
+            if (position >= pattern.getSlots()) {
+                this.position = 0;
+            }
+            nextFound = pattern.getStackInSlot(position);
+        } while (++tries < pattern.getSlots() && nextFound.isEmpty());
+
     }
 
     public IItemHandlerModifiable getPattern() {
