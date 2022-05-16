@@ -43,7 +43,7 @@ public record PatternedRailLayerChildBakedModel(
             bakedQuads.addAll(
                     ItemLayerModel.getQuadsForSprite(-1,
                             material.sprite(),
-                            new Transformation(Matrix4f.createTranslateMatrix(0, 0, offset -= 0.0825F))
+                            new Transformation(Matrix4f.createTranslateMatrix(0, 0, offset -= 0.0825))
                     )
             );
         }
@@ -52,17 +52,17 @@ public record PatternedRailLayerChildBakedModel(
 
     @Override
     public boolean useAmbientOcclusion() {
-        return railModel() == null || railModel().useAmbientOcclusion();
+        return railModel() != null && railModel().useAmbientOcclusion();
     }
 
     @Override
     public boolean isGui3d() {
-        return railModel() == null || railModel().isGui3d();
+        return railModel() != null && railModel().isGui3d();
     }
 
     @Override
     public boolean usesBlockLight() {
-        return railModel() == null || railModel().useAmbientOcclusion();
+        return railModel() != null && railModel().useAmbientOcclusion();
     }
 
     @Override
@@ -96,8 +96,6 @@ public record PatternedRailLayerChildBakedModel(
 
     @Override
     public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack poseStack) {
-        return railModel() != null ?
-                railModel().handlePerspective(cameraTransformType, poseStack) :
-                PerspectiveMapWrapper.handlePerspective(this, defaultTransforms, cameraTransformType, poseStack);
+        return PerspectiveMapWrapper.handlePerspective(this, defaultTransforms, cameraTransformType, poseStack);
     }
 }
