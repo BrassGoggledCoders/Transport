@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.menu;
+package xyz.brassgoggledcoders.transport.menu.jobsite;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;

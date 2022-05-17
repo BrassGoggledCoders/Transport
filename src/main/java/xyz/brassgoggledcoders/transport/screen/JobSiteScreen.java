@@ -13,7 +13,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.menu.JobSiteMenu;
+import xyz.brassgoggledcoders.transport.menu.jobsite.JobSiteMenu;
 import xyz.brassgoggledcoders.transport.recipe.IJobSiteRecipe;
 
 import java.util.List;

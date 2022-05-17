@@ -8,6 +8,7 @@
   "block.transport.rail_worker_bench": "Rail Worker Bench",
   "entity.transport.shell_minecart": "Shell Minecart",
   "entity.transport.shell_minecart.with": "Minecart with %s",
+  "item.transport.patterned_rail_layer": "Patterned Rail Layer",
   "item.transport.shell_minecart": "Shell Minecart",
   "itemGroup.transport": "Transport",
   "text.transport.shell_content": "Shell Content: %s"
