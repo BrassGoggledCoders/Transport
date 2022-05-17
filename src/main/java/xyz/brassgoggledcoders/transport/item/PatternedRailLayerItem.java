@@ -103,8 +103,13 @@ public class PatternedRailLayerItem extends Item implements MenuProvider {
                 .getCapability(IRailProvider.CAPABILITY)
                 .resolve()
                 .map(railProvider -> {
-                    if (railProvider instanceof PatternedRailProvider) {
-                        return new PatternedRailLayerMenu(pContainerId, pInventory, ((PatternedRailProvider) railProvider).getPattern());
+                    if (railProvider instanceof PatternedRailProvider patternedRailProvider) {
+                        return new PatternedRailLayerMenu(
+                                pContainerId,
+                                pInventory,
+                                patternedRailProvider.getPattern(),
+                                patternedRailProvider.getPosition()
+                        );
                     } else {
                         return null;
                     }

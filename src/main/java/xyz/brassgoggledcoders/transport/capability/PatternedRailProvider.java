@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.transport.capability;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -59,6 +58,10 @@ public class PatternedRailProvider implements IRailProvider {
         tag.put("Pattern", pattern.serializeNBT());
         tag.putInt("Position", position);
         return tag;
+    }
+
+    public int getPosition() {
+        return position;
     }
 
     public static PatternedRailProvider fromTag(CompoundTag compoundTag) {

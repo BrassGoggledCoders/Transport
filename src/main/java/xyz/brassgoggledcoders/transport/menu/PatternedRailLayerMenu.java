@@ -6,6 +6,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -16,13 +17,18 @@ import xyz.brassgoggledcoders.transport.menu.slot.TagFilterSlot;
 import xyz.brassgoggledcoders.transport.shellcontent.storage.item.CapabilityContainer;
 
 public class PatternedRailLayerMenu extends ChestMenu {
+
+    private final DataSlot positionData = DataSlot.standalone();
     public PatternedRailLayerMenu(MenuType<?> menuType, int windowId, Inventory inventory) {
         super(menuType, windowId, inventory, new SimpleContainer(9), 1);
+        this.addDataSlot(positionData);
     }
 
-    public PatternedRailLayerMenu(int windowId, Inventory inventory, IItemHandlerModifiable itemHandler) {
+    public PatternedRailLayerMenu(int windowId, Inventory inventory, IItemHandlerModifiable itemHandler, int position) {
         super(TransportContainers.PATTERNED_RAIL_LAYER.get(), windowId, inventory,
                 new CapabilityContainer(itemHandler, PatternedRailLayerMenu::isItValid), 1);
+        positionData.set(position);
+        this.addDataSlot(positionData);
     }
 
     @Override
@@ -33,6 +39,10 @@ public class PatternedRailLayerMenu extends ChestMenu {
         } else {
             return super.addSlot(pSlot);
         }
+    }
+
+    public int getPosition() {
+        return positionData.get();
     }
 
     private static boolean isItValid(Player player) {
