@@ -8,14 +8,12 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ChestMenu;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.menu.PatternedRailLayerMenu;
 
 public class PatternedRailLayerScreen extends AbstractContainerScreen<PatternedRailLayerMenu> implements MenuAccess<PatternedRailLayerMenu> {
-    /** The ResourceLocation containing the chest GUI texture. */
     private static final ResourceLocation CONTAINER_BACKGROUND = new ResourceLocation("textures/gui/container/generic_54.png");
-    /** Window height is calculated with these values" the more rows, the higher */
+    private static final ResourceLocation POINTER_LOCATION = new ResourceLocation("textures/gui/server_selection.png");
     private final int containerRows;
 
     public PatternedRailLayerScreen(PatternedRailLayerMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
@@ -46,7 +44,7 @@ public class PatternedRailLayerScreen extends AbstractContainerScreen<PatternedR
     }
 
     protected void renderPosition(@NotNull PoseStack pPoseStack) {
-        RenderSystem.setShaderTexture(0, new ResourceLocation("textures/gui/server_selection.png"));
+        RenderSystem.setShaderTexture(0, POINTER_LOCATION);
         int i = (this.width - this.imageWidth);
         int j = (this.height - this.imageHeight);
         this.setBlitOffset(300);
