@@ -134,13 +134,28 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractC
     }
 
     private void setupRecipeList(Container pInventory) {
+        int numberRecipes = this.getNumRecipes();
+        int lastSelectedSlot = -1;
+
+        T lastRecipe = null;
+        if (numberRecipes > 0) {
+            lastSelectedSlot = this.selectedRecipeIndex.get();
+            if (lastSelectedSlot >= 0) {
+                lastRecipe = this.recipes.get(lastSelectedSlot);
+            }
+        }
+
         this.recipes.clear();
-        this.selectedRecipeIndex.set(-1);
-        this.resultSlot.set(ItemStack.EMPTY);
+
         if (this.inputSlots.stream().map(Slot::getItem).anyMatch(itemStack -> !itemStack.isEmpty())) {
             this.recipes.addAll(this.level.getRecipeManager()
                     .getRecipesFor(this.getRecipeType(), pInventory, this.level)
             );
+        }
+
+        if (lastSelectedSlot < 0 || numberRecipes != this.getNumRecipes() || this.recipes.get(lastSelectedSlot) != lastRecipe) {
+            this.selectedRecipeIndex.set(-1);
+            this.resultSlot.set(ItemStack.EMPTY);
         }
     }
 
@@ -241,7 +256,7 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractC
     }
 
     public boolean removeInputs() {
-        return this.getRecipes()
+        return this.getSelectedRecipeIndex() >= 0 && this.getRecipes()
                 .get(this.getSelectedRecipeIndex())
                 .reduceContainer(this.container);
     }
