@@ -1,13 +1,17 @@
 package xyz.brassgoggledcoders.transport.recipe.shellitem;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
@@ -19,23 +23,31 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.Optional;
 
-public record ShellItemRecipe(
-        ResourceLocation id,
-        Ingredient input,
-        ItemStack output
-) implements IRailWorkerBenchRecipe {
+public class ShellItemRecipe implements IRailWorkerBenchRecipe {
+    private final ResourceLocation id;
+    private final Ingredient input;
+    private final ItemStack output;
+    private final Lazy<Ingredient> ingredient;
+
+    public ShellItemRecipe(ResourceLocation id, Ingredient input, ItemStack output) {
+        this.id = id;
+        this.input = input;
+        this.output = output;
+        this.ingredient = Lazy.of(() -> Ingredient.of(TransportAPI.SHELL_CONTENT_CREATOR.get()
+                .getAll()
+                .stream()
+                .filter(ShellContentCreatorInfo::createRecipe)
+                .<ItemLike>map(info -> info.viewState().getBlock().asItem())
+                .toArray(ItemLike[]::new)
+        ));
+    }
+
     @Override
     @ParametersAreNonnullByDefault
     public boolean matches(Container pContainer, Level pLevel) {
         return findMatching(pContainer)
-                .map(tuple -> {
-                    for (ShellContentCreatorInfo info : TransportAPI.SHELL_CONTENT_CREATOR.get().getAll()) {
-                        if (info.createRecipe() && info.viewState().getBlock().asItem() == tuple.getRight().getItem()) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }).orElse(false);
+                .filter(pair -> this.ingredient.get().test(pair.getRight()))
+                .isPresent();
     }
 
     @Override
@@ -45,7 +57,7 @@ public record ShellItemRecipe(
                 .map(tuple -> {
                     for (ShellContentCreatorInfo info : TransportAPI.SHELL_CONTENT_CREATOR.get().getAll()) {
                         if (info.createRecipe() && info.viewState().getBlock().asItem() == tuple.getRight().getItem()) {
-                            ItemStack itemStack = this.output().copy();
+                            ItemStack itemStack = this.getOutput().copy();
                             CompoundTag shellContent = new CompoundTag();
                             shellContent.putString("id", info.id().toString());
                             itemStack.addTagElement("shellContent", shellContent);
@@ -57,7 +69,6 @@ public record ShellItemRecipe(
     }
 
     @Override
-
     public boolean canCraftInDimensions(int pWidth, int pHeight) {
         return pHeight * pWidth >= 2;
     }
@@ -65,13 +76,13 @@ public record ShellItemRecipe(
     @Override
     @Nonnull
     public ItemStack getResultItem() {
-        return output().copy();
+        return getOutput().copy();
     }
 
     @Override
     @Nonnull
     public ResourceLocation getId() {
-        return this.id();
+        return this.id;
     }
 
     @Override
@@ -116,8 +127,8 @@ public record ShellItemRecipe(
                 .stream()
                 .filter(ShellContentCreatorInfo::createRecipe)
                 .<IRailWorkerBenchRecipe>map(info -> new ShellItemChildRecipe(
-                        id(),
-                        info.embedNBT(output().copy()),
+                        this.getId(),
+                        info.embedNBT(getOutput().copy()),
                         this.getInput(),
                         SizedIngredient.of(Ingredient.of(info.viewState().getBlock()))
                 ))
@@ -132,5 +143,18 @@ public record ShellItemRecipe(
     @Override
     public SizedIngredient getSecondaryInput() {
         return SizedIngredient.of(Ingredient.EMPTY);
+    }
+
+    @Override
+    @NotNull
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> ingredients = NonNullList.create();
+        ingredients.add(this.getInput().ingredient());
+        ingredients.add(this.ingredient.get());
+        return ingredients;
+    }
+
+    public ItemStack getOutput() {
+        return output;
     }
 }

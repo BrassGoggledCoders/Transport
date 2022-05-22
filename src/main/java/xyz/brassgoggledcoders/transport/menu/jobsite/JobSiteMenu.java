@@ -13,9 +13,11 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.transport.content.TransportRecipes;
 import xyz.brassgoggledcoders.transport.recipe.IJobSiteRecipe;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractContainerMenu {
     private static final int INPUT_SLOT = 0;
@@ -189,19 +191,19 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractC
             ItemStack slotItemStack = slot.getItem();
             Item item = slotItemStack.getItem();
             copiedItemStack = slotItemStack.copy();
-            if (pIndex == 1) {
+            if (pIndex == OUTPUT_SLOT) {
                 item.onCraftedBy(slotItemStack, pPlayer.level, pPlayer);
                 if (!this.moveItemStackTo(slotItemStack, INV_SLOT_START, USE_ROW_SLOT_END, true)) {
                     return ItemStack.EMPTY;
                 }
 
                 slot.onQuickCraft(slotItemStack, copiedItemStack);
-            } else if (pIndex == INPUT_SLOT) {
+            } else if (pIndex == INPUT_SLOT || pIndex == SECONDARY_INPUT_SLOT) {
                 if (!this.moveItemStackTo(slotItemStack, INV_SLOT_START, USE_ROW_SLOT_END, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (this.level.getRecipeManager().getRecipeFor(this.getRecipeType(), new SimpleContainer(slotItemStack), this.level).isPresent()) {
-                if (!this.moveItemStackTo(slotItemStack, INPUT_SLOT, SECONDARY_INPUT_SLOT, false)) {
+            } else if (matchesRecipe(slotItemStack)) {
+                if (!this.moveItemStackTo(slotItemStack, INPUT_SLOT, OUTPUT_SLOT, false)) {
                     return ItemStack.EMPTY;
                 }
             } else if (pIndex >= INV_SLOT_START && pIndex < INV_SLOT_END) {
@@ -226,6 +228,34 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractC
         }
 
         return copiedItemStack;
+    }
+
+    private boolean matchesRecipe(ItemStack slotItemStack) {
+        List<ItemStack> itemStackList = this.inputs.stream()
+                .filter(Predicate.not(ItemStack::isEmpty))
+                .toList();
+
+        if (itemStackList.isEmpty()) {
+            return this.level.getRecipeManager()
+                    .getAllRecipesFor(TransportRecipes.RAIL_WORKER_BENCH_TYPE.get())
+                    .stream()
+                    .flatMap(recipe -> recipe.getIngredients().stream())
+                    .anyMatch(ingredient -> ingredient.test(slotItemStack));
+        } else if (itemStackList.size() < this.inputSlots.size()) {
+            SimpleContainer simpleContainer = new SimpleContainer(this.inputs.size());
+            itemStackList.forEach(simpleContainer::addItem);
+            simpleContainer.addItem(slotItemStack);
+            return this.level.getRecipeManager()
+                    .getRecipeFor(
+                            TransportRecipes.RAIL_WORKER_BENCH_TYPE.get(),
+                            simpleContainer,
+                            this.level
+                    )
+                    .isPresent();
+        } else {
+            return itemStackList.stream()
+                    .anyMatch(itemStack -> ItemStack.isSameItemSameTags(itemStack, slotItemStack));
+        }
     }
 
     @Override
