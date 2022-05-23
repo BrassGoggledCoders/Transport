@@ -25,8 +25,10 @@ import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.jobsite.RailWorkerBenchBlock;
 import xyz.brassgoggledcoders.transport.block.rail.DumpRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.OneWayBoosterRailBlock;
+import xyz.brassgoggledcoders.transport.block.rail.SwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.storage.CapabilityStorageBlock;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
+import xyz.brassgoggledcoders.transport.blockentity.rail.SwitchRailBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.EnergyStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.FluidStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipeBuilder;
@@ -93,12 +95,33 @@ public class TransportBlocks {
             .transform(TransportBlocks::defaultRail)
             .blockstate(BlockModelHelper::straightPoweredInvertedRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
-            .tag(TransportItemTags.RAILS_IRON)
+            .tag(TransportItemTags.RAILS_GOLD)
             .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
                     .withInput(Ingredient.of(TransportItemTags.RAILS_GOLD))
                     .save(provider)
             )
             .build()
+            .register();
+
+    public static final BlockEntry<SwitchRailBlock> SWITCH_RAIL = Transport.getRegistrate()
+            .object("switch_rail")
+            .block(SwitchRailBlock::new)
+            .transform(TransportBlocks::defaultRail)
+            .blockstate(BlockModelHelper::switchRail)
+            .item()
+            .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/switch_rail_straight_right")))
+            .tag(ItemTags.RAILS)
+            .tag(TransportItemTags.RAILS_IRON)
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
+                    .save(provider)
+            )
+            .build()
+            .register();
+
+    public static final RegistryEntry<BlockEntityType<SwitchRailBlockEntity>> SWITCH_RAIL_BLOCK_ENTITY = Transport.getRegistrate()
+            .blockEntity(SwitchRailBlockEntity::new)
+            .validBlock(SWITCH_RAIL)
             .register();
 
     public static final BlockEntry<CapabilityStorageBlock<FluidStorageBlockEntity>> FLUID_STORAGE = Transport.getRegistrate()
