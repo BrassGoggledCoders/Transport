@@ -4,6 +4,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -19,11 +20,16 @@ import xyz.brassgoggledcoders.transport.util.BlockStateHelper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class SwitchRailBlock extends AbstractSwitchRailBlock {
-    public static final EnumProperty<RailShape> DIVERGE_SHAPE = EnumProperty.create("diverge_shape", RailShape.class,
-            railShape -> railShape == RailShape.NORTH_EAST || railShape == RailShape.SOUTH_EAST ||
-                    railShape == RailShape.SOUTH_WEST || railShape == RailShape.NORTH_WEST);
-    public static final EnumProperty<RailShape> STRAIGHT_SHAPE = EnumProperty.create("straight_shape",
-            RailShape.class, railShape -> railShape == RailShape.NORTH_SOUTH || railShape == RailShape.EAST_WEST);
+    public static final EnumProperty<RailShape> DIVERGE_SHAPE = EnumProperty.create(
+            "diverge_shape",
+            RailShape.class,
+            RailShape.NORTH_EAST, RailShape.SOUTH_EAST, RailShape.SOUTH_WEST, RailShape.NORTH_WEST
+    );
+    public static final EnumProperty<RailShape> STRAIGHT_SHAPE = EnumProperty.create(
+            "straight_shape",
+            RailShape.class,
+            RailShape.NORTH_SOUTH, RailShape.EAST_WEST
+    );
 
     public static final BooleanProperty WATER_LOGGED = BaseRailBlock.WATERLOGGED;
 
@@ -118,56 +124,41 @@ public class SwitchRailBlock extends AbstractSwitchRailBlock {
     @ParametersAreNonnullByDefault
     @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, Rotation pRotation) {
-        switch (pRotation) {
-            case CLOCKWISE_180:
-                state = state.cycle(DIVERGE_SHAPE)
-                        .cycle(DIVERGE_SHAPE);
-                break;
-            case CLOCKWISE_90:
-                RailShape clockwiseShape = state.getValue(STRAIGHT_SHAPE);
-                switch (state.getValue(DIVERGE_SHAPE)) {
-                    case NORTH_EAST:
-                    case SOUTH_WEST:
-                        if (clockwiseShape == RailShape.NORTH_SOUTH) {
-                            state = state.setValue(STRAIGHT_SHAPE, RailShape.EAST_WEST);
-                        } else {
-                            state = state.cycle(DIVERGE_SHAPE);
-                        }
-                        break;
-                    case SOUTH_EAST:
-                    case NORTH_WEST:
-                        if (clockwiseShape == RailShape.EAST_WEST) {
-                            state = state.setValue(STRAIGHT_SHAPE, RailShape.NORTH_SOUTH);
-                        } else {
-                            state = BlockStateHelper.cyclePrevious(state, DIVERGE_SHAPE);
-                        }
-                        break;
-                }
-                break;
-            case COUNTERCLOCKWISE_90:
-                RailShape counterClockWiseShape = state.getValue(STRAIGHT_SHAPE);
-                switch (state.getValue(DIVERGE_SHAPE)) {
-                    case NORTH_EAST:
-                    case SOUTH_WEST:
-                        if (counterClockWiseShape == RailShape.EAST_WEST) {
-                            state = state.setValue(STRAIGHT_SHAPE, RailShape.NORTH_SOUTH);
-                        } else {
-                            state = BlockStateHelper.cyclePrevious(state, DIVERGE_SHAPE);
-                        }
-                        break;
-                    case SOUTH_EAST:
-                    case NORTH_WEST:
-                        if (counterClockWiseShape == RailShape.NORTH_SOUTH) {
-                            state = state.setValue(STRAIGHT_SHAPE, RailShape.EAST_WEST);
-                        } else {
-                            state = BlockStateHelper.cyclePrevious(state, DIVERGE_SHAPE);
-                        }
-                        break;
-                }
-                break;
-            case NONE:
-                break;
+        return switch (pRotation) {
+            case CLOCKWISE_180 -> state.cycle(DIVERGE_SHAPE)
+                    .cycle(DIVERGE_SHAPE);
+            case CLOCKWISE_90 -> state.cycle(DIVERGE_SHAPE)
+                    .cycle(STRAIGHT_SHAPE);
+            case COUNTERCLOCKWISE_90 -> BlockStateHelper.cyclePrevious(state, DIVERGE_SHAPE)
+                    .cycle(STRAIGHT_SHAPE);
+            case NONE -> state;
+        };
+    }
+
+    @Override
+    @NotNull
+    @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
+    public BlockState mirror(BlockState pState, Mirror pMirror) {
+        if (pMirror == Mirror.LEFT_RIGHT) {
+            if (pState.getValue(STRAIGHT_SHAPE) == RailShape.NORTH_SOUTH) {
+                return switch (pState.getValue(DIVERGE_SHAPE)) {
+                    case SOUTH_WEST -> pState.setValue(DIVERGE_SHAPE, RailShape.SOUTH_EAST);
+                    case SOUTH_EAST -> pState.setValue(DIVERGE_SHAPE, RailShape.SOUTH_WEST);
+                    case NORTH_EAST -> pState.setValue(DIVERGE_SHAPE, RailShape.NORTH_WEST);
+                    case NORTH_WEST -> pState.setValue(DIVERGE_SHAPE, RailShape.NORTH_EAST);
+                    default -> pState;
+                };
+            } else {
+                return switch (pState.getValue(DIVERGE_SHAPE)) {
+                    case SOUTH_WEST -> pState.setValue(DIVERGE_SHAPE, RailShape.NORTH_WEST);
+                    case SOUTH_EAST -> pState.setValue(DIVERGE_SHAPE, RailShape.NORTH_EAST);
+                    case NORTH_EAST -> pState.setValue(DIVERGE_SHAPE, RailShape.SOUTH_EAST);
+                    case NORTH_WEST -> pState.setValue(DIVERGE_SHAPE, RailShape.SOUTH_WEST);
+                    default -> pState;
+                };
+            }
         }
-        return state;
+        return super.mirror(pState, pMirror);
     }
 }
