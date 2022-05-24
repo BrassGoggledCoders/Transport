@@ -10,6 +10,56 @@ import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 
 public class BlockModelHelper {
+    public static void regularRail(DataGenContext<Block, ? extends BaseRailBlock> context, RegistrateBlockstateProvider provider) {
+        ModelFile flatRail = provider.models()
+                .getBuilder("block/" + context.getName() + "_flat")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/rail_flat"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName()));
+
+        ModelFile raisedRail = provider.models()
+                .getBuilder("block/" + context.getName() + "_raised")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/template_rail_raised_ne"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName()));
+
+        ModelFile cornerRail = provider.models()
+                .getBuilder("block/" + context.getName() + "_corner")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/rail_flat"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_corner"));
+
+        provider.getVariantBuilder(context.get())
+                .forAllStatesExcept(state -> {
+                    RailShape railShape = state.getValue(BlockStateProperties.RAIL_SHAPE);
+
+                    ModelFile modelFile;
+
+                    if (railShape.isAscending()) {
+                        modelFile = raisedRail;
+                    } else if (RailHelper.isRailShapeStraight(railShape)) {
+                        modelFile = flatRail;
+                    } else {
+                        modelFile = cornerRail;
+                    }
+
+                    int rotation = switch (railShape) {
+                        case ASCENDING_EAST, SOUTH_WEST, EAST_WEST -> 90;
+                        case NORTH_WEST, ASCENDING_SOUTH -> 180;
+                        case ASCENDING_WEST, NORTH_EAST -> 270;
+                        default -> 0;
+                    };
+
+                    return ConfiguredModel.builder()
+                            .modelFile(modelFile)
+                            .rotationY(rotation)
+                            .build();
+                });
+    }
+
     public static void straightPoweredRailBlockState(DataGenContext<Block, ? extends BaseRailBlock> context, RegistrateBlockstateProvider provider) {
         ModelFile flatRailUnpowered = provider.models().getBuilder("block/" + context.getName() + "_flat")
                 .parent(provider.models()
