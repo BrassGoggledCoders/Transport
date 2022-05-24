@@ -23,6 +23,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.jobsite.RailWorkerBenchBlock;
+import xyz.brassgoggledcoders.transport.block.rail.CopperRail;
 import xyz.brassgoggledcoders.transport.block.rail.DumpRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.OneWayBoosterRailBlock;
 import xyz.brassgoggledcoders.transport.block.storage.CapabilityStorageBlock;
@@ -85,6 +86,35 @@ public class TransportBlocks {
             .validBlock(ITEM_DUMP_RAIL)
             .validBlock(FLUID_DUMP_RAIL)
             .validBlock(ENERGY_DUMP_RAIL)
+            .register();
+
+    public static final BlockEntry<CopperRail> COPPER_RAIL = Transport.getRegistrate()
+            .object("copper_rail")
+            .block(CopperRail::new)
+            .transform(TransportBlocks::defaultRail)
+            .blockstate(BlockModelHelper::regularRail)
+            .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_COPPER)
+            .build()
+            .recipe((context, provider) -> {
+                RailWorkerBenchRecipeBuilder.of(context.get())
+                        .withInput(Ingredient.of(TransportItemTags.RAILS_COPPER))
+                        .save(provider, Transport.rl("copper_rail_from_rails_copper"));
+
+                RailWorkerBenchRecipeBuilder.of(context.get(), 32)
+                        .withInput(Ingredient.of(Tags.Items.INGOTS_COPPER), 4)
+                        .withSecondaryInput(Ingredient.of(Tags.Items.RODS_WOODEN))
+                        .save(provider, Transport.rl("cheaper_copper_rail"));
+
+                ShapedRecipeBuilder.shaped(context.get(), 16)
+                        .pattern("C C")
+                        .pattern("CSC")
+                        .pattern("C C")
+                        .define('C', Tags.Items.INGOTS_COPPER)
+                        .define('S', Tags.Items.RODS_WOODEN)
+                        .unlockedBy("has_item", RegistrateRecipeProvider.has(Tags.Items.INGOTS_COPPER))
+                        .save(provider, Transport.rl("copper_rail"));
+            })
             .register();
 
     public static final BlockEntry<OneWayBoosterRailBlock> ONE_WAY_BOOSTER_RAIL = Transport.getRegistrate()

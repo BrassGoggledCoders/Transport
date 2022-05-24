@@ -1,4 +1,5 @@
 {
+  "block.transport.copper_rail": "Copper Rail",
   "block.transport.energy_dump_rail": "Energy Dump Rail",
   "block.transport.energy_storage": "Energy Storage",
   "block.transport.fluid_dump_rail": "Fluid Dump Rail",

@@ -115,4 +115,8 @@ public class RailHelper {
         }
         return currentPosition.offset(exit.getNormal());
     }
+
+    public static boolean isRailShapeStraight(RailShape railShape) {
+        return railShape == RailShape.NORTH_SOUTH || railShape == RailShape.EAST_WEST;
+    }
 }
