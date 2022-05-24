@@ -4,6 +4,7 @@
     "transport:item_dump_rail",
     "transport:fluid_dump_rail",
     "transport:energy_dump_rail",
+    "transport:copper_rail",
     "transport:one_way_booster_rail",
     "transport:switch_rail"
   ]
