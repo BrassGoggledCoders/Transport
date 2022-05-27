@@ -105,7 +105,7 @@ public class SwitchRailBlock extends AbstractSwitchRailBlock {
     }
 
     @Override
-    protected RailShape getStraightShape(SwitchConfiguration switchConfiguration) {
+    protected @NotNull RailShape getStraightShape(SwitchConfiguration switchConfiguration) {
         return switchConfiguration.getStraight();
     }
 

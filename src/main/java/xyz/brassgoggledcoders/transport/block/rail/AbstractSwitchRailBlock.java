@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.blockentity.rail.SwitchRailBlockEntity;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.util.DirectionHelper;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -25,7 +26,7 @@ public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements E
     public static final BooleanProperty DIVERGE = BooleanProperty.create("diverge");
 
     protected AbstractSwitchRailBlock(boolean disableCorner, Properties properties) {
-        super(disableCorner, properties);
+        super(disableCorner, properties.randomTicks());
     }
 
     @Override
@@ -40,6 +41,8 @@ public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements E
     public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, Random pRandom) {
         super.tick(pState, pLevel, pPos, pRandom);
         checkDiverge(pState, pLevel, pPos);
+        pLevel.getBlockEntity(pPos, TransportBlocks.SWITCH_RAIL_BLOCK_ENTITY.get())
+                .ifPresent(SwitchRailBlockEntity::clean);
     }
 
     public void checkDiverge(BlockState pState, Level pLevel, BlockPos pPos) {
@@ -68,6 +71,35 @@ public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements E
         RailShape straightShape = getStraightShape(switchConfiguration);
         RailShape divergeShape = getDivergeShape(switchConfiguration);
 
+        if (minecartEntity != null && blockReader.getBlockEntity(pos) instanceof SwitchRailBlockEntity switchRailBlockEntity) {
+
+            RailShape railShape = switchRailBlockEntity.getRailShapeFor(minecartEntity);
+            if (railShape == null) {
+                int distance = pos.distManhattan(minecartEntity.blockPosition());
+                Direction entranceDirection = null;
+                if (distance == 0) {
+                    entranceDirection = DirectionHelper.getClosestVerticalSide(minecartEntity.position());
+                } else if (distance == 1) {
+                    entranceDirection = Direction.fromNormal(pos.subtract(minecartEntity.blockPosition()));
+                }
+
+                if (entranceDirection != null && entranceDirection.getAxis() != Direction.Axis.Y) {
+                    if (entranceDirection == switchConfiguration.getDivergentSide()) {
+                        railShape = divergeShape;
+                    } else if (entranceDirection == switchConfiguration.getNarrowSide()) {
+                        railShape = state.getValue(DIVERGE) ? divergeShape : straightShape;
+                    } else {
+                        railShape = straightShape;
+                    }
+                }
+            }
+
+            if (railShape != null) {
+                switchRailBlockEntity.setRailShapeFor(minecartEntity, railShape);
+                return railShape;
+            }
+        }
+
         return state.getValue(DIVERGE) ? divergeShape : straightShape;
     }
 
@@ -88,10 +120,12 @@ public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements E
         return direction != null && this.getMotorDirection(this.getSwitchConfiguration(state)).getOpposite() == direction;
     }
 
+    @NotNull
     protected RailShape getDivergeShape(SwitchConfiguration switchConfiguration) {
         return switchConfiguration.getDiverge();
     }
 
+    @NotNull
     protected abstract RailShape getStraightShape(SwitchConfiguration switchConfiguration);
 
     protected abstract SwitchConfiguration getSwitchConfiguration(BlockState blockState);

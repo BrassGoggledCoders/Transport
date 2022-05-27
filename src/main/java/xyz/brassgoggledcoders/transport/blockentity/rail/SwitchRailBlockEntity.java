@@ -1,36 +1,64 @@
 package xyz.brassgoggledcoders.transport.blockentity.rail;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.RailShape;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.*;
+
 public class SwitchRailBlockEntity extends BlockEntity {
-    private long lastHitGameTime = -1;
+    private final Table<UUID, Long, RailShape> railShapes;
 
     public SwitchRailBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
         super(pType, pWorldPosition, pBlockState);
-    }
-
-    public void setLastHit(long gameTime) {
-        this.lastHitGameTime = gameTime;
+        this.railShapes = HashBasedTable.create();
     }
 
     public long getLastHitGameTime() {
-        return this.lastHitGameTime;
+        return this.railShapes.columnKeySet()
+                .stream()
+                .max(Long::compareTo)
+                .orElse(-1L);
     }
 
     @Override
     protected void saveAdditional(@NotNull CompoundTag pTag) {
         super.saveAdditional(pTag);
-        pTag.putLong("LastHitGameTime", lastHitGameTime);
+
     }
 
     @Override
     public void load(@NotNull CompoundTag pTag) {
         super.load(pTag);
-        this.lastHitGameTime = pTag.getLong("LastHitGameTime");
+
+    }
+
+    public RailShape getRailShapeFor(AbstractMinecart minecartEntity) {
+        return this.railShapes.row(minecartEntity.getUUID())
+                .entrySet()
+                .stream()
+                .max(Map.Entry.comparingByKey())
+                .map(Map.Entry::getValue)
+                .orElse(null);
+    }
+
+    public void setRailShapeFor(AbstractMinecart minecartEntity, RailShape railShape) {
+        this.railShapes.put(minecartEntity.getUUID(), minecartEntity.getLevel().getGameTime(), railShape);
+    }
+
+    public void clean() {
+        if (this.getLevel() != null) {
+            long oldestGameTime = this.getLevel().getGameTime() - 10;
+            this.railShapes.cellSet()
+                    .removeIf(cell -> cell.getColumnKey() < oldestGameTime);
+        }
     }
 }
