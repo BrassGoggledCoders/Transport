@@ -52,7 +52,7 @@ public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements E
 
         if (blockSignal > 0 != pState.getValue(DIVERGE)) {
             boolean wait = pLevel.getBlockEntity(pPos) instanceof SwitchRailBlockEntity blockEntity &&
-                    blockEntity.getLastHitGameTime() + 5 > pLevel.getGameTime();
+                    blockEntity.getLastHitGameTime() + SwitchRailBlockEntity.CACHED_TIME > pLevel.getGameTime();
 
             if (wait) {
                 pLevel.scheduleTick(pPos, this, 5);

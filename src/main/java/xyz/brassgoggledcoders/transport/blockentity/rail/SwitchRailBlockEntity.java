@@ -15,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class SwitchRailBlockEntity extends BlockEntity {
+    public static final int CACHED_TIME = 10;
+
     private final Table<UUID, Long, RailShape> railShapes;
 
     public SwitchRailBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
@@ -56,7 +58,7 @@ public class SwitchRailBlockEntity extends BlockEntity {
 
     public void clean() {
         if (this.getLevel() != null) {
-            long oldestGameTime = this.getLevel().getGameTime() - 10;
+            long oldestGameTime = this.getLevel().getGameTime() - CACHED_TIME;
             this.railShapes.cellSet()
                     .removeIf(cell -> cell.getColumnKey() < oldestGameTime);
         }
