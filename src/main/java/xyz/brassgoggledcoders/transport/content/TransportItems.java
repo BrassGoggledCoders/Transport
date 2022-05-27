@@ -3,10 +3,12 @@ package xyz.brassgoggledcoders.transport.content;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.Tags;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.item.PatternedRailLayerItem;
 import xyz.brassgoggledcoders.transport.item.ShellMinecartItem;
 import xyz.brassgoggledcoders.transport.model.patternedraillayer.PatternedRailLayerCustomLoaderBuilder;
+import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipeBuilder;
 import xyz.brassgoggledcoders.transport.recipe.shellitem.ShellItemRecipeBuilder;
 
 @SuppressWarnings("unused")
@@ -32,6 +34,11 @@ public class TransportItems {
                     .parent(provider.getExistingFile(provider.mcLoc("item/generated")))
                     .customLoader(PatternedRailLayerCustomLoaderBuilder::new)
                     .withLayer(provider.mcLoc("block/smooth_stone"))
+            )
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(Items.SMOOTH_STONE_SLAB))
+                    .withSecondaryInput(Ingredient.of(Tags.Items.CHESTS))
+                    .save(provider, context.getId())
             )
             .register();
 

@@ -1,0 +1,12 @@
+{
+  "type": "transport:rail_worker_bench",
+  "input": {
+    "item": "minecraft:smooth_stone_slab"
+  },
+  "output": {
+    "item": "transport:patterned_rail_layer"
+  },
+  "secondaryInput": {
+    "tag": "forge:chests"
+  }
+}
