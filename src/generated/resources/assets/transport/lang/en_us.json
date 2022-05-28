@@ -8,6 +8,7 @@
   "block.transport.one_way_booster_rail": "One Way Booster Rail",
   "block.transport.rail_worker_bench": "Rail Worker Bench",
   "block.transport.switch_rail": "Switch Rail",
+  "block.transport.wye_switch_rail": "Wye Switch Rail",
   "entity.transport.shell_minecart": "Shell Minecart",
   "entity.transport.shell_minecart.with": "Minecart with %s",
   "item.transport.patterned_rail_layer": "Patterned Rail Layer",

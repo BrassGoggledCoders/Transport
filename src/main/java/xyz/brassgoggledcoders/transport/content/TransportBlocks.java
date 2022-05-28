@@ -23,10 +23,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.jobsite.RailWorkerBenchBlock;
-import xyz.brassgoggledcoders.transport.block.rail.CopperRail;
-import xyz.brassgoggledcoders.transport.block.rail.DumpRailBlock;
-import xyz.brassgoggledcoders.transport.block.rail.OneWayBoosterRailBlock;
-import xyz.brassgoggledcoders.transport.block.rail.SwitchRailBlock;
+import xyz.brassgoggledcoders.transport.block.rail.*;
 import xyz.brassgoggledcoders.transport.block.storage.CapabilityStorageBlock;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.rail.CachedRailShapeBlockEntity;
@@ -149,9 +146,24 @@ public class TransportBlocks {
             .build()
             .register();
 
+    public static final BlockEntry<WyeSwitchRailBlock> WYE_SWITCH_RAIL = Transport.getRegistrate()
+            .object("wye_switch_rail")
+            .block(WyeSwitchRailBlock::new)
+            .transform(TransportBlocks::defaultRail)
+            .blockstate(BlockModelHelper::wyeSwitchRail)
+            .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_IRON)
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
+                    .save(provider)
+            )
+            .build()
+            .register();
+
     public static final RegistryEntry<BlockEntityType<CachedRailShapeBlockEntity>> CACHED_RAIL_SHAPE_BLOCK_ENTITY = Transport.getRegistrate()
+            .object("cached_rail_shape")
             .blockEntity(CachedRailShapeBlockEntity::new)
-            .validBlock(SWITCH_RAIL)
+            .validBlocks(SWITCH_RAIL, WYE_SWITCH_RAIL)
             .register();
 
     public static final BlockEntry<CapabilityStorageBlock<FluidStorageBlockEntity>> FLUID_STORAGE = Transport.getRegistrate()

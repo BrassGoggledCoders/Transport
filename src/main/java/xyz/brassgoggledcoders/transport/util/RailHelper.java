@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.RailBlock;
 import net.minecraft.world.level.block.SupportType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
+import xyz.brassgoggledcoders.transport.block.rail.TransportBlockStateProperties;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

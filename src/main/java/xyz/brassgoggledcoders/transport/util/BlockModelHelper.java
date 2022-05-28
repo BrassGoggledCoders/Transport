@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import xyz.brassgoggledcoders.transport.block.rail.SwitchRailBlock;
+import xyz.brassgoggledcoders.transport.block.rail.WyeSwitchRailBlock;
 
 public class BlockModelHelper {
     public static void regularRail(DataGenContext<Block, ? extends BaseRailBlock> context, RegistrateBlockstateProvider provider) {
@@ -248,5 +249,31 @@ public class BlockModelHelper {
                             .rotationY(setup.getSecond())
                             .build();
                 });
+    }
+
+    public static void wyeSwitchRail(DataGenContext<Block, ? extends WyeSwitchRailBlock> context, RegistrateBlockstateProvider provider) {
+        ModelFile straight = provider.models()
+                .getBuilder("block/" + context.getName())
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/rail_flat"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName()));
+
+        ModelFile diverge = provider.models()
+                .getBuilder("block/" + context.getName() + "_diverge")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/rail_flat"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_diverge"));
+
+        provider.getVariantBuilder(context.get())
+                .forAllStates(state -> ConfiguredModel.builder()
+                        .modelFile(state.getValue(WyeSwitchRailBlock.DIVERGE) ? diverge : straight)
+                        .rotationY(switch (state.getValue(WyeSwitchRailBlock.SHAPE)) {
+                            case NORTH_SOUTH -> state.getValue(WyeSwitchRailBlock.INVERTED) ? 180 : 0;
+                            case EAST_WEST -> state.getValue(WyeSwitchRailBlock.INVERTED) ? 90 : 270;
+                            default -> 0;
+                        })
+                        .build());
     }
 }

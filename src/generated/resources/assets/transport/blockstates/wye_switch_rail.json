@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "diverge=false,inverted=false,shape=north_south,waterlogged=false": {
+      "model": "transport:block/wye_switch_rail"
+    },
+    "diverge=true,inverted=false,shape=north_south,waterlogged=false": {
+      "model": "transport:block/wye_switch_rail_diverge"
+    },
+    "diverge=false,inverted=true,shape=north_south,waterlogged=false": {
+      "model": "transport:block/wye_switch_rail",
+      "y": 180
+    },
+    "diverge=true,inverted=true,shape=north_south,waterlogged=false": {
+      "model": "transport:block/wye_switch_rail_diverge",
+      "y": 180
+    },
+    "diverge=false,inverted=false,shape=east_west,waterlogged=false": {
+      "model": "transport:block/wye_switch_rail",
+      "y": 270
+    },
+    "diverge=true,inverted=false,shape=east_west,waterlogged=false": {
+      "model": "transport:block/wye_switch_rail_diverge",
+      "y": 270
+    },
+    "diverge=false,inverted=true,shape=east_west,waterlogged=false": {
+      "model": "transport:block/wye_switch_rail",
+      "y": 90
+    },
+    "diverge=true,inverted=true,shape=east_west,waterlogged=false": {
+      "model": "transport:block/wye_switch_rail_diverge",
+      "y": 90
+    },
+    "diverge=false,inverted=false,shape=north_south,waterlogged=true": {
+      "model": "transport:block/wye_switch_rail"
+    },
+    "diverge=true,inverted=false,shape=north_south,waterlogged=true": {
+      "model": "transport:block/wye_switch_rail_diverge"
+    },
+    "diverge=false,inverted=true,shape=north_south,waterlogged=true": {
+      "model": "transport:block/wye_switch_rail",
+      "y": 180
+    },
+    "diverge=true,inverted=true,shape=north_south,waterlogged=true": {
+      "model": "transport:block/wye_switch_rail_diverge",
+      "y": 180
+    },
+    "diverge=false,inverted=false,shape=east_west,waterlogged=true": {
+      "model": "transport:block/wye_switch_rail",
+      "y": 270
+    },
+    "diverge=true,inverted=false,shape=east_west,waterlogged=true": {
+      "model": "transport:block/wye_switch_rail_diverge",
+      "y": 270
+    },
+    "diverge=false,inverted=true,shape=east_west,waterlogged=true": {
+      "model": "transport:block/wye_switch_rail",
+      "y": 90
+    },
+    "diverge=true,inverted=true,shape=east_west,waterlogged=true": {
+      "model": "transport:block/wye_switch_rail_diverge",
+      "y": 90
+    }
+  }
+}
