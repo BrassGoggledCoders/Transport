@@ -270,8 +270,8 @@ public class BlockModelHelper {
                 .forAllStates(state -> ConfiguredModel.builder()
                         .modelFile(state.getValue(WyeSwitchRailBlock.DIVERGE) ? diverge : straight)
                         .rotationY(switch (state.getValue(WyeSwitchRailBlock.SHAPE)) {
-                            case NORTH_SOUTH -> state.getValue(WyeSwitchRailBlock.INVERTED) ? 180 : 0;
-                            case EAST_WEST -> state.getValue(WyeSwitchRailBlock.INVERTED) ? 90 : 270;
+                            case NORTH_SOUTH -> state.getValue(WyeSwitchRailBlock.INVERTED) ? 270 : 90;
+                            case EAST_WEST -> state.getValue(WyeSwitchRailBlock.INVERTED) ? 180 : 0;
                             default -> 0;
                         })
                         .build());

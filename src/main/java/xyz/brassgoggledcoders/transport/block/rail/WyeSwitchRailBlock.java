@@ -48,9 +48,10 @@ public class WyeSwitchRailBlock extends AbstractSwitchRailBlock {
         BlockState blockState = super.getStateForPlacement(context);
         if (blockState != null) {
             Direction horizontalDirection = context.getHorizontalDirection();
+            blockState = blockState.cycle(SHAPE);
             blockState = blockState.setValue(INVERTED, switch (blockState.getValue(SHAPE)) {
-                case NORTH_SOUTH -> horizontalDirection == Direction.SOUTH;
-                case EAST_WEST -> horizontalDirection == Direction.EAST;
+                case EAST_WEST -> horizontalDirection == Direction.SOUTH;
+                case NORTH_SOUTH -> horizontalDirection == Direction.WEST;
                 default -> false;
             });
         }
@@ -59,7 +60,7 @@ public class WyeSwitchRailBlock extends AbstractSwitchRailBlock {
 
     @Override
     protected SwitchConfiguration getSwitchConfiguration(BlockState blockState) {
-        if (blockState.getValue(SHAPE) == RailShape.NORTH_SOUTH) {
+        if (blockState.getValue(SHAPE) != RailShape.NORTH_SOUTH) {
             return !blockState.getValue(INVERTED) ? SwitchConfiguration.NORTH_EAST_DIVERGE : SwitchConfiguration.SOUTH_WEST_DIVERGE;
         } else {
             return !blockState.getValue(INVERTED) ? SwitchConfiguration.WEST_NORTH_DIVERGE : SwitchConfiguration.EAST_SOUTH_DIVERGE;
