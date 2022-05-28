@@ -14,15 +14,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.transport.api.block.IEnhancedRail;
 import xyz.brassgoggledcoders.transport.blockentity.rail.CachedRailShapeBlockEntity;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.util.DirectionHelper;
+import xyz.brassgoggledcoders.transport.util.EnhancedRailState;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
-public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements EntityBlock {
+public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements EntityBlock, IEnhancedRail {
     public static final BooleanProperty DIVERGE = BooleanProperty.create("diverge");
 
     protected AbstractSwitchRailBlock(boolean disableCorner, Properties properties) {
@@ -133,4 +135,31 @@ public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements E
     protected abstract Direction getMotorDirection(SwitchConfiguration switchConfiguration);
 
 
+    @Override
+    @NotNull
+    @ParametersAreNonnullByDefault
+    protected BlockState updateDir(Level pLevel, BlockPos pPos, BlockState pState, boolean pPlacing) {
+        if (pLevel.isClientSide) {
+            return pState;
+        } else {
+            RailShape railshape = pState.getValue(this.getShapeProperty());
+            return new EnhancedRailState(pLevel, pPos, pState)
+                    .place(pLevel.hasNeighborSignal(pPos), pPlacing, railshape)
+                    .getState();
+        }
+    }
+
+    @Override
+    public RailShape[] getCurrentRailShapes(BlockState blockState) {
+        SwitchConfiguration switchConfiguration = this.getSwitchConfiguration(blockState);
+        return new RailShape[] {
+                this.getDivergeShape(switchConfiguration),
+                this.getStraightShape(switchConfiguration)
+        };
+    }
+
+    @Override
+    public int getMaxConnections() {
+        return 3;
+    }
 }
