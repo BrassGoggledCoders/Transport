@@ -3,7 +3,6 @@ package xyz.brassgoggledcoders.transport.blockentity.rail;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -14,12 +13,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class SwitchRailBlockEntity extends BlockEntity {
+public class CachedRailShapeBlockEntity extends BlockEntity {
     public static final int CACHED_TIME = 10;
 
     private final Table<UUID, Long, RailShape> railShapes;
 
-    public SwitchRailBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
+    public CachedRailShapeBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
         super(pType, pWorldPosition, pBlockState);
         this.railShapes = HashBasedTable.create();
     }

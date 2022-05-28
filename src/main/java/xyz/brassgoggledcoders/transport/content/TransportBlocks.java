@@ -29,7 +29,7 @@ import xyz.brassgoggledcoders.transport.block.rail.OneWayBoosterRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.SwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.storage.CapabilityStorageBlock;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
-import xyz.brassgoggledcoders.transport.blockentity.rail.SwitchRailBlockEntity;
+import xyz.brassgoggledcoders.transport.blockentity.rail.CachedRailShapeBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.EnergyStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.FluidStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipeBuilder;
@@ -149,8 +149,8 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final RegistryEntry<BlockEntityType<SwitchRailBlockEntity>> SWITCH_RAIL_BLOCK_ENTITY = Transport.getRegistrate()
-            .blockEntity(SwitchRailBlockEntity::new)
+    public static final RegistryEntry<BlockEntityType<CachedRailShapeBlockEntity>> CACHED_RAIL_SHAPE_BLOCK_ENTITY = Transport.getRegistrate()
+            .blockEntity(CachedRailShapeBlockEntity::new)
             .validBlock(SWITCH_RAIL)
             .register();
 
