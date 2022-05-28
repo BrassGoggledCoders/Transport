@@ -63,7 +63,7 @@ public class WyeSwitchRailBlock extends AbstractSwitchRailBlock {
         if (blockState.getValue(SHAPE) != RailShape.NORTH_SOUTH) {
             return !blockState.getValue(INVERTED) ? SwitchConfiguration.NORTH_EAST_DIVERGE : SwitchConfiguration.SOUTH_WEST_DIVERGE;
         } else {
-            return !blockState.getValue(INVERTED) ? SwitchConfiguration.WEST_NORTH_DIVERGE : SwitchConfiguration.EAST_SOUTH_DIVERGE;
+            return blockState.getValue(INVERTED) ? SwitchConfiguration.WEST_NORTH_DIVERGE : SwitchConfiguration.EAST_SOUTH_DIVERGE;
         }
     }
 
