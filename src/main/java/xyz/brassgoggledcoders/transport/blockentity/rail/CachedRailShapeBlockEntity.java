@@ -43,10 +43,12 @@ public class CachedRailShapeBlockEntity extends BlockEntity {
     }
 
     public RailShape getRailShapeFor(AbstractMinecart minecartEntity) {
+        long oldestGameTime = minecartEntity.getLevel().getGameTime() - CACHED_TIME;
         return this.railShapes.row(minecartEntity.getUUID())
                 .entrySet()
                 .stream()
                 .max(Map.Entry.comparingByKey())
+                .filter(entry -> entry.getKey() > oldestGameTime)
                 .map(Map.Entry::getValue)
                 .orElse(null);
     }
