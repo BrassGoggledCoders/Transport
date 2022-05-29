@@ -66,29 +66,43 @@ public class BlockModelHelper {
     }
 
     public static void straightPoweredRailBlockState(DataGenContext<Block, ? extends BaseRailBlock> context, RegistrateBlockstateProvider provider) {
+        straightPoweredRailBlockState(
+                context,
+                provider,
+                provider.modLoc("block/rail/" + context.getName()),
+                provider.modLoc("block/rail/" + context.getName() + "_powered")
+        );
+    }
+
+    public static void straightPoweredRailBlockState(
+            DataGenContext<Block, ? extends BaseRailBlock> context,
+            RegistrateBlockstateProvider provider,
+            ResourceLocation texture,
+            ResourceLocation texturePowered
+    ) {
         ModelFile flatRailUnpowered = provider.models().getBuilder("block/" + context.getName() + "_flat")
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
-                .texture("rail", provider.modLoc("block/rail/" + context.getName()));
+                .texture("rail", texture);
 
         ModelFile flatRailPowered = provider.models().getBuilder("block/" + context.getName() + "_flat_powered")
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
-                .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_powered"));
+                .texture("rail", texturePowered);
 
         ModelFile raisedRailUnpowered = provider.models().getBuilder("block/" + context.getName() + "_raised")
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/template_rail_raised_ne"))
                 )
-                .texture("rail", provider.modLoc("block/rail/" + context.getName()));
+                .texture("rail", texture);
 
         ModelFile raisedRailPowered = provider.models().getBuilder("block/" + context.getName() + "_raised_powered")
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/template_rail_raised_ne"))
                 )
-                .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_powered"));
+                .texture("rail", texturePowered);
 
         provider.getVariantBuilder(context.get())
                 .forAllStatesExcept(blockState -> {

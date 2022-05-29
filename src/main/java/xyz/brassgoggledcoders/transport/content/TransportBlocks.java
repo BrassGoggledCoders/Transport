@@ -210,6 +210,27 @@ public class TransportBlocks {
             .build()
             .register();
 
+    public static final BlockEntry<InvertedPoweredRailBlock> INVERTED_POWERED_RAIL = Transport.getRegistrate()
+            .object("inverted_powered_rail")
+            .block(InvertedPoweredRailBlock::new)
+            .transform(TransportBlocks::defaultRail)
+            .blockstate((context, provider) -> BlockModelHelper.straightPoweredRailBlockState(
+                    context,
+                    provider,
+                    provider.mcLoc("block/powered_rail"),
+                    provider.mcLoc("block/powered_rail_on")
+            ))
+            .item()
+            .model((context, provider) -> provider.generated(context, provider.mcLoc("block/powered_rail_on")))
+            .tag(ItemTags.RAILS)
+            .tag(TransportItemTags.RAILS_GOLD)
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(TransportItemTags.RAILS_GOLD))
+                    .save(provider)
+            )
+            .build()
+            .register();
+
     public static final BlockEntry<CapabilityStorageBlock<FluidStorageBlockEntity>> FLUID_STORAGE = Transport.getRegistrate()
             .object("fluid_storage")
             .block(properties -> new CapabilityStorageBlock<>(properties, FluidStorageBlockEntity::new))
