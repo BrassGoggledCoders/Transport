@@ -1,11 +1,14 @@
 package xyz.brassgoggledcoders.transport.content;
 
+import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.item.PatternedRailLayerItem;
+import xyz.brassgoggledcoders.transport.item.RailBreakerItem;
 import xyz.brassgoggledcoders.transport.item.ShellMinecartItem;
 import xyz.brassgoggledcoders.transport.model.patternedraillayer.PatternedRailLayerCustomLoaderBuilder;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipeBuilder;
@@ -40,6 +43,19 @@ public class TransportItems {
                     .withSecondaryInput(Ingredient.of(Tags.Items.CHESTS))
                     .save(provider, context.getId())
             )
+            .register();
+
+    public static ItemEntry<RailBreakerItem> RAIL_BREAKER = Transport.getRegistrate()
+            .object("rail_breaker")
+            .item(RailBreakerItem::new)
+            .recipe((context, recipeProvider) -> ShapedRecipeBuilder.shaped(context.get())
+                    .pattern(" RI")
+                    .pattern("RIR")
+                    .pattern("IR ")
+                    .define('R', Tags.Items.DYES_RED)
+                    .define('I', Tags.Items.INGOTS_IRON)
+                    .unlockedBy("has_item", RegistrateRecipeProvider.has(Tags.Items.INGOTS_IRON))
+                    .save(recipeProvider))
             .register();
 
     public static void setup() {
