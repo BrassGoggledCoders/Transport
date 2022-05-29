@@ -185,9 +185,9 @@ public class TransportBlocks {
             .validBlocks(SWITCH_RAIL, WYE_SWITCH_RAIL)
             .register();
 
-    public static final BlockEntry<BumperRailBlock> BUMPER_RAIL = Transport.getRegistrate()
-            .object("bumper_rail")
-            .block(BumperRailBlock::new)
+    public static final BlockEntry<BufferRailBlock> BUMPER_RAIL = Transport.getRegistrate()
+            .object("buffer_rail")
+            .block(BufferRailBlock::new)
             .initialProperties(Material.DECORATION)
             .properties(properties -> properties.noOcclusion()
                     .strength(2.1F)
@@ -198,7 +198,7 @@ public class TransportBlocks {
             .blockstate((context, provider) -> BlockModelHelper.straightInvertedFlatRailBlockState(
                     context,
                     provider,
-                    provider.modLoc("block/bumper_rail")
+                    provider.modLoc("block/buffer_rail")
             ))
             .item()
             .tag(ItemTags.RAILS)

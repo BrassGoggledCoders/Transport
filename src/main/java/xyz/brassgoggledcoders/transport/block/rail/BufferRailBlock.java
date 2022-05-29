@@ -15,11 +15,11 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @SuppressWarnings("deprecation")
-public class BumperRailBlock extends BaseRailBlock {
+public class BufferRailBlock extends BaseRailBlock {
     public static final BooleanProperty INVERTED = BlockStateProperties.INVERTED;
     public static final EnumProperty<RailShape> SHAPE = TransportBlockStateProperties.FLAT_STRAIGHT_RAIL_SHAPE;
 
-    public BumperRailBlock(Properties properties) {
+    public BufferRailBlock(Properties properties) {
         super(true, properties);
     }
 

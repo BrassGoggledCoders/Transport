@@ -4,6 +4,6 @@
     "tag": "transport:rails/iron"
   },
   "output": {
-    "item": "transport:bumper_rail"
+    "item": "transport:buffer_rail"
   }
 }

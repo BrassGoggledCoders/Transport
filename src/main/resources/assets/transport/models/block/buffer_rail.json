@@ -6,8 +6,8 @@
     64
   ],
   "textures": {
-    "0": "transport:block/rail/bumper_rail",
-    "particle": "transport:block/rail/bumper_rail"
+    "0": "transport:block/rail/buffer_rail",
+    "particle": "transport:block/rail/buffer_rail"
   },
   "elements": [
     {

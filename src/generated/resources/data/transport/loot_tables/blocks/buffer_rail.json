@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "transport:bumper_rail"
+          "name": "transport:buffer_rail"
         }
       ],
       "conditions": [
