@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.util;
 
+import com.mojang.datafixers.util.Pair;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import net.minecraft.world.level.block.BaseRailBlock;
@@ -8,6 +9,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
+import xyz.brassgoggledcoders.transport.block.rail.SwitchRailBlock;
+import xyz.brassgoggledcoders.transport.block.rail.WyeSwitchRailBlock;
 
 public class BlockModelHelper {
     public static void regularRail(DataGenContext<Block, ? extends BaseRailBlock> context, RegistrateBlockstateProvider provider) {
@@ -180,5 +183,97 @@ public class BlockModelHelper {
                         provider.modLoc("block/storage/" + context.getName() + "_end")
                 )
         );
+    }
+
+    public static void switchRail(DataGenContext<Block, ? extends SwitchRailBlock> context, RegistrateBlockstateProvider provider) {
+        ModelFile straightRight = provider.models()
+                .getBuilder("block/" + context.getName() + "_straight_right")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/rail_flat"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_straight_right"));
+
+        ModelFile divergeRight = provider.models()
+                .getBuilder("block/" + context.getName() + "_diverge_right")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/rail_flat"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_diverge_right"));
+
+        ModelFile straightLeft = provider.models()
+                .getBuilder("block/" + context.getName() + "_straight_left")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/rail_flat"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_straight_left"));
+
+        ModelFile divergeLeft = provider.models()
+                .getBuilder("block/" + context.getName() + "_diverge_left")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/rail_flat"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_diverge_left"));
+
+        provider.getVariantBuilder(context.get())
+                .forAllStates(state -> {
+                    boolean diverge = state.getValue(SwitchRailBlock.DIVERGE);
+                    Pair<Boolean, Integer> setup;
+
+                    if (state.getValue(SwitchRailBlock.STRAIGHT_SHAPE) == RailShape.NORTH_SOUTH) {
+                        setup = switch (state.getValue(SwitchRailBlock.DIVERGE_SHAPE)) {
+                            case SOUTH_WEST -> Pair.of(true, 0);
+                            case NORTH_WEST -> Pair.of(false, 180);
+                            case NORTH_EAST -> Pair.of(true, 180);
+                            default -> Pair.of(false, 0);
+                        };
+                    } else {
+                        setup = switch (state.getValue(SwitchRailBlock.DIVERGE_SHAPE)) {
+                            case SOUTH_WEST -> Pair.of(false, 90);
+                            case SOUTH_EAST -> Pair.of(true, 270);
+                            case NORTH_WEST -> Pair.of(true, 90);
+                            case NORTH_EAST -> Pair.of(false, 270);
+                            default -> Pair.of(false, 0);
+                        };
+                    }
+
+                    ModelFile modelFile;
+
+                    if (diverge) {
+                        modelFile = setup.getFirst() ? divergeLeft : divergeRight;
+                    } else {
+                        modelFile = setup.getFirst() ? straightLeft : straightRight;
+                    }
+
+                    return ConfiguredModel.builder()
+                            .modelFile(modelFile)
+                            .rotationY(setup.getSecond())
+                            .build();
+                });
+    }
+
+    public static void wyeSwitchRail(DataGenContext<Block, ? extends WyeSwitchRailBlock> context, RegistrateBlockstateProvider provider) {
+        ModelFile straight = provider.models()
+                .getBuilder("block/" + context.getName())
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/rail_flat"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName()));
+
+        ModelFile diverge = provider.models()
+                .getBuilder("block/" + context.getName() + "_diverge")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/rail_flat"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_diverge"));
+
+        provider.getVariantBuilder(context.get())
+                .forAllStates(state -> ConfiguredModel.builder()
+                        .modelFile(state.getValue(WyeSwitchRailBlock.DIVERGE) ? diverge : straight)
+                        .rotationY(switch (state.getValue(WyeSwitchRailBlock.SHAPE)) {
+                            case NORTH_SOUTH -> state.getValue(WyeSwitchRailBlock.INVERTED) ? 270 : 90;
+                            case EAST_WEST -> state.getValue(WyeSwitchRailBlock.INVERTED) ? 180 : 0;
+                            default -> 0;
+                        })
+                        .build());
     }
 }
