@@ -14,6 +14,7 @@
   "entity.transport.shell_minecart": "\u0287\u0279\u0250\u0254\u01DDu\u0131W \u05DF\u05DF\u01DD\u0265S",
   "entity.transport.shell_minecart.with": "%s \u0265\u0287\u0131\u028D \u0287\u0279\u0250\u0254\u01DDu\u0131W",
   "item.transport.patterned_rail_layer": "\u0279\u01DD\u028E\u0250\uA780 \u05DF\u0131\u0250\u1D1A p\u01DDu\u0279\u01DD\u0287\u0287\u0250\u0500",
+  "item.transport.rail_breaker": "\u0279\u01DD\u029E\u0250\u01DD\u0279\u15FA \u05DF\u0131\u0250\u1D1A",
   "item.transport.shell_minecart": "\u0287\u0279\u0250\u0254\u01DDu\u0131W \u05DF\u05DF\u01DD\u0265S",
   "itemGroup.transport": "\u0287\u0279odsu\u0250\u0279\u27D8",
   "text.transport.shell_content": "%s :\u0287u\u01DD\u0287uo\u0186 \u05DF\u05DF\u01DD\u0265S"
