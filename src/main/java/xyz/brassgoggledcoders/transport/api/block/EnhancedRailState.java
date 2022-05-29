@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.util;
+package xyz.brassgoggledcoders.transport.api.block;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
@@ -7,7 +7,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
-import xyz.brassgoggledcoders.transport.api.block.IEnhancedRail;
 
 import javax.annotation.Nullable;
 import java.util.List;

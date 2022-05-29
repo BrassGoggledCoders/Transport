@@ -18,7 +18,7 @@ import xyz.brassgoggledcoders.transport.api.block.IEnhancedRail;
 import xyz.brassgoggledcoders.transport.blockentity.rail.CachedRailShapeBlockEntity;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.util.DirectionHelper;
-import xyz.brassgoggledcoders.transport.util.EnhancedRailState;
+import xyz.brassgoggledcoders.transport.api.block.EnhancedRailState;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
