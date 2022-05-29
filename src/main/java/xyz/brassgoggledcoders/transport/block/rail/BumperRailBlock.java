@@ -6,11 +6,15 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.*;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@SuppressWarnings("deprecation")
 public class BumperRailBlock extends BaseRailBlock {
     public static final BooleanProperty INVERTED = BlockStateProperties.INVERTED;
     public static final EnumProperty<RailShape> SHAPE = TransportBlockStateProperties.FLAT_STRAIGHT_RAIL_SHAPE;
@@ -47,5 +51,29 @@ public class BumperRailBlock extends BaseRailBlock {
     @NotNull
     public Property<RailShape> getShapeProperty() {
         return SHAPE;
+    }
+
+    @Override
+    @NotNull
+    @ParametersAreNonnullByDefault
+    public BlockState rotate(BlockState state, Rotation direction) {
+        return switch (direction) {
+            case CLOCKWISE_90 -> {
+                state = state.cycle(SHAPE);
+                if (state.getValue(SHAPE) == RailShape.NORTH_SOUTH) {
+                    state = state.cycle(INVERTED);
+                }
+                yield state;
+            }
+            case CLOCKWISE_180 -> state.cycle(INVERTED);
+            case COUNTERCLOCKWISE_90 -> {
+                state = state.cycle(SHAPE);
+                if (state.getValue(SHAPE) == RailShape.EAST_WEST) {
+                    state = state.cycle(INVERTED);
+                }
+                yield state;
+            }
+            case NONE -> state;
+        };
     }
 }

@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
+@SuppressWarnings("deprecation")
 public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements EntityBlock, IEnhancedRail {
     public static final BooleanProperty DIVERGE = BooleanProperty.create("diverge");
 
@@ -152,7 +153,7 @@ public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements E
     @Override
     public RailShape[] getCurrentRailShapes(BlockState blockState) {
         SwitchConfiguration switchConfiguration = this.getSwitchConfiguration(blockState);
-        return new RailShape[] {
+        return new RailShape[]{
                 this.getDivergeShape(switchConfiguration),
                 this.getStraightShape(switchConfiguration)
         };
