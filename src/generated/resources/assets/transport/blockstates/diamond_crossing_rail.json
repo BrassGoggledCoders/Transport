@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "transport:block/diamond_crossing_rail"
+    }
+  }
+}

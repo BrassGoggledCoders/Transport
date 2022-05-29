@@ -160,6 +160,25 @@ public class TransportBlocks {
             .build()
             .register();
 
+    public static final BlockEntry<DiamondCrossingRailBlock> DIAMOND_CROSSING_RAIL = Transport.getRegistrate()
+            .object("diamond_crossing_rail")
+            .block(DiamondCrossingRailBlock::new)
+            .transform(TransportBlocks::defaultRail)
+            .blockstate((context, provider) -> provider.simpleBlock(
+                    context.get(),
+                    provider.models()
+                            .getBuilder("block/" + context.getName())
+                            .parent(provider.models()
+                                    .getExistingFile(provider.mcLoc("block/rail_flat"))
+                            )
+                            .texture("rail", provider.modLoc("block/rail/" + context.getName()))
+            ))
+            .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_IRON)
+            .build()
+            .register();
+
+
     public static final RegistryEntry<BlockEntityType<CachedRailShapeBlockEntity>> CACHED_RAIL_SHAPE_BLOCK_ENTITY = Transport.getRegistrate()
             .object("cached_rail_shape")
             .blockEntity(CachedRailShapeBlockEntity::new)

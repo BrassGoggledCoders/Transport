@@ -1,6 +1,7 @@
 {
   "block.transport.bumper_rail": "\u05DF\u0131\u0250\u1D1A \u0279\u01DDd\u026Fn\u15FA",
   "block.transport.copper_rail": "\u05DF\u0131\u0250\u1D1A \u0279\u01DDddo\u0186",
+  "block.transport.diamond_crossing_rail": "\u05DF\u0131\u0250\u1D1A bu\u0131sso\u0279\u0186 puo\u026F\u0250\u0131\u15E1",
   "block.transport.energy_dump_rail": "\u05DF\u0131\u0250\u1D1A d\u026Fn\u15E1 \u028Eb\u0279\u01DDu\u018E",
   "block.transport.energy_storage": "\u01DDb\u0250\u0279o\u0287S \u028Eb\u0279\u01DDu\u018E",
   "block.transport.fluid_dump_rail": "\u05DF\u0131\u0250\u1D1A d\u026Fn\u15E1 p\u0131n\u05DF\u2132",
