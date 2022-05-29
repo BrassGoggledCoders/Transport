@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/rail_flat",
+  "textures": {
+    "rail": "transport:block/rail/diamond_crossing_rail"
+  }
+}

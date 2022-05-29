@@ -1,6 +1,7 @@
 {
   "block.transport.bumper_rail": "Bumper Rail",
   "block.transport.copper_rail": "Copper Rail",
+  "block.transport.diamond_crossing_rail": "Diamond Crossing Rail",
   "block.transport.energy_dump_rail": "Energy Dump Rail",
   "block.transport.energy_storage": "Energy Storage",
   "block.transport.fluid_dump_rail": "Fluid Dump Rail",
