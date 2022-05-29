@@ -7,6 +7,7 @@
     "transport:copper_rail",
     "transport:one_way_booster_rail",
     "transport:switch_rail",
-    "transport:wye_switch_rail"
+    "transport:wye_switch_rail",
+    "transport:bumper_rail"
   ]
 }

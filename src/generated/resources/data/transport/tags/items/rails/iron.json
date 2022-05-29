@@ -8,6 +8,7 @@
     "transport:fluid_dump_rail",
     "transport:energy_dump_rail",
     "transport:switch_rail",
-    "transport:wye_switch_rail"
+    "transport:wye_switch_rail",
+    "transport:bumper_rail"
   ]
 }
