@@ -166,6 +166,31 @@ public class TransportBlocks {
             .validBlocks(SWITCH_RAIL, WYE_SWITCH_RAIL)
             .register();
 
+    public static final BlockEntry<BumperRailBlock> BUMPER_RAIL = Transport.getRegistrate()
+            .object("bumper_rail")
+            .block(BumperRailBlock::new)
+            .initialProperties(Material.DECORATION)
+            .properties(properties -> properties.noOcclusion()
+                    .strength(2.1F)
+                    .sound(SoundType.METAL)
+            )
+            .addLayer(() -> RenderType::cutout)
+            .tag(BlockTags.RAILS)
+            .blockstate((context, provider) -> BlockModelHelper.straightInvertedFlatRailBlockState(
+                    context,
+                    provider,
+                    provider.modLoc("block/bumper_rail")
+            ))
+            .item()
+            .tag(ItemTags.RAILS)
+            .tag(TransportItemTags.RAILS_IRON)
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
+                    .save(provider)
+            )
+            .build()
+            .register();
+
     public static final BlockEntry<CapabilityStorageBlock<FluidStorageBlockEntity>> FLUID_STORAGE = Transport.getRegistrate()
             .object("fluid_storage")
             .block(properties -> new CapabilityStorageBlock<>(properties, FluidStorageBlockEntity::new))

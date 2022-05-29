@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.util;
 import com.mojang.datafixers.util.Pair;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -10,6 +11,7 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import xyz.brassgoggledcoders.transport.block.rail.SwitchRailBlock;
+import xyz.brassgoggledcoders.transport.block.rail.TransportBlockStateProperties;
 import xyz.brassgoggledcoders.transport.block.rail.WyeSwitchRailBlock;
 
 public class BlockModelHelper {
@@ -172,6 +174,45 @@ public class BlockModelHelper {
                     });
 
                     return modelBuilder.build();
+                }, BlockStateProperties.WATERLOGGED);
+    }
+
+    public static void straightInvertedFlatRailBlockState(
+            DataGenContext<Block, ? extends BaseRailBlock> context,
+            RegistrateBlockstateProvider provider,
+            ResourceLocation existing
+    ) {
+
+        ModelFile flatRail;
+        if (existing == null) {
+            flatRail = provider.models()
+                    .getBuilder("block/" + context.getName())
+                    .parent(provider.models()
+                            .getExistingFile(provider.mcLoc("block/rail_flat"))
+                    )
+                    .texture("rail", provider.modLoc("block/rail/" + context.getName()));
+        } else {
+            flatRail = provider.models()
+                    .getExistingFile(existing);
+        }
+
+        provider.getVariantBuilder(context.get())
+                .forAllStatesExcept(blockState -> {
+                    RailShape railShape = blockState.getValue(TransportBlockStateProperties.FLAT_STRAIGHT_RAIL_SHAPE);
+                    boolean inverted = blockState.getValue(BlockStateProperties.INVERTED);
+
+                    int rotationY;
+
+                    if (railShape == RailShape.NORTH_SOUTH) {
+                        rotationY = inverted ? 0 : 180;
+                    } else {
+                        rotationY = inverted ? 90 : 270;
+                    }
+
+                    return ConfiguredModel.builder()
+                            .modelFile(flatRail)
+                            .rotationY(rotationY)
+                            .build();
                 }, BlockStateProperties.WATERLOGGED);
     }
 
