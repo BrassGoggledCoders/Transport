@@ -10,6 +10,7 @@
     "transport:switch_rail",
     "transport:wye_switch_rail",
     "transport:diamond_crossing_rail",
-    "transport:buffer_rail"
+    "transport:buffer_rail",
+    "transport:portal_rail"
   ]
 }

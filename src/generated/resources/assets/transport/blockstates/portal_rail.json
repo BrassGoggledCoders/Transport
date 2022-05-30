@@ -1,0 +1,136 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "shape": "north_south",
+        "portal": "none"
+      },
+      "apply": {
+        "model": "transport:block/portal_rail_flat"
+      }
+    },
+    {
+      "when": {
+        "shape": "north_south",
+        "portal": "x_axis|z_axis"
+      },
+      "apply": {
+        "model": "transport:block/portal_rail_flat_lit"
+      }
+    },
+    {
+      "when": {
+        "shape": "east_west",
+        "portal": "none"
+      },
+      "apply": {
+        "model": "transport:block/portal_rail_flat",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "shape": "east_west",
+        "portal": "x_axis|z_axis"
+      },
+      "apply": {
+        "model": "transport:block/portal_rail_flat_lit",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "shape": "ascending_north",
+        "portal": "none"
+      },
+      "apply": {
+        "model": "transport:block/portal_rail_raised"
+      }
+    },
+    {
+      "when": {
+        "shape": "ascending_north",
+        "portal": "x_axis|z_axis"
+      },
+      "apply": {
+        "model": "transport:block/rail/portal_rail_raised_lit"
+      }
+    },
+    {
+      "when": {
+        "shape": "ascending_east",
+        "portal": "none"
+      },
+      "apply": {
+        "model": "transport:block/portal_rail_raised",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "shape": "ascending_east",
+        "portal": "x_axis|z_axis"
+      },
+      "apply": {
+        "model": "transport:block/rail/portal_rail_raised_lit",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "shape": "ascending_south",
+        "portal": "none"
+      },
+      "apply": {
+        "model": "transport:block/portal_rail_raised",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "shape": "ascending_south",
+        "portal": "x_axis|z_axis"
+      },
+      "apply": {
+        "model": "transport:block/rail/portal_rail_raised_lit",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "shape": "ascending_west",
+        "portal": "none"
+      },
+      "apply": {
+        "model": "transport:block/portal_rail_raised",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "shape": "ascending_west",
+        "portal": "x_axis|z_axis"
+      },
+      "apply": {
+        "model": "transport:block/rail/portal_rail_raised_lit",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "portal": "x_axis"
+      },
+      "apply": {
+        "model": "minecraft:block/nether_portal_ns"
+      }
+    },
+    {
+      "when": {
+        "portal": "z_axis"
+      },
+      "apply": {
+        "model": "minecraft:block/nether_portal_ew"
+      }
+    }
+  ]
+}

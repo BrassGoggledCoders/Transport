@@ -10,6 +10,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
+import xyz.brassgoggledcoders.transport.block.rail.portal.PortalState;
+import xyz.brassgoggledcoders.transport.block.rail.portal.PortalRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.SwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.TransportBlockStateProperties;
 import xyz.brassgoggledcoders.transport.block.rail.WyeSwitchRailBlock;
@@ -330,5 +333,104 @@ public class BlockModelHelper {
                             default -> 0;
                         })
                         .build());
+    }
+
+    public static void portalRail(DataGenContext<Block, ? extends PortalRailBlock> context, RegistrateBlockstateProvider provider) {
+        ModelFile flatRail = provider.models().getBuilder("block/" + context.getName() + "_flat")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/rail_flat"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName()));
+
+        ModelFile flatLitRail = provider.models().getBuilder("block/" + context.getName() + "_flat_lit")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/rail_flat"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_lit"));
+
+        ModelFile raisedRail = provider.models().getBuilder("block/" + context.getName() + "_raised")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/template_rail_raised_ne"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName()));
+
+        ModelFile raisedLitRail = provider.models().getBuilder("block/rail/" + context.getName() + "_raised_lit")
+                .parent(provider.models()
+                        .getExistingFile(provider.mcLoc("block/template_rail_raised_ne"))
+                )
+                .texture("rail", provider.modLoc("block/rail/" + context.getName()));
+
+        MultiPartBlockStateBuilder builder = provider.getMultipartBuilder(context.get());
+
+        RailShape[] straightShapes = getStraightShapes();
+        for (int i = 0; i < straightShapes.length; i++) {
+            RailShape railShape = straightShapes[i];
+            builder.part()
+                    .modelFile(flatRail)
+                    .rotationY(i * 90)
+                    .addModel()
+                    .condition(PortalRailBlock.SHAPE, railShape)
+                    .condition(PortalRailBlock.PORTAL_STATE, PortalState.NONE)
+                    .end()
+                    .part()
+                    .modelFile(flatLitRail)
+                    .rotationY(i * 90)
+                    .addModel()
+                    .condition(PortalRailBlock.SHAPE, railShape)
+                    .condition(PortalRailBlock.PORTAL_STATE, PortalState.X_AXIS, PortalState.Z_AXIS)
+                    .end();
+        }
+
+        RailShape[] ascending = getAscendingShapes();
+        for (int i = 0; i < ascending.length; i++) {
+            RailShape railShape = ascending[i];
+            builder = builder.part()
+                    .modelFile(raisedRail)
+                    .rotationY(i * 90)
+                    .addModel()
+                    .condition(PortalRailBlock.SHAPE, railShape)
+                    .condition(PortalRailBlock.PORTAL_STATE, PortalState.NONE)
+                    .end()
+                    .part()
+                    .modelFile(raisedLitRail)
+                    .rotationY(i * 90)
+                    .addModel()
+                    .condition(PortalRailBlock.SHAPE, railShape)
+                    .condition(PortalRailBlock.PORTAL_STATE, PortalState.X_AXIS, PortalState.Z_AXIS)
+                    .end();
+        }
+
+        ModelFile netherPortalNS = provider.models()
+                .getExistingFile(provider.mcLoc("block/nether_portal_ns"));
+
+        ModelFile netherPortalEW = provider.models()
+                .getExistingFile(provider.mcLoc("block/nether_portal_ew"));
+
+        builder.part()
+                .modelFile(netherPortalNS)
+                .addModel()
+                .condition(PortalRailBlock.PORTAL_STATE, PortalState.X_AXIS)
+                .end()
+                .part()
+                .modelFile(netherPortalEW)
+                .addModel()
+                .condition(PortalRailBlock.PORTAL_STATE, PortalState.Z_AXIS)
+                .end();
+    }
+
+    private static RailShape[] getStraightShapes() {
+        return new RailShape[]{
+                RailShape.NORTH_SOUTH,
+                RailShape.EAST_WEST
+        };
+    }
+
+    private static RailShape[] getAscendingShapes() {
+        return new RailShape[]{
+                RailShape.ASCENDING_NORTH,
+                RailShape.ASCENDING_EAST,
+                RailShape.ASCENDING_SOUTH,
+                RailShape.ASCENDING_WEST
+        };
     }
 }

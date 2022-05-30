@@ -7,6 +7,7 @@ import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Direction;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -14,9 +15,12 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.BaseRailBlock;
+import net.minecraft.world.level.block.NetherPortalBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -24,6 +28,8 @@ import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.jobsite.RailWorkerBenchBlock;
 import xyz.brassgoggledcoders.transport.block.rail.*;
+import xyz.brassgoggledcoders.transport.block.rail.portal.PortalRailBlock;
+import xyz.brassgoggledcoders.transport.block.rail.portal.PortalRailFillerBlock;
 import xyz.brassgoggledcoders.transport.block.storage.CapabilityStorageBlock;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.rail.CachedRailShapeBlockEntity;
@@ -229,6 +235,39 @@ public class TransportBlocks {
                     .save(provider)
             )
             .build()
+            .register();
+
+    public static final BlockEntry<PortalRailBlock> PORTAL_RAIL_BLOCK = Transport.getRegistrate()
+            .object("portal_rail")
+            .block(PortalRailBlock::new)
+            .transform(TransportBlocks::defaultRail)
+            .blockstate(BlockModelHelper::portalRail)
+            .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_IRON)
+            .build()
+            .register();
+
+    public static final BlockEntry<PortalRailFillerBlock> PORTAL_RAIL_FILLER = Transport.getRegistrate()
+            .object("portal_rail_filler")
+            .block(PortalRailFillerBlock::new)
+            .properties(BlockBehaviour.Properties::noDrops)
+            .blockstate((context, provider) -> provider.getVariantBuilder(context.get())
+                    .forAllStates(blockState -> {
+                        if (blockState.getValue(NetherPortalBlock.AXIS) == Direction.Axis.X) {
+                            return ConfiguredModel.builder()
+                                    .modelFile(provider.models()
+                                            .getExistingFile(provider.mcLoc("block/nether_portal_ns"))
+                                    )
+                                    .build();
+                        } else {
+                            return ConfiguredModel.builder()
+                                    .modelFile(provider.models()
+                                            .getExistingFile(provider.mcLoc("block/nether_portal_ew"))
+                                    )
+                                    .build();
+                        }
+                    })
+            )
             .register();
 
     public static final BlockEntry<CapabilityStorageBlock<FluidStorageBlockEntity>> FLUID_STORAGE = Transport.getRegistrate()
