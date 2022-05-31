@@ -1,20 +1,44 @@
 package xyz.brassgoggledcoders.transport.util;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.mojang.datafixers.util.Pair;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import xyz.brassgoggledcoders.transport.block.rail.SwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.TransportBlockStateProperties;
 import xyz.brassgoggledcoders.transport.block.rail.WyeSwitchRailBlock;
+import xyz.brassgoggledcoders.transport.block.rail.signal.OneWaySignalRailBlock;
+import xyz.brassgoggledcoders.transport.block.rail.signal.SignalState;
 
 public class BlockModelHelper {
+    public static void oneWaySignalRail(DataGenContext<Block, OneWaySignalRailBlock> context, RegistrateBlockstateProvider provider) {
+        RailShapeModelHelper<SignalState> railShapeModelHelper = new RailShapeModelHelper<>(
+                context.getName(),
+                OneWaySignalRailBlock.SHAPE,
+                OneWaySignalRailBlock.SIGNAL
+        );
+
+        provider.getVariantBuilder(context.get())
+                .forAllStatesExcept(state -> ConfiguredModel.builder()
+                                .modelFile(railShapeModelHelper.getModelFile(provider, state))
+                                .rotationY(railShapeModelHelper.getRotationY(state))
+                                .build(),
+                        BaseRailBlock.WATERLOGGED
+                );
+    }
+
     public static void regularRail(DataGenContext<Block, ? extends BaseRailBlock> context, RegistrateBlockstateProvider provider) {
         ModelFile flatRail = provider.models()
                 .getBuilder("block/" + context.getName() + "_flat")
@@ -330,5 +354,84 @@ public class BlockModelHelper {
                             default -> 0;
                         })
                         .build());
+    }
+
+    private static class RailShapeModelHelper<E extends Enum<E> & StringRepresentable> {
+        private final String name;
+        private final Property<RailShape> railShapeProperty;
+        private final EnumProperty<E> additionalProperty;
+        private final Table<RailShape, E, Pair<ModelFile, ModelFile>> modelFiles;
+
+        public RailShapeModelHelper(String name, Property<RailShape> railShapeProperty, EnumProperty<E> additionalProperty) {
+            this.name = name;
+            this.railShapeProperty = railShapeProperty;
+            this.additionalProperty = additionalProperty;
+            this.modelFiles = HashBasedTable.create();
+        }
+
+        public ModelFile getModelFile(RegistrateBlockstateProvider provider, BlockState blockState) {
+            RailShape railShape = blockState.getValue(railShapeProperty);
+            E additional = blockState.getValue(additionalProperty);
+            boolean hasInverted = blockState.hasProperty(BlockStateProperties.INVERTED);
+            boolean isInverted = hasInverted && blockState.getValue(BlockStateProperties.INVERTED);
+
+            Pair<ModelFile, ModelFile> modelFilePair = modelFiles.get(railShape, additional);
+
+            if (modelFilePair != null) {
+                return isInverted && modelFilePair.getFirst() != null ? modelFilePair.getFirst() : modelFilePair.getSecond();
+            } else {
+                Pair<ModelFile, String> notInvertedParent = switch (railShape) {
+                    case NORTH_SOUTH, EAST_WEST -> Pair.of(
+                            provider.models()
+                                    .getExistingFile(provider.mcLoc("block/rail_flat")),
+                            "");
+                    case ASCENDING_NORTH, ASCENDING_EAST, ASCENDING_SOUTH, ASCENDING_WEST -> Pair.of(
+                            provider.models()
+                                    .getExistingFile(provider.mcLoc("block/template_rail_raised_ne")),
+                            "_ascending"
+                    );
+                    default -> throw new IllegalStateException("Curves Aren't Handled");
+                };
+
+                ModelFile notInverted = provider.models()
+                        .getBuilder("block/rail/" + name + "_" + additional.getSerializedName() + notInvertedParent.getSecond())
+                        .parent(notInvertedParent.getFirst())
+                        .texture("rail", "block/rail/" + name + "_" + additional.getSerializedName());
+
+                ModelFile inverted = null;
+
+                if (isInverted && !RailHelper.isRailShapeStraight(railShape)) {
+                    ModelFile invertedParent = switch (railShape) {
+                        case ASCENDING_NORTH, ASCENDING_EAST, ASCENDING_SOUTH, ASCENDING_WEST -> provider.models()
+                                .getExistingFile(provider.modLoc("block/template_rail_raised_ne_inverted"));
+                        default -> throw new IllegalStateException("Curves Aren't Handled");
+                    };
+
+                    inverted = provider.models()
+                            .getBuilder("block/rail/" + name + "_" + additional.getSerializedName() + "_inverted")
+                            .parent(invertedParent)
+                            .texture("rail", "block/rail/" + name + "_" + additional.getSerializedName());
+                }
+
+                modelFiles.put(railShape, additional, Pair.of(inverted, notInverted));
+
+                return isInverted && inverted != null ? inverted : notInverted;
+            }
+        }
+
+        public int getRotationY(BlockState blockState) {
+            RailShape railShape = blockState.getValue(railShapeProperty);
+            boolean isInverted = blockState.hasProperty(BlockStateProperties.INVERTED) && blockState.getValue(BlockStateProperties.INVERTED);
+
+            return switch (railShape) {
+                case NORTH_SOUTH -> isInverted ? 180 : 0;
+                case EAST_WEST -> isInverted ? 270 : 90;
+                case ASCENDING_NORTH -> 0;
+                case ASCENDING_EAST -> 90;
+                case ASCENDING_SOUTH -> 180;
+                case ASCENDING_WEST -> 270;
+                default -> throw new IllegalStateException("Curves Aren't Handled");
+            };
+        }
     }
 }

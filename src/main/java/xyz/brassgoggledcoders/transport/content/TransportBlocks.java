@@ -24,6 +24,7 @@ import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.jobsite.RailWorkerBenchBlock;
 import xyz.brassgoggledcoders.transport.block.rail.*;
+import xyz.brassgoggledcoders.transport.block.rail.signal.OneWaySignalRailBlock;
 import xyz.brassgoggledcoders.transport.block.storage.CapabilityStorageBlock;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.rail.CachedRailShapeBlockEntity;
@@ -228,6 +229,18 @@ public class TransportBlocks {
                     .withInput(Ingredient.of(TransportItemTags.RAILS_GOLD))
                     .save(provider)
             )
+            .build()
+            .register();
+
+    public static final BlockEntry<OneWaySignalRailBlock> ONE_WAY_SIGNAL_RAIL = Transport.getRegistrate()
+            .object("one_way_signal_rail")
+            .block(OneWaySignalRailBlock::new)
+            .transform(TransportBlocks::defaultRail)
+            .blockstate(BlockModelHelper::oneWaySignalRail)
+            .item()
+            .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/" + context.getName() + "_proceed")))
+            .tag(ItemTags.RAILS)
+            .tag(TransportItemTags.RAILS_GOLD)
             .build()
             .register();
 

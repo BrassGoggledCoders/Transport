@@ -1,0 +1,139 @@
+{
+  "variants": {
+    "inverted=false,shape=north_south,signal=proceed": {
+      "model": "transport:block/rail/one_way_signal_rail_proceed"
+    },
+    "inverted=true,shape=north_south,signal=proceed": {
+      "model": "transport:block/rail/one_way_signal_rail_proceed",
+      "y": 180
+    },
+    "inverted=false,shape=east_west,signal=proceed": {
+      "model": "transport:block/rail/one_way_signal_rail_proceed",
+      "y": 90
+    },
+    "inverted=true,shape=east_west,signal=proceed": {
+      "model": "transport:block/rail/one_way_signal_rail_proceed",
+      "y": 270
+    },
+    "inverted=false,shape=ascending_east,signal=proceed": {
+      "model": "transport:block/rail/one_way_signal_rail_proceed_ascending",
+      "y": 90
+    },
+    "inverted=true,shape=ascending_east,signal=proceed": {
+      "model": "transport:block/rail/one_way_signal_rail_proceed_inverted",
+      "y": 90
+    },
+    "inverted=false,shape=ascending_west,signal=proceed": {
+      "model": "transport:block/rail/one_way_signal_rail_proceed_ascending",
+      "y": 270
+    },
+    "inverted=true,shape=ascending_west,signal=proceed": {
+      "model": "transport:block/rail/one_way_signal_rail_proceed_inverted",
+      "y": 270
+    },
+    "inverted=false,shape=ascending_north,signal=proceed": {
+      "model": "transport:block/rail/one_way_signal_rail_proceed_ascending"
+    },
+    "inverted=true,shape=ascending_north,signal=proceed": {
+      "model": "transport:block/rail/one_way_signal_rail_proceed_inverted"
+    },
+    "inverted=false,shape=ascending_south,signal=proceed": {
+      "model": "transport:block/rail/one_way_signal_rail_proceed_ascending",
+      "y": 180
+    },
+    "inverted=true,shape=ascending_south,signal=proceed": {
+      "model": "transport:block/rail/one_way_signal_rail_proceed_inverted",
+      "y": 180
+    },
+    "inverted=false,shape=north_south,signal=slow": {
+      "model": "transport:block/rail/one_way_signal_rail_slow"
+    },
+    "inverted=true,shape=north_south,signal=slow": {
+      "model": "transport:block/rail/one_way_signal_rail_slow",
+      "y": 180
+    },
+    "inverted=false,shape=east_west,signal=slow": {
+      "model": "transport:block/rail/one_way_signal_rail_slow",
+      "y": 90
+    },
+    "inverted=true,shape=east_west,signal=slow": {
+      "model": "transport:block/rail/one_way_signal_rail_slow",
+      "y": 270
+    },
+    "inverted=false,shape=ascending_east,signal=slow": {
+      "model": "transport:block/rail/one_way_signal_rail_slow_ascending",
+      "y": 90
+    },
+    "inverted=true,shape=ascending_east,signal=slow": {
+      "model": "transport:block/rail/one_way_signal_rail_slow_inverted",
+      "y": 90
+    },
+    "inverted=false,shape=ascending_west,signal=slow": {
+      "model": "transport:block/rail/one_way_signal_rail_slow_ascending",
+      "y": 270
+    },
+    "inverted=true,shape=ascending_west,signal=slow": {
+      "model": "transport:block/rail/one_way_signal_rail_slow_inverted",
+      "y": 270
+    },
+    "inverted=false,shape=ascending_north,signal=slow": {
+      "model": "transport:block/rail/one_way_signal_rail_slow_ascending"
+    },
+    "inverted=true,shape=ascending_north,signal=slow": {
+      "model": "transport:block/rail/one_way_signal_rail_slow_inverted"
+    },
+    "inverted=false,shape=ascending_south,signal=slow": {
+      "model": "transport:block/rail/one_way_signal_rail_slow_ascending",
+      "y": 180
+    },
+    "inverted=true,shape=ascending_south,signal=slow": {
+      "model": "transport:block/rail/one_way_signal_rail_slow_inverted",
+      "y": 180
+    },
+    "inverted=false,shape=north_south,signal=stop": {
+      "model": "transport:block/rail/one_way_signal_rail_stop"
+    },
+    "inverted=true,shape=north_south,signal=stop": {
+      "model": "transport:block/rail/one_way_signal_rail_stop",
+      "y": 180
+    },
+    "inverted=false,shape=east_west,signal=stop": {
+      "model": "transport:block/rail/one_way_signal_rail_stop",
+      "y": 90
+    },
+    "inverted=true,shape=east_west,signal=stop": {
+      "model": "transport:block/rail/one_way_signal_rail_stop",
+      "y": 270
+    },
+    "inverted=false,shape=ascending_east,signal=stop": {
+      "model": "transport:block/rail/one_way_signal_rail_stop_ascending",
+      "y": 90
+    },
+    "inverted=true,shape=ascending_east,signal=stop": {
+      "model": "transport:block/rail/one_way_signal_rail_stop_inverted",
+      "y": 90
+    },
+    "inverted=false,shape=ascending_west,signal=stop": {
+      "model": "transport:block/rail/one_way_signal_rail_stop_ascending",
+      "y": 270
+    },
+    "inverted=true,shape=ascending_west,signal=stop": {
+      "model": "transport:block/rail/one_way_signal_rail_stop_inverted",
+      "y": 270
+    },
+    "inverted=false,shape=ascending_north,signal=stop": {
+      "model": "transport:block/rail/one_way_signal_rail_stop_ascending"
+    },
+    "inverted=true,shape=ascending_north,signal=stop": {
+      "model": "transport:block/rail/one_way_signal_rail_stop_inverted"
+    },
+    "inverted=false,shape=ascending_south,signal=stop": {
+      "model": "transport:block/rail/one_way_signal_rail_stop_ascending",
+      "y": 180
+    },
+    "inverted=true,shape=ascending_south,signal=stop": {
+      "model": "transport:block/rail/one_way_signal_rail_stop_inverted",
+      "y": 180
+    }
+  }
+}

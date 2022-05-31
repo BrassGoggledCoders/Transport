@@ -3,6 +3,7 @@
   "values": [
     "minecraft:powered_rail",
     "transport:one_way_booster_rail",
-    "transport:inverted_powered_rail"
+    "transport:inverted_powered_rail",
+    "transport:one_way_signal_rail"
   ]
 }
