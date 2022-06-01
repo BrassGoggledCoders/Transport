@@ -32,14 +32,16 @@ public class ShellItemRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
         return new ShellItemRecipe(
                 pRecipeId,
                 Ingredient.fromNetwork(pBuffer),
-                pBuffer.readItem()
+                pBuffer.readItem(),
+                Ingredient.fromNetwork(pBuffer)
         );
     }
 
     @Override
     @ParametersAreNonnullByDefault
     public void toNetwork(FriendlyByteBuf pBuffer, ShellItemRecipe pRecipe) {
-        pRecipe.getInput().toNetwork(pBuffer);
+        pRecipe.getInput().ingredient().toNetwork(pBuffer);
         pBuffer.writeItem(pRecipe.getOutput());
+        pRecipe.getSecondary().toNetwork(pBuffer);
     }
 }

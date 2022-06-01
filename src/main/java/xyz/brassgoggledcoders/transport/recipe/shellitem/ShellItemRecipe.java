@@ -37,9 +37,19 @@ public class ShellItemRecipe implements IRailWorkerBenchRecipe {
                 .getAll()
                 .stream()
                 .filter(ShellContentCreatorInfo::createRecipe)
-                .<ItemLike>map(info -> info.viewState().getBlock().asItem())
+                .<ItemLike>map(info -> info.viewState()
+                        .getBlock()
+                        .asItem()
+                )
                 .toArray(ItemLike[]::new)
         ));
+    }
+
+    public ShellItemRecipe(ResourceLocation id, Ingredient input, ItemStack output, Ingredient secondary) {
+        this.id = id;
+        this.input = input;
+        this.output = output;
+        this.ingredient = () -> secondary;
     }
 
     @Override
@@ -156,5 +166,9 @@ public class ShellItemRecipe implements IRailWorkerBenchRecipe {
 
     public ItemStack getOutput() {
         return output;
+    }
+
+    public Ingredient getSecondary() {
+        return this.ingredient.get();
     }
 }
