@@ -183,7 +183,7 @@ dependencies {
 }
 
 jar {
-    classifier = "nodep"
+    classifier("nodep")
     manifest {
         attributes([
                 "Specification-Title"     : "${modId}",

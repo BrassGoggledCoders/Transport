@@ -28,6 +28,7 @@ import xyz.brassgoggledcoders.transport.block.rail.signal.OneWaySignalRailBlock;
 import xyz.brassgoggledcoders.transport.block.storage.CapabilityStorageBlock;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.rail.CachedRailShapeBlockEntity;
+import xyz.brassgoggledcoders.transport.blockentity.rail.OneWaySignalRailBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.EnergyStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.FluidStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipeBuilder;
@@ -241,6 +242,8 @@ public class TransportBlocks {
             .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/" + context.getName() + "_proceed")))
             .tag(ItemTags.RAILS)
             .tag(TransportItemTags.RAILS_GOLD)
+            .build()
+            .blockEntity(OneWaySignalRailBlockEntity::new)
             .build()
             .register();
 

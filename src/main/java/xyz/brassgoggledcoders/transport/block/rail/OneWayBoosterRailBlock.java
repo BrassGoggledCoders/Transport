@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.transport.block.rail;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -10,7 +9,8 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.*;
-import net.minecraft.world.phys.Vec3;
+import xyz.brassgoggledcoders.transport.util.MinecartHelper;
+import xyz.brassgoggledcoders.transport.util.RailHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -31,29 +31,13 @@ public class OneWayBoosterRailBlock extends PoweredRailBlock {
         );
     }
 
-    private BlockState checkInvertedOnChange(BlockState oldBlockState, BlockState newBlockState, Level pLevel, BlockPos pPos) {
-        RailShape oldRailShape = oldBlockState.getValue(RAIL_SHAPE);
-        RailShape newRailShape = newBlockState.getValue(RAIL_SHAPE);
-
-        if (oldRailShape == RailShape.NORTH_SOUTH && newRailShape == RailShape.ASCENDING_SOUTH ||
-                oldRailShape == RailShape.EAST_WEST && newRailShape == RailShape.ASCENDING_EAST ||
-                oldRailShape == RailShape.ASCENDING_SOUTH && newRailShape == RailShape.NORTH_SOUTH ||
-                oldRailShape == RailShape.ASCENDING_EAST && newRailShape == RailShape.EAST_WEST
-        ) {
-            newBlockState = newBlockState.cycle(INVERTED);
-            pLevel.setBlock(pPos, newBlockState, Block.UPDATE_ALL);
-        }
-
-        return newBlockState;
-    }
-
     @Override
     @ParametersAreNonnullByDefault
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
         if (!pOldState.is(pState.getBlock())) {
             this.updateState(pState, pLevel, pPos, pIsMoving);
         } else {
-            checkInvertedOnChange(pOldState, pState, pLevel, pPos);
+            RailHelper.checkInvertedOnChange(RAIL_SHAPE, pOldState, pState, pLevel, pPos);
         }
     }
 
@@ -63,7 +47,7 @@ public class OneWayBoosterRailBlock extends PoweredRailBlock {
     protected BlockState updateState(BlockState pState, Level pLevel, BlockPos pPos, boolean pIsMoving) {
         BlockState newState = this.updateDir(pLevel, pPos, pState, true);
 
-        newState = checkInvertedOnChange(pState, newState, pLevel, pPos);
+        newState = RailHelper.checkInvertedOnChange(RAIL_SHAPE, pState, newState, pLevel, pPos);
 
         newState.neighborChanged(pLevel, pPos, this, pPos, pIsMoving);
 
@@ -90,44 +74,7 @@ public class OneWayBoosterRailBlock extends PoweredRailBlock {
     @ParametersAreNonnullByDefault
     public void onMinecartPass(BlockState state, Level level, BlockPos pos, AbstractMinecart cart) {
         if (state.getValue(POWERED)) {
-            boolean inverted = state.getValue(INVERTED);
-            RailShape railShape = state.getValue(RAIL_SHAPE);
-            Vec3 normalized = cart.getDeltaMovement().normalize();
-
-            Direction direction = Direction.fromNormal(new BlockPos(normalized));
-
-            if (direction != null) {
-                Vec3 cartPos = cart.getPosition(1);
-                Vec3 blockPos = railShape.isAscending() ? Vec3.atCenterOf(pos) : Vec3.atBottomCenterOf(pos);
-                if (cartPos.distanceTo(blockPos) < 0.25) {
-                    boolean shouldReverse = switch (railShape) {
-                        case ASCENDING_NORTH, NORTH_SOUTH -> (direction == Direction.NORTH && inverted) || (direction == Direction.SOUTH && !inverted);
-                        case ASCENDING_SOUTH -> direction == Direction.SOUTH && inverted;
-                        case ASCENDING_EAST -> direction == Direction.EAST && inverted;
-                        case ASCENDING_WEST -> direction == Direction.WEST && inverted;
-                        case EAST_WEST -> (direction == Direction.EAST && !inverted) || (direction == Direction.WEST && inverted);
-                        default -> false;
-                    };
-
-                    if (shouldReverse) {
-                        Vec3 delta = cart.getDeltaMovement();
-                        cart.setDeltaMovement(new Vec3(
-                                delta.x() * -1D,
-                                railShape.isAscending() ? delta.y() * -1D : delta.y(),
-                                delta.z() * -1D
-                        ));
-                    }
-                }
-            } else {
-                Vec3i boostDirection = switch (railShape) {
-                    case NORTH_SOUTH, ASCENDING_NORTH -> inverted ? Direction.SOUTH.getNormal() : Direction.NORTH.getNormal();
-                    case ASCENDING_SOUTH -> inverted ? Direction.NORTH.getNormal() : Direction.SOUTH.getNormal();
-                    case ASCENDING_EAST -> inverted ? Direction.WEST.getNormal() : Direction.EAST.getNormal();
-                    case EAST_WEST, ASCENDING_WEST -> inverted ? Direction.EAST.getNormal() : Direction.WEST.getNormal();
-                    default -> Vec3i.ZERO;
-                };
-                cart.setDeltaMovement(Vec3.atLowerCornerOf(boostDirection));
-            }
+            MinecartHelper.boostMinecart(state, pos, RAIL_SHAPE, cart);
         }
     }
 

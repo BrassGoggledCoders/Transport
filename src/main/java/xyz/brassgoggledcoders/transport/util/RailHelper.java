@@ -9,11 +9,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RailBlock;
 import net.minecraft.world.level.block.SupportType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.properties.RailShape;
-import xyz.brassgoggledcoders.transport.block.rail.TransportBlockStateProperties;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -119,5 +121,22 @@ public class RailHelper {
 
     public static boolean isRailShapeStraight(RailShape railShape) {
         return railShape == RailShape.NORTH_SOUTH || railShape == RailShape.EAST_WEST;
+    }
+
+    public static BlockState checkInvertedOnChange(Property<RailShape> railShape, BlockState oldBlockState,
+                                            BlockState newBlockState, Level pLevel, BlockPos pPos) {
+        RailShape oldRailShape = oldBlockState.getValue(railShape);
+        RailShape newRailShape = newBlockState.getValue(railShape);
+
+        if (oldRailShape == RailShape.NORTH_SOUTH && newRailShape == RailShape.ASCENDING_SOUTH ||
+                oldRailShape == RailShape.EAST_WEST && newRailShape == RailShape.ASCENDING_EAST ||
+                oldRailShape == RailShape.ASCENDING_SOUTH && newRailShape == RailShape.NORTH_SOUTH ||
+                oldRailShape == RailShape.ASCENDING_EAST && newRailShape == RailShape.EAST_WEST
+        ) {
+            newBlockState = newBlockState.cycle(BlockStateProperties.INVERTED);
+            pLevel.setBlock(pPos, newBlockState, Block.UPDATE_ALL);
+        }
+
+        return newBlockState;
     }
 }
