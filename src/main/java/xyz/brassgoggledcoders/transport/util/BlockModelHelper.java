@@ -26,7 +26,7 @@ public class BlockModelHelper {
     public static void oneWaySignalRail(DataGenContext<Block, OneWaySignalRailBlock> context, RegistrateBlockstateProvider provider) {
         RailShapeModelHelper<SignalState> railShapeModelHelper = new RailShapeModelHelper<>(
                 context.getName(),
-                OneWaySignalRailBlock.SHAPE,
+                OneWaySignalRailBlock.RAIL_SHAPE,
                 OneWaySignalRailBlock.SIGNAL
         );
 
@@ -425,7 +425,7 @@ public class BlockModelHelper {
 
             return switch (railShape) {
                 case NORTH_SOUTH -> isInverted ? 180 : 0;
-                case EAST_WEST -> isInverted ? 270 : 90;
+                case EAST_WEST -> isInverted ? 90 : 270;
                 case ASCENDING_NORTH -> 0;
                 case ASCENDING_EAST -> 90;
                 case ASCENDING_SOUTH -> 180;

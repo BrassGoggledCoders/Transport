@@ -9,11 +9,11 @@
     },
     "inverted=false,shape=east_west,signal=proceed": {
       "model": "transport:block/rail/one_way_signal_rail_proceed",
-      "y": 90
+      "y": 270
     },
     "inverted=true,shape=east_west,signal=proceed": {
       "model": "transport:block/rail/one_way_signal_rail_proceed",
-      "y": 270
+      "y": 90
     },
     "inverted=false,shape=ascending_east,signal=proceed": {
       "model": "transport:block/rail/one_way_signal_rail_proceed_ascending",
@@ -54,11 +54,11 @@
     },
     "inverted=false,shape=east_west,signal=slow": {
       "model": "transport:block/rail/one_way_signal_rail_slow",
-      "y": 90
+      "y": 270
     },
     "inverted=true,shape=east_west,signal=slow": {
       "model": "transport:block/rail/one_way_signal_rail_slow",
-      "y": 270
+      "y": 90
     },
     "inverted=false,shape=ascending_east,signal=slow": {
       "model": "transport:block/rail/one_way_signal_rail_slow_ascending",
@@ -99,11 +99,11 @@
     },
     "inverted=false,shape=east_west,signal=stop": {
       "model": "transport:block/rail/one_way_signal_rail_stop",
-      "y": 90
+      "y": 270
     },
     "inverted=true,shape=east_west,signal=stop": {
       "model": "transport:block/rail/one_way_signal_rail_stop",
-      "y": 270
+      "y": 90
     },
     "inverted=false,shape=ascending_east,signal=stop": {
       "model": "transport:block/rail/one_way_signal_rail_stop_ascending",

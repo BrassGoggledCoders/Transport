@@ -20,12 +20,13 @@ import xyz.brassgoggledcoders.transport.signal.SignalBlock;
 import xyz.brassgoggledcoders.transport.signal.SignalLevelData;
 import xyz.brassgoggledcoders.transport.util.MinecartHelper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
 @SuppressWarnings("deprecation")
 public class OneWaySignalRailBlock extends BaseRailBlock implements EntityBlock {
-    public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
+    public static final EnumProperty<RailShape> RAIL_SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
     public static final EnumProperty<SignalState> SIGNAL = TransportBlockStateProperties.SIGNAL_STATE;
     public static final BooleanProperty INVERTED = BlockStateProperties.INVERTED;
 
