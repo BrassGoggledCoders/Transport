@@ -4,6 +4,7 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,7 +16,9 @@ import xyz.brassgoggledcoders.transport.signal.SignalBlock;
 import xyz.brassgoggledcoders.transport.signal.SignalLevelData;
 import xyz.brassgoggledcoders.transport.signal.SignalPoint;
 
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public class OneWaySignalRailBlockEntity extends BlockEntity {
@@ -23,7 +26,7 @@ public class OneWaySignalRailBlockEntity extends BlockEntity {
             TransportBlocks.ONE_WAY_SIGNAL_RAIL
                     .getSibling(ForgeRegistries.BLOCK_ENTITIES);
     private SignalPoint signalPoint;
-    private SignalBlock forwardBlock;
+    private Set<SignalBlock> forwardBlocks;
     private UUID signalPointUUID;
 
     public OneWaySignalRailBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
@@ -34,13 +37,25 @@ public class OneWaySignalRailBlockEntity extends BlockEntity {
         super(TYPE.get(), pWorldPosition, pBlockState);
     }
 
+    public void onMinecartPass(AbstractMinecart minecart) {
+        SignalPoint thisSignalPoint = this.getSignalPoint();
+        if (thisSignalPoint != null) {
+            SignalLevelData.getFor(this.getLevel())
+                    .ifPresent(signalLevelData -> signalLevelData.onEntityPass(minecart, thisSignalPoint));
+        }
+
+    }
+
     @Nullable
     public SignalPoint getSignalPoint() {
         if (this.signalPoint == null) {
             if (this.getLevel() instanceof ServerLevel serverLevel) {
                 if (this.signalPointUUID == null) {
                     this.signalPoint = SignalLevelData.getFor(serverLevel)
-                            .createSignalPoint(this.getBlockPos());
+                            .createSignalPoint(
+                                    this.getBlockState().getBlock(),
+                                    this.getBlockPos()
+                            );
                     this.signalPointUUID = this.signalPoint.uuid();
                 } else {
                     this.signalPoint = SignalLevelData.getFor(serverLevel)
@@ -52,18 +67,16 @@ public class OneWaySignalRailBlockEntity extends BlockEntity {
         return this.signalPoint;
     }
 
-    public SignalBlock getForwardBlock() {
-        if (this.forwardBlock == null) {
-            this.forwardBlock = SignalLevelData.getFor(this.getLevel())
+    @NotNull
+    public Set<SignalBlock> getForwardBlocks() {
+        if (this.forwardBlocks == null) {
+            this.forwardBlocks = SignalLevelData.getFor(this.getLevel())
                     .flatMap(signalLevelData -> Optional.ofNullable(this.getSignalPoint())
-                            .flatMap(point -> signalLevelData.getForwardSignalBlocks(point)
-                                    .stream()
-                                    .findFirst()
-                            )
+                            .map(signalLevelData::getForwardSignalBlocks)
                     )
-                    .orElse(SignalBlock.EMPTY);
+                    .orElse(Collections.emptySet());
         }
-        return this.forwardBlock;
+        return this.forwardBlocks;
     }
 
     @Override

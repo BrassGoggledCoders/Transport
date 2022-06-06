@@ -26,6 +26,7 @@ import xyz.brassgoggledcoders.transport.util.MinecartHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
+import java.util.Set;
 
 @SuppressWarnings("deprecation")
 public class OneWaySignalRailBlock extends BaseRailBlock implements EntityBlock {
@@ -50,11 +51,14 @@ public class OneWaySignalRailBlock extends BaseRailBlock implements EntityBlock 
         SignalState signalState = pState.getValue(SIGNAL);
         SignalState forwardPointState = pLevel.getBlockEntity(pPos, OneWaySignalRailBlockEntity.TYPE.get())
                 .map(blockEntity -> {
-                    SignalBlock block = blockEntity.getForwardBlock();
-                    if (block == SignalBlock.EMPTY) {
+                    Set<SignalBlock> blocks = blockEntity.getForwardBlocks();
+                    if (blocks.isEmpty()) {
                         return SignalState.SLOW;
                     } else {
-                        return block.isOccupied() ? SignalState.STOP : SignalState.PROCEED;
+                        boolean forwardBlocksOccupied = blocks.stream()
+                                .map(SignalBlock::isOccupied)
+                                .reduce(false, (b1, b2) -> b1 || b2);
+                        return forwardBlocksOccupied ? SignalState.STOP : SignalState.PROCEED;
                     }
                 })
                 .orElse(SignalState.SLOW);
@@ -83,6 +87,10 @@ public class OneWaySignalRailBlock extends BaseRailBlock implements EntityBlock 
     @Override
     @ParametersAreNonnullByDefault
     public void onMinecartPass(BlockState state, Level level, BlockPos pos, AbstractMinecart cart) {
+        if (level.getBlockEntity(pos) instanceof OneWaySignalRailBlockEntity signalRailBlockEntity) {
+            signalRailBlockEntity.onMinecartPass(cart);
+        }
+
         switch (state.getValue(SIGNAL)) {
             case PROCEED -> MinecartHelper.boostMinecart(state, pos, RAIL_SHAPE, cart);
             case STOP -> cart.setDeltaMovement(Vec3.ZERO);

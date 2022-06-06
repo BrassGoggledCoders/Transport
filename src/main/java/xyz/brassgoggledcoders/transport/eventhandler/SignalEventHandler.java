@@ -1,6 +1,9 @@
 package xyz.brassgoggledcoders.transport.eventhandler;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,5 +24,13 @@ public class SignalEventHandler {
     public static void unloadChunk(ChunkEvent.Unload chunkEvent) {
         SignalLevelData.getFor(chunkEvent.getWorld())
                 .ifPresent(signalLevelData -> signalLevelData.onChunkUnload(chunkEvent.getChunk()));
+    }
+
+    @SubscribeEvent
+    public static void entityLeaveLevel(EntityLeaveWorldEvent event) {
+        if (event.getEntity() instanceof AbstractMinecart minecart) {
+            SignalLevelData.getFor(event.getWorld())
+                    .ifPresent(signalLevelData -> signalLevelData.onEntityLeave(minecart));
+        }
     }
 }
