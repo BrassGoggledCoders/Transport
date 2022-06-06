@@ -16,6 +16,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -237,6 +238,7 @@ public class TransportBlocks {
             .object("one_way_signal_rail")
             .block(OneWaySignalRailBlock::new)
             .transform(TransportBlocks::defaultRail)
+            .properties(BlockBehaviour.Properties::randomTicks)
             .blockstate(BlockModelHelper::oneWaySignalRail)
             .item()
             .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/" + context.getName() + "_proceed")))
