@@ -148,7 +148,8 @@ public class SignalLevelData extends SavedData {
     }
 
     public void tick() {
-
+        this.signaledEntities.values()
+                .forEach(signaledEntity -> signaledEntity.update(this.serverLevel));
     }
 
     @ParametersAreNonnullByDefault
@@ -160,7 +161,7 @@ public class SignalLevelData extends SavedData {
                 signaledEntity.setLastSignalPoint(signalPoint);
             }
         } else {
-            SignaledEntity signaledEntity = new SignaledEntity();
+            SignaledEntity signaledEntity = new SignaledEntity(minecart.getUUID(), minecart.blockPosition());
             signaledEntity.setLastSignalPoint(signalPoint);
             this.signaledEntities.put(minecart.getUUID(), signaledEntity);
         }
@@ -172,8 +173,13 @@ public class SignalLevelData extends SavedData {
         boolean changed = this.network.addEdge(signalPointU, signalPointV, new SignalBlock(UUID.randomUUID()));
         if (changed) {
             this.serverLevel.scheduleTick(signalPointU.blockPos(), signalPointU.block(), 1);
+            this.setDirty();
         }
         return changed;
+    }
+
+    public SignaledEntity getSignaledEntity(AbstractMinecart minecart) {
+        return this.signaledEntities.get(minecart.getUUID());
     }
 
     @SuppressWarnings("unused")

@@ -16,11 +16,11 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.transport.api.block.EnhancedRailState;
 import xyz.brassgoggledcoders.transport.api.block.IEnhancedRail;
 import xyz.brassgoggledcoders.transport.blockentity.rail.CachedRailShapeBlockEntity;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.util.DirectionHelper;
-import xyz.brassgoggledcoders.transport.api.block.EnhancedRailState;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -90,9 +90,19 @@ public class DiamondCrossingRailBlock extends BaseRailBlock implements IEnhanced
 
     @Override
     public RailShape[] getCurrentRailShapes(BlockState blockState) {
-        return new RailShape[] {
+        return new RailShape[]{
                 RailShape.NORTH_SOUTH,
                 RailShape.EAST_WEST
+        };
+    }
+
+    @Override
+    @Nullable
+    public RailShape getRailShapeForDirection(Direction direction, BlockState blockState) {
+        return switch (direction) {
+            case NORTH, SOUTH -> RailShape.NORTH_SOUTH;
+            case EAST, WEST -> RailShape.EAST_WEST;
+            default -> null;
         };
     }
 

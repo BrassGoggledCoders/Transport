@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.block.rail;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -14,11 +15,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.transport.api.block.EnhancedRailState;
 import xyz.brassgoggledcoders.transport.api.block.IEnhancedRail;
 import xyz.brassgoggledcoders.transport.blockentity.rail.CachedRailShapeBlockEntity;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
+import xyz.brassgoggledcoders.transport.signal.SignalLevelData;
+import xyz.brassgoggledcoders.transport.signal.SignaledEntity;
 import xyz.brassgoggledcoders.transport.util.DirectionHelper;
-import xyz.brassgoggledcoders.transport.api.block.EnhancedRailState;
+import xyz.brassgoggledcoders.transport.util.RailHelper;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -135,7 +139,6 @@ public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements E
 
     protected abstract Direction getMotorDirection(SwitchConfiguration switchConfiguration);
 
-
     @Override
     @NotNull
     @ParametersAreNonnullByDefault
@@ -157,6 +160,26 @@ public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements E
                 this.getDivergeShape(switchConfiguration),
                 this.getStraightShape(switchConfiguration)
         };
+    }
+
+    @Override
+    @Nullable
+    public RailShape getRailShapeForDirection(Direction direction, BlockState blockState) {
+        SwitchConfiguration switchConfiguration = this.getSwitchConfiguration(blockState);
+        if (direction == switchConfiguration.getNarrowSide()) {
+            return blockState.getValue(DIVERGE) ?
+                    this.getDivergeShape(switchConfiguration) :
+                    this.getStraightShape(switchConfiguration);
+        } else if (direction == switchConfiguration.getDivergentSide()) {
+            return this.getDivergeShape(switchConfiguration);
+        } else {
+            RailShape straightShape = this.getStraightShape(switchConfiguration);
+            Tuple<Direction, Direction> directionPair = RailHelper.getDirectionsForRailShape(straightShape);
+            if (directionPair.getA() == direction || directionPair.getB() == direction) {
+                return straightShape;
+            }
+        }
+        return null;
     }
 
     @Override

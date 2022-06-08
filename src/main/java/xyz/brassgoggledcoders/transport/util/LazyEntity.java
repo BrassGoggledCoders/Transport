@@ -53,4 +53,8 @@ public class LazyEntity<T extends Entity> implements Function<ServerLevel, T> {
     public int hashCode() {
         return Objects.hash(uuid, entityClass);
     }
+
+    public UUID getUuid() {
+        return this.uuid;
+    }
 }
