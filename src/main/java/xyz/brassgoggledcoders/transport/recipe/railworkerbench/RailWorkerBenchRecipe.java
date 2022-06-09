@@ -88,7 +88,7 @@ public record RailWorkerBenchRecipe(
         if (ingredient.isEmpty()) {
             return true;
         } else if (ingredient.count() > 1) {
-            ItemStack pulledStack = pContainer.removeItem(0, ingredient.count());
+            ItemStack pulledStack = pContainer.removeItem(index, ingredient.count());
             if (!pulledStack.isEmpty() && pulledStack.getCount() != ingredient.count()) {
                 pContainer.getItem(index).grow(pulledStack.getCount());
                 pulledStack = ItemStack.EMPTY;
