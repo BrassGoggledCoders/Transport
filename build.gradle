@@ -1,7 +1,66 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://maven.parchmentmc.org' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath(group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true)
+        classpath 'org.parchmentmc:librarian:1.+'
+    }
+}
+
 import org.gradle.internal.xml.XmlTransformer
 
 plugins {
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.1"
+}
+
+project('API') {
+    ext {
+        rootConfigure = true
+        publish = true
+    }
+}
+
+subprojects { Project project ->
+    if (project.ext.find("rootConfigure")) {
+        println(project.name)
+
+        apply plugin: 'net.minecraftforge.gradle'
+        apply plugin: 'org.parchmentmc.librarian.forgegradle'
+
+        if (project.ext.find("publish")) {
+            apply plugin: 'maven-publish'
+        }
+
+        java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+        minecraft {
+            mappings channel: 'parchment', version: '2022.06.05-1.18.2'
+        }
+
+        dependencies {
+            minecraft 'net.minecraftforge:forge:1.18.2-40.1.20'
+        }
+
+        jar.finalizedBy('reobfJar')
+
+        if (project.ext.find("publish")) {
+            publishing {
+                publications {
+                    mavenJava(MavenPublication) {
+                        artifact jar
+                    }
+                }
+                repositories {
+                    maven {
+                        url "file://${project.projectDir}/mcmodsrepo"
+                    }
+                }
+            }
+        }
+    }
 }
 
 project('runenv') {
@@ -25,7 +84,7 @@ project('runenv') {
                 if (p == project) return
                 p.pluginManager.withPlugin('net.minecraftforge.gradle') {
                     var r = p.minecraft.runs.findByName(run.name)
-                    if (r.properties.containsKey("forge.enabledGameTestNamespaces")) {
+                    if (r != null && r.properties.containsKey("forge.enabledGameTestNamespaces")) {
                         gameTestNamespace.addAll(r.properties.get("forge.enabledGameTestNamespaces").split(","))
                     }
                 }
