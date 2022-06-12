@@ -168,6 +168,8 @@ repositories {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.18.2-40.1.20'
 
+    implementation project(":API")
+
     def registrate = "com.tterrag.registrate:Registrate:MC1.18.2-1.0.25"
     implementation fg.deobf(registrate)
     shade registrate

@@ -167,11 +167,13 @@ dependencies {
     shade registrate
 
     implementation fg.deobf("curse.maven:little-logistics-570050:3818773")
-    implementation project(":Transport")
+
+    compileOnly project(":API")
+    runtimeOnly project(":Transport")
 }
 
 jar {
-    classifier = "nodep"
+    classifier("nodep")
     manifest {
         attributes([
                 "Specification-Title"     : "${modId}",

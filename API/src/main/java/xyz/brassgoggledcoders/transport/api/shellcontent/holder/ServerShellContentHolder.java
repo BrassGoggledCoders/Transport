@@ -3,7 +3,7 @@ package xyz.brassgoggledcoders.transport.api.shellcontent.holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import xyz.brassgoggledcoders.transport.Transport;
+import net.minecraft.resources.ResourceLocation;
 import xyz.brassgoggledcoders.transport.api.service.IShellContentCreatorService;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
@@ -34,7 +34,8 @@ public class ServerShellContentHolder implements IShellContentHolder {
                 this.shellContent.invalidateCaps();
             }
 
-            this.shellContent = this.manager.create(info != null ? info.id() : Transport.rl("missing"), nbt);
+            ResourceLocation id = info != null ? info.id() : this.manager.getEmpty().id();
+            this.shellContent = this.manager.create(id, nbt);
             this.shellContent.setShell(this.shell);
             this.name = this.shell.getWithName(this.shellContent);
 
