@@ -66,6 +66,8 @@ minecraft {
             mods {
                 transport {
                     source sourceSets.main
+                    source project(":API").sourceSets.main
+                    source project(":Data").sourceSets.main
                     source sourceSets.gametest
                 }
             }
@@ -169,6 +171,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.18.2-40.1.20'
 
     implementation project(":API")
+    implementation project(":Data")
 
     def registrate = "com.tterrag.registrate:Registrate:MC1.18.2-1.0.25"
     implementation fg.deobf(registrate)
@@ -185,7 +188,7 @@ dependencies {
 }
 
 jar {
-    classifier = "nodep"
+    classifier("nodep")
     manifest {
         attributes([
                 "Specification-Title"     : "${modId}",

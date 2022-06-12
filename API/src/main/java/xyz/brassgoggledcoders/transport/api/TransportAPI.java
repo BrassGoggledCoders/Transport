@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.NonNullLazy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import xyz.brassgoggledcoders.transport.api.service.IItemHelperService;
 import xyz.brassgoggledcoders.transport.api.service.IShellContentCreatorService;
 import xyz.brassgoggledcoders.transport.api.service.IShellNetworkingService;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
@@ -30,5 +31,11 @@ public class TransportAPI {
             ServiceLoader.load(IShellNetworkingService.class)
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Failed to find IShellNetworkingService"))
+    );
+
+    public static final NonNullLazy<IItemHelperService> ITEM_HELPER = NonNullLazy.of(() ->
+            ServiceLoader.load(IItemHelperService.class)
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Failed to find IItemHelperService"))
     );
 }

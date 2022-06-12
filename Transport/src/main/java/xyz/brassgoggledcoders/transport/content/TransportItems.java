@@ -3,22 +3,34 @@ package xyz.brassgoggledcoders.transport.content;
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
+import xyz.brassgoggledcoders.transport.data.recipe.RailWorkerBenchRecipeBuilder;
+import xyz.brassgoggledcoders.transport.data.recipe.ShellItemRecipeBuilder;
+import xyz.brassgoggledcoders.transport.entity.ShellMinecart;
 import xyz.brassgoggledcoders.transport.item.PatternedRailLayerItem;
 import xyz.brassgoggledcoders.transport.item.RailBreakerItem;
-import xyz.brassgoggledcoders.transport.item.ShellMinecartItem;
 import xyz.brassgoggledcoders.transport.model.patternedraillayer.PatternedRailLayerCustomLoaderBuilder;
-import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipeBuilder;
-import xyz.brassgoggledcoders.transport.recipe.shellitem.ShellItemRecipeBuilder;
 
 @SuppressWarnings("unused")
 public class TransportItems {
-    public static ItemEntry<ShellMinecartItem> SHELL_MINECART = Transport.getRegistrate()
+    public static ItemEntry<Item> SHELL_MINECART = Transport.getRegistrate()
             .object("shell_minecart")
-            .item(ShellMinecartItem::new)
+            .item(properties -> TransportAPI.ITEM_HELPER.get()
+                    .createShellMinecartItem((itemStack, level, pos) -> {
+                        CompoundTag shellContentTag = itemStack.getTagElement("shellContent");
+                        ShellContent shellContent = TransportAPI.SHELL_CONTENT_CREATOR.get().create(shellContentTag);
+
+                        return new ShellMinecart(TransportEntities.SHELL_MINECART.get(), level, pos, shellContent);
+                    })
+                    .apply(properties)
+            )
             .properties(properties -> properties.stacksTo(8))
             .model((context, provider) -> provider.generated(context, provider.mcLoc("item/minecart")))
             .recipe((context, provider) -> ShellItemRecipeBuilder.of(context.get())

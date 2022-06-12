@@ -23,6 +23,15 @@ project('API') {
     }
 }
 
+project('Data') {
+    ext {
+        rootConfigure = true
+        publish = true
+        dependsOnApi = true
+    }
+}
+
+
 subprojects { Project project ->
     if (project.ext.find("rootConfigure")) {
         println(project.name)
@@ -42,6 +51,10 @@ subprojects { Project project ->
 
         dependencies {
             minecraft 'net.minecraftforge:forge:1.18.2-40.1.20'
+
+            if (project.ext.find("dependsOnApi")) {
+                compileOnly rootProject.project(":API")
+            }
         }
 
         jar.finalizedBy('reobfJar')

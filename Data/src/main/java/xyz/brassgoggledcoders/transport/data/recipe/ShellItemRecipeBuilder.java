@@ -1,5 +1,6 @@
-package xyz.brassgoggledcoders.transport.recipe.shellitem;
+package xyz.brassgoggledcoders.transport.data.recipe;
 
+import com.google.common.base.Suppliers;
 import com.google.gson.JsonObject;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -7,14 +8,22 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
-import xyz.brassgoggledcoders.transport.content.TransportRecipes;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class ShellItemRecipeBuilder {
+    private static final ResourceLocation NAME = new ResourceLocation("transport:shell_items");
+    private static final Supplier<RecipeSerializer<?>> RECIPE_SERIALIZER = Suppliers.memoize(() ->
+            Optional.ofNullable(ForgeRegistries.RECIPE_SERIALIZERS.getValue(NAME))
+                    .orElseThrow()
+    );
+
     private final ItemStack result;
     private Ingredient input;
 
@@ -53,7 +62,7 @@ public class ShellItemRecipeBuilder {
         @Override
         @Nonnull
         public RecipeSerializer<?> getType() {
-            return TransportRecipes.SHELL_ITEMS.get();
+            return RECIPE_SERIALIZER.get();
         }
 
         @Nullable

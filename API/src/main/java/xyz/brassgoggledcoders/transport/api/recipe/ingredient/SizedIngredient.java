@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.recipe.ingredient;
+package xyz.brassgoggledcoders.transport.api.recipe.ingredient;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;

@@ -4,7 +4,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
 import xyz.brassgoggledcoders.transport.recipe.IJobSiteRecipe;
-import xyz.brassgoggledcoders.transport.recipe.ingredient.SizedIngredient;
+import xyz.brassgoggledcoders.transport.api.recipe.ingredient.SizedIngredient;
 
 public interface IRailWorkerBenchRecipe extends IJobSiteRecipe<IRailWorkerBenchRecipe> {
     SizedIngredient getInput();

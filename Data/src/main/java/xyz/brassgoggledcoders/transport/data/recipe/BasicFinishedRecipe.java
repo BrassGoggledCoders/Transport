@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.recipe;
+package xyz.brassgoggledcoders.transport.data.recipe;
 
 import com.google.gson.JsonObject;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.brassgoggledcoders.transport.recipe.ingredient.SizedIngredient;
+import xyz.brassgoggledcoders.transport.api.recipe.ingredient.SizedIngredient;
 
 import java.util.Objects;
 

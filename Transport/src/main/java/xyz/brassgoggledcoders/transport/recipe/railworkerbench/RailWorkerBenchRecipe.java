@@ -10,7 +10,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
-import xyz.brassgoggledcoders.transport.recipe.ingredient.SizedIngredient;
+import xyz.brassgoggledcoders.transport.api.recipe.ingredient.SizedIngredient;
 
 import java.util.Collection;
 import java.util.Collections;

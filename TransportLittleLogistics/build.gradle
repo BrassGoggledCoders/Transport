@@ -169,6 +169,7 @@ dependencies {
     implementation fg.deobf("curse.maven:little-logistics-570050:3818773")
 
     compileOnly project(":API")
+    compileOnly project(":Data")
     runtimeOnly project(":Transport")
 }
 

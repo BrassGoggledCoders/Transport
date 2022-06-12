@@ -9,7 +9,7 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.brassgoggledcoders.transport.recipe.ingredient.SizedIngredient;
+import xyz.brassgoggledcoders.transport.api.recipe.ingredient.SizedIngredient;
 
 public class RailWorkerBenchRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RailWorkerBenchRecipe> {
     @Override

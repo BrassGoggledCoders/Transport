@@ -1,20 +1,28 @@
-package xyz.brassgoggledcoders.transport.recipe.railworkerbench;
+package xyz.brassgoggledcoders.transport.data.recipe;
 
+import com.google.common.base.Suppliers;
 import com.google.gson.JsonObject;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
-import xyz.brassgoggledcoders.transport.content.TransportRecipes;
-import xyz.brassgoggledcoders.transport.recipe.BasicFinishedRecipe;
-import xyz.brassgoggledcoders.transport.recipe.ingredient.SizedIngredient;
+import xyz.brassgoggledcoders.transport.api.recipe.ingredient.SizedIngredient;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class RailWorkerBenchRecipeBuilder {
+    private static final ResourceLocation NAME = new ResourceLocation("transport:rail_worker_bench");
+    private static final Supplier<RecipeSerializer<?>> RECIPE_SERIALIZER = Suppliers.memoize(() ->
+            Optional.ofNullable(ForgeRegistries.RECIPE_SERIALIZERS.getValue(NAME))
+                    .orElseThrow()
+    );
+
     private final ItemStack output;
     private SizedIngredient input;
     private SizedIngredient secondaryInput;
@@ -74,7 +82,7 @@ public class RailWorkerBenchRecipeBuilder {
         private final SizedIngredient secondaryInput;
 
         public RailWorkerBenchFinishedRecipe(ResourceLocation id, ItemStack output, SizedIngredient input, SizedIngredient secondaryInput) {
-            super(id, output, input, TransportRecipes.RAIL_WORKER_BENCH.get());
+            super(id, output, input, RECIPE_SERIALIZER.get());
             this.secondaryInput = secondaryInput;
         }
 
