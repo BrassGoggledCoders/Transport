@@ -1,14 +1,14 @@
-package xyz.brassgoggledcoders.transportlittlelogistics.eventhandler;
+package xyz.brassgoggledcoders.transport.littlelogistics.eventhandler;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import xyz.brassgoggledcoders.transportlittlelogistics.TransportLittleLogistics;
-import xyz.brassgoggledcoders.transportlittlelogistics.renderer.ShellWagonModel;
-import xyz.brassgoggledcoders.transportlittlelogistics.renderer.ShellWagonRenderer;
+import xyz.brassgoggledcoders.transport.littlelogistics.TransportLL;
+import xyz.brassgoggledcoders.transport.littlelogistics.renderer.ShellWagonModel;
+import xyz.brassgoggledcoders.transport.littlelogistics.renderer.ShellWagonRenderer;
 
-@Mod.EventBusSubscriber(modid = TransportLittleLogistics.ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = TransportLL.ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ModClientEventHandler {
 
     @SubscribeEvent

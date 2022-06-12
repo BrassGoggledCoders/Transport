@@ -1,14 +1,14 @@
-package xyz.brassgoggledcoders.transportlittlelogistics.renderer;
+package xyz.brassgoggledcoders.transport.littlelogistics.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
-import xyz.brassgoggledcoders.transportlittlelogistics.entity.ShellWagon;
+import xyz.brassgoggledcoders.transport.littlelogistics.entity.ShellWagon;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ShellWagonModel extends EntityModel<ShellWagon> {
     private final ModelPart bb_main;
@@ -24,11 +24,16 @@ public class ShellWagonModel extends EntityModel<ShellWagon> {
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
+    @Override
+    @ParametersAreNonnullByDefault
     public void setupAnim(ShellWagon entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
                           float headPitch) {
     }
 
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    @Override
+    @ParametersAreNonnullByDefault
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay,
+                               float red, float green, float blue, float alpha) {
         this.bb_main.render(poseStack, buffer, packedLight, packedOverlay);
     }
 }

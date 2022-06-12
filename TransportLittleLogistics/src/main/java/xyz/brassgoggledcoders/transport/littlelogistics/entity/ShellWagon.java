@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transportlittlelogistics.entity;
+package xyz.brassgoggledcoders.transport.littlelogistics.entity;
 
 import dev.murad.shipping.entity.custom.train.wagon.AbstractWagonEntity;
 import net.minecraft.core.Direction;

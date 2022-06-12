@@ -1,23 +1,21 @@
-package xyz.brassgoggledcoders.transportlittlelogistics.renderer;
+package xyz.brassgoggledcoders.transport.littlelogistics.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import dev.murad.shipping.entity.custom.vessel.barge.FluidTankBargeEntity;
 import dev.murad.shipping.entity.render.train.TrainCarRenderer;
-import dev.murad.shipping.util.FluidRenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import xyz.brassgoggledcoders.transportlittlelogistics.TransportLittleLogistics;
-import xyz.brassgoggledcoders.transportlittlelogistics.entity.ShellWagon;
+import xyz.brassgoggledcoders.transport.littlelogistics.TransportLL;
+import xyz.brassgoggledcoders.transport.littlelogistics.entity.ShellWagon;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ShellWagonRenderer extends TrainCarRenderer<ShellWagon> {
     public static final ModelLayerLocation SHELL_WAGON_LOCATION = new ModelLayerLocation(
-            TransportLittleLogistics.rl("shell_wagon"),
+            TransportLL.rl("shell_wagon"),
             "main"
     );
 

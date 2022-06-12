@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transportlittlelogistics.content;
+package xyz.brassgoggledcoders.transport.littlelogistics.content;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.core.Registry;
@@ -7,17 +7,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.registries.RegistryObject;
 import xyz.brassgoggledcoders.transport.recipe.shellitem.ShellItemRecipeBuilder;
-import xyz.brassgoggledcoders.transportlittlelogistics.TransportLittleLogistics;
-import xyz.brassgoggledcoders.transportlittlelogistics.item.ShellWagonItem;
+import xyz.brassgoggledcoders.transport.littlelogistics.TransportLL;
+import xyz.brassgoggledcoders.transport.littlelogistics.item.ShellWagonItem;
 
-public class TransportLittleLogisticsItems {
+public class TransportLLItems {
     public static RegistryObject<Item> SEATER_WAGON = RegistryObject.create(
             new ResourceLocation("littlelogistics:seater_car"),
             Registry.ITEM_REGISTRY,
-            TransportLittleLogistics.ID
+            TransportLL.ID
     );
 
-    public static ItemEntry<ShellWagonItem> SHELL_WAGON = TransportLittleLogistics.getRegistrate()
+    public static ItemEntry<ShellWagonItem> SHELL_WAGON = TransportLL.getRegistrate()
             .object("shell_wagon")
             .item(ShellWagonItem::new)
             .properties(properties -> properties.stacksTo(8))

@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transportlittlelogistics.item;
+package xyz.brassgoggledcoders.transport.littlelogistics.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -26,12 +26,10 @@ import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
-import xyz.brassgoggledcoders.transport.content.TransportEntities;
 import xyz.brassgoggledcoders.transport.content.TransportText;
-import xyz.brassgoggledcoders.transport.entity.ShellMinecart;
 import xyz.brassgoggledcoders.transport.item.DispenserMinecartItemBehavior;
-import xyz.brassgoggledcoders.transportlittlelogistics.content.TransportLittleLogisticsEntities;
-import xyz.brassgoggledcoders.transportlittlelogistics.entity.ShellWagon;
+import xyz.brassgoggledcoders.transport.littlelogistics.content.TransportLLEntities;
+import xyz.brassgoggledcoders.transport.littlelogistics.entity.ShellWagon;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -46,7 +44,7 @@ public class ShellWagonItem extends Item {
             CompoundTag shellContentTag = itemStack.getTagElement("shellContent");
             ShellContent shellContent = TransportAPI.SHELL_CONTENT_CREATOR.get().create(shellContentTag);
 
-            return new ShellWagon(TransportLittleLogisticsEntities.SHELL_WAGON.get(), level, pos, shellContent);
+            return new ShellWagon(TransportLLEntities.SHELL_WAGON.get(), level, pos, shellContent);
         }));
     }
 
@@ -77,7 +75,7 @@ public class ShellWagonItem extends Item {
                         (double) blockpos.getY() + 0.0625D + slopeOffset,
                         (double) blockpos.getZ() + 0.5D
                 );
-                AbstractMinecart minecart = new ShellWagon(TransportLittleLogisticsEntities.SHELL_WAGON.get(), level, position,
+                AbstractMinecart minecart = new ShellWagon(TransportLLEntities.SHELL_WAGON.get(), level, position,
                         shellContent);
 
                 if (itemStack.hasCustomHoverName()) {
