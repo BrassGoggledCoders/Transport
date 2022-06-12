@@ -1,12 +1,11 @@
+import org.gradle.internal.xml.XmlTransformer
+
+plugins {
+    id("org.jetbrains.gradle.plugin.idea-ext") version "1.1"
+}
+
 project('runenv') {
-    buildscript {
-        repositories {
-            maven { url = 'https://maven.parchmentmc.org' }
-        }
-        dependencies {
-            classpath 'org.parchmentmc:librarian:1.+'
-        }
-    }
+
     ext {
         mcversion = '1.18.2'
         forgeversion = '40.1.31'
@@ -22,6 +21,40 @@ project('runenv') {
     afterEvaluate {
         dependencies {
             // This is where any additional runtime dependencies for your dev environment go
+        }
+    }
+
+    tasks.register("genBuildAllIntellijRuns") {
+        dependsOn("genIntellijRuns")
+        group("forgegradle runs")
+        doLast {
+            rootProject.files(
+                    ".idea/runConfigurations/runenv_runClient.xml",
+                    ".idea/runConfigurations/runenv_runServer.xml"
+            ).each { file ->
+                if (file.exists()) {
+                    var transformer = new XmlTransformer()
+                    transformer.addAction { XmlProvider provider ->
+                        println("Action")
+                        provider.asNode()
+                                .configuration
+                                .method
+                                .option
+                                .each {
+                                    if (it.@name == "Make") {
+                                        it.@name = "MakeProject"
+                                    }
+                                }
+                    }
+                    file.withReader { reader ->
+                        var text = reader.getText();
+                        println(text)
+                        file.withWriter { writer ->
+                            transformer.transform(text, writer)
+                        }
+                    }
+                }
+            }
         }
     }
 }
