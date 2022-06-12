@@ -222,3 +222,31 @@ publishing {
         }
     }
 }
+
+project('runenv') {
+    buildscript {
+        repositories {
+            maven { url = 'https://maven.parchmentmc.org' }
+        }
+        dependencies {
+            classpath 'org.parchmentmc:librarian:1.+'
+        }
+    }
+    ext {
+        mcversion = '1.18.2'
+        forgeversion = '40.1.31'
+        // javaversion = 17 // Defaults to 17 already
+        //mappings channel: 'parchment', version: '2022.03.13-1.18.2'
+        // runArgs = [ ] // Arguments applied to all runs
+        // runProps = [ name: value ] // Properties applied to all runs
+    }
+
+    repositories {
+        // Repositories for additional runtime dependencies go here
+    }
+    afterEvaluate {
+        dependencies {
+            // This is where any additional runtime dependencies for your dev environment go
+        }
+    }
+}
