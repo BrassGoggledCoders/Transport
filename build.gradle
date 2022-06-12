@@ -5,23 +5,35 @@ plugins {
 }
 
 project('runenv') {
-
     ext {
         mcversion = '1.18.2'
         forgeversion = '40.1.31'
-        // javaversion = 17 // Defaults to 17 already
-        //mappings channel: 'parchment', version: '2022.03.13-1.18.2'
-        // runArgs = [ ] // Arguments applied to all runs
-        // runProps = [ name: value ] // Properties applied to all runs
     }
 
     repositories {
         // Repositories for additional runtime dependencies go here
     }
+
     afterEvaluate {
         dependencies {
-            // This is where any additional runtime dependencies for your dev environment go
+
         }
+
+        minecraft.runs.forEach(run -> {
+            var gameTestNamespace = [] as Set<String>
+            rootProject.subprojects.forEach(p -> {
+                if (p == project) return
+                p.pluginManager.withPlugin('net.minecraftforge.gradle') {
+                    var r = p.minecraft.runs.findByName(run.name)
+                    if (r.properties.containsKey("forge.enabledGameTestNamespaces")) {
+                        gameTestNamespace.addAll(r.properties.get("forge.enabledGameTestNamespaces").split(","))
+                    }
+                }
+            })
+            if (!gameTestNamespace.isEmpty()) {
+                run.properties.put("forge.enabledGameTestNamespaces", gameTestNamespace.join(","))
+            }
+        })
     }
 
     tasks.register("genBuildAllIntellijRuns") {
