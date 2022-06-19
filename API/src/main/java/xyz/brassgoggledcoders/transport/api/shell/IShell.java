@@ -4,19 +4,29 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 import xyz.brassgoggledcoders.transport.api.shellcontent.holder.IShellContentHolder;
 
 public interface IShell {
-    ShellContent getContent();
+    default ShellContent getContent() {
+        return this.getHolder().get();
+    }
 
     IShellContentHolder getHolder();
 
-    Level getShellLevel();
+    default Level getShellLevel() {
+        return this.getSelf().getLevel();
+    }
 
-    int getShellId();
+    default int getShellId() {
+        return this.getSelf().getId();
+    }
 
-    void newGeneration();
+    default void newGeneration() {
+        TransportAPI.SHELL_NETWORKING.get()
+                .newGeneration(this);
+    }
 
     Entity getSelf();
 

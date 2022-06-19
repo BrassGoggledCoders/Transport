@@ -55,29 +55,8 @@ public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAd
     }
 
     @Override
-    public ShellContent getContent() {
-        return this.holder.get();
-    }
-
-    @Override
     public IShellContentHolder getHolder() {
         return this.holder;
-    }
-
-    @Override
-    public Level getShellLevel() {
-        return this.getLevel();
-    }
-
-    @Override
-    public int getShellId() {
-        return this.getId();
-    }
-
-    @Override
-    public void newGeneration() {
-        TransportAPI.SHELL_NETWORKING.get()
-                .newGeneration(this);
     }
 
     @Override
