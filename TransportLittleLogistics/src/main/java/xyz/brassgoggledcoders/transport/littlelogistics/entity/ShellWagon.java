@@ -6,7 +6,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -29,6 +28,7 @@ import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 import xyz.brassgoggledcoders.transport.api.shellcontent.holder.ClientShellContentHolder;
 import xyz.brassgoggledcoders.transport.api.shellcontent.holder.IShellContentHolder;
 import xyz.brassgoggledcoders.transport.api.shellcontent.holder.ServerShellContentHolder;
+import xyz.brassgoggledcoders.transport.littlelogistics.content.TransportLLItems;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -58,14 +58,19 @@ public class ShellWagon extends AbstractWagonEntity implements IShell, IEntityAd
     //TODO: Actually make a thing
     @Override
     public ItemStack getPickResult() {
-        return ItemStack.EMPTY;
+        return this.getHolder().asItemStack();
+    }
+
+    @Override
+    public ItemStack asItemStack() {
+        return new ItemStack(TransportLLItems.SHELL_WAGON.get());
     }
 
     @Override
     public IShellContentHolder getHolder() {
         return this.holder;
     }
-    
+
     @Override
     public Entity getSelf() {
         return this;
@@ -90,12 +95,8 @@ public class ShellWagon extends AbstractWagonEntity implements IShell, IEntityAd
     @Override
     protected void readAdditionalSaveData(@Nonnull CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        CompoundTag shellContents = pCompound.getCompound("shellContent");
         this.getHolder().update(TransportAPI.SHELL_CONTENT_CREATOR.get()
-                .create(
-                        new ResourceLocation(shellContents.getString("id")),
-                        shellContents.getCompound("data")
-                )
+                .readData(pCompound)
         );
     }
 
@@ -103,10 +104,9 @@ public class ShellWagon extends AbstractWagonEntity implements IShell, IEntityAd
     protected void addAdditionalSaveData(@Nonnull CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
         ShellContent shellContent = this.getContent();
-        CompoundTag shellContentNbt = new CompoundTag();
-        shellContentNbt.putString("id", shellContent.getCreatorInfo().id().toString());
-        shellContentNbt.put("data", shellContent.serializeNBT());
-        pCompound.put("shellContent", shellContentNbt);
+        TransportAPI.SHELL_CONTENT_CREATOR
+                .get()
+                .writeData(shellContent, pCompound);
     }
 
     @Override

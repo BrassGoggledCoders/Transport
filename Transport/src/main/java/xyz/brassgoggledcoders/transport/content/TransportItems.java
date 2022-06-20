@@ -11,6 +11,7 @@ import net.minecraftforge.common.Tags;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
+import xyz.brassgoggledcoders.transport.api.tag.TransportItemTags;
 import xyz.brassgoggledcoders.transport.data.recipe.RailWorkerBenchRecipeBuilder;
 import xyz.brassgoggledcoders.transport.data.recipe.ShellItemRecipeBuilder;
 import xyz.brassgoggledcoders.transport.entity.ShellMinecart;

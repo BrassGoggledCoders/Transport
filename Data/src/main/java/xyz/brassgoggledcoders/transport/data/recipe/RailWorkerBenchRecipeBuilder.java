@@ -4,6 +4,8 @@ import com.google.common.base.Suppliers;
 import com.google.gson.JsonObject;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -41,13 +43,29 @@ public class RailWorkerBenchRecipeBuilder {
         return this;
     }
 
+    public RailWorkerBenchRecipeBuilder withInput(ItemLike input, int count) {
+        return this.withInput(Ingredient.of(input), count);
+    }
+
+    public RailWorkerBenchRecipeBuilder withInput(TagKey<Item> input, int count) {
+        return this.withInput(Ingredient.of(input), count);
+    }
+
     public RailWorkerBenchRecipeBuilder withSecondaryInput(Ingredient secondaryInput) {
         return this.withSecondaryInput(secondaryInput, 1);
+    }
+
+    public RailWorkerBenchRecipeBuilder withSecondaryInput(ItemLike secondaryInput) {
+        return this.withSecondaryInput(Ingredient.of(secondaryInput), 1);
     }
 
     public RailWorkerBenchRecipeBuilder withSecondaryInput(Ingredient secondaryInput, int count) {
         this.secondaryInput = SizedIngredient.of(secondaryInput, count);
         return this;
+    }
+
+    public RailWorkerBenchRecipeBuilder withSecondaryInput(TagKey<Item> secondInput, int count) {
+        return this.withSecondaryInput(Ingredient.of(secondInput), count);
     }
 
     public void save(Consumer<FinishedRecipe> pFinishedRecipeConsumer) {
@@ -60,6 +78,9 @@ public class RailWorkerBenchRecipeBuilder {
 
     public void save(Consumer<FinishedRecipe> pFinishedRecipeConsumer, ResourceLocation pRecipeId) {
         Objects.requireNonNull(this.input, "input cannot be null");
+        if (this.input.isEmpty()) {
+            throw new IllegalStateException("input cannot be empty");
+        }
         Objects.requireNonNull(this.output, "output cannot be null");
         Objects.requireNonNull(this.secondaryInput, "secondaryInput cannot be null");
         pFinishedRecipeConsumer.accept(new RailWorkerBenchFinishedRecipe(

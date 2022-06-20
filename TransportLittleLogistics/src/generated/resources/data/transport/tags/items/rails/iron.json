@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "littlelogistics:switch_rail",
+    "littlelogistics:tee_junction_rail",
+    "littlelogistics:junction_rail",
+    "littlelogistics:car_dock_rail",
+    "minecraft:air"
+  ]
+}

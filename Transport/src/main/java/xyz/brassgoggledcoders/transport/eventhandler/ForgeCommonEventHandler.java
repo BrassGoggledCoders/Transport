@@ -26,7 +26,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.capability.IRailProvider;
-import xyz.brassgoggledcoders.transport.content.TransportItemTags;
+import xyz.brassgoggledcoders.transport.api.tag.TransportItemTags;
 import xyz.brassgoggledcoders.transport.service.ShellContentCreatorServiceImpl;
 import xyz.brassgoggledcoders.transport.util.DirectionHelper;
 import xyz.brassgoggledcoders.transport.util.RailHelper;

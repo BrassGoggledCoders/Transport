@@ -14,8 +14,8 @@ import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
 import java.util.ServiceLoader;
 
 public class TransportAPI {
-    public static final String ID = "transport-api";
-    public static final Logger LOGGER = LogManager.getLogger(ID);
+    public static final String ID = "transport";
+    public static final Logger LOGGER = LogManager.getLogger("transport-api");
 
     public static final ResourceKey<Registry<ShellContentType<?, ?>>> SHELL_CONTENT_TYPE_KEY = ResourceKey.createRegistryKey(
             new ResourceLocation("transport", "shell_content_type")
@@ -38,4 +38,8 @@ public class TransportAPI {
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Failed to find IItemHelperService"))
     );
+
+    public static ResourceLocation rl(String path) {
+        return new ResourceLocation(ID, path);
+    }
 }

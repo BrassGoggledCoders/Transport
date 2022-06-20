@@ -126,6 +126,8 @@ minecraft {
                 }
                 transport {
                     source project(":Transport").sourceSets.main
+                    source project(":API").sourceSets.main
+                    source project(":Data").sourceSets.main
                 }
             }
         }
