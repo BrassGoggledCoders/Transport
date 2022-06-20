@@ -25,20 +25,29 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-ext {
-    mc_version = "1.18.2"
-    forge_version = "40.1.20"
-}
+var mcVersion = "1.18.2"
+var forgeVersion = "40.1.20"
+var transportVersion = "4.0.6"
+
+group = "xyz.brassgoggledcoders.transport"
 
 project('API') {
+    group = rootProject.group
+    version = transportVersion
+    archivesBaseName = "api"
     ext {
         id = "api"
         rootConfigure = true
         publish = true
+
     }
 }
 
 project('Data') {
+    version = transportVersion
+    group = rootProject.group
+    archivesBaseName = "data"
+
     ext {
         id = "data"
         rootConfigure = true
@@ -48,6 +57,10 @@ project('Data') {
 }
 
 project('Transport') {
+    version = transportVersion
+    group = rootProject.group
+    archivesBaseName = "transport"
+
     ext {
         id = "transport"
         rootConfigure = true
@@ -67,6 +80,9 @@ project('Transport') {
 }
 
 project('TransportLittleLogistics') {
+    version = "1.0.0"
+    group = rootProject.group
+    archivesBaseName = "transport_littlelogistics"
     ext {
         id = "transport_littlelogistics"
         rootConfigure = true
@@ -115,7 +131,7 @@ allprojects {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${rootProject.ext.find("mc_version")}-${rootProject.ext.find("forge_version")}"
+    minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
 
     def registrate = "com.tterrag.registrate:Registrate:MC1.18.2-1.0.25"
     runtimeOnly fg.deobf(registrate)
@@ -218,7 +234,7 @@ subprojects { Project project ->
         }
 
         dependencies {
-            minecraft "net.minecraftforge:forge:${rootProject.ext.find("mc_version")}-${rootProject.ext.find("forge_version")}"
+            minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
 
             if (project.ext.find("dependsOnApi")) {
                 compileOnly rootProject.project(":API")
@@ -270,7 +286,7 @@ subprojects { Project project ->
                 }
                 repositories {
                     maven {
-                        url "file://${project.projectDir}/mcmodsrepo"
+                        url "file://${rootProject.projectDir}/mcmodsrepo"
                     }
                 }
             }
