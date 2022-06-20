@@ -10,7 +10,7 @@ public class EmptyShellContentCreator implements IShellContentCreator<EmptyShell
     public static final Codec<EmptyShellContentCreator> CODEC = Codec.unit(EmptyShellContentCreator::new);
 
     @Override
-    public ShellContentType<?, ?> getType() {
+    public ShellContentType<?> getType() {
         return TransportShellContentTypes.EMPTY.get();
     }
 

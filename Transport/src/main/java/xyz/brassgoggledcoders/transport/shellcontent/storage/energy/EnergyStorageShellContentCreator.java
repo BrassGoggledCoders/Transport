@@ -20,7 +20,7 @@ public record EnergyStorageShellContentCreator(
 
 
     @Override
-    public ShellContentType<?, ?> getType() {
+    public ShellContentType<?> getType() {
         return TransportShellContentTypes.ENERGY_STORAGE.get();
     }
 

@@ -24,7 +24,7 @@ public record ItemStorageShellContentCreator(
 
 
     @Override
-    public ShellContentType<?, ?> getType() {
+    public ShellContentType<?> getType() {
         return TransportShellContentTypes.ITEM_STORAGE.get();
     }
 

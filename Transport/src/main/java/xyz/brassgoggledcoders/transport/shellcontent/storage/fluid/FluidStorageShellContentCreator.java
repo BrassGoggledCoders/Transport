@@ -25,7 +25,7 @@ public record FluidStorageShellContentCreator(
     }
 
     @Override
-    public ShellContentType<?, ?> getType() {
+    public ShellContentType<?> getType() {
         return TransportShellContentTypes.FLUID_STORAGE.get();
     }
 }
