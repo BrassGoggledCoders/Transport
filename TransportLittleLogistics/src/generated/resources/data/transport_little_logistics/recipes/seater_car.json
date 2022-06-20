@@ -1,0 +1,14 @@
+{
+  "type": "transport:rail_worker_bench",
+  "input": {
+    "tag": "forge:ingots/iron",
+    "count": 2
+  },
+  "output": {
+    "item": "littlelogistics:seater_car"
+  },
+  "secondaryInput": {
+    "tag": "minecraft:planks",
+    "count": 3
+  }
+}

@@ -1,0 +1,19 @@
+modLoader="javafml"
+loaderVersion="[40,)"
+issueTrackerURL="https://github.com/Brass-Goggled-Coders/Transport/issues"
+license="MIT"
+
+[[mods]]
+    modId="transport_little_logistics"
+    version="${file.jarVersion}"
+    displayName="Transport & Little Logistics"
+    authors="SkySom"
+    description='''
+    '''
+
+[[dependencies.transport_little_logistics]]
+    modId="forge"
+    mandatory=true
+    versionRange="[40.1.0,)"
+    ordering="NONE"
+    side="BOTH"

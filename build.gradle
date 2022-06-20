@@ -5,220 +5,140 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath(group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true) {
-            exclude group: 'org.apache.logging.log4j'
-        }
-        classpath 'org.apache.logging.log4j:log4j-api:2.11.2'
-        classpath 'org.apache.logging.log4j:log4j-core:2.11.2'
+        classpath(group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true)
         classpath 'org.parchmentmc:librarian:1.+'
     }
 }
 
+import org.gradle.internal.xml.XmlTransformer
+
 plugins {
-    id 'eclipse'
-    id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id("org.jetbrains.gradle.plugin.idea-ext") version "1.1"
 }
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
-version = '4.0.6'
-group = "xyz.brassgoggledcoders.${modId}"
-archivesBaseName = "${modId}"
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
-
-sourceSets {
-    main {
-        resources {
-            srcDir 'src/generated/resources'
-        }
-    }
-    gametest {
-        compileClasspath += main.compileClasspath
-        runtimeClasspath += main.runtimeClasspath
-        compileClasspath += main.output
-        runtimeClasspath += main.output
-    }
-    datagen {
-        compileClasspath += main.compileClasspath
-        runtimeClasspath += main.runtimeClasspath
-        compileClasspath += main.output
-        runtimeClasspath += main.output
+project('API') {
+    ext {
+        rootConfigure = true
+        publish = true
     }
 }
 
-minecraft {
-    mappings channel: 'parchment', version: '2022.03.13-1.18.2'
+project('Data') {
+    ext {
+        rootConfigure = true
+        publish = true
+        dependsOnApi = true
+    }
+}
 
-    runs {
-        client {
-            workingDirectory project.file('run/client')
 
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', "${modId}"
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+subprojects { Project project ->
+    if (project.ext.find("rootConfigure")) {
+        println(project.name)
 
-            mods {
-                transport {
-                    source sourceSets.main
-                    source sourceSets.gametest
-                }
+        apply plugin: 'net.minecraftforge.gradle'
+        apply plugin: 'org.parchmentmc.librarian.forgegradle'
+
+        if (project.ext.find("publish")) {
+            apply plugin: 'maven-publish'
+        }
+
+        java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+        minecraft {
+            mappings channel: 'parchment', version: '2022.06.05-1.18.2'
+        }
+
+        dependencies {
+            minecraft 'net.minecraftforge:forge:1.18.2-40.1.20'
+
+            if (project.ext.find("dependsOnApi")) {
+                compileOnly rootProject.project(":API")
             }
         }
 
-        server {
-            workingDirectory project.file('run/server')
+        jar.finalizedBy('reobfJar')
 
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', "${modId}"
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            mods {
-                transport {
-                    source sourceSets.main
+        if (project.ext.find("publish")) {
+            publishing {
+                publications {
+                    mavenJava(MavenPublication) {
+                        artifact jar
+                    }
                 }
-            }
-        }
-
-        gameTestServer {
-            workingDirectory project.file('run/server')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', "${modId}"
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            mods {
-                transport {
-                    source sourceSets.main
-                    source sourceSets.gametest
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run/data')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            args '--mod', "${modId}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                transport {
-                    source sourceSets.main
-                    source sourceSets.datagen
+                repositories {
+                    maven {
+                        url "file://${project.projectDir}/mcmodsrepo"
+                    }
                 }
             }
         }
     }
 }
 
-configurations {
-    shade
-}
-
-shadowJar {
-    configurations = [project.configurations.shade]
-    relocate 'com.tterrag.registrate', "xyz.brassgoggledcoders.${modId}.repack.registrate"
-    classifier ''
-}
-
-repositories {
-    maven {
-        name "Registrate"
-        url "https://maven.tterrag.com/"
-        content {
-            includeGroup "com.tterrag.registrate"
-        }
+project('runenv') {
+    ext {
+        mcversion = '1.18.2'
+        forgeversion = '40.1.31'
     }
-    maven {
-        name "The One Probe"
-        url "https://cfa2.cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-    maven {
-        name "Botania"
-        url "https://maven.blamejared.com"
-        content {
-            includeGroupByRegex "vazkii.*"
-        }
-    }
-    maven {
-        name = "JEI"
-        url = "https://dvs1.progwml6.com/files/maven"
-        content {
-            includeGroup "mezz.jei"
-        }
-    }
-}
 
-dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.20'
-
-    def registrate = "com.tterrag.registrate:Registrate:MC1.18.2-1.0.25"
-    implementation fg.deobf(registrate)
-    shade registrate
-
-    implementation fg.deobf("curse.maven:the-one-probe-245211:3671753")
-
-    compileOnly fg.deobf("mezz.jei:jei-1.18.2-forge-api:10.0.0.184")
-    compileOnly fg.deobf("mezz.jei:jei-1.18.2-common-api:10.0.0.184")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2-forge:10.0.0.184")
-
-    runtimeOnly fg.deobf("vazkii.quark:Quark:3.2-347.2280")
-    runtimeOnly fg.deobf("vazkii.autoreglib:AutoRegLib:1.7-54.112")
-}
-
-jar {
-    classifier = "nodep"
-    manifest {
-        attributes([
-                "Specification-Title"     : "${modId}",
-                "Specification-Vendor"    : "Brass Goggled Coders",
-                "Specification-Version"   : "1",
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "Brass Goggled Coders",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
-}
-
-reobf {
-    shadowJar {}
-}
-
-jar.finalizedBy('reobfJar')
-
-build.dependsOn shadowJar
-build.dependsOn reobfShadowJar
-
-artifacts {
-    archives shadowJar
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
     repositories {
-        maven {
-            url "file://${project.projectDir}/mcmodsrepo"
+        // Repositories for additional runtime dependencies go here
+    }
+
+    afterEvaluate {
+        dependencies {
+
+        }
+
+        minecraft.runs.forEach(run -> {
+            var gameTestNamespace = [] as Set<String>
+            rootProject.subprojects.forEach(p -> {
+                if (p == project) return
+                p.pluginManager.withPlugin('net.minecraftforge.gradle') {
+                    var r = p.minecraft.runs.findByName(run.name)
+                    if (r != null && r.properties.containsKey("forge.enabledGameTestNamespaces")) {
+                        gameTestNamespace.addAll(r.properties.get("forge.enabledGameTestNamespaces").split(","))
+                    }
+                }
+            })
+            if (!gameTestNamespace.isEmpty()) {
+                run.properties.put("forge.enabledGameTestNamespaces", gameTestNamespace.join(","))
+            }
+        })
+    }
+
+    tasks.register("genBuildAllIntellijRuns") {
+        dependsOn("genIntellijRuns")
+        group("forgegradle runs")
+        doLast {
+            rootProject.files(
+                    ".idea/runConfigurations/runenv_runClient.xml",
+                    ".idea/runConfigurations/runenv_runServer.xml"
+            ).each { file ->
+                if (file.exists()) {
+                    var transformer = new XmlTransformer()
+                    transformer.addAction { XmlProvider provider ->
+                        println("Action")
+                        provider.asNode()
+                                .configuration
+                                .method
+                                .option
+                                .each {
+                                    if (it.@name == "Make") {
+                                        it.@name = "MakeProject"
+                                    }
+                                }
+                    }
+                    file.withReader { reader ->
+                        var text = reader.getText();
+                        println(text)
+                        file.withWriter { writer ->
+                            transformer.transform(text, writer)
+                        }
+                    }
+                }
+            }
         }
     }
 }

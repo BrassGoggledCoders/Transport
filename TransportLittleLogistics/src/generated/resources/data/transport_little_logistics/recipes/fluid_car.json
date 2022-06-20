@@ -1,0 +1,13 @@
+{
+  "type": "transport:rail_worker_bench",
+  "input": {
+    "item": "littlelogistics:seater_car"
+  },
+  "output": {
+    "item": "littlelogistics:fluid_car"
+  },
+  "secondaryInput": {
+    "tag": "forge:glass",
+    "count": 3
+  }
+}

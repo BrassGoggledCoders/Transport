@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "littlelogistics:automatic_switch_rail",
+    "littlelogistics:automatic_tee_junction_rail"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "type": "transport:rail_worker_bench",
+  "input": {
+    "item": "littlelogistics:seater_car"
+  },
+  "output": {
+    "item": "littlelogistics:chest_car"
+  },
+  "secondaryInput": {
+    "item": "minecraft:chest"
+  }
+}

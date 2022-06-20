@@ -1,0 +1,9 @@
+{
+  "type": "transport:shell_items",
+  "input": {
+    "item": "littlelogistics:seater_car"
+  },
+  "output": {
+    "item": "transport_little_logistics:shell_wagon"
+  }
+}
