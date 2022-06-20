@@ -1,7 +1,3 @@
-version = '1.0.0'
-group = "xyz.brassgoggledcoders.transport"
-archivesBaseName = "transport_little_logistics"
-
 minecraft {
     runs {
         data {
