@@ -1,3 +1,0 @@
-[submodule "runenv"]
-	path = runenv
-	url = git@github.com:amadornes/fg-multiproject-runenv.git

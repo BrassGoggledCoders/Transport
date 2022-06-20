@@ -1,128 +1,19 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://maven.parchmentmc.org' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath(group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true)
-        classpath 'org.parchmentmc:librarian:1.+'
-    }
-}
-
-plugins {
-    id 'eclipse'
-    id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-}
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
-
 version = '1.0.0'
 group = "xyz.brassgoggledcoders.transport"
-archivesBaseName = "${modId}"
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
-
-sourceSets {
-    main {
-        resources {
-            srcDir 'src/generated/resources'
-        }
-    }
-    gametest {
-        compileClasspath += main.compileClasspath
-        runtimeClasspath += main.runtimeClasspath
-        compileClasspath += main.output
-        runtimeClasspath += main.output
-    }
-    datagen {
-        compileClasspath += main.compileClasspath
-        runtimeClasspath += main.runtimeClasspath
-        compileClasspath += main.output
-        runtimeClasspath += main.output
-    }
-}
+archivesBaseName = "transport_little_logistics"
 
 minecraft {
-    mappings channel: 'parchment', version: '2022.03.13-1.18.2'
-
     runs {
-        client {
-            workingDirectory project.file('run/client')
-
-            ideaModule "${rootProject.name}${project.path}.main".replace(":", ".")
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', "${modId}"
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            mods {
-                transport_little_logistics {
-                    source sourceSets.main
-                    source sourceSets.gametest
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run/server')
-
-            ideaModule "${rootProject.name}${project.path}.main".replace(":", ".")
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', "${modId}"
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            mods {
-                transport_little_logistics {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        gameTestServer {
-            workingDirectory project.file('run/server')
-
-            ideaModule "${rootProject.name}${project.path}.main".replace(":", ".")
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', "${modId}"
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            mods {
-                transport_little_logistics {
-                    source sourceSets.main
-                    source sourceSets.gametest
-                }
-            }
-        }
-
         data {
             workingDirectory project.file('run/data')
-
-            ideaModule "${rootProject.name}${project.path}.main".replace(":", ".")
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             args '--mod', "transport_little_logistics", '--all', '--output', file('src/generated/resources/'),
                     '--existing', file('src/main/resources/'), '--existing-mod', 'littlelogistics'
 
             mods {
                 transport_little_logistics {
-                    source sourceSets.main
-                    source sourceSets.datagen
+                    source project(":TransportLittleLogistics").sourceSets.main
+                    source project(":TransportLittleLogistics").sourceSets.datagen
                 }
                 transport {
                     source project(":Transport").sourceSets.main
@@ -130,88 +21,6 @@ minecraft {
                     source project(":Data").sourceSets.main
                 }
             }
-        }
-    }
-}
-
-configurations {
-    shade
-}
-
-shadowJar {
-    configurations = [project.configurations.shade]
-    relocate 'com.tterrag.registrate', "xyz.brassgoggledcoders.transport.littlelogistics.repack.registrate"
-    classifier ''
-}
-
-repositories {
-    maven {
-        name "Registrate"
-        url "https://maven.tterrag.com/"
-        content {
-            includeGroup "com.tterrag.registrate"
-        }
-    }
-    maven {
-        name "The One Probe"
-        url "https://cfa2.cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-}
-
-dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.20'
-
-    def registrate = "com.tterrag.registrate:Registrate:MC1.18.2-1.0.25"
-    implementation fg.deobf(registrate)
-    shade registrate
-
-    implementation fg.deobf("curse.maven:little-logistics-570050:3818773")
-
-    compileOnly project(":API")
-    compileOnly project(":Data")
-    runtimeOnly project(":Transport")
-}
-
-jar {
-    classifier("nodep")
-    manifest {
-        attributes([
-                "Specification-Title"     : "${modId}",
-                "Specification-Vendor"    : "Brass Goggled Coders",
-                "Specification-Version"   : "1",
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "Brass Goggled Coders",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
-}
-
-reobf {
-    shadowJar {}
-}
-
-jar.finalizedBy('reobfJar')
-
-build.dependsOn shadowJar
-build.dependsOn reobfShadowJar
-
-artifacts {
-    archives shadowJar
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/mcmodsrepo"
         }
     }
 }
