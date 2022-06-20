@@ -1,3 +1,24 @@
 version = '4.0.6'
-group = "xyz.brassgoggledcoders.${modId}"
-archivesBaseName = "${modId}"
+group = "xyz.brassgoggledcoders.transport"
+archivesBaseName = "transport"
+
+minecraft {
+    runs {
+        data {
+            taskName("Data")
+            workingDirectory project.file('run/data')
+
+            args '--mod', "transport", '--all', '--output', file('src/generated/resources/'),
+                    '--existing', file('src/main/resources/')
+
+            mods {
+                transport {
+                    source sourceSets.main
+                    source sourceSets.datagen
+                    source project(":API").sourceSets.main
+                    source project(":Data").sourceSets.main
+                }
+            }
+        }
+    }
+}

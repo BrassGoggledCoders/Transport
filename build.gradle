@@ -25,6 +25,11 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+ext {
+    mc_version = "1.18.2"
+    forge_version = "40.1.20"
+}
+
 project('API') {
     ext {
         id = "api"
@@ -110,7 +115,7 @@ allprojects {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.20'
+    minecraft "net.minecraftforge:forge:${rootProject.ext.find("mc_version")}-${rootProject.ext.find("forge_version")}"
 
     def registrate = "com.tterrag.registrate:Registrate:MC1.18.2-1.0.25"
     runtimeOnly fg.deobf(registrate)
@@ -177,6 +182,15 @@ subprojects { Project project ->
         }
         minecraft {
             mappings channel: 'parchment', version: '2022.06.05-1.18.2'
+
+            runs.all {
+                ideaModule("${rootProject.name}${project.path}.main".replace(":", "."))
+
+                property 'forge.logging.markers', 'REGISTRIES'
+                property 'forge.logging.console.level', 'debug'
+                property 'mixin.env.remapRefMap', 'true'
+                property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            }
         }
 
         if (project.ext.find("dependsOnRegistrate")) {
@@ -204,7 +218,7 @@ subprojects { Project project ->
         }
 
         dependencies {
-            minecraft 'net.minecraftforge:forge:1.18.2-40.1.20'
+            minecraft "net.minecraftforge:forge:${rootProject.ext.find("mc_version")}-${rootProject.ext.find("forge_version")}"
 
             if (project.ext.find("dependsOnApi")) {
                 compileOnly rootProject.project(":API")
@@ -269,6 +283,7 @@ minecraft {
 
     runs {
         client {
+            taskName("ClientAll")
             workingDirectory project.file('run/client')
 
             property 'forge.logging.markers', 'REGISTRIES'
@@ -292,6 +307,7 @@ minecraft {
         }
 
         server {
+            taskName("ServerAll")
             workingDirectory project.file('run/server')
 
             property 'forge.logging.markers', 'REGISTRIES'
@@ -313,11 +329,12 @@ minecraft {
         }
 
         gameTestServer {
+            taskName("GameTestServerAll")
             workingDirectory project.file('run/server')
 
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', "${modId}"
+            property 'forge.enabledGameTestNamespaces', "transport,transport_little_logistics"
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
@@ -334,54 +351,13 @@ minecraft {
                 }
             }
         }
-
-        transportData {
-            workingDirectory project.file('run/data')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            args '--mod', "transport", '--all', '--output', file('src/generated/resources/'),
-                    '--existing', file('src/main/resources/')
-
-            mods {
-                transport {
-                    source project(":Transport").sourceSets.main
-                    source project(":Transport").sourceSets.datagen
-                    source project(":API").sourceSets.main
-                    source project(":Data").sourceSets.main
-                }
-            }
-        }
-        transportLLData {
-            workingDirectory project.file('run/data')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            args '--mod', "transport_little_logistics", '--all', '--output', file('src/generated/resources/'),
-                    '--existing', file('src/main/resources/'), '--existing-mod', 'littlelogistics'
-
-            mods {
-                transport_little_logistics {
-                    source project(":TransportLittleLogistics").sourceSets.main
-                    source project(":TransportLittleLogistics").sourceSets.datagen
-                }
-                transport {
-                    source project(":Transport").sourceSets.main
-                    source project(":API").sourceSets.main
-                    source project(":Data").sourceSets.main
-                }
-            }
-        }
     }
 }
 
 tasks.register("genBuildAllIntellijRuns") {
+    subprojects(p -> {
+        dependsOn(":${p.name}:genIntellijRuns")
+    })
     dependsOn("genIntellijRuns")
     group("forgegradle runs")
     doLast {
@@ -400,7 +376,7 @@ tasks.register("genBuildAllIntellijRuns") {
                             }
                 }
                 file.withReader { reader ->
-                    var text = reader.getText();
+                    var text = reader.getText()
                     file.withWriter { writer ->
                         transformer.transform(text, writer)
                     }

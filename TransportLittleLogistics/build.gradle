@@ -1,3 +1,28 @@
 version = '1.0.0'
 group = "xyz.brassgoggledcoders.transport"
-archivesBaseName = "${modId}"
+archivesBaseName = "transport_little_logistics"
+
+minecraft {
+    runs {
+        data {
+            taskName("Data")
+
+            workingDirectory project.file('run/data')
+
+            args '--mod', "transport_little_logistics", '--all', '--output', file('src/generated/resources/'),
+                    '--existing', file('src/main/resources/'), '--existing-mod', 'littlelogistics'
+
+            mods {
+                transport_little_logistics {
+                    source project(":TransportLittleLogistics").sourceSets.main
+                    source project(":TransportLittleLogistics").sourceSets.datagen
+                }
+                transport {
+                    source project(":Transport").sourceSets.main
+                    source project(":API").sourceSets.main
+                    source project(":Data").sourceSets.main
+                }
+            }
+        }
+    }
+}
