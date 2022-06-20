@@ -5,8 +5,6 @@ archivesBaseName = "transport_little_logistics"
 minecraft {
     runs {
         data {
-            taskName("Data")
-
             workingDirectory project.file('run/data')
 
             args '--mod', "transport_little_logistics", '--all', '--output', file('src/generated/resources/'),

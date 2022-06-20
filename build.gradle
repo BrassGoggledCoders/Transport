@@ -230,13 +230,13 @@ subprojects { Project project ->
 
             if (project.ext.find("dependsOnRegistrate")) {
                 def registrate = "com.tterrag.registrate:Registrate:MC1.18.2-1.0.25"
-                compileOnly fg.deobf(registrate)
+                implementation fg.deobf(registrate)
                 shade registrate
             }
 
             if (project.ext.find("fgDependencies")) {
                 for (final def dep in project.ext.find("fgDependencies")) {
-                    compileOnly fg.deobf(dep)
+                    implementation fg.deobf(dep)
                 }
             }
         }
@@ -283,7 +283,7 @@ minecraft {
 
     runs {
         client {
-            taskName("ClientAll")
+            taskName("runClientAll")
             workingDirectory project.file('run/client')
 
             property 'forge.logging.markers', 'REGISTRIES'
@@ -307,7 +307,7 @@ minecraft {
         }
 
         server {
-            taskName("ServerAll")
+            taskName("runServerAll")
             workingDirectory project.file('run/server')
 
             property 'forge.logging.markers', 'REGISTRIES'
@@ -329,7 +329,7 @@ minecraft {
         }
 
         gameTestServer {
-            taskName("GameTestServerAll")
+            taskName("runGameTestServerAll")
             workingDirectory project.file('run/server')
 
             property 'forge.logging.markers', 'REGISTRIES'
@@ -356,7 +356,9 @@ minecraft {
 
 tasks.register("genBuildAllIntellijRuns") {
     subprojects(p -> {
-        dependsOn(":${p.name}:genIntellijRuns")
+        if (p.ext.find("isMod")) {
+            dependsOn(":${p.name}:genIntellijRuns")
+        }
     })
     dependsOn("genIntellijRuns")
     group("forgegradle runs")
