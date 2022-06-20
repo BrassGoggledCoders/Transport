@@ -26,4 +26,8 @@ public interface IShellContentCreatorService {
 
     @Nonnull
     ShellContentCreatorInfo getEmpty();
+
+    void writeData(ShellContent shellContent, CompoundTag parent);
+
+    ShellContent readData(CompoundTag parent);
 }

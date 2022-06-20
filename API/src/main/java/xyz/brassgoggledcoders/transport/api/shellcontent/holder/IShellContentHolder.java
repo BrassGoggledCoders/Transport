@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.api.shellcontent.holder;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.NonNullSupplier;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 
@@ -16,4 +17,6 @@ public interface IShellContentHolder extends NonNullSupplier<ShellContent> {
 
     @Nonnull
     Component getName();
+
+    ItemStack asItemStack();
 }

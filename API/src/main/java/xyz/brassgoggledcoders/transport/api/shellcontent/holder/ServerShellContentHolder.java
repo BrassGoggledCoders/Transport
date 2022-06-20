@@ -3,11 +3,11 @@ package xyz.brassgoggledcoders.transport.api.shellcontent.holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.service.IShellContentCreatorService;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
-import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -26,16 +26,13 @@ public class ServerShellContentHolder implements IShellContentHolder {
 
     private void checkGeneration() {
         if (this.generation != manager.getGeneration()) {
-            CompoundTag nbt = null;
-            ShellContentCreatorInfo info = null;
+            CompoundTag nbt = new CompoundTag();
             if (this.shellContent != null) {
-                nbt = this.shellContent.serializeNBT();
-                info = this.shellContent.getCreatorInfo();
+                this.manager.writeData(shellContent, nbt);
                 this.shellContent.invalidateCaps();
             }
 
-            ResourceLocation id = info != null ? info.id() : this.manager.getEmpty().id();
-            this.shellContent = this.manager.create(id, nbt);
+            this.shellContent = this.manager.create(nbt);
             this.shellContent.setShell(this.shell);
             this.name = this.shell.getWithName(this.shellContent);
 
@@ -78,5 +75,13 @@ public class ServerShellContentHolder implements IShellContentHolder {
         checkGeneration();
 
         return this.name;
+    }
+
+    @Override
+    public ItemStack asItemStack() {
+        ItemStack itemStack = this.shell.asItemStack();
+        TransportAPI.SHELL_CONTENT_CREATOR.get()
+                .writeData(this.shellContent, itemStack.getOrCreateTag());
+        return itemStack;
     }
 }

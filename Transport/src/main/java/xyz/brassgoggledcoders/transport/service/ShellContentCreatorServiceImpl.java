@@ -120,6 +120,23 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
         return MISSING;
     }
 
+    @Override
+    public void writeData(@NotNull ShellContent shellContent, @NotNull CompoundTag parent) {
+        CompoundTag shellContentNbt = new CompoundTag();
+        shellContentNbt.putString("id", shellContent.getCreatorInfo().id().toString());
+        shellContentNbt.put("data", shellContent.serializeNBT());
+        parent.put("shellContent", shellContentNbt);
+    }
+
+    @Override
+    public ShellContent readData(@NotNull CompoundTag parent) {
+        if (parent.contains("shellContent")) {
+            return this.create(parent.getCompound("shellContent"));
+        } else {
+            return this.getEmpty().create(null);
+        }
+    }
+
     public void setContext(IContext context) {
         this.context = context;
     }

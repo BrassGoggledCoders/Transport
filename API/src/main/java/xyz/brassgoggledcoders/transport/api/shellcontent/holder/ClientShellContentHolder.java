@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.transport.api.shellcontent.holder;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
@@ -44,6 +45,14 @@ public class ClientShellContentHolder implements IShellContentHolder {
     public Component getName() {
         checkNonnull();
         return this.name;
+    }
+
+    @Override
+    public ItemStack asItemStack() {
+        ItemStack itemStack = this.shell.asItemStack();
+        TransportAPI.SHELL_CONTENT_CREATOR.get()
+                .writeData(this.shellContent, itemStack.getOrCreateTag());
+        return itemStack;
     }
 
     private void checkNonnull() {

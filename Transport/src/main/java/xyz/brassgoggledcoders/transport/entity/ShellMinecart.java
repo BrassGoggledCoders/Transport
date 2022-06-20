@@ -13,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -28,6 +29,7 @@ import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 import xyz.brassgoggledcoders.transport.api.shellcontent.holder.ClientShellContentHolder;
 import xyz.brassgoggledcoders.transport.api.shellcontent.holder.IShellContentHolder;
 import xyz.brassgoggledcoders.transport.api.shellcontent.holder.ServerShellContentHolder;
+import xyz.brassgoggledcoders.transport.content.TransportItems;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -62,6 +64,16 @@ public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAd
     @Override
     public Entity getSelf() {
         return this;
+    }
+
+    @Override
+    public ItemStack asItemStack() {
+        return new ItemStack(TransportItems.SHELL_MINECART.get());
+    }
+
+    @Override
+    public ItemStack getPickResult() {
+        return this.holder.asItemStack();
     }
 
     @Override
