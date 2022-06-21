@@ -1,0 +1,22 @@
+minecraft {
+    runs {
+        data {
+            workingDirectory project.file('run/data')
+
+            args '--mod', "transport_friends", '--all', '--output', file('src/generated/resources/'),
+                    '--existing', file('src/main/resources/')
+
+            mods {
+                transport_friends {
+                    source project(":TransportFriends").sourceSets.main
+                    source project(":TransportFriends").sourceSets.datagen
+                }
+                transport {
+                    source project(":Transport").sourceSets.main
+                    source project(":API").sourceSets.main
+                    source project(":Data").sourceSets.main
+                }
+            }
+        }
+    }
+}

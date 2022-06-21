@@ -260,10 +260,11 @@ subprojects { Project project ->
             if (project.ext.find("dependsOnData")) {
                 compileOnly rootProject.project(":Data")
             }
-
+            
+            def registrate = "com.tterrag.registrate:Registrate:MC1.18.2-1.0.25"
+            implementation fg.deobf(registrate)
             if (project.ext.find("dependsOnRegistrate")) {
-                def registrate = "com.tterrag.registrate:Registrate:MC1.18.2-1.0.25"
-                implementation fg.deobf(registrate)
+
                 shade registrate
             }
 
