@@ -9,6 +9,8 @@ import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IEnergyStorageShellContentCreator;
+import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IFluidStorageShellContentCreator;
+import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IItemStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.shellcontent.empty.EmptyShellContentCreator;
 import xyz.brassgoggledcoders.transport.shellcontent.storage.energy.EnergyStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.shellcontent.storage.fluid.FluidStorageShellContentCreator;
@@ -33,12 +35,12 @@ public class TransportShellContentTypes {
                     .object("empty")
                     .simple(ShellContentType.class, () -> new ShellContentType<>(EmptyShellContentCreator.CODEC));
 
-    public static RegistryEntry<ShellContentType<FluidStorageShellContentCreator>> FLUID_STORAGE =
+    public static RegistryEntry<ShellContentType<IFluidStorageShellContentCreator<?>>> FLUID_STORAGE =
             Transport.getRegistrate()
                     .object("fluid_storage")
                     .simple(ShellContentType.class, () -> new ShellContentType<>(FluidStorageShellContentCreator.CODEC));
 
-    public static RegistryEntry<ShellContentType<ItemStorageShellContentCreator>> ITEM_STORAGE =
+    public static RegistryEntry<ShellContentType<IItemStorageShellContentCreator<?>>> ITEM_STORAGE =
             Transport.getRegistrate()
                     .object("item_storage")
                     .simple(ShellContentType.class, () -> new ShellContentType<>(ItemStorageShellContentCreator.CODEC));

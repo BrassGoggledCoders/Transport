@@ -18,6 +18,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
+import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.StorageSize;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
