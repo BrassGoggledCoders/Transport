@@ -4,27 +4,37 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
-import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
+import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IItemStorageShellContentCreator;
+import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.StorageSize;
 import xyz.brassgoggledcoders.transport.content.TransportShellContentTypes;
 
 public record ItemStorageShellContentCreator(
         StorageSize size,
         boolean showScreen
-) implements IShellContentCreator<ItemStorageShellContent> {
-    public static final Codec<ItemStorageShellContentCreator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+) implements IItemStorageShellContentCreator<ItemStorageShellContent> {
+    public static final Codec<IItemStorageShellContentCreator<?>> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.flatXmap(
                     value -> StorageSize.getByName(value)
                             .map(DataResult::success)
                             .orElseGet(() -> DataResult.error("No Size with name '" + value + "' exists.")),
                     value -> DataResult.success(value.name())
-            ).fieldOf("size").forGetter(ItemStorageShellContentCreator::size),
-            Codec.BOOL.optionalFieldOf("showScreen", Boolean.TRUE).forGetter(ItemStorageShellContentCreator::showScreen)
+            ).fieldOf("size").forGetter(IItemStorageShellContentCreator::getSize),
+            Codec.BOOL.optionalFieldOf("showScreen", Boolean.TRUE).forGetter(IItemStorageShellContentCreator::isShowScreen)
     ).apply(instance, ItemStorageShellContentCreator::new));
 
+    @Override
+    public StorageSize getSize() {
+        return this.size();
+    }
 
     @Override
-    public ShellContentType<?, ?> getType() {
+    public boolean isShowScreen() {
+        return this.showScreen();
+    }
+
+    @Override
+    public ShellContentType<?> getType() {
         return TransportShellContentTypes.ITEM_STORAGE.get();
     }
 

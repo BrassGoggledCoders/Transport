@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.shellcontent.storage.item;
+package xyz.brassgoggledcoders.transport.api.shellcontent.builtin;
 
 import com.mojang.datafixers.util.Function3;
 import net.minecraft.world.Container;

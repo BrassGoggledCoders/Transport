@@ -17,7 +17,7 @@ public class TransportAPI {
     public static final String ID = "transport";
     public static final Logger LOGGER = LogManager.getLogger("transport-api");
 
-    public static final ResourceKey<Registry<ShellContentType<?, ?>>> SHELL_CONTENT_TYPE_KEY = ResourceKey.createRegistryKey(
+    public static final ResourceKey<Registry<ShellContentType<?>>> SHELL_CONTENT_TYPE_KEY = ResourceKey.createRegistryKey(
             new ResourceLocation("transport", "shell_content_type")
     );
 

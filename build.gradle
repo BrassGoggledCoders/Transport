@@ -39,7 +39,6 @@ project('API') {
         id = "api"
         rootConfigure = true
         publish = true
-
     }
 }
 
@@ -72,7 +71,24 @@ project('Transport') {
         fgDependencies = [
                 "mezz.jei:jei-1.18.2-forge-api:10.0.0.184",
                 "mezz.jei:jei-1.18.2-common-api:10.0.0.184",
-                "mezz.jei:jei-1.18.2-forge:10.0.0.184",
+                "mezz.jei:jei-1.18.2-forge:10.0.0.184"
+        ]
+    }
+}
+
+project('TransportFriends') {
+    version = "1.0.0"
+    group = rootProject.group
+    archivesBaseName = "transport&friends"
+    ext {
+        id = "transport_friends"
+        rootConfigure = true
+        publish = true
+        dependsOnApi = true
+        dependsOnData = true
+        dependsOnRegistrate = false
+        isMod = true
+        fgDependencies = [
                 "vazkii.quark:Quark:3.2-347.2280",
                 "vazkii.autoreglib:AutoRegLib:1.7-54.112"
         ]
@@ -82,7 +98,7 @@ project('Transport') {
 project('TransportLittleLogistics') {
     version = "1.0.0"
     group = rootProject.group
-    archivesBaseName = "transport_littlelogistics"
+    archivesBaseName = "transport&littlelogistics"
     ext {
         id = "transport_littlelogistics"
         rootConfigure = true
@@ -153,9 +169,6 @@ sourceSets {
     gametest {
 
     }
-    datagen {
-
-    }
 }
 
 subprojects { Project project ->
@@ -183,12 +196,6 @@ subprojects { Project project ->
                     }
                 }
                 gametest {
-                    compileClasspath += main.compileClasspath
-                    runtimeClasspath += main.runtimeClasspath
-                    compileClasspath += main.output
-                    runtimeClasspath += main.output
-                }
-                datagen {
                     compileClasspath += main.compileClasspath
                     runtimeClasspath += main.runtimeClasspath
                     compileClasspath += main.output

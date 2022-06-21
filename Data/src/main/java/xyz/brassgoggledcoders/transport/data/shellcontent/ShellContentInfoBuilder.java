@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 
 public class ShellContentInfoBuilder {
-    private List<ICondition> conditions = Lists.newArrayList();
+    private final List<ICondition> conditions = Lists.newArrayList();
     private BlockState viewState;
     private Component name;
     private boolean createRecipe = true;

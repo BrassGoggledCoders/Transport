@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.data.modcompat;
+package xyz.brassgoggledcoders.transport.friends.data.shellcontent;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -9,8 +9,8 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 import xyz.brassgoggledcoders.transport.data.shellcontent.ShellContentInfoBuilder;
-import xyz.brassgoggledcoders.transport.data.shellcontent.builders.ItemStorageShellContentBuilder;
-import xyz.brassgoggledcoders.transport.shellcontent.storage.item.StorageSize;
+import xyz.brassgoggledcoders.transport.data.shellcontent.builder.ItemStorageShellContentBuilder;
+import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.StorageSize;
 
 import java.util.Collection;
 import java.util.function.BiConsumer;
