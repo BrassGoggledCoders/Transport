@@ -4,12 +4,11 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
+import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.StorageSize;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
-import xyz.brassgoggledcoders.transport.data.modcompat.QuarkShellContent;
 import xyz.brassgoggledcoders.transport.data.shellcontent.builder.EnergyStorageShellContentBuilder;
-import xyz.brassgoggledcoders.transport.data.shellcontent.builders.FluidStorageShellContentBuilder;
-import xyz.brassgoggledcoders.transport.data.shellcontent.builders.ItemStorageShellContentBuilder;
-import xyz.brassgoggledcoders.transport.shellcontent.storage.item.StorageSize;
+import xyz.brassgoggledcoders.transport.data.shellcontent.builder.FluidStorageShellContentBuilder;
+import xyz.brassgoggledcoders.transport.data.shellcontent.builder.ItemStorageShellContentBuilder;
 
 import java.util.Collection;
 import java.util.function.BiConsumer;
@@ -32,8 +31,5 @@ public class TransportShellContentDataProvider extends ShellContentDataProvider 
         ShellContentInfoBuilder.of(TransportBlocks.ENERGY_STORAGE.get())
                 .withShellContentCreator(EnergyStorageShellContentBuilder.of(100000))
                 .build(consumer);
-
-
-        QuarkShellContent.gather(consumer);
     }
 }

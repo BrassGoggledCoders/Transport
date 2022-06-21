@@ -39,7 +39,6 @@ project('API') {
         id = "api"
         rootConfigure = true
         publish = true
-
     }
 }
 
@@ -170,9 +169,6 @@ sourceSets {
     gametest {
 
     }
-    datagen {
-
-    }
 }
 
 subprojects { Project project ->
@@ -200,12 +196,6 @@ subprojects { Project project ->
                     }
                 }
                 gametest {
-                    compileClasspath += main.compileClasspath
-                    runtimeClasspath += main.runtimeClasspath
-                    compileClasspath += main.output
-                    runtimeClasspath += main.output
-                }
-                datagen {
                     compileClasspath += main.compileClasspath
                     runtimeClasspath += main.runtimeClasspath
                     compileClasspath += main.output
