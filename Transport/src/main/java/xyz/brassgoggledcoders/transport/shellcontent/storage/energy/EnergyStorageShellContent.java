@@ -15,7 +15,7 @@ public class EnergyStorageShellContent extends ShellContent {
     private final EnergyStorage energyStorage;
     private final LazyOptional<IEnergyStorage> lazyOptional;
 
-    public EnergyStorageShellContent(int capacity, int maxReceive, int maxExtract) {
+    public EnergyStorageShellContent(int capacity, int maxReceive, int maxExtract, boolean creative) {
         this.energyStorage = new EnergyStorage(capacity, maxReceive, maxExtract);
         this.lazyOptional = LazyOptional.of(this::getEnergyStorage);
     }

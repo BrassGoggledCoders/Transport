@@ -6,10 +6,9 @@ import net.minecraftforge.common.crafting.conditions.ICondition;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.data.modcompat.QuarkShellContent;
-import xyz.brassgoggledcoders.transport.data.shellcontent.builders.EnergyStorageShellContentBuilder;
+import xyz.brassgoggledcoders.transport.data.shellcontent.builder.EnergyStorageShellContentBuilder;
 import xyz.brassgoggledcoders.transport.data.shellcontent.builders.FluidStorageShellContentBuilder;
 import xyz.brassgoggledcoders.transport.data.shellcontent.builders.ItemStorageShellContentBuilder;
-import xyz.brassgoggledcoders.transport.shellcontent.storage.energy.EnergyStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.shellcontent.storage.item.StorageSize;
 
 import java.util.Collection;

@@ -46,7 +46,10 @@ public class TransportShellContentTypes {
     public static RegistryEntry<ShellContentType<IEnergyStorageShellContentCreator<?>>> ENERGY_STORAGE =
             Transport.getRegistrate()
                     .object("energy_storage")
-                    .simple(ShellContentType.class, () -> new ShellContentType<>(EnergyStorageShellContentCreator.CODEC));
+                    .simple(
+                            ShellContentType.class,
+                            () -> new ShellContentType<>(EnergyStorageShellContentCreator.CODEC)
+                    );
 
     public static void setup() {
         SHELL_CONTENT_TYPES_DR.register(FMLJavaModLoadingContext.get().getModEventBus());
