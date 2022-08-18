@@ -276,7 +276,10 @@ subprojects { Project project ->
         }
 
         jar {
-            classifier("nodep")
+            if (project.ext.find("dependsOnRegistrate")) {
+                classifier("nodep")
+            }
+
             manifest {
                 attributes([
                         "Specification-Title"     : project.ext.find("id"),
