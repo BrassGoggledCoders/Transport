@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.data.shellcontent;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.conditions.ICondition;
+import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.StorageSize;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
@@ -31,5 +32,11 @@ public class TransportShellContentDataProvider extends ShellContentDataProvider 
         ShellContentInfoBuilder.of(TransportBlocks.ENERGY_STORAGE.get())
                 .withShellContentCreator(EnergyStorageShellContentBuilder.of(100000))
                 .build(consumer);
+    }
+
+    @NotNull
+    @Override
+    public String getName() {
+        return super.getName();
     }
 }

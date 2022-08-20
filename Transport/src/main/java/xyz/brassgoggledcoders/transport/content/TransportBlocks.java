@@ -4,6 +4,7 @@ import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.client.renderer.RenderType;
@@ -28,6 +29,7 @@ import xyz.brassgoggledcoders.transport.block.rail.*;
 import xyz.brassgoggledcoders.transport.block.storage.CapabilityStorageBlock;
 import xyz.brassgoggledcoders.transport.blockentity.DumpRailBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.rail.CachedRailShapeBlockEntity;
+import xyz.brassgoggledcoders.transport.blockentity.rail.LoadingRailBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.EnergyStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.FluidStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.data.recipe.RailWorkerBenchRecipeBuilder;
@@ -86,6 +88,101 @@ public class TransportBlocks {
             .validBlock(ITEM_DUMP_RAIL)
             .validBlock(FLUID_DUMP_RAIL)
             .validBlock(ENERGY_DUMP_RAIL)
+            .register();
+
+    public static final BlockEntry<LoadingRailBlock<IItemHandler>> ITEM_LOADING_RAIL = Transport.getRegistrate()
+            .object("item_loading_rail")
+            .block(properties -> LoadingRailBlock.itemLoadingRail(properties, true))
+            .transform(TransportBlocks::defaultRail)
+            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
+            .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_IRON)
+            .build()
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
+                    .save(provider)
+            )
+            .register();
+
+    public static final BlockEntry<LoadingRailBlock<IFluidHandler>> FLUID_LOADING_RAIL = Transport.getRegistrate()
+            .object("fluid_loading_rail")
+            .block(properties -> LoadingRailBlock.fluidDumpRail(properties, true))
+            .transform(TransportBlocks::defaultRail)
+            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
+            .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_IRON)
+            .build()
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
+                    .save(provider)
+            )
+            .register();
+
+    public static final BlockEntry<LoadingRailBlock<IEnergyStorage>> ENERGY_LOADING_RAIL = Transport.getRegistrate()
+            .object("energy_loading_rail")
+            .block(properties -> LoadingRailBlock.energyDumpRail(properties, true))
+            .transform(TransportBlocks::defaultRail)
+            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
+            .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_IRON)
+            .build()
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
+                    .save(provider)
+            )
+            .register();
+
+    public static final BlockEntry<LoadingRailBlock<IItemHandler>> ITEM_UNLOADING_RAIL = Transport.getRegistrate()
+            .object("item_unloading_rail")
+            .block(properties -> LoadingRailBlock.itemLoadingRail(properties, false))
+            .transform(TransportBlocks::defaultRail)
+            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
+            .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_IRON)
+            .build()
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
+                    .save(provider)
+            )
+            .register();
+
+    public static final BlockEntry<LoadingRailBlock<IFluidHandler>> FLUID_UNLOADING_RAIL = Transport.getRegistrate()
+            .object("fluid_unloading_rail")
+            .block(properties -> LoadingRailBlock.fluidDumpRail(properties, false))
+            .transform(TransportBlocks::defaultRail)
+            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
+            .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_IRON)
+            .build()
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
+                    .save(provider)
+            )
+            .register();
+
+    public static final BlockEntry<LoadingRailBlock<IEnergyStorage>> ENERGY_UNLOADING_RAIL = Transport.getRegistrate()
+            .object("energy_unloading_rail")
+            .block(properties -> LoadingRailBlock.energyDumpRail(properties, false))
+            .transform(TransportBlocks::defaultRail)
+            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
+            .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_IRON)
+            .build()
+            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
+                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
+                    .save(provider)
+            )
+            .register();
+
+    public static final BlockEntityEntry<LoadingRailBlockEntity> LOADING_RAIL_BLOCK_ENTITY = Transport.getRegistrate()
+            .object("loading_rail")
+            .blockEntity(LoadingRailBlockEntity::new)
+            .validBlock(ITEM_LOADING_RAIL)
+            .validBlock(FLUID_LOADING_RAIL)
+            .validBlock(ENERGY_LOADING_RAIL)
+            .validBlock(ITEM_UNLOADING_RAIL)
+            .validBlock(FLUID_UNLOADING_RAIL)
+            .validBlock(ENERGY_UNLOADING_RAIL)
             .register();
 
     public static final BlockEntry<CopperRail> COPPER_RAIL = Transport.getRegistrate()
