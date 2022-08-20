@@ -149,7 +149,7 @@ public class DumpRailBlock<T> extends BaseRailBlock implements EntityBlock {
                     if (output > 0) {
                         int filledAmount = to.receiveEnergy(output, true);
                         if (filledAmount > 0) {
-                            to.receiveEnergy(from.extractEnergy(filledAmount, true), true);
+                            to.receiveEnergy(from.extractEnergy(filledAmount, false), false);
                             if (output == filledAmount && filledAmount > 1000) {
                                 return OptionalInt.of(0);
                             }
