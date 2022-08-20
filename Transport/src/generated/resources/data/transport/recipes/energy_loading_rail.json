@@ -1,0 +1,9 @@
+{
+  "type": "transport:rail_worker_bench",
+  "input": {
+    "tag": "transport:rails/iron"
+  },
+  "output": {
+    "item": "transport:energy_loading_rail"
+  }
+}

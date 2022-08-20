@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/rail_flat",
+  "textures": {
+    "rail": "transport:block/rail/energy_unloading_rail_powered"
+  }
+}

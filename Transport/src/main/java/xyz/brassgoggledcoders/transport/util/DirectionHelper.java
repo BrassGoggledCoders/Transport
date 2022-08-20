@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class DirectionHelper {
@@ -51,5 +52,21 @@ public class DirectionHelper {
     private static double toBlockSpace(double value) {
         double decimalValue = value - Math.floor(value);
         return decimalValue > 0 ? decimalValue : decimalValue + 1;
+    }
+
+    public static Optional<Direction> next(Direction current, boolean restart) {
+        return Optional.ofNullable(switch (current) {
+            case DOWN -> Direction.UP;
+            case UP -> Direction.NORTH;
+            case NORTH -> Direction.SOUTH;
+            case SOUTH -> Direction.WEST;
+            case WEST -> Direction.EAST;
+            case EAST -> restart ? Direction.DOWN : null;
+        });
+    }
+
+    public static Direction next(Direction current) {
+        return next(current, true)
+                .orElse(Direction.DOWN);
     }
 }
