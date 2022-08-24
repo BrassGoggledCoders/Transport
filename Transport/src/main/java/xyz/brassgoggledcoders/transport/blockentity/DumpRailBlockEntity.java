@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.blockentity;
 import com.google.common.collect.Maps;
 import com.mojang.datafixers.util.Function3;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -11,9 +12,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.block.rail.DumpRailBlock;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.UUID;
@@ -38,35 +39,31 @@ public class DumpRailBlockEntity extends BlockEntity {
 
                 if (cartOptional.isPresent()) {
                     RailShape railShape = this.getBlockState().getValue(DumpRailBlock.RAIL_SHAPE);
-                    BlockEntity blockEntity = dumpState.type.getBlockEntity(level, this.getBlockPos(), railShape.isAscending());
+                    LazyOptional<T> blockOptional = dumpState.type.getCapability(level, this.getBlockPos(),
+                            railShape.isAscending(), capability);
 
-                    if (blockEntity != null) {
-                        LazyOptional<T> blockOptional = blockEntity.getCapability(capability);
-                        if (blockOptional.isPresent()) {
-                            OptionalInt counter = switch (dumpState.type()) {
-                                case UNLOADING -> transfer.apply(
-                                        cartOptional.orElseThrow(IllegalStateException::new),
-                                        blockOptional.orElseThrow(IllegalStateException::new),
-                                        dumpState.counter()
-                                );
-                                case LOADING -> transfer.apply(
-                                        blockOptional.orElseThrow(IllegalStateException::new),
-                                        cartOptional.orElseThrow(IllegalStateException::new),
-                                        dumpState.counter()
-                                );
-                                default -> throw new IllegalStateException("Unexpected value: " + dumpState.type());
-                            };
-                            dumpStates.put(cart.getUUID(), new DumpState(
-                                    gameTime,
-                                    counter.isPresent() ? dumpState.type() : dumpState.type().getNext(),
-                                    counter
-                            ));
-                        }
-                    } else {
-                        dumpStates.put(cart.getUUID(), new DumpState(gameTime, dumpState.type().getNext(), OptionalInt.empty()));
+                    if (blockOptional.isPresent()) {
+                        OptionalInt counter = switch (dumpState.type()) {
+                            case UNLOADING -> transfer.apply(
+                                    cartOptional.orElseThrow(IllegalStateException::new),
+                                    blockOptional.orElseThrow(IllegalStateException::new),
+                                    dumpState.counter()
+                            );
+                            case LOADING -> transfer.apply(
+                                    blockOptional.orElseThrow(IllegalStateException::new),
+                                    cartOptional.orElseThrow(IllegalStateException::new),
+                                    dumpState.counter()
+                            );
+                            default -> throw new IllegalStateException("Unexpected value: " + dumpState.type());
+                        };
+                        dumpStates.put(cart.getUUID(), new DumpState(
+                                gameTime,
+                                counter.isPresent() ? dumpState.type() : dumpState.type().getNext(),
+                                counter
+                        ));
                     }
                 } else {
-                    dumpStates.put(cart.getUUID(), new DumpState(gameTime, DumpType.DONE, OptionalInt.empty()));
+                    dumpStates.put(cart.getUUID(), new DumpState(gameTime, dumpState.type().getNext(), OptionalInt.empty()));
                 }
             }
         }
@@ -74,26 +71,35 @@ public class DumpRailBlockEntity extends BlockEntity {
 
     private enum DumpType {
         UNLOADING {
-            @Nullable
+            @NotNull
             @Override
-            public BlockEntity getBlockEntity(Level level, BlockPos railPos, boolean ascending) {
-                return level.getBlockEntity(railPos.below());
+            public <T> LazyOptional<T> getCapability(Level level, BlockPos railPos, boolean ascending, Capability<T> capability) {
+                BlockEntity blockEntity = level.getBlockEntity(railPos.below());
+                if (blockEntity != null) {
+                    return blockEntity.getCapability(capability, Direction.UP);
+                }
+                return LazyOptional.empty();
             }
-        }, LOADING {
-            @Nullable
+        },
+        LOADING {
+            @NotNull
             @Override
-            public BlockEntity getBlockEntity(Level level, BlockPos railPos, boolean ascending) {
+            public <T> LazyOptional<T> getCapability(Level level, BlockPos railPos, boolean ascending, Capability<T> capability) {
                 BlockEntity blockEntity = level.getBlockEntity(railPos.above(ascending ? 2 : 1));
                 if (blockEntity == null) {
                     blockEntity = level.getBlockEntity(railPos.above(ascending ? 3 : 2));
                 }
-                return blockEntity;
+                if (blockEntity != null) {
+                    return blockEntity.getCapability(capability, Direction.DOWN);
+                }
+                return LazyOptional.empty();
             }
-        }, DONE;
+        },
+        DONE;
 
-        @Nullable
-        public BlockEntity getBlockEntity(Level level, BlockPos railPos, boolean ascending) {
-            return null;
+        @NotNull
+        public <T> LazyOptional<T> getCapability(Level level, BlockPos railPos, boolean ascending, Capability<T> capability) {
+            return LazyOptional.empty();
         }
 
         public DumpType getNext() {

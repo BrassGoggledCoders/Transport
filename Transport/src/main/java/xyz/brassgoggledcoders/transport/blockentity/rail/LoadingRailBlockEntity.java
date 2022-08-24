@@ -74,9 +74,14 @@ public class LoadingRailBlockEntity extends BlockEntity {
                         } else {
                             nextCheckPos = this.getBlockPos().relative(direction.get());
                         }
+
                         BlockEntity blockEntity = this.getLevel().getBlockEntity(nextCheckPos);
+                        if (blockEntity == null && direction.get() == Direction.UP) {
+                            blockEntity = this.getLevel().getBlockEntity(nextCheckPos.above());
+                        }
+
                         if (blockEntity != null) {
-                            LazyOptional<T> blockOptional = blockEntity.getCapability(capability);
+                            LazyOptional<T> blockOptional = blockEntity.getCapability(capability, direction.get().getOpposite());
                             if (blockOptional.isPresent()) {
                                 if (loading) {
                                     counter = transfer.apply(
