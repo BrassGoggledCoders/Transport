@@ -27,7 +27,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 var mcVersion = "1.18.2"
 var forgeVersion = "40.1.20"
-var transportVersion = "4.0.6"
+var transportVersion = "4.1.1"
 
 group = "xyz.brassgoggledcoders.transport"
 
@@ -38,8 +38,6 @@ project('API') {
     ext {
         id = "api"
         rootConfigure = true
-        publish = true
-
     }
 }
 
@@ -51,7 +49,6 @@ project('Data') {
     ext {
         id = "data"
         rootConfigure = true
-        publish = true
         dependsOnApi = true
     }
 }
@@ -64,7 +61,6 @@ project('Transport') {
     ext {
         id = "transport"
         rootConfigure = true
-        publish = true
         dependsOnApi = true
         dependsOnData = true
         dependsOnRegistrate = true
@@ -84,7 +80,6 @@ project('TransportFriends') {
     ext {
         id = "transport_friends"
         rootConfigure = true
-        publish = true
         dependsOnApi = true
         dependsOnData = true
         dependsOnRegistrate = false
@@ -185,10 +180,7 @@ subprojects { Project project ->
 
         apply plugin: 'net.minecraftforge.gradle'
         apply plugin: 'org.parchmentmc.librarian.forgegradle'
-
-        if (project.ext.find("publish")) {
-            apply plugin: 'maven-publish'
-        }
+        apply plugin: 'maven-publish'
 
         java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -229,25 +221,39 @@ subprojects { Project project ->
         if (project.ext.find("dependsOnRegistrate")) {
             configurations {
                 shade
+                shadeSub
             }
 
             shadowJar {
-                configurations = [project.configurations.shade]
+                //using the Same configuration for deps/subprojects causes oddities with finding unmapped deps????
+                configurations = [project.configurations.shade, project.configurations.shadeSub]
                 def repackLocate = project.ext.find("id").replace("_", ".")
                 relocate 'com.tterrag.registrate', "xyz.brassgoggledcoders.${repackLocate}.repack.registrate"
                 classifier ''
+                if (project.ext.find("id") == "transport") {
+                    dependencies {
+                        exclude(dependency({
+                            !['com.tterrag.registrate', 'xyz.brassgoggledcoders.transport'].contains(it.moduleGroup)
+                        }))
+                    }
+                }
+
             }
 
             reobf {
                 shadowJar {}
             }
 
-            build.dependsOn shadowJar
-            build.dependsOn reobfShadowJar
-
             artifacts {
                 archives shadowJar
             }
+
+            shadowJar.finalizedBy(reobfShadowJar)
+
+            build.dependsOn shadowJar
+            build.dependsOn reobfShadowJar
+
+            project.tasks.getByName("publish").dependsOn(reobfShadowJar)
         }
 
         dependencies {
@@ -260,12 +266,14 @@ subprojects { Project project ->
             if (project.ext.find("dependsOnData")) {
                 compileOnly rootProject.project(":Data")
             }
-            
+
             def registrate = "com.tterrag.registrate:Registrate:MC1.18.2-1.0.25"
             implementation fg.deobf(registrate)
             if (project.ext.find("dependsOnRegistrate")) {
-
                 shade registrate
+            }
+            if (project.ext.find("id") == "transport") {
+                shadeSub rootProject.project(":API")
             }
 
             if (project.ext.find("fgDependencies")) {
@@ -295,20 +303,18 @@ subprojects { Project project ->
 
         jar.finalizedBy('reobfJar')
 
-        if (project.ext.find("publish")) {
-            publishing {
-                publications {
-                    mavenJava(MavenPublication) {
-                        artifact jar
-                        if (project.ext.find("dependsOnRegistrate")) {
-                            artifact shadowJar
-                        }
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    artifact jar
+                    if (project.ext.find("dependsOnRegistrate")) {
+                        artifact shadowJar
                     }
                 }
-                repositories {
-                    maven {
-                        url "file://${rootProject.projectDir}/mcmodsrepo"
-                    }
+            }
+            repositories {
+                maven {
+                    url "file://${rootProject.projectDir}/mcmodsrepo"
                 }
             }
         }
@@ -423,4 +429,11 @@ tasks.register("genBuildAllIntellijRuns") {
             }
         }
     }
+}
+
+tasks.register("publishModJars") {
+    subprojects(p -> {
+        dependsOn(":${p.name}:publish")
+    })
+    group("publishing")
 }
