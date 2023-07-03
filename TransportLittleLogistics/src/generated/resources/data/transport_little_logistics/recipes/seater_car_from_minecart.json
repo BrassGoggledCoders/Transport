@@ -1,9 +1,0 @@
-{
-  "type": "transport:rail_worker_bench",
-  "input": {
-    "item": "minecraft:minecart"
-  },
-  "output": {
-    "item": "littlelogistics:seater_car"
-  }
-}

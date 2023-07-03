@@ -1,8 +1,15 @@
-rootProject.name = "TransportMultiproject"
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven {
+            url('https://maven.minecraftforge.net/')
+        }
+        maven {
+            url('https://maven.parchmentmc.org')
+        }
+    }
+}
 
-include 'Transport'
-include 'TransportLittleLogistics'
-include 'API'
-include 'Data'
-include 'TransportFriends'
+rootProject.name = "Transport"
+
 

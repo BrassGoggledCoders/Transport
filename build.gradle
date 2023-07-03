@@ -1,439 +1,145 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://maven.parchmentmc.org' }
-        mavenCentral()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath(group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true)
-        classpath 'org.parchmentmc:librarian:1.+'
-        classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.2"
-    }
-}
-
-import org.gradle.internal.xml.XmlTransformer
-
 plugins {
-    id("org.jetbrains.gradle.plugin.idea-ext") version "1.1"
+    id "maven-publish"
+    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
+version = '0.1.0'
+group = 'xyz.brassgoggledcoders.transport'
+archivesBaseName = 'transport'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-var mcVersion = "1.18.2"
-var forgeVersion = "40.1.20"
-var transportVersion = "4.1.1"
-
-group = "xyz.brassgoggledcoders.transport"
-
-project('API') {
-    group = rootProject.group
-    version = transportVersion
-    archivesBaseName = "api"
-    ext {
-        id = "api"
-        rootConfigure = true
-    }
-}
-
-project('Data') {
-    version = transportVersion
-    group = rootProject.group
-    archivesBaseName = "data"
-
-    ext {
-        id = "data"
-        rootConfigure = true
-        dependsOnApi = true
-    }
-}
-
-project('Transport') {
-    version = transportVersion
-    group = rootProject.group
-    archivesBaseName = "transport"
-
-    ext {
-        id = "transport"
-        rootConfigure = true
-        dependsOnApi = true
-        dependsOnData = true
-        dependsOnRegistrate = true
-        isMod = true
-        fgDependencies = [
-                "mezz.jei:jei-1.18.2-forge-api:10.0.0.184",
-                "mezz.jei:jei-1.18.2-common-api:10.0.0.184",
-                "mezz.jei:jei-1.18.2-forge:10.0.0.184"
-        ]
-    }
-}
-
-project('TransportFriends') {
-    version = "1.0.0"
-    group = rootProject.group
-    archivesBaseName = "transport&friends"
-    ext {
-        id = "transport_friends"
-        rootConfigure = true
-        dependsOnApi = true
-        dependsOnData = true
-        dependsOnRegistrate = false
-        isMod = true
-        fgDependencies = [
-                "vazkii.quark:Quark:3.2-347.2280",
-                "vazkii.autoreglib:AutoRegLib:1.7-54.112"
-        ]
-    }
-}
-
-project('TransportLittleLogistics') {
-    version = "1.0.0"
-    group = rootProject.group
-    archivesBaseName = "transport&littlelogistics"
-    ext {
-        id = "transport_littlelogistics"
-        rootConfigure = true
-        publish = true
-        dependsOnApi = true
-        dependsOnData = true
-        dependsOnRegistrate = true
-        isMod = true
-        fgDependencies = [
-                "curse.maven:little-logistics-570050:3818773"
-        ]
-    }
-}
-
-allprojects {
-    repositories {
-        maven {
-            name "Registrate"
-            url "https://maven.tterrag.com/"
-            content {
-                includeGroup "com.tterrag.registrate"
-            }
-        }
-        maven {
-            name "Botania"
-            url "https://maven.blamejared.com"
-            content {
-                includeGroupByRegex "vazkii.*"
-            }
-        }
-        maven {
-            name = "JEI"
-            url = "https://dvs1.progwml6.com/files/maven"
-            content {
-                includeGroup "mezz.jei"
-            }
-        }
-        maven {
-            name "Little Logistics, The One Probe"
-            url "https://cfa2.cursemaven.com"
-            content {
-                includeGroup "curse.maven"
-            }
-        }
-    }
-}
-
-dependencies {
-    minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
-
-    def registrate = "com.tterrag.registrate:Registrate:MC1.18.2-1.0.25"
-    runtimeOnly fg.deobf(registrate)
-
-    subprojects.forEach(p -> {
-        if (p == project) return
-        p.pluginManager.withPlugin('net.minecraftforge.gradle') {
-            runtimeOnly p
-        }
-        if (p.ext.find("fgDependencies")) {
-            for (final def dep in p.ext.find("fgDependencies")) {
-                runtimeOnly fg.deobf(dep)
-            }
-        }
-    })
-}
+jarJar.enable()
 
 sourceSets {
+    main {
+        resources {
+            srcDir 'src/generated/resources'
+        }
+    }
     gametest {
-
-    }
-    datagen {
-
-    }
-}
-
-subprojects { Project project ->
-    if (project.ext.find("rootConfigure")) {
-        println(project.name)
-
-        if (project.ext.find("dependsOnRegistrate")) {
-            apply plugin: "com.github.johnrengelman.shadow"
-        }
-
-        apply plugin: 'net.minecraftforge.gradle'
-        apply plugin: 'org.parchmentmc.librarian.forgegradle'
-        apply plugin: 'maven-publish'
-
-        java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-        if (project.ext.find("isMod")) {
-            project.sourceSets {
-                main {
-                    resources {
-                        srcDir 'src/generated/resources'
-                    }
-                }
-                gametest {
-                    compileClasspath += main.compileClasspath
-                    runtimeClasspath += main.runtimeClasspath
-                    compileClasspath += main.output
-                    runtimeClasspath += main.output
-                }
-                datagen {
-                    compileClasspath += main.compileClasspath
-                    runtimeClasspath += main.runtimeClasspath
-                    compileClasspath += main.output
-                    runtimeClasspath += main.output
-                }
-            }
-        }
-        minecraft {
-            mappings channel: 'parchment', version: '2022.06.05-1.18.2'
-
-            runs.all {
-                ideaModule("${rootProject.name}${project.path}.main".replace(":", "."))
-
-                property 'forge.logging.markers', 'REGISTRIES'
-                property 'forge.logging.console.level', 'debug'
-                property 'mixin.env.remapRefMap', 'true'
-                property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            }
-        }
-
-        if (project.ext.find("dependsOnRegistrate")) {
-            configurations {
-                shade
-                shadeSub
-            }
-
-            shadowJar {
-                //using the Same configuration for deps/subprojects causes oddities with finding unmapped deps????
-                configurations = [project.configurations.shade, project.configurations.shadeSub]
-                def repackLocate = project.ext.find("id").replace("_", ".")
-                relocate 'com.tterrag.registrate', "xyz.brassgoggledcoders.${repackLocate}.repack.registrate"
-                classifier ''
-                if (project.ext.find("id") == "transport") {
-                    dependencies {
-                        exclude(dependency({
-                            !['com.tterrag.registrate', 'xyz.brassgoggledcoders.transport'].contains(it.moduleGroup)
-                        }))
-                    }
-                }
-
-            }
-
-            reobf {
-                shadowJar {}
-            }
-
-            artifacts {
-                archives shadowJar
-            }
-
-            shadowJar.finalizedBy(reobfShadowJar)
-
-            build.dependsOn shadowJar
-            build.dependsOn reobfShadowJar
-
-            project.tasks.getByName("publish").dependsOn(reobfShadowJar)
-        }
-
-        dependencies {
-            minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
-
-            if (project.ext.find("dependsOnApi")) {
-                compileOnly rootProject.project(":API")
-            }
-
-            if (project.ext.find("dependsOnData")) {
-                compileOnly rootProject.project(":Data")
-            }
-
-            def registrate = "com.tterrag.registrate:Registrate:MC1.18.2-1.0.25"
-            implementation fg.deobf(registrate)
-            if (project.ext.find("dependsOnRegistrate")) {
-                shade registrate
-            }
-            if (project.ext.find("id") == "transport") {
-                shadeSub rootProject.project(":API")
-            }
-
-            if (project.ext.find("fgDependencies")) {
-                for (final def dep in project.ext.find("fgDependencies")) {
-                    implementation fg.deobf(dep)
-                }
-            }
-        }
-
-        jar {
-            if (project.ext.find("dependsOnRegistrate")) {
-                classifier("nodep")
-            }
-
-            manifest {
-                attributes([
-                        "Specification-Title"     : project.ext.find("id"),
-                        "Specification-Vendor"    : "Brass Goggled Coders",
-                        "Specification-Version"   : "1",
-                        "Implementation-Title"    : project.name,
-                        "Implementation-Version"  : project.jar.archiveVersion,
-                        "Implementation-Vendor"   : "Brass Goggled Coders",
-                        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-                ])
-            }
-        }
-
-        jar.finalizedBy('reobfJar')
-
-        publishing {
-            publications {
-                mavenJava(MavenPublication) {
-                    artifact jar
-                    if (project.ext.find("dependsOnRegistrate")) {
-                        artifact shadowJar
-                    }
-                }
-            }
-            repositories {
-                maven {
-                    url "file://${rootProject.projectDir}/mcmodsrepo"
-                }
-            }
-        }
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.output
     }
 }
 
 minecraft {
-    mappings channel: 'parchment', version: '2022.06.05-1.18.2'
+    mappings channel: 'parchment', version: '2022.11.27-1.19.2'
 
     runs {
         client {
-            taskName("runClientAll")
-            workingDirectory project.file('run/client')
+            workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', "${modId}"
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property 'forge.enabledGameTestNamespaces', 'transport'
 
             mods {
-                transport_little_logistics {
-                    source project(":TransportLittleLogistics").sourceSets.main
-                    source project(":TransportLittleLogistics").sourceSets.gametest
-                }
                 transport {
-                    source project(":Transport").sourceSets.main
-                    source project(":Transport").sourceSets.gametest
-                    source project(":API").sourceSets.main
-                    source project(":Data").sourceSets.main
+                    source sourceSets.main
+                    source sourceSets.gametest
                 }
             }
         }
 
         server {
-            taskName("runServerAll")
-            workingDirectory project.file('run/server')
+            workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', "${modId}"
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property 'forge.enabledGameTestNamespaces', 'transport'
 
             mods {
-                transport_little_logistics {
-                    source project(":TransportLittleLogistics").sourceSets.main
-                }
                 transport {
-                    source project(":Transport").sourceSets.main
-                    source project(":API").sourceSets.main
-                    source project(":Data").sourceSets.main
+                    source sourceSets.main
+                    source sourceSets.gametest
                 }
             }
         }
 
         gameTestServer {
-            taskName("runGameTestServerAll")
-            workingDirectory project.file('run/server')
+            workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', "transport,transport_little_logistics"
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property 'forge.enabledGameTestNamespaces', 'transport'
 
             mods {
-                transport_little_logistics {
-                    source project(":TransportLittleLogistics").sourceSets.main
-                    source project(":TransportLittleLogistics").sourceSets.gametest
-                }
                 transport {
-                    source project(":Transport").sourceSets.main
-                    source project(":Transport").sourceSets.gametest
-                    source project(":API").sourceSets.main
-                    source project(":Data").sourceSets.main
+                    source sourceSets.main
+                    source sourceSets.gametest
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            args '--mod', 'transport', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                transport {
+                    source sourceSets.main
                 }
             }
         }
     }
 }
 
-tasks.register("genBuildAllIntellijRuns") {
-    subprojects(p -> {
-        if (p.ext.find("isMod")) {
-            dependsOn(":${p.name}:genIntellijRuns")
+repositories {
+    mavenLocal()
+    maven {
+        name = "Registrate"
+        url = "https://maven.tterrag.com/"
+    }
+    maven {
+        name = "BlameJared"
+        url = "https://maven.blamejared.com/"
+    }
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
+
+    implementation fg.deobf("com.tterrag.registrate:Registrate:MC1.19-1.1.5")
+    jarJar(group: 'com.tterrag.registrate', name: 'Registrate', version: "[MC1.19.2,MC1.19.3)")
+
+    runtimeOnly fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.19.2-9.2.2-165.3")
+    compileOnly fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.19.2-9.2.2-165.3:api")
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : "Transport",
+                "Specification-Vendor"    : "Brass Goggled Coders",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : "Brass Goggled Coders",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+reobf {
+    jarJar { }
+}
+
+jar.finalizedBy('reobfJar')
+tasks.jarJar.finalizedBy('reobfJarJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
         }
-    })
-    dependsOn("genIntellijRuns")
-    group("forgegradle runs")
-    doLast {
-        rootProject.fileTree(".idea/runConfigurations").getFiles().forEach { file ->
-            if (file.exists() && !file.isDirectory()) {
-                var transformer = new XmlTransformer()
-                transformer.addAction { XmlProvider provider ->
-                    provider.asNode()
-                            .configuration
-                            .method
-                            .option
-                            .each {
-                                if (it.@name == "Make") {
-                                    it.@name = "MakeProject"
-                                }
-                            }
-                }
-                file.withReader { reader ->
-                    var text = reader.getText()
-                    file.withWriter { writer ->
-                        transformer.transform(text, writer)
-                    }
-                }
-            }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/mcmodsrepo"
         }
     }
 }
 
-tasks.register("publishModJars") {
-    subprojects(p -> {
-        dependsOn(":${p.name}:publish")
-    })
-    group("publishing")
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.compilerArgs << "-Xmaxerrs" << "10000"
 }
