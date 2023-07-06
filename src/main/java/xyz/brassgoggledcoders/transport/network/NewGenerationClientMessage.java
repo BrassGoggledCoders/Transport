@@ -3,7 +3,6 @@ package xyz.brassgoggledcoders.transport.network;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
@@ -26,20 +25,16 @@ public record NewGenerationClientMessage(
         tag.ifPresent(friendlyByteBuf::writeNbt);
     }
 
-    public boolean consume(Supplier<NetworkEvent.Context> contextSupplier) {
-        contextSupplier.get().enqueueWork(() -> {
-            LogicalSide logicalSide = contextSupplier.get().getDirection().getReceptionSide();
-            Optional<Level> levelOpt = LogicalSidedProvider.CLIENTWORLD.get(logicalSide);
-            if (levelOpt.isPresent()) {
-                Level level = levelOpt.get();
-                Entity entity = level.getEntity(this.entityId());
-                if (entity instanceof IShell shell) {
-                    shell.getHolder()
-                            .update(this.shellContentCreatorInfo().create(null));
-                }
-            }
-        });
-        return true;
+    public void consume(Supplier<NetworkEvent.Context> contextSupplier) {
+        LogicalSide logicalSide = contextSupplier.get().getDirection().getReceptionSide();
+        LogicalSidedProvider.CLIENTWORLD.get(logicalSide)
+                .ifPresent(level -> {
+                    Entity entity = level.getEntity(this.entityId());
+                    if (entity instanceof IShell shell) {
+                        shell.getHolder()
+                                .update(this.shellContentCreatorInfo().create(null));
+                    }
+                });
     }
 
     public static NewGenerationClientMessage decode(FriendlyByteBuf friendlyByteBuf) {

@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryManager;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.codec.Codecs;
-import xyz.brassgoggledcoders.transport.content.TransportShellContentTypes;
+import xyz.brassgoggledcoders.transport.content.TransportShellContent;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -26,6 +26,7 @@ public record ShellContentCreatorInfo(
         boolean createRecipe,
         IShellContentCreator<?> contentCreator
 ) {
+    @SuppressWarnings("RedundantTypeArguments") //IShellContentCreator<?> is necessary for the dispatch or code fails???
     private static final Lazy<Codec<ShellContentCreatorInfo>> CODEC = Lazy.of(() ->
             RecordCodecBuilder.create(instance -> instance.group(
                     ResourceLocation.CODEC.fieldOf("id").forGetter(ShellContentCreatorInfo::id),
@@ -35,7 +36,7 @@ public record ShellContentCreatorInfo(
                             .forGetter(creatorInfo -> Optional.of(creatorInfo.name())),
                     Codec.BOOL.optionalFieldOf("createRecipe", Boolean.TRUE)
                             .forGetter(ShellContentCreatorInfo::createRecipe),
-                    RegistryManager.ACTIVE.getRegistry(TransportShellContentTypes.SHELL_CONTENT_TYPES)
+                    RegistryManager.ACTIVE.getRegistry(TransportShellContent.SHELL_CONTENT_TYPES)
                             .getCodec()
                             .<IShellContentCreator<?>>dispatch(IShellContentCreator::getCodec, Function.identity())
                             .fieldOf("content")

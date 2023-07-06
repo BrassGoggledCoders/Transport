@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IItemStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.StorageSize;
-import xyz.brassgoggledcoders.transport.content.TransportShellContentTypes;
 
 public record ItemStorageShellContentCreator(
         StorageSize size,

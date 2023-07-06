@@ -15,9 +15,9 @@ import xyz.brassgoggledcoders.transport.shellcontent.storage.energy.EnergyStorag
 import xyz.brassgoggledcoders.transport.shellcontent.storage.fluid.FluidStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.shellcontent.storage.item.ItemStorageShellContentCreator;
 
-public class TransportShellContentTypes {
+public class TransportShellContent {
     public static ResourceKey<Registry<Codec<? extends IShellContentCreator<?>>>> SHELL_CONTENT_TYPES = Transport.getRegistrate()
-            .makeRegistry("shell_content_creators", RegistryBuilder::new);
+            .makeRegistry("shell_content", RegistryBuilder::new);
 
     public static RegistryEntry<Codec<EmptyShellContentCreator>> EMPTY = Transport.getRegistrate()
             .object("empty")
