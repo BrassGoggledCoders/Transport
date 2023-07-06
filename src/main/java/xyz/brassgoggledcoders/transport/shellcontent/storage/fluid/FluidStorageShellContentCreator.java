@@ -3,9 +3,7 @@ package xyz.brassgoggledcoders.transport.shellcontent.storage.fluid;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
-import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IFluidStorageShellContentCreator;
-import xyz.brassgoggledcoders.transport.content.TransportShellContentTypes;
 
 public record FluidStorageShellContentCreator(
         int capacity,
@@ -35,7 +33,7 @@ public record FluidStorageShellContentCreator(
     }
 
     @Override
-    public ShellContentType<?> getType() {
-        return TransportShellContentTypes.FLUID_STORAGE.get();
+    public Codec<? extends IFluidStorageShellContentCreator<?>> getCodec() {
+        return CODEC;
     }
 }

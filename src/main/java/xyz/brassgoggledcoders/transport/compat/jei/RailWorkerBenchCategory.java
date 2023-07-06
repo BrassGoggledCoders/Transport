@@ -26,7 +26,7 @@ public class RailWorkerBenchCategory implements IRecipeCategory<IRailWorkerBench
     private final IDrawable background;
 
     public RailWorkerBenchCategory(IGuiHelper helper) {
-        icon = helper.createDrawableIngredient(new ItemStack(TransportBlocks.RAIL_WORKER_BENCH.get()));
+        icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(TransportBlocks.RAIL_WORKER_BENCH.get()));
         background = helper.createDrawable(new ResourceLocation("jei:textures/gui/gui_vanilla.png"), 0, 168, 125, 18);
     }
 
@@ -59,18 +59,6 @@ public class RailWorkerBenchCategory implements IRecipeCategory<IRailWorkerBench
         builder.addSlot(RecipeIngredientRole.OUTPUT, 108, 1)
                 .addItemStack(recipe.getResultItem())
                 .setSlotName("result");
-    }
-
-    @Override
-    @NotNull
-    public ResourceLocation getUid() {
-        return JEI_RECIPE_TYPE.getUid();
-    }
-
-    @Override
-    @NotNull
-    public Class<? extends IRailWorkerBenchRecipe> getRecipeClass() {
-        return JEI_RECIPE_TYPE.getRecipeClass();
     }
 
     @Override

@@ -80,7 +80,7 @@ public class ShellItemRecipeBuilder {
 
         public JsonObject serializeItemStack(ItemStack stack) {
             JsonObject obj = new JsonObject();
-            obj.addProperty("item", Objects.requireNonNull(stack.getItem().getRegistryName()).toString());
+            obj.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString());
             if (stack.getCount() > 1) {
                 obj.addProperty("count", stack.getCount());
             }

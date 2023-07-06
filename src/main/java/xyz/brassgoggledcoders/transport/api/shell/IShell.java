@@ -1,7 +1,6 @@
 package xyz.brassgoggledcoders.transport.api.shell;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -32,7 +31,7 @@ public interface IShell {
     Entity getSelf();
 
     default Component getWithName(ShellContent shellContent) {
-        return new TranslatableComponent(this.getSelf().getType().getDescriptionId() + ".with", shellContent.getName());
+        return Component.translatable(this.getSelf().getType().getDescriptionId() + ".with", shellContent.getName());
     }
 
     ItemStack asItemStack();

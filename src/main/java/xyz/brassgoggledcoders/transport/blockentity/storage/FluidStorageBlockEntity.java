@@ -8,9 +8,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -27,7 +27,7 @@ public class FluidStorageBlockEntity extends CapabilityStorageBlockEntity<IFluid
     public FluidStorageBlockEntity(BlockPos pWorldPos, BlockState pBlockState) {
         this(
                 TransportBlocks.FLUID_STORAGE
-                        .getSibling(ForgeRegistries.BLOCK_ENTITIES)
+                        .getSibling(ForgeRegistries.BLOCK_ENTITY_TYPES)
                         .get(),
                 pWorldPos,
                 pBlockState
@@ -36,13 +36,13 @@ public class FluidStorageBlockEntity extends CapabilityStorageBlockEntity<IFluid
 
     @Override
     public Capability<IFluidHandler> getCapability() {
-        return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+        return ForgeCapabilities.FLUID_HANDLER;
     }
 
     @NotNull
     @Override
     public FluidTank createStorage() {
-        return new FluidTank(FluidAttributes.BUCKET_VOLUME * 50);
+        return new FluidTank(FluidType.BUCKET_VOLUME * 50);
     }
 
     @Override

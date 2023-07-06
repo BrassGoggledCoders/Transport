@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.crafting.conditions.ConditionContext;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.util.LazyOptional;
@@ -22,7 +23,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.items.CapabilityItemHandler;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.capability.IRailProvider;
@@ -53,7 +53,7 @@ public class ForgeCommonEventHandler {
 
     @SubscribeEvent
     public static void onRailPlace(PlayerInteractEvent.RightClickBlock rightClickBlock) {
-        Player player = rightClickBlock.getPlayer();
+        Player player = rightClickBlock.getEntity();
         ItemStack itemStack = rightClickBlock.getItemStack();
 
         ItemStack railStack;
@@ -66,7 +66,7 @@ public class ForgeCommonEventHandler {
         } else if (itemStack.is(TransportItemTags.RAIL_PROVIDERS)) {
             LazyOptional<IRailProvider> railProvider = itemStack.getCapability(IRailProvider.CAPABILITY);
 
-            railStack = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            railStack = player.getCapability(ForgeCapabilities.ITEM_HANDLER)
                     .resolve()
                     .flatMap(inventory -> railProvider.map(capability -> capability.findNext(inventory, false)))
                     .orElse(ItemStack.EMPTY);
@@ -77,7 +77,7 @@ public class ForgeCommonEventHandler {
 
         if (!railStack.isEmpty()) {
             BlockPos railPos = rightClickBlock.getPos();
-            Level level = rightClickBlock.getWorld();
+            Level level = rightClickBlock.getLevel();
             BlockState blockState = level.getBlockState(railPos);
 
             if (!railStack.isEmpty() && blockState.is(BlockTags.RAILS) && blockState.getBlock() instanceof BaseRailBlock railBlock) {

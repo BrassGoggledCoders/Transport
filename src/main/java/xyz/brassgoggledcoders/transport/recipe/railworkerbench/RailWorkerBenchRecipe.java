@@ -96,8 +96,8 @@ public record RailWorkerBenchRecipe(
             return !pulledStack.isEmpty();
         } else {
             ItemStack itemStack = pContainer.getItem(index);
-            if (itemStack.hasContainerItem()) {
-                pContainer.setItem(index, itemStack.getContainerItem());
+            if (itemStack.hasCraftingRemainingItem()) {
+                pContainer.setItem(index, itemStack.getCraftingRemainingItem());
                 return true;
             } else {
                 return !pContainer.removeItem(index, 1).isEmpty();

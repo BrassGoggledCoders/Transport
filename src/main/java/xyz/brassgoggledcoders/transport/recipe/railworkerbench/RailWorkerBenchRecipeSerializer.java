@@ -6,12 +6,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.recipe.ingredient.SizedIngredient;
 
-public class RailWorkerBenchRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RailWorkerBenchRecipe> {
+public class RailWorkerBenchRecipeSerializer implements RecipeSerializer<RailWorkerBenchRecipe> {
     @Override
     @NotNull
     public RailWorkerBenchRecipe fromJson(@NotNull ResourceLocation pRecipeId, @NotNull JsonObject pSerializedRecipe) {

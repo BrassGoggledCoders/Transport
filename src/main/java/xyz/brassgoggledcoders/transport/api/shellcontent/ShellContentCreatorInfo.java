@@ -13,9 +13,11 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryManager;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.codec.Codecs;
+import xyz.brassgoggledcoders.transport.content.TransportShellContentTypes;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
+import java.util.function.Function;
 
 public record ShellContentCreatorInfo(
         ResourceLocation id,
@@ -33,9 +35,9 @@ public record ShellContentCreatorInfo(
                             .forGetter(creatorInfo -> Optional.of(creatorInfo.name())),
                     Codec.BOOL.optionalFieldOf("createRecipe", Boolean.TRUE)
                             .forGetter(ShellContentCreatorInfo::createRecipe),
-                    RegistryManager.ACTIVE.getRegistry(TransportAPI.SHELL_CONTENT_TYPE_KEY)
+                    RegistryManager.ACTIVE.getRegistry(TransportShellContentTypes.SHELL_CONTENT_TYPES)
                             .getCodec()
-                            .<IShellContentCreator<?>>dispatch(IShellContentCreator::getType, ShellContentType::getCodec)
+                            .<IShellContentCreator<?>>dispatch(IShellContentCreator::getCodec, Function.identity())
                             .fieldOf("content")
                             .forGetter(ShellContentCreatorInfo::contentCreator)
             ).apply(instance, (id, viewState, name, createRecipe, content) -> new ShellContentCreatorInfo(

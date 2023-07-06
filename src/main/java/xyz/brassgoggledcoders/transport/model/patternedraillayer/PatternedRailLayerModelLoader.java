@@ -1,28 +1,27 @@
 package xyz.brassgoggledcoders.transport.model.patternedraillayer;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.ItemLayerModel;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.Transport;
 
 import java.util.Optional;
 
-public class PatternedRailLayerModelLoader implements IModelLoader<PatternedRailLayerModelGeometry> {
+public class PatternedRailLayerModelLoader implements IGeometryLoader<PatternedRailLayerModelGeometry> {
     public static final ResourceLocation ID = Transport.rl("patterned_rail_layer");
 
     @Override
     @NotNull
-    public PatternedRailLayerModelGeometry read(@NotNull JsonDeserializationContext deserializationContext, @NotNull JsonObject modelContents) {
+    public PatternedRailLayerModelGeometry read(@NotNull JsonObject modelContents, @NotNull JsonDeserializationContext deserializationContext) {
         ImmutableList.Builder<Material> materialBuilder = ImmutableList.builder();
         for (int i = 0; modelContents.has("layer" + i); i++) {
             String layer = "layer" + i;
@@ -38,10 +37,5 @@ public class PatternedRailLayerModelLoader implements IModelLoader<PatternedRail
             throw new JsonParseException("Did not found any valid resource locations for field 'background' ");
         }
         return new PatternedRailLayerModelGeometry(materials);
-    }
-
-    @Override
-    public void onResourceManagerReload(@NotNull ResourceManager pResourceManager) {
-
     }
 }

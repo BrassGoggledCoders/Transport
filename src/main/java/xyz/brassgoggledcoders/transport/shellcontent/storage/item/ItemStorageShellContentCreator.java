@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
-import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
+import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IItemStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.StorageSize;
 import xyz.brassgoggledcoders.transport.content.TransportShellContentTypes;
@@ -34,8 +34,8 @@ public record ItemStorageShellContentCreator(
     }
 
     @Override
-    public ShellContentType<?> getType() {
-        return TransportShellContentTypes.ITEM_STORAGE.get();
+    public Codec<? extends IShellContentCreator<?>> getCodec() {
+        return CODEC;
     }
 
     @NotNull

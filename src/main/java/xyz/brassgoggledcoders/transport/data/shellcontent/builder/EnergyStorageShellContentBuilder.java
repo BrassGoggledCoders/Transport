@@ -1,24 +1,15 @@
 package xyz.brassgoggledcoders.transport.data.shellcontent.builder;
 
-import com.google.common.base.Suppliers;
-import net.minecraftforge.registries.RegistryManager;
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.NotNull;
-import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
-import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IEnergyStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.data.shellcontent.IShellContentCreatorBuilder;
-
-import java.util.function.Supplier;
+import xyz.brassgoggledcoders.transport.shellcontent.storage.energy.EnergyStorageShellContentCreator;
 
 public class EnergyStorageShellContentBuilder implements IShellContentCreatorBuilder,
         IEnergyStorageShellContentCreator<ShellContent> {
-
-    private static final Supplier<ShellContentType<?>> SHELL_CONTENT_TYPE = Suppliers.memoize(
-            () -> RegistryManager.ACTIVE.getRegistry(TransportAPI.SHELL_CONTENT_TYPE_KEY)
-                    .getValue(TransportAPI.rl("energy_storage"))
-    );
 
     private final int capacity;
 
@@ -54,8 +45,8 @@ public class EnergyStorageShellContentBuilder implements IShellContentCreatorBui
     }
 
     @Override
-    public ShellContentType<?> getType() {
-        return SHELL_CONTENT_TYPE.get();
+    public Codec<? extends IShellContentCreator<?>> getCodec() {
+        return EnergyStorageShellContentCreator.CODEC;
     }
 
     @Override

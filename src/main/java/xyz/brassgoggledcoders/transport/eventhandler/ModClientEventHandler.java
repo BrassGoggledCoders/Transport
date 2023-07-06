@@ -3,8 +3,7 @@ package xyz.brassgoggledcoders.transport.eventhandler;
 import net.minecraft.client.model.MinecartModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -21,7 +20,7 @@ public class ModClientEventHandler {
     }
 
     @SubscribeEvent
-    public static void registerModelLoader(ModelRegistryEvent event) {
-        ModelLoaderRegistry.registerLoader(PatternedRailLayerModelLoader.ID, new PatternedRailLayerModelLoader());
+    public static void registerModelLoader(ModelEvent.RegisterGeometryLoaders event) {
+        event.register(PatternedRailLayerModelLoader.ID.getPath(), new PatternedRailLayerModelLoader());
     }
 }

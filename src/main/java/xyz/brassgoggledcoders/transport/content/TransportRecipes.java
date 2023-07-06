@@ -6,6 +6,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.IRailWorkerBenchRecipe;
@@ -22,7 +23,7 @@ public class TransportRecipes {
 
     public static final RegistryEntry<ShellItemRecipeSerializer> SHELL_ITEMS = Transport.getRegistrate()
             .object("shell_items")
-            .simple(RecipeSerializer.class, ShellItemRecipeSerializer::new);
+            .simple(Registry.RECIPE_SERIALIZER_REGISTRY, ShellItemRecipeSerializer::new);
 
     public static final RegistryObject<RecipeType<IRailWorkerBenchRecipe>> RAIL_WORKER_BENCH_TYPE = RECIPE_TYPE_REGISTER.register(
             "rail_worker_bench",
@@ -36,7 +37,7 @@ public class TransportRecipes {
 
     public static final RegistryEntry<RailWorkerBenchRecipeSerializer> RAIL_WORKER_BENCH = Transport.getRegistrate()
             .object("rail_worker_bench")
-            .simple(RecipeSerializer.class, RailWorkerBenchRecipeSerializer::new);
+            .simple(Registry.RECIPE_SERIALIZER_REGISTRY, RailWorkerBenchRecipeSerializer::new);
 
     public static void setup() {
         RECIPE_TYPE_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());

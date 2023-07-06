@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.block.rail;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -41,7 +42,7 @@ public class DiamondCrossingRailBlock extends BaseRailBlock implements IEnhanced
 
     @Override
     @ParametersAreNonnullByDefault
-    public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, Random pRandom) {
+    public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
         super.randomTick(pState, pLevel, pPos, pRandom);
         pLevel.getBlockEntity(pPos, TransportBlocks.CACHED_RAIL_SHAPE_BLOCK_ENTITY.get())
                 .ifPresent(CachedRailShapeBlockEntity::clean);

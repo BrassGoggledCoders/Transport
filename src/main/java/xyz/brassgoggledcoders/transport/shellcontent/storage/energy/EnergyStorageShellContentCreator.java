@@ -3,10 +3,9 @@ package xyz.brassgoggledcoders.transport.shellcontent.storage.energy;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
-import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IEnergyStorageShellContentCreator;
-import xyz.brassgoggledcoders.transport.content.TransportShellContentTypes;
 
 public record EnergyStorageShellContentCreator(
         int capacity,
@@ -24,8 +23,8 @@ public record EnergyStorageShellContentCreator(
 
 
     @Override
-    public ShellContentType<?> getType() {
-        return TransportShellContentTypes.ENERGY_STORAGE.get();
+    public Codec<? extends IShellContentCreator<?>> getCodec() {
+        return CODEC;
     }
 
     @NotNull

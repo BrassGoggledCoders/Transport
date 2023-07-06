@@ -5,6 +5,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.recipe.ingredient.SizedIngredient;
@@ -57,7 +58,7 @@ public class BasicFinishedRecipe implements FinishedRecipe {
 
     public JsonObject serializeItemStack(ItemStack stack) {
         JsonObject obj = new JsonObject();
-        obj.addProperty("item", Objects.requireNonNull(stack.getItem().getRegistryName()).toString());
+        obj.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString());
         if (stack.getCount() > 1) {
             obj.addProperty("count", stack.getCount());
         }

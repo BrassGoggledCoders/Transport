@@ -2,9 +2,9 @@ package xyz.brassgoggledcoders.transport.data.shellcontent;
 
 import com.google.gson.*;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
@@ -23,7 +23,6 @@ import java.util.function.BiConsumer;
 
 public abstract class ShellContentDataProvider implements DataProvider {
     private static final Logger LOGGER = LogManager.getLogger(ShellContentDataProvider.class);
-    private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
 
     private final DataGenerator generator;
 
@@ -34,7 +33,7 @@ public abstract class ShellContentDataProvider implements DataProvider {
     protected abstract void gather(BiConsumer<Collection<ICondition>, ShellContentCreatorInfo> consumer);
 
     @Override
-    public void run(@Nonnull HashCache pCache) {
+    public void run(@Nonnull CachedOutput pCache) {
         List<Pair<Collection<ICondition>, ShellContentCreatorInfo>> shellContentCreatorInfos = Lists.newArrayList();
         this.gather((conditions, info) -> shellContentCreatorInfos.add(Pair.of(conditions, info)));
 
@@ -59,7 +58,7 @@ public abstract class ShellContentDataProvider implements DataProvider {
                         jsonObject.add("conditions", conditionsArray);
                     }
                 }
-                DataProvider.save(GSON, pCache, jsonElement, filePath);
+                DataProvider.saveStable(pCache, jsonElement, filePath);
             } catch (IOException ioexception) {
                 LOGGER.error("Couldn't save shell content creator {}", filePath, ioexception);
             }

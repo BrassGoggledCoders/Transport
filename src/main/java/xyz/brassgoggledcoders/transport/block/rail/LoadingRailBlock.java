@@ -17,14 +17,12 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
@@ -101,7 +99,7 @@ public class LoadingRailBlock<T> extends BaseRailBlock implements EntityBlock {
         return new LoadingRailBlock<>(
                 properties,
                 loading,
-                CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                ForgeCapabilities.ITEM_HANDLER,
                 (from, to, index) -> {
                     int currentSlot = index.getSecond();
                     int maxSlot = Math.min(from.getSlots(), currentSlot + index.getFirst());
@@ -127,9 +125,9 @@ public class LoadingRailBlock<T> extends BaseRailBlock implements EntityBlock {
         return new LoadingRailBlock<>(
                 properties,
                 loading,
-                CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
+                ForgeCapabilities.FLUID_HANDLER,
                 (from, to, index) -> {
-                    FluidStack output = from.drain(FluidAttributes.BUCKET_VOLUME * index.getFirst(), FluidAction.SIMULATE);
+                    FluidStack output = from.drain(FluidType.BUCKET_VOLUME * index.getFirst(), FluidAction.SIMULATE);
                     if (!output.isEmpty()) {
                         int filledAmount = to.fill(output, FluidAction.SIMULATE);
                         if (filledAmount > 0) {
@@ -149,7 +147,7 @@ public class LoadingRailBlock<T> extends BaseRailBlock implements EntityBlock {
         return new LoadingRailBlock<>(
                 properties,
                 loading,
-                CapabilityEnergy.ENERGY,
+                ForgeCapabilities.ENERGY,
                 (from, to, index) -> {
                     int output = from.extractEnergy(1000 * index.getFirst(), true);
                     if (output > 0) {

@@ -1,8 +1,16 @@
+buildscript {
+    dependencies {
+        classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT"
+    }
+}
+
 plugins {
     id "maven-publish"
     id 'net.minecraftforge.gradle' version '5.1.+'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
+
+apply plugin: 'org.spongepowered.mixin'
 
 version = '0.1.0'
 group = 'xyz.brassgoggledcoders.transport'
@@ -93,6 +101,10 @@ repositories {
         name = "BlameJared"
         url = "https://maven.blamejared.com/"
     }
+    maven {
+        name = "JEI"
+        url = "https://dvs1.progwml6.com/files/maven"
+    }
 }
 
 dependencies {
@@ -103,6 +115,10 @@ dependencies {
 
     runtimeOnly fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.19.2-9.2.2-165.3")
     compileOnly fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.19.2-9.2.2-165.3:api")
+
+    compileOnly fg.deobf("mezz.jei:jei-1.19.2-forge-api:11.4.0.282")
+    compileOnly fg.deobf("mezz.jei:jei-1.19.2-common-api:11.4.0.282")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.19.2-forge:11.4.0.282")
 }
 
 jar {

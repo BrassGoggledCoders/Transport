@@ -20,7 +20,7 @@ public class NetworkHandler {
         this.channel.messageBuilder(NewGenerationClientMessage.class, 0)
                 .decoder(NewGenerationClientMessage::decode)
                 .encoder(NewGenerationClientMessage::encode)
-                .consumer(NewGenerationClientMessage::consume)
+                .consumerMainThread(NewGenerationClientMessage::consume)
                 .add();
     }
 

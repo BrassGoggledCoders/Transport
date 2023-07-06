@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.compress.utils.Lists;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 
@@ -51,7 +52,7 @@ public class ShellContentInfoBuilder {
         if (this.viewState == null) {
             throw new IllegalStateException("viewState is required");
         }
-        build(Objects.requireNonNull(this.viewState.getBlock().getRegistryName()), infoConsumer);
+        build(Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(this.viewState.getBlock())), infoConsumer);
     }
 
     public void build(@Nonnull ResourceLocation id, BiConsumer<Collection<ICondition>, ShellContentCreatorInfo> infoConsumer) {

@@ -1,13 +1,12 @@
 package xyz.brassgoggledcoders.transport.content;
 
+import com.mojang.serialization.Codec;
 import com.tterrag.registrate.util.entry.RegistryEntry;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.registries.RegistryBuilder;
 import xyz.brassgoggledcoders.transport.Transport;
-import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
+import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IEnergyStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IFluidStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IItemStorageShellContentCreator;
@@ -16,44 +15,29 @@ import xyz.brassgoggledcoders.transport.shellcontent.storage.energy.EnergyStorag
 import xyz.brassgoggledcoders.transport.shellcontent.storage.fluid.FluidStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.shellcontent.storage.item.ItemStorageShellContentCreator;
 
-import java.util.function.Supplier;
-
 public class TransportShellContentTypes {
-    public static DeferredRegister<ShellContentType<?>> SHELL_CONTENT_TYPES_DR = DeferredRegister.create(
-            TransportAPI.SHELL_CONTENT_TYPE_KEY,
-            Transport.ID
-    );
+    public static ResourceKey<Registry<Codec<? extends IShellContentCreator<?>>>> SHELL_CONTENT_TYPES = Transport.getRegistrate()
+            .makeRegistry("shell_content_creators", RegistryBuilder::new);
 
-    @SuppressWarnings({"unused", "unchecked"})
-    public static Supplier<IForgeRegistry<ShellContentType<?>>> SHELL_CONTENT_TYPES = SHELL_CONTENT_TYPES_DR.makeRegistry(
-            (Class<ShellContentType<?>>) (Class<?>) ShellContentType.class,
-            RegistryBuilder::new
-    );
+    public static RegistryEntry<Codec<EmptyShellContentCreator>> EMPTY = Transport.getRegistrate()
+            .object("empty")
+            .simple(SHELL_CONTENT_TYPES, () -> EmptyShellContentCreator.CODEC);
 
-    public static RegistryEntry<ShellContentType<EmptyShellContentCreator>> EMPTY =
-            Transport.getRegistrate()
-                    .object("empty")
-                    .simple(ShellContentType.class, () -> new ShellContentType<>(EmptyShellContentCreator.CODEC));
+    public static RegistryEntry<Codec<IFluidStorageShellContentCreator<?>>> FLUID_STORAGE = Transport.getRegistrate()
+            .object("fluid_storage")
+            .simple(SHELL_CONTENT_TYPES, () -> FluidStorageShellContentCreator.CODEC);
 
-    public static RegistryEntry<ShellContentType<IFluidStorageShellContentCreator<?>>> FLUID_STORAGE =
-            Transport.getRegistrate()
-                    .object("fluid_storage")
-                    .simple(ShellContentType.class, () -> new ShellContentType<>(FluidStorageShellContentCreator.CODEC));
-
-    public static RegistryEntry<ShellContentType<IItemStorageShellContentCreator<?>>> ITEM_STORAGE =
+    public static RegistryEntry<Codec<IItemStorageShellContentCreator<?>>> ITEM_STORAGE =
             Transport.getRegistrate()
                     .object("item_storage")
-                    .simple(ShellContentType.class, () -> new ShellContentType<>(ItemStorageShellContentCreator.CODEC));
+                    .simple(SHELL_CONTENT_TYPES, () -> ItemStorageShellContentCreator.CODEC);
 
-    public static RegistryEntry<ShellContentType<IEnergyStorageShellContentCreator<?>>> ENERGY_STORAGE =
+    public static RegistryEntry<Codec<IEnergyStorageShellContentCreator<?>>> ENERGY_STORAGE =
             Transport.getRegistrate()
                     .object("energy_storage")
-                    .simple(
-                            ShellContentType.class,
-                            () -> new ShellContentType<>(EnergyStorageShellContentCreator.CODEC)
-                    );
+                    .simple(SHELL_CONTENT_TYPES, () -> EnergyStorageShellContentCreator.CODEC);
 
     public static void setup() {
-        SHELL_CONTENT_TYPES_DR.register(FMLJavaModLoadingContext.get().getModEventBus());
+
     }
 }

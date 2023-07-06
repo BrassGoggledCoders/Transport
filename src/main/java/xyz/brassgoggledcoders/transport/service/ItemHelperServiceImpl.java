@@ -5,7 +5,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.Item;
@@ -56,7 +55,8 @@ public class ItemHelperServiceImpl implements IItemHelperService {
                 .orElseGet(TransportAPI.SHELL_CONTENT_CREATOR.get()::getEmpty);
 
         consumer.accept(
-                new TranslatableComponent(TransportText.SHELL_CONTENT_COMPONENT.getKey(), info.name())
+                //TODO: Test Translation?
+                Component.translatable(TransportText.SHELL_CONTENT_COMPONENT.getString(), info.name())
                         .withStyle(ChatFormatting.GRAY)
         );
     }

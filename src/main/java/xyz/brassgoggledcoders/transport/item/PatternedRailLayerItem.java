@@ -15,9 +15,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.capability.IRailProvider;
@@ -51,7 +51,7 @@ public class PatternedRailLayerItem extends Item implements MenuProvider {
         ItemStack heldStack = pContext.getItemInHand();
         LazyOptional<IRailProvider> railProvider = heldStack.getCapability(IRailProvider.CAPABILITY);
         ItemStack railStack = Optional.ofNullable(pContext.getPlayer())
-                .flatMap(livingEntity -> livingEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+                .flatMap(livingEntity -> livingEntity.getCapability(ForgeCapabilities.ITEM_HANDLER)
                         .resolve()
                 ).flatMap(inventory -> railProvider.map(capability -> capability.findNext(inventory, false))
                 ).orElse(ItemStack.EMPTY);

@@ -89,7 +89,7 @@ public class ShellMinecartItem<T extends AbstractMinecart> extends Item {
     @Override
     @ParametersAreNonnullByDefault
     public void fillItemCategory(CreativeModeTab pCategory, NonNullList<ItemStack> pItems) {
-        if (this.allowdedIn(pCategory)) {
+        if (this.allowedIn(pCategory)) {
             Collection<ShellContentCreatorInfo> creatorInfos = TransportAPI.SHELL_CONTENT_CREATOR.get().getAll();
             if (creatorInfos.isEmpty()) {
                 pItems.add(new ItemStack(this));

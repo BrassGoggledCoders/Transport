@@ -1,25 +1,15 @@
 package xyz.brassgoggledcoders.transport.data.shellcontent.builder;
 
-import com.google.common.base.Suppliers;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.registries.RegistryManager;
+import com.mojang.serialization.Codec;
+import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
-import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
-import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentType;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IFluidStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.data.shellcontent.IShellContentCreatorBuilder;
-
-import java.util.function.Supplier;
+import xyz.brassgoggledcoders.transport.shellcontent.storage.fluid.FluidStorageShellContentCreator;
 
 public class FluidStorageShellContentBuilder implements IShellContentCreatorBuilder, IFluidStorageShellContentCreator<ShellContent> {
-
-    private static final Supplier<ShellContentType<?>> SHELL_CONTENT_TYPE = Suppliers.memoize(
-            () -> RegistryManager.ACTIVE.getRegistry(TransportAPI.SHELL_CONTENT_TYPE_KEY)
-                    .getValue(TransportAPI.rl("fluid_storage"))
-    );
-
     private final int capacity;
     private boolean allowItemInteraction;
 
@@ -39,8 +29,8 @@ public class FluidStorageShellContentBuilder implements IShellContentCreatorBuil
     }
 
     @Override
-    public ShellContentType<?> getType() {
-        return SHELL_CONTENT_TYPE.get();
+    public Codec<? extends IShellContentCreator<?>> getCodec() {
+        return FluidStorageShellContentCreator.CODEC;
     }
 
     @Override
@@ -64,6 +54,6 @@ public class FluidStorageShellContentBuilder implements IShellContentCreatorBuil
     }
 
     public static FluidStorageShellContentBuilder ofBuckets(int buckets) {
-        return of(FluidAttributes.BUCKET_VOLUME * buckets);
+        return of(FluidType.BUCKET_VOLUME * buckets);
     }
 }
