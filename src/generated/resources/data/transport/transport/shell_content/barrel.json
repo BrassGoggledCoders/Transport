@@ -1,0 +1,16 @@
+{
+  "content": {
+    "type": "transport:item_storage",
+    "size": "THREE_BY_NINE"
+  },
+  "name": {
+    "translate": "block.minecraft.barrel"
+  },
+  "view_state": {
+    "Name": "minecraft:barrel",
+    "Properties": {
+      "facing": "north",
+      "open": "false"
+    }
+  }
+}

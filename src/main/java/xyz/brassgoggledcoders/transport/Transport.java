@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.transport.content.*;
+import xyz.brassgoggledcoders.transport.data.shellcontent.RegistrateShellContentDataProvider;
 import xyz.brassgoggledcoders.transport.item.TransportCreativeModeTab;
 import xyz.brassgoggledcoders.transport.network.NetworkHandler;
 
@@ -23,6 +24,7 @@ public class Transport {
                     .creativeModeTab(TransportCreativeModeTab::new, "Transport")
                     .addDataGenerator(ProviderType.ITEM_TAGS, TransportAdditionalData::vanillaItemTags)
                     .addDataGenerator(ProviderType.RECIPE, TransportAdditionalData::vanillaRecipes)
+                    .addDataGenerator(RegistrateShellContentDataProvider.TYPE, TransportShellContentData::generateData)
     );
 
     public static final NetworkHandler NETWORK = new NetworkHandler();

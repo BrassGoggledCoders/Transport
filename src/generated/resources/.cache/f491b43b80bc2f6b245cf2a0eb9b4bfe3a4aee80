@@ -1,4 +1,4 @@
-// 1.19.2	2023-07-06T18:50:37.8235999	Registrate Provider for transport [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+// 1.19.2	2023-07-06T19:27:40.7241057	Registrate Provider for transport [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud), Shell Content Creator Data]
 2b0621a9fcbaa5a7a49167de8249ee44a1e26d70 assets/transport/blockstates/buffer_rail.json
 2cd20eace0c3c3f69d47163801d8eb647cab26a4 assets/transport/blockstates/copper_rail.json
 70374b265ca0081c66ef8a3c11abdc656597b200 assets/transport/blockstates/diamond_crossing_rail.json
@@ -161,3 +161,6 @@ a678844f38a00458f35c0394fc0f1df9460bb9c7 data/transport/recipes/rail_worker_benc
 b352945869782df5ee2db6a5cac89e046d617ec8 data/transport/tags/items/rails/gold.json
 9120df98d1d76815d80ac1bd205320dff6b1ba1e data/transport/tags/items/rails/iron.json
 c2be5806a4f841a4afe5b16203f86d577e1418fe data/transport/tags/items/rail_providers.json
+c2389600b35c265bc7c435fe98ab1dab2fc00257 data/transport/transport/shell_content/barrel.json
+7df004655aca1df73da2c2553fb821a5c17514bc data/transport/transport/shell_content/energy_storage.json
+a6dd2318d0d8c4d7991dad237728a042a7909a9f data/transport/transport/shell_content/fluid_storage.json

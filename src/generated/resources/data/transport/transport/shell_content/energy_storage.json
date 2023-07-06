@@ -1,12 +1,12 @@
 {
+  "content": {
+    "type": "transport:energy_storage",
+    "capacity": 100000,
+    "maxExtract": 100000,
+    "maxReceive": 100000
+  },
   "name": {
     "translate": "block.transport.energy_storage"
-  },
-  "content": {
-    "capacity": 100000,
-    "maxReceive": 100000,
-    "maxExtract": 100000,
-    "type": "transport:energy_storage"
   },
   "view_state": {
     "Name": "transport:energy_storage"
