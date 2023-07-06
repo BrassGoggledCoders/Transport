@@ -33,7 +33,7 @@ public class Transport {
         TransportEntities.setup();
         TransportItems.setup();
         TransportRecipes.setup();
-        TransportShellContentTypes.setup();
+        TransportShellContent.setup();
         TransportText.setup();
     }
 

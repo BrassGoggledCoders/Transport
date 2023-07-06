@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "C C",
-    "CSC",
-    "C C"
-  ],
   "key": {
     "C": {
       "tag": "forge:ingots/copper"
@@ -13,8 +8,13 @@
       "tag": "forge:rods/wooden"
     }
   },
+  "pattern": [
+    "C C",
+    "CSC",
+    "C C"
+  ],
   "result": {
-    "item": "transport:copper_rail",
-    "count": 16
+    "count": 16,
+    "item": "transport:copper_rail"
   }
 }

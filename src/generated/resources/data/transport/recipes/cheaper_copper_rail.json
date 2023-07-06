@@ -1,12 +1,12 @@
 {
   "type": "transport:rail_worker_bench",
   "input": {
-    "tag": "forge:ingots/copper",
-    "count": 4
+    "count": 4,
+    "tag": "forge:ingots/copper"
   },
   "output": {
-    "item": "transport:copper_rail",
-    "count": 32
+    "count": 32,
+    "item": "transport:copper_rail"
   },
   "secondaryInput": {
     "tag": "forge:rods/wooden"

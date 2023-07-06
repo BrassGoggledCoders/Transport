@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "III",
-    "GRG",
-    "III"
-  ],
   "key": {
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
     "G": {
       "tag": "forge:glass"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
     },
     "R": {
       "tag": "forge:storage_blocks/redstone"
     }
   },
+  "pattern": [
+    "III",
+    "GRG",
+    "III"
+  ],
   "result": {
     "item": "transport:energy_storage"
   }

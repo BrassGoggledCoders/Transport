@@ -1,93 +1,93 @@
 {
   "variants": {
+    "inverted=false,powered=false,shape=ascending_east": {
+      "model": "transport:block/one_way_booster_rail_raised",
+      "y": 90
+    },
+    "inverted=false,powered=false,shape=ascending_north": {
+      "model": "transport:block/one_way_booster_rail_raised"
+    },
+    "inverted=false,powered=false,shape=ascending_south": {
+      "model": "transport:block/one_way_booster_rail_raised",
+      "y": 180
+    },
+    "inverted=false,powered=false,shape=ascending_west": {
+      "model": "transport:block/one_way_booster_rail_raised",
+      "y": 270
+    },
+    "inverted=false,powered=false,shape=east_west": {
+      "model": "transport:block/one_way_booster_rail_flat",
+      "y": 270
+    },
     "inverted=false,powered=false,shape=north_south": {
       "model": "transport:block/one_way_booster_rail_flat"
     },
-    "inverted=true,powered=false,shape=north_south": {
-      "model": "transport:block/one_way_booster_rail_flat",
+    "inverted=false,powered=true,shape=ascending_east": {
+      "model": "transport:block/one_way_booster_rail_raised_powered",
+      "y": 90
+    },
+    "inverted=false,powered=true,shape=ascending_north": {
+      "model": "transport:block/one_way_booster_rail_raised_powered"
+    },
+    "inverted=false,powered=true,shape=ascending_south": {
+      "model": "transport:block/one_way_booster_rail_raised_powered",
       "y": 180
+    },
+    "inverted=false,powered=true,shape=ascending_west": {
+      "model": "transport:block/one_way_booster_rail_raised_powered",
+      "y": 270
+    },
+    "inverted=false,powered=true,shape=east_west": {
+      "model": "transport:block/one_way_booster_rail_flat_powered",
+      "y": 270
     },
     "inverted=false,powered=true,shape=north_south": {
       "model": "transport:block/one_way_booster_rail_flat_powered"
     },
-    "inverted=true,powered=true,shape=north_south": {
-      "model": "transport:block/one_way_booster_rail_flat_powered",
+    "inverted=true,powered=false,shape=ascending_east": {
+      "model": "transport:block/one_way_booster_rail_raised_inverted",
+      "y": 90
+    },
+    "inverted=true,powered=false,shape=ascending_north": {
+      "model": "transport:block/one_way_booster_rail_raised_inverted"
+    },
+    "inverted=true,powered=false,shape=ascending_south": {
+      "model": "transport:block/one_way_booster_rail_raised_inverted",
       "y": 180
     },
-    "inverted=false,powered=false,shape=east_west": {
-      "model": "transport:block/one_way_booster_rail_flat",
+    "inverted=true,powered=false,shape=ascending_west": {
+      "model": "transport:block/one_way_booster_rail_raised_inverted",
       "y": 270
     },
     "inverted=true,powered=false,shape=east_west": {
       "model": "transport:block/one_way_booster_rail_flat",
       "y": 90
     },
-    "inverted=false,powered=true,shape=east_west": {
-      "model": "transport:block/one_way_booster_rail_flat_powered",
+    "inverted=true,powered=false,shape=north_south": {
+      "model": "transport:block/one_way_booster_rail_flat",
+      "y": 180
+    },
+    "inverted=true,powered=true,shape=ascending_east": {
+      "model": "transport:block/one_way_booster_rail_raised_inverted_powered",
+      "y": 90
+    },
+    "inverted=true,powered=true,shape=ascending_north": {
+      "model": "transport:block/one_way_booster_rail_raised_inverted_powered"
+    },
+    "inverted=true,powered=true,shape=ascending_south": {
+      "model": "transport:block/one_way_booster_rail_raised_inverted_powered",
+      "y": 180
+    },
+    "inverted=true,powered=true,shape=ascending_west": {
+      "model": "transport:block/one_way_booster_rail_raised_inverted_powered",
       "y": 270
     },
     "inverted=true,powered=true,shape=east_west": {
       "model": "transport:block/one_way_booster_rail_flat_powered",
       "y": 90
     },
-    "inverted=false,powered=false,shape=ascending_east": {
-      "model": "transport:block/one_way_booster_rail_raised",
-      "y": 90
-    },
-    "inverted=true,powered=false,shape=ascending_east": {
-      "model": "transport:block/one_way_booster_rail_raised_inverted",
-      "y": 90
-    },
-    "inverted=false,powered=true,shape=ascending_east": {
-      "model": "transport:block/one_way_booster_rail_raised_powered",
-      "y": 90
-    },
-    "inverted=true,powered=true,shape=ascending_east": {
-      "model": "transport:block/one_way_booster_rail_raised_inverted_powered",
-      "y": 90
-    },
-    "inverted=false,powered=false,shape=ascending_west": {
-      "model": "transport:block/one_way_booster_rail_raised",
-      "y": 270
-    },
-    "inverted=true,powered=false,shape=ascending_west": {
-      "model": "transport:block/one_way_booster_rail_raised_inverted",
-      "y": 270
-    },
-    "inverted=false,powered=true,shape=ascending_west": {
-      "model": "transport:block/one_way_booster_rail_raised_powered",
-      "y": 270
-    },
-    "inverted=true,powered=true,shape=ascending_west": {
-      "model": "transport:block/one_way_booster_rail_raised_inverted_powered",
-      "y": 270
-    },
-    "inverted=false,powered=false,shape=ascending_north": {
-      "model": "transport:block/one_way_booster_rail_raised"
-    },
-    "inverted=true,powered=false,shape=ascending_north": {
-      "model": "transport:block/one_way_booster_rail_raised_inverted"
-    },
-    "inverted=false,powered=true,shape=ascending_north": {
-      "model": "transport:block/one_way_booster_rail_raised_powered"
-    },
-    "inverted=true,powered=true,shape=ascending_north": {
-      "model": "transport:block/one_way_booster_rail_raised_inverted_powered"
-    },
-    "inverted=false,powered=false,shape=ascending_south": {
-      "model": "transport:block/one_way_booster_rail_raised",
-      "y": 180
-    },
-    "inverted=true,powered=false,shape=ascending_south": {
-      "model": "transport:block/one_way_booster_rail_raised_inverted",
-      "y": 180
-    },
-    "inverted=false,powered=true,shape=ascending_south": {
-      "model": "transport:block/one_way_booster_rail_raised_powered",
-      "y": 180
-    },
-    "inverted=true,powered=true,shape=ascending_south": {
-      "model": "transport:block/one_way_booster_rail_raised_inverted_powered",
+    "inverted=true,powered=true,shape=north_south": {
+      "model": "transport:block/one_way_booster_rail_flat_powered",
       "y": 180
     }
   }

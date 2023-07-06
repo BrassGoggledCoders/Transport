@@ -15,9 +15,11 @@ import xyz.brassgoggledcoders.transport.block.rail.TransportBlockStateProperties
 import xyz.brassgoggledcoders.transport.block.rail.WyeSwitchRailBlock;
 
 public class BlockModelHelper {
+    private static final ResourceLocation CUTOUT = new ResourceLocation("cutout");
     public static void regularRail(DataGenContext<Block, ? extends BaseRailBlock> context, RegistrateBlockstateProvider provider) {
         ModelFile flatRail = provider.models()
                 .getBuilder("block/" + context.getName() + "_flat")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
@@ -25,6 +27,7 @@ public class BlockModelHelper {
 
         ModelFile raisedRail = provider.models()
                 .getBuilder("block/" + context.getName() + "_raised")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/template_rail_raised_ne"))
                 )
@@ -32,6 +35,7 @@ public class BlockModelHelper {
 
         ModelFile cornerRail = provider.models()
                 .getBuilder("block/" + context.getName() + "_corner")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
@@ -81,24 +85,28 @@ public class BlockModelHelper {
             ResourceLocation texturePowered
     ) {
         ModelFile flatRailUnpowered = provider.models().getBuilder("block/" + context.getName() + "_flat")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
                 .texture("rail", texture);
 
         ModelFile flatRailPowered = provider.models().getBuilder("block/" + context.getName() + "_flat_powered")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
                 .texture("rail", texturePowered);
 
         ModelFile raisedRailUnpowered = provider.models().getBuilder("block/" + context.getName() + "_raised")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/template_rail_raised_ne"))
                 )
                 .texture("rail", texture);
 
         ModelFile raisedRailPowered = provider.models().getBuilder("block/" + context.getName() + "_raised_powered")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/template_rail_raised_ne"))
                 )
@@ -129,36 +137,42 @@ public class BlockModelHelper {
     public static void straightPoweredInvertedRailBlockState(DataGenContext<Block, ? extends BaseRailBlock> context,
                                                              RegistrateBlockstateProvider provider) {
         ModelFile flatRailUnpowered = provider.models().getBuilder("block/" + context.getName() + "_flat")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
                 .texture("rail", provider.modLoc("block/rail/" + context.getName()));
 
         ModelFile flatRailPowered = provider.models().getBuilder("block/" + context.getName() + "_flat_powered")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
                 .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_powered"));
 
         ModelFile raisedRailUnpowered = provider.models().getBuilder("block/" + context.getName() + "_raised")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/template_rail_raised_ne"))
                 )
                 .texture("rail", provider.modLoc("block/rail/" + context.getName()));
 
         ModelFile raisedRailPowered = provider.models().getBuilder("block/" + context.getName() + "_raised_powered")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/template_rail_raised_ne"))
                 )
                 .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_powered"));
 
         ModelFile raisedRailUnpoweredInverted = provider.models().getBuilder("block/" + context.getName() + "_raised_inverted")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.modLoc("block/template_rail_raised_ne_inverted"))
                 )
                 .texture("rail", provider.modLoc("block/rail/" + context.getName()));
 
         ModelFile raisedRailPoweredInverted = provider.models().getBuilder("block/" + context.getName() + "_raised_inverted_powered")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.modLoc("block/template_rail_raised_ne_inverted"))
                 )
@@ -201,6 +215,7 @@ public class BlockModelHelper {
         if (existing == null) {
             flatRail = provider.models()
                     .getBuilder("block/" + context.getName())
+                    .renderType(CUTOUT)
                     .parent(provider.models()
                             .getExistingFile(provider.mcLoc("block/rail_flat"))
                     )
@@ -243,6 +258,7 @@ public class BlockModelHelper {
     public static void switchRail(DataGenContext<Block, ? extends SwitchRailBlock> context, RegistrateBlockstateProvider provider) {
         ModelFile straightRight = provider.models()
                 .getBuilder("block/" + context.getName() + "_straight_right")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
@@ -250,6 +266,7 @@ public class BlockModelHelper {
 
         ModelFile divergeRight = provider.models()
                 .getBuilder("block/" + context.getName() + "_diverge_right")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
@@ -257,6 +274,7 @@ public class BlockModelHelper {
 
         ModelFile straightLeft = provider.models()
                 .getBuilder("block/" + context.getName() + "_straight_left")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
@@ -264,6 +282,7 @@ public class BlockModelHelper {
 
         ModelFile divergeLeft = provider.models()
                 .getBuilder("block/" + context.getName() + "_diverge_left")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
@@ -309,6 +328,7 @@ public class BlockModelHelper {
     public static void wyeSwitchRail(DataGenContext<Block, ? extends WyeSwitchRailBlock> context, RegistrateBlockstateProvider provider) {
         ModelFile straight = provider.models()
                 .getBuilder("block/" + context.getName())
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
@@ -316,6 +336,7 @@ public class BlockModelHelper {
 
         ModelFile diverge = provider.models()
                 .getBuilder("block/" + context.getName() + "_diverge")
+                .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )

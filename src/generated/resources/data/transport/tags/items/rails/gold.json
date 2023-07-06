@@ -1,5 +1,4 @@
 {
-  "replace": false,
   "values": [
     "minecraft:powered_rail",
     "transport:one_way_booster_rail",

@@ -1,9 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "RRR",
-    "SSS"
-  ],
   "key": {
     "R": {
       "tag": "minecraft:rails"
@@ -12,6 +8,10 @@
       "tag": "forge:stone"
     }
   },
+  "pattern": [
+    "RRR",
+    "SSS"
+  ],
   "result": {
     "item": "transport:rail_worker_bench"
   }

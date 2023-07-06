@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "R": {
+      "tag": "forge:dyes/red"
+    }
+  },
   "pattern": [
     " RI",
     "RIR",
     "IR "
   ],
-  "key": {
-    "R": {
-      "tag": "forge:dyes/red"
-    },
-    "I": {
-      "tag": "forge:ingots/iron"
-    }
-  },
   "result": {
     "item": "transport:rail_breaker"
   }

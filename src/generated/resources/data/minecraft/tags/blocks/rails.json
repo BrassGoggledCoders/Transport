@@ -1,5 +1,4 @@
 {
-  "replace": false,
   "values": [
     "transport:item_dump_rail",
     "transport:fluid_dump_rail",

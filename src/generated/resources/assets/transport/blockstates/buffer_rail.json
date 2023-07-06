@@ -1,19 +1,19 @@
 {
   "variants": {
-    "inverted=false,shape=north_south": {
-      "model": "transport:block/buffer_rail",
-      "y": 180
-    },
-    "inverted=true,shape=north_south": {
-      "model": "transport:block/buffer_rail"
-    },
     "inverted=false,shape=east_west": {
       "model": "transport:block/buffer_rail",
       "y": 270
     },
+    "inverted=false,shape=north_south": {
+      "model": "transport:block/buffer_rail",
+      "y": 180
+    },
     "inverted=true,shape=east_west": {
       "model": "transport:block/buffer_rail",
       "y": 90
+    },
+    "inverted=true,shape=north_south": {
+      "model": "transport:block/buffer_rail"
     }
   }
 }

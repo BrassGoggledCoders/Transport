@@ -291,7 +291,6 @@ public class TransportBlocks {
                     .strength(2.1F)
                     .sound(SoundType.METAL)
             )
-            .addLayer(() -> RenderType::cutout)
             .tag(BlockTags.RAILS)
             .blockstate((context, provider) -> BlockModelHelper.straightInvertedFlatRailBlockState(
                     context,
@@ -395,7 +394,6 @@ public class TransportBlocks {
                         .strength(0.7F)
                         .sound(SoundType.METAL)
                 )
-                .addLayer(() -> RenderType::cutout)
                 .tag(BlockTags.RAILS);
     }
 

@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/cube_column",
   "textures": {
-    "side": "transport:block/storage/fluid_storage_side",
-    "end": "transport:block/storage/fluid_storage_end"
+    "end": "transport:block/storage/fluid_storage_end",
+    "side": "transport:block/storage/fluid_storage_side"
   }
 }

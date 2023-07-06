@@ -1,5 +1,6 @@
 {
   "parent": "minecraft:block/template_rail_raised_ne",
+  "render_type": "minecraft:cutout",
   "textures": {
     "rail": "transport:block/rail/fluid_dump_rail_powered"
   }

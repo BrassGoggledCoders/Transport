@@ -1,48 +1,48 @@
 {
   "variants": {
-    "powered=false,shape=north_south": {
-      "model": "transport:block/fluid_loading_rail_flat"
-    },
-    "powered=true,shape=north_south": {
-      "model": "transport:block/fluid_loading_rail_flat_powered"
-    },
-    "powered=false,shape=east_west": {
-      "model": "transport:block/fluid_loading_rail_flat",
-      "y": 90
-    },
-    "powered=true,shape=east_west": {
-      "model": "transport:block/fluid_loading_rail_flat_powered",
-      "y": 90
-    },
     "powered=false,shape=ascending_east": {
       "model": "transport:block/fluid_loading_rail_raised",
       "y": 90
     },
-    "powered=true,shape=ascending_east": {
-      "model": "transport:block/fluid_loading_rail_raised_powered",
-      "y": 90
-    },
-    "powered=false,shape=ascending_west": {
-      "model": "transport:block/fluid_loading_rail_raised",
-      "y": 270
-    },
-    "powered=true,shape=ascending_west": {
-      "model": "transport:block/fluid_loading_rail_raised_powered",
-      "y": 270
-    },
     "powered=false,shape=ascending_north": {
       "model": "transport:block/fluid_loading_rail_raised"
-    },
-    "powered=true,shape=ascending_north": {
-      "model": "transport:block/fluid_loading_rail_raised_powered"
     },
     "powered=false,shape=ascending_south": {
       "model": "transport:block/fluid_loading_rail_raised",
       "y": 180
     },
+    "powered=false,shape=ascending_west": {
+      "model": "transport:block/fluid_loading_rail_raised",
+      "y": 270
+    },
+    "powered=false,shape=east_west": {
+      "model": "transport:block/fluid_loading_rail_flat",
+      "y": 90
+    },
+    "powered=false,shape=north_south": {
+      "model": "transport:block/fluid_loading_rail_flat"
+    },
+    "powered=true,shape=ascending_east": {
+      "model": "transport:block/fluid_loading_rail_raised_powered",
+      "y": 90
+    },
+    "powered=true,shape=ascending_north": {
+      "model": "transport:block/fluid_loading_rail_raised_powered"
+    },
     "powered=true,shape=ascending_south": {
       "model": "transport:block/fluid_loading_rail_raised_powered",
       "y": 180
+    },
+    "powered=true,shape=ascending_west": {
+      "model": "transport:block/fluid_loading_rail_raised_powered",
+      "y": 270
+    },
+    "powered=true,shape=east_west": {
+      "model": "transport:block/fluid_loading_rail_flat_powered",
+      "y": 90
+    },
+    "powered=true,shape=north_south": {
+      "model": "transport:block/fluid_loading_rail_flat_powered"
     }
   }
 }
