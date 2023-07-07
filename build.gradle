@@ -105,6 +105,13 @@ repositories {
         name = "JEI"
         url = "https://dvs1.progwml6.com/files/maven"
     }
+    maven {
+        name "TOP"
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
@@ -119,6 +126,8 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-1.19.2-forge-api:11.4.0.282")
     compileOnly fg.deobf("mezz.jei:jei-1.19.2-common-api:11.4.0.282")
     runtimeOnly fg.deobf("mezz.jei:jei-1.19.2-forge:11.4.0.282")
+
+    implementation fg.deobf("curse.maven:the-one-probe-245211:3965693")
 }
 
 jar {

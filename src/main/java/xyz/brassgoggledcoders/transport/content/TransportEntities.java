@@ -13,6 +13,9 @@ public class TransportEntities {
     public static final EntityEntry<ShellMinecart> SHELL_MINECART = Transport.getRegistrate()
             .object("shell_minecart")
             .<ShellMinecart>entity(ShellMinecart::new, MobCategory.MISC)
+            .properties(properties -> properties.sized(0.98F, 0.7F)
+                    .clientTrackingRange(8)
+            )
             .renderer(() -> ShellMinecartRenderer::new)
             .setData(ProviderType.LANG, (context, provider) -> {
                 provider.add(context.get().getDescriptionId(), provider.getAutomaticName(context, Registry.ENTITY_TYPE_REGISTRY));

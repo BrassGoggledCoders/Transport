@@ -61,6 +61,8 @@ public class DumpRailBlockEntity extends BlockEntity {
                                 counter.isPresent() ? dumpState.type() : dumpState.type().getNext(),
                                 counter
                         ));
+                    } else {
+                        dumpStates.put(cart.getUUID(), new DumpState(gameTime, dumpState.type().getNext(), OptionalInt.empty()));
                     }
                 } else {
                     dumpStates.put(cart.getUUID(), new DumpState(gameTime, dumpState.type().getNext(), OptionalInt.empty()));
