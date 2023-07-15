@@ -12,7 +12,7 @@ plugins {
 
 apply plugin: 'org.spongepowered.mixin'
 
-version = '0.1.0'
+version = '0.1.1'
 group = 'xyz.brassgoggledcoders.transport'
 archivesBaseName = 'transport'
 
@@ -118,7 +118,10 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
 
     implementation fg.deobf("com.tterrag.registrate:Registrate:MC1.19-1.1.5")
-    jarJar(group: 'com.tterrag.registrate', name: 'Registrate', version: "[MC1.19.2,MC1.19.3)")
+    jarJar(group: 'com.tterrag.registrate', name: 'Registrate', version: "MC1.19-1.1.5") {
+        jarJar.ranged(it, "[MC1.19-1.1.5,)")
+    }
+
 
     runtimeOnly fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.19.2-9.2.2-165.3")
     compileOnly fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.19.2-9.2.2-165.3:api")
@@ -131,6 +134,7 @@ dependencies {
 }
 
 jar {
+    classifier = "nodep"
     manifest {
         attributes([
                 "Specification-Title"     : "Transport",
@@ -146,6 +150,10 @@ jar {
 
 reobf {
     jarJar { }
+}
+
+tasks.jarJar.configure {
+    classifier ''
 }
 
 jar.finalizedBy('reobfJar')
