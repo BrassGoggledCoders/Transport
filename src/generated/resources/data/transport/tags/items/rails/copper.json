@@ -1,5 +1,12 @@
 {
   "values": [
+    "transport:waxed_oxidized_copper_rail",
+    "transport:oxidized_copper_rail",
+    "transport:waxed_weathered_copper_rail",
+    "transport:weathered_copper_rail",
+    "transport:waxed_exposed_copper_rail",
+    "transport:exposed_copper_rail",
+    "transport:waxed_copper_rail",
     "transport:copper_rail"
   ]
 }

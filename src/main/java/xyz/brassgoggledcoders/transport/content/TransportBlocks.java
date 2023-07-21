@@ -7,7 +7,6 @@ import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -16,8 +15,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.WeatheringCopper.WeatherState;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -185,10 +186,84 @@ public class TransportBlocks {
             .validBlock(ENERGY_UNLOADING_RAIL)
             .register();
 
-    public static final BlockEntry<CopperRail> COPPER_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<WaxedCopperRail> WAXED_OXIDIZED_COPPER_RAIL = Transport.getRegistrate()
+            .object("waxed_oxidized_copper_rail")
+            .block(WaxedCopperRail::new)
+            .transform(TransportBlocks::defaultCopperRail)
+            .blockstate((context, provider) -> BlockModelHelper.regularRail("oxidized_copper_rail", context.get(), provider))
+            .transform(TransportBlocks::defaultRailItem)
+            .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/oxidized_copper_rail")))
+            .tag(TransportItemTags.RAILS_COPPER)
+            .build()
+            .register();
+
+    public static final BlockEntry<WeatheringCopperRail> OXIDIZED_COPPER_RAIL = Transport.getRegistrate()
+            .object("oxidized_copper_rail")
+            .block(properties -> new WeatheringCopperRail(properties, WeatherState.OXIDIZED))
+            .transform(TransportBlocks::defaultCopperRail)
+            .blockstate(BlockModelHelper::regularRail)
+            .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_COPPER)
+            .build()
+            .register();
+
+    public static final BlockEntry<WaxedCopperRail> WAXED_WEATHERED_COPPER_RAIL = Transport.getRegistrate()
+            .object("waxed_weathered_copper_rail")
+            .block(WaxedCopperRail::new)
+            .transform(TransportBlocks::defaultCopperRail)
+            .blockstate((context, provider) -> BlockModelHelper.regularRail("weathered_copper_rail", context.get(), provider))
+            .transform(TransportBlocks::defaultRailItem)
+            .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/weathered_copper_rail")))
+            .tag(TransportItemTags.RAILS_COPPER)
+            .build()
+            .register();
+
+    public static final BlockEntry<WeatheringCopperRail> WEATHERED_COPPER_RAIL = Transport.getRegistrate()
+            .object("weathered_copper_rail")
+            .block(properties -> new WeatheringCopperRail(properties, WeatherState.WEATHERED))
+            .transform(TransportBlocks::defaultCopperRail)
+            .blockstate(BlockModelHelper::regularRail)
+            .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_COPPER)
+            .build()
+            .register();
+
+    public static final BlockEntry<WaxedCopperRail> WAXED_EXPOSED_COPPER_RAIL = Transport.getRegistrate()
+            .object("waxed_exposed_copper_rail")
+            .block(WaxedCopperRail::new)
+            .transform(TransportBlocks::defaultCopperRail)
+            .blockstate((context, provider) -> BlockModelHelper.regularRail("exposed_copper_rail", context.get(), provider))
+            .transform(TransportBlocks::defaultRailItem)
+            .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/exposed_copper_rail")))
+            .tag(TransportItemTags.RAILS_COPPER)
+            .build()
+            .register();
+
+    public static final BlockEntry<WeatheringCopperRail> EXPOSED_COPPER_RAIL = Transport.getRegistrate()
+            .object("exposed_copper_rail")
+            .block(properties -> new WeatheringCopperRail(properties, WeatherState.EXPOSED))
+            .transform(TransportBlocks::defaultCopperRail)
+            .blockstate(BlockModelHelper::regularRail)
+            .transform(TransportBlocks::defaultRailItem)
+            .tag(TransportItemTags.RAILS_COPPER)
+            .build()
+            .register();
+
+    public static final BlockEntry<WaxedCopperRail> WAXED_COPPER_RAIL = Transport.getRegistrate()
+            .object("waxed_copper_rail")
+            .block(WaxedCopperRail::new)
+            .transform(TransportBlocks::defaultCopperRail)
+            .blockstate((context, provider) -> BlockModelHelper.regularRail("copper_rail", context.get(), provider))
+            .transform(TransportBlocks::defaultRailItem)
+            .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/copper_rail")))
+            .tag(TransportItemTags.RAILS_COPPER)
+            .build()
+            .register();
+
+    public static final BlockEntry<WeatheringCopperRail> COPPER_RAIL = Transport.getRegistrate()
             .object("copper_rail")
-            .block(CopperRail::new)
-            .transform(TransportBlocks::defaultRail)
+            .block(properties -> new WeatheringCopperRail(properties, WeatherState.UNAFFECTED))
+            .transform(TransportBlocks::defaultCopperRail)
             .blockstate(BlockModelHelper::regularRail)
             .transform(TransportBlocks::defaultRailItem)
             .tag(TransportItemTags.RAILS_COPPER)
@@ -396,6 +471,18 @@ public class TransportBlocks {
                 )
                 .tag(BlockTags.RAILS);
     }
+
+    @Nonnull
+    public static <T extends BaseRailBlock> BlockBuilder<T, Registrate> defaultCopperRail(BlockBuilder<T, Registrate> builder) {
+        return builder.initialProperties(Material.DECORATION)
+                .properties(properties -> properties.noCollission()
+                        .strength(0.7F)
+                        .sound(SoundType.COPPER)
+                        .color(MaterialColor.COLOR_ORANGE)
+                )
+                .tag(BlockTags.RAILS);
+    }
+
 
     @Nonnull
     public static <T extends BaseRailBlock> ItemBuilder<BlockItem, BlockBuilder<T, Registrate>> defaultRailItem(

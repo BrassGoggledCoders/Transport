@@ -16,32 +16,37 @@ import xyz.brassgoggledcoders.transport.block.rail.WyeSwitchRailBlock;
 
 public class BlockModelHelper {
     private static final ResourceLocation CUTOUT = new ResourceLocation("cutout");
+
     public static void regularRail(DataGenContext<Block, ? extends BaseRailBlock> context, RegistrateBlockstateProvider provider) {
+        regularRail(context.getName(), context.get(), provider);
+    }
+
+    public static void regularRail(String name, Block block, RegistrateBlockstateProvider provider) {
         ModelFile flatRail = provider.models()
-                .getBuilder("block/" + context.getName() + "_flat")
+                .getBuilder("block/" + name + "_flat")
                 .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
-                .texture("rail", provider.modLoc("block/rail/" + context.getName()));
+                .texture("rail", provider.modLoc("block/rail/" + name));
 
         ModelFile raisedRail = provider.models()
-                .getBuilder("block/" + context.getName() + "_raised")
+                .getBuilder("block/" + name + "_raised")
                 .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/template_rail_raised_ne"))
                 )
-                .texture("rail", provider.modLoc("block/rail/" + context.getName()));
+                .texture("rail", provider.modLoc("block/rail/" + name));
 
         ModelFile cornerRail = provider.models()
-                .getBuilder("block/" + context.getName() + "_corner")
+                .getBuilder("block/" + name + "_corner")
                 .renderType(CUTOUT)
                 .parent(provider.models()
                         .getExistingFile(provider.mcLoc("block/rail_flat"))
                 )
-                .texture("rail", provider.modLoc("block/rail/" + context.getName() + "_corner"));
+                .texture("rail", provider.modLoc("block/rail/" + name + "_corner"));
 
-        provider.getVariantBuilder(context.get())
+        provider.getVariantBuilder(block)
                 .forAllStatesExcept(state -> {
                     RailShape railShape = state.getValue(BlockStateProperties.RAIL_SHAPE);
 

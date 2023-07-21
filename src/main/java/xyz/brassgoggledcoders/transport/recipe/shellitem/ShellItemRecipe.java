@@ -146,6 +146,11 @@ public class ShellItemRecipe implements IRailWorkerBenchRecipe {
     }
 
     @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
+    @Override
     public SizedIngredient getInput() {
         return SizedIngredient.of(this.input);
     }
