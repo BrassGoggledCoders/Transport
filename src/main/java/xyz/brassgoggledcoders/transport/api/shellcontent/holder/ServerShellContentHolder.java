@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.api.shellcontent.holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.service.IShellContentCreatorService;
@@ -83,5 +84,21 @@ public class ServerShellContentHolder implements IShellContentHolder {
         TransportAPI.SHELL_CONTENT_CREATOR.get()
                 .writeData(this.shellContent, itemStack.getOrCreateTag());
         return itemStack;
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
+        tag.putString("Id", this.shellContent.getCreatorInfo().id().toString());
+        tag.put("Data", this.shellContent.serializeNBT());
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        this.update(this.manager.create(
+                new ResourceLocation(nbt.getString("Id")),
+                nbt.getCompound("Data")
+        ));
     }
 }

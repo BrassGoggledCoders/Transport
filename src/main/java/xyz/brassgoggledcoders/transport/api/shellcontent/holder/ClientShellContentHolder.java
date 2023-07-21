@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.api.shellcontent.holder;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -69,5 +70,15 @@ public class ClientShellContentHolder implements IShellContentHolder {
     public ShellContent get() {
         checkNonnull();
         return this.shellContent;
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        return null;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+
     }
 }

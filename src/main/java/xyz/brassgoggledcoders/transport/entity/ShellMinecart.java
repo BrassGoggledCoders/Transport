@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.transport.entity;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
@@ -20,40 +19,29 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
-import xyz.brassgoggledcoders.transport.api.shellcontent.holder.ClientShellContentHolder;
 import xyz.brassgoggledcoders.transport.api.shellcontent.holder.IShellContentHolder;
-import xyz.brassgoggledcoders.transport.api.shellcontent.holder.ServerShellContentHolder;
 import xyz.brassgoggledcoders.transport.content.TransportItems;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAdditionalSpawnData {
+public class ShellMinecart extends AbstractMinecart implements IShell {
     private final IShellContentHolder holder;
 
     public ShellMinecart(EntityType<?> entityType, Level level) {
         super(entityType, level);
-        if (level.isClientSide()) {
-            this.holder = new ClientShellContentHolder(this);
-        } else {
-            this.holder = new ServerShellContentHolder(TransportAPI.SHELL_CONTENT_CREATOR.get(), this);
-        }
+        this.holder = IShellContentHolder.createForSide(this);
     }
 
     public ShellMinecart(EntityType<?> entityType, Level level, Vec3 vec3, ShellContent shellContent) {
         super(entityType, level, vec3.x(), vec3.y(), vec3.z());
-        if (level.isClientSide()) {
-            this.holder = new ClientShellContentHolder(this);
-        } else {
-            this.holder = new ServerShellContentHolder(TransportAPI.SHELL_CONTENT_CREATOR.get(), this);
-        }
+        this.holder = IShellContentHolder.createForSide(this);
         this.holder.update(shellContent);
     }
 
@@ -78,16 +66,6 @@ public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAd
     }
 
     @Override
-    public void writeSpawnData(FriendlyByteBuf buffer) {
-        this.getHolder().writeToBuffer(buffer);
-    }
-
-    @Override
-    public void readSpawnData(FriendlyByteBuf additionalData) {
-        this.getHolder().readFromBuffer(additionalData);
-    }
-
-    @Override
     public void destroy(@Nonnull DamageSource pSource) {
         super.destroy(pSource);
         this.getContent().destroy(pSource);
@@ -102,23 +80,24 @@ public class ShellMinecart extends AbstractMinecart implements IShell, IEntityAd
     @Override
     protected void readAdditionalSaveData(@Nonnull CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        CompoundTag shellContents = pCompound.getCompound("shellContent");
-        this.getHolder().update(TransportAPI.SHELL_CONTENT_CREATOR.get()
-                .create(
-                        new ResourceLocation(shellContents.getString("id")),
-                        shellContents.getCompound("data")
-                )
-        );
+        if (pCompound.contains("shellContent")) {
+            CompoundTag shellContents = pCompound.getCompound("shellContent");
+            this.getHolder().update(TransportAPI.SHELL_CONTENT_CREATOR.get()
+                    .create(
+                            new ResourceLocation(shellContents.getString("id")),
+                            shellContents.getCompound("data")
+                    )
+            );
+        } else {
+            this.getHolder().deserializeNBT(pCompound.getCompound("ShellContent"));
+        }
+
     }
 
     @Override
     protected void addAdditionalSaveData(@Nonnull CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        ShellContent shellContent = this.getContent();
-        CompoundTag shellContentNbt = new CompoundTag();
-        shellContentNbt.putString("id", shellContent.getCreatorInfo().id().toString());
-        shellContentNbt.put("data", shellContent.serializeNBT());
-        pCompound.put("shellContent", shellContentNbt);
+        pCompound.put("ShellContent", this.getHolder().serializeNBT());
     }
 
     @Override
