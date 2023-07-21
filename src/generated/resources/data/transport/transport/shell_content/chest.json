@@ -1,0 +1,17 @@
+{
+  "content": {
+    "type": "transport:item_storage",
+    "size": "THREE_BY_NINE"
+  },
+  "name": {
+    "translate": "block.minecraft.chest"
+  },
+  "view_state": {
+    "Name": "minecraft:chest",
+    "Properties": {
+      "type": "single",
+      "facing": "north",
+      "waterlogged": "false"
+    }
+  }
+}

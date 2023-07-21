@@ -15,6 +15,10 @@ public class TransportShellContentData {
                 .withShellContentCreator(ItemStorageShellContentBuilder.of(StorageSize.THREE_BY_NINE))
                 .build(Transport.rl("barrel"), dataProvider);
 
+        ShellContentInfoBuilder.of(Blocks.CHEST)
+                .withShellContentCreator(ItemStorageShellContentBuilder.of(StorageSize.THREE_BY_NINE))
+                .build(Transport.rl("chest"), dataProvider);
+
         ShellContentInfoBuilder.of(TransportBlocks.FLUID_STORAGE.get())
                 .withShellContentCreator(FluidStorageShellContentBuilder.ofBuckets(50))
                 .build(Transport.rl("fluid_storage"), dataProvider);
