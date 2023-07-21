@@ -3,7 +3,9 @@ package xyz.brassgoggledcoders.transport.block.rail;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -107,6 +109,19 @@ public class WeatheringCopperRail extends RailBlock implements WeatheringCopper 
                         .get(pState.getBlock())
                 )
                 .map(block -> block.withPropertiesOf(pState));
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
+    public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
+        this.onRandomTick(pState, pLevel, pPos, pRandom);
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public boolean isRandomlyTicking(BlockState pState) {
+        return this.getNext(pState).isPresent();
     }
 
     @Override
