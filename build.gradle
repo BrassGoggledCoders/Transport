@@ -12,7 +12,7 @@ plugins {
 
 apply plugin: 'org.spongepowered.mixin'
 
-version = '0.2.1'
+version = '0.2.3'
 group = 'xyz.brassgoggledcoders.transport'
 archivesBaseName = 'transport'
 
@@ -149,7 +149,7 @@ jar {
 }
 
 reobf {
-    jarJar { }
+    jarJar {}
 }
 
 tasks.jarJar.configure {
@@ -159,10 +159,19 @@ tasks.jarJar.configure {
 jar.finalizedBy('reobfJar')
 tasks.jarJar.finalizedBy('reobfJarJar')
 
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact jar
+            from components.java
+            fg.component(it)
+            jarJar.component(it)
+
+            pom.withXml {
+                asNode().dependencies.dependency.each { dep ->
+                    assert dep.parent().remove(dep)
+                }
+            }
         }
     }
     repositories {
