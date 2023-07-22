@@ -17,7 +17,6 @@ import xyz.brassgoggledcoders.transport.api.service.IItemHelperService;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
-import xyz.brassgoggledcoders.transport.content.TransportText;
 import xyz.brassgoggledcoders.transport.item.DispenserMinecartItemBehavior;
 import xyz.brassgoggledcoders.transport.item.ShellMinecartItem;
 
@@ -55,8 +54,7 @@ public class ItemHelperServiceImpl implements IItemHelperService {
                 .orElseGet(TransportAPI.SHELL_CONTENT_CREATOR.get()::getEmpty);
 
         consumer.accept(
-                //TODO: Test Translation?
-                Component.translatable(TransportText.SHELL_CONTENT_COMPONENT.getString(), info.name())
+                Component.translatable("text.transport.shell_content", info.name())
                         .withStyle(ChatFormatting.GRAY)
         );
     }
