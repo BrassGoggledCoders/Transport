@@ -105,7 +105,7 @@ public class WeatheringCopperRail extends RailBlock implements WeatheringCopper 
     @Override
     @NotNull
     public Optional<BlockState> getNext(@NotNull BlockState pState) {
-        return Optional.of(TransportWeathering.NEXT_BY_BLOCK.get()
+        return Optional.ofNullable(TransportWeathering.NEXT_BY_BLOCK.get()
                         .get(pState.getBlock())
                 )
                 .map(block -> block.withPropertiesOf(pState));
