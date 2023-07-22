@@ -45,6 +45,9 @@ public class ClientShellContentHolder implements IShellContentHolder {
     @Nonnull
     public Component getName() {
         checkNonnull();
+        if (this.name == null) {
+            return Component.literal("WTF");
+        }
         return this.name;
     }
 
