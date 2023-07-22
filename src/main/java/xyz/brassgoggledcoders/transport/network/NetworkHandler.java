@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.network;
 
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -22,6 +23,13 @@ public class NetworkHandler {
                 .encoder(NewGenerationClientMessage::encode)
                 .consumerMainThread(NewGenerationClientMessage::consume)
                 .add();
+
+        this.channel.messageBuilder(OpenMenuProviderServerMessage.class, 1)
+                .decoder(friendlyByteBuf -> new OpenMenuProviderServerMessage())
+                .encoder(((openMenuProviderServerMessage, friendlyByteBuf) -> {
+                }))
+                .consumerMainThread(OpenMenuProviderServerMessage::consume)
+                .add();
     }
 
     public void sendNewGenerationMessage(IShell shell) {
@@ -33,6 +41,13 @@ public class NetworkHandler {
                                 .get()
                                 .getCreatorInfo()
                 )
+        );
+    }
+
+    public void sendOpenMenuProvider() {
+        this.channel.send(
+                PacketDistributor.SERVER.noArg(),
+                new OpenMenuProviderServerMessage()
         );
     }
 }
