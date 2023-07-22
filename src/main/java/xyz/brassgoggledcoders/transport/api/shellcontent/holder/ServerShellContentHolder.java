@@ -9,6 +9,7 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.service.IShellContentCreatorService;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
+import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -89,16 +90,13 @@ public class ServerShellContentHolder implements IShellContentHolder {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.putString("Id", this.shellContent.getCreatorInfo().id().toString());
-        tag.put("Data", this.shellContent.serializeNBT());
+        tag.putString(ShellContentCreatorInfo.NBT_TAG_ID, this.shellContent.getCreatorInfo().id().toString());
+        tag.put(ShellContentCreatorInfo.NBT_TAG_DATA, this.shellContent.serializeNBT());
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.update(this.manager.create(
-                new ResourceLocation(nbt.getString("Id")),
-                nbt.getCompound("Data")
-        ));
+        this.update(this.manager.create(nbt));
     }
 }

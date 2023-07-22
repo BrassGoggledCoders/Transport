@@ -11,6 +11,7 @@ import net.minecraftforge.common.Tags;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
+import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 import xyz.brassgoggledcoders.transport.api.tag.TransportItemTags;
 import xyz.brassgoggledcoders.transport.data.recipe.RailWorkerBenchRecipeBuilder;
 import xyz.brassgoggledcoders.transport.data.recipe.ShellItemRecipeBuilder;
@@ -25,7 +26,7 @@ public class TransportItems {
             .object("shell_minecart")
             .item(properties -> TransportAPI.ITEM_HELPER.get()
                     .createShellMinecartItem((itemStack, level, pos) -> {
-                        CompoundTag shellContentTag = itemStack.getTagElement("shellContent");
+                        CompoundTag shellContentTag = itemStack.getTagElement(ShellContentCreatorInfo.NBT_TAG_ELEMENT);
                         ShellContent shellContent = TransportAPI.SHELL_CONTENT_CREATOR.get().create(shellContentTag);
 
                         return new ShellMinecart(TransportEntities.SHELL_MINECART.get(), level, pos, shellContent);

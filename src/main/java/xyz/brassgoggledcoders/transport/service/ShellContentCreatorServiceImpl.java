@@ -104,11 +104,11 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
     @Override
     public ShellContent create(@Nullable CompoundTag nbt) {
         if (nbt != null) {
-            ResourceLocation id = ResourceLocation.tryParse(nbt.getString("id"));
+            ResourceLocation id = ResourceLocation.tryParse(nbt.getString(ShellContentCreatorInfo.NBT_TAG_ID));
             if (id != null) {
-                return this.create(id, nbt.getCompound("data"));
+                return this.create(id, nbt.getCompound(ShellContentCreatorInfo.NBT_TAG_DATA));
             } else {
-                return MISSING.create(nbt.getCompound("data"));
+                return MISSING.create(nbt.getCompound(ShellContentCreatorInfo.NBT_TAG_DATA));
             }
         }
         return MISSING.create(null);
@@ -123,15 +123,17 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
     @Override
     public void writeData(@NotNull ShellContent shellContent, @NotNull CompoundTag parent) {
         CompoundTag shellContentNbt = new CompoundTag();
-        shellContentNbt.putString("id", shellContent.getCreatorInfo().id().toString());
-        shellContentNbt.put("data", shellContent.serializeNBT());
-        parent.put("shellContent", shellContentNbt);
+        shellContentNbt.putString(ShellContentCreatorInfo.NBT_TAG_ID, shellContent.getCreatorInfo().id().toString());
+        shellContentNbt.put(ShellContentCreatorInfo.NBT_TAG_DATA, shellContent.serializeNBT());
+        parent.put(ShellContentCreatorInfo.NBT_TAG_ELEMENT, shellContentNbt);
     }
 
     @Override
     public ShellContent readData(@NotNull CompoundTag parent) {
         if (parent.contains("shellContent")) {
             return this.create(parent.getCompound("shellContent"));
+        } else if (parent.contains(ShellContentCreatorInfo.NBT_TAG_ELEMENT)) {
+            return this.create(parent.getCompound(ShellContentCreatorInfo.NBT_TAG_ELEMENT));
         } else {
             return this.getEmpty().create(null);
         }

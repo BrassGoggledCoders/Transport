@@ -1,7 +1,6 @@
 package xyz.brassgoggledcoders.transport.recipe.shellitem;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -13,9 +12,9 @@ import net.minecraftforge.common.util.Lazy;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.api.recipe.ingredient.SizedIngredient;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
-import xyz.brassgoggledcoders.transport.api.recipe.ingredient.SizedIngredient;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.IRailWorkerBenchRecipe;
 
 import javax.annotation.Nonnull;
@@ -68,9 +67,7 @@ public class ShellItemRecipe implements IRailWorkerBenchRecipe {
                     for (ShellContentCreatorInfo info : TransportAPI.SHELL_CONTENT_CREATOR.get().getAll()) {
                         if (info.createRecipe() && info.viewState().getBlock().asItem() == tuple.getRight().getItem()) {
                             ItemStack itemStack = this.getOutput().copy();
-                            CompoundTag shellContent = new CompoundTag();
-                            shellContent.putString("id", info.id().toString());
-                            itemStack.addTagElement("shellContent", shellContent);
+                            info.embedNBT(itemStack);
                             return itemStack;
                         }
                     }

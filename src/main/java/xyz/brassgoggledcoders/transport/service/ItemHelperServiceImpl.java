@@ -49,8 +49,8 @@ public class ItemHelperServiceImpl implements IItemHelperService {
 
     @Override
     public void appendTextForShellItems(ItemStack pStack, Consumer<Component> consumer) {
-        ShellContentCreatorInfo info = Optional.ofNullable(pStack.getTagElement("shellContent"))
-                .map(nbt -> ResourceLocation.tryParse(nbt.getString("id")))
+        ShellContentCreatorInfo info = Optional.ofNullable(pStack.getTagElement(ShellContentCreatorInfo.NBT_TAG_ELEMENT))
+                .map(nbt -> ResourceLocation.tryParse(nbt.getString(ShellContentCreatorInfo.NBT_TAG_ID)))
                 .map(TransportAPI.SHELL_CONTENT_CREATOR.get()::getById)
                 .orElseGet(TransportAPI.SHELL_CONTENT_CREATOR.get()::getEmpty);
 
@@ -63,10 +63,10 @@ public class ItemHelperServiceImpl implements IItemHelperService {
 
     @Override
     public ItemStack appendShellNBT(ItemStack pStack, ShellContent shellContent, boolean includeData) {
-        CompoundTag compoundTag = pStack.getOrCreateTagElement("shellContent");
-        compoundTag.putString("id", shellContent.getCreatorInfo().id().toString());
+        CompoundTag compoundTag = pStack.getOrCreateTagElement(ShellContentCreatorInfo.NBT_TAG_ELEMENT);
+        compoundTag.putString(ShellContentCreatorInfo.NBT_TAG_ID, shellContent.getCreatorInfo().id().toString());
         if (includeData) {
-            compoundTag.put("data", shellContent.serializeNBT());
+            compoundTag.put(ShellContentCreatorInfo.NBT_TAG_DATA, shellContent.serializeNBT());
         }
 
         return pStack;

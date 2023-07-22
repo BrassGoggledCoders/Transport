@@ -25,7 +25,10 @@ import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
+import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
+import xyz.brassgoggledcoders.transport.api.shellcontent.holder.ClientShellContentHolder;
 import xyz.brassgoggledcoders.transport.api.shellcontent.holder.IShellContentHolder;
+import xyz.brassgoggledcoders.transport.api.shellcontent.holder.ServerShellContentHolder;
 import xyz.brassgoggledcoders.transport.content.TransportItems;
 
 import javax.annotation.Nonnull;
@@ -89,7 +92,7 @@ public class ShellMinecart extends AbstractMinecart implements IShell {
                     )
             );
         } else {
-            this.getHolder().deserializeNBT(pCompound.getCompound("ShellContent"));
+            this.getHolder().deserializeNBT(pCompound.getCompound(ShellContentCreatorInfo.NBT_TAG_ELEMENT));
         }
 
     }
@@ -97,7 +100,7 @@ public class ShellMinecart extends AbstractMinecart implements IShell {
     @Override
     protected void addAdditionalSaveData(@Nonnull CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        pCompound.put("ShellContent", this.getHolder().serializeNBT());
+        pCompound.put(ShellContentCreatorInfo.NBT_TAG_ELEMENT, this.getHolder().serializeNBT());
     }
 
     @Override
