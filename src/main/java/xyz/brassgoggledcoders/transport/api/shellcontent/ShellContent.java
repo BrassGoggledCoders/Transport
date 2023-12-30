@@ -7,7 +7,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -75,10 +74,9 @@ public class ShellContent implements ICapabilityProvider {
         this.creatorInfo = creatorInfo;
     }
 
+    @SuppressWarnings("unused")
     public void destroy(DamageSource pSource) {
-        if (!pSource.isExplosion() && this.getLevel().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.getShell().getSelf().spawnAtLocation(this.getViewBlockState().getBlock());
-        }
+
     }
 
     public Level getLevel() {
