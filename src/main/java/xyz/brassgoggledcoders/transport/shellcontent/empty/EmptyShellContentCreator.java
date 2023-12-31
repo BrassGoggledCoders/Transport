@@ -5,7 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 
 public class EmptyShellContentCreator implements IShellContentCreator<EmptyShellContent> {
-    public static final Codec<EmptyShellContentCreator> CODEC = Codec.unit(EmptyShellContentCreator::new);
+    public static final EmptyShellContentCreator INSTANCE = new EmptyShellContentCreator();
+    public static final Codec<EmptyShellContentCreator> CODEC = Codec.unit(INSTANCE);
 
     @Override
     public Codec<? extends IShellContentCreator<?>> getCodec() {

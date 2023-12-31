@@ -25,6 +25,8 @@ import xyz.brassgoggledcoders.transport.shellcontent.empty.EmptyShellContentCrea
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadListener implements IShellContentCreatorService {
@@ -112,6 +114,13 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
             }
         }
         return MISSING.create(null);
+    }
+
+    public void updateClient(Collection<ShellContentCreatorInfo> infoList) {
+        this.creators.clear();
+        for (ShellContentCreatorInfo info : infoList) {
+            this.creators.put(info.id(), info);
+        }
     }
 
     @Override

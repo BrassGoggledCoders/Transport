@@ -44,13 +44,6 @@ public class ShellItemRecipe implements IRailWorkerBenchRecipe {
         ));
     }
 
-    public ShellItemRecipe(ResourceLocation id, Ingredient input, ItemStack output, Ingredient secondary) {
-        this.id = id;
-        this.input = input;
-        this.output = output;
-        this.ingredient = () -> secondary;
-    }
-
     @Override
     @ParametersAreNonnullByDefault
     public boolean matches(Container pContainer, Level pLevel) {
@@ -168,9 +161,5 @@ public class ShellItemRecipe implements IRailWorkerBenchRecipe {
 
     public ItemStack getOutput() {
         return output;
-    }
-
-    public Ingredient getSecondary() {
-        return this.ingredient.get();
     }
 }

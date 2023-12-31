@@ -57,7 +57,7 @@ public record ShellContentCreatorInfo(
     public ShellContent create(@Nullable CompoundTag nbt) {
         ShellContent shellContent = this.contentCreator().get();
         shellContent.setCreatorInfo(this);
-        if (nbt != null && nbt.size() > 0) {
+        if (nbt != null && !nbt.isEmpty()) {
             shellContent.deserializeNBT(nbt);
         }
         return shellContent;

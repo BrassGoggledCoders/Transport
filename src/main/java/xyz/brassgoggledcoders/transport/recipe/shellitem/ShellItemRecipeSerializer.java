@@ -31,8 +31,7 @@ public class ShellItemRecipeSerializer implements RecipeSerializer<ShellItemReci
         return new ShellItemRecipe(
                 pRecipeId,
                 Ingredient.fromNetwork(pBuffer),
-                pBuffer.readItem(),
-                Ingredient.fromNetwork(pBuffer)
+                pBuffer.readItem()
         );
     }
 
@@ -41,6 +40,5 @@ public class ShellItemRecipeSerializer implements RecipeSerializer<ShellItemReci
     public void toNetwork(FriendlyByteBuf pBuffer, ShellItemRecipe pRecipe) {
         pRecipe.getInput().ingredient().toNetwork(pBuffer);
         pBuffer.writeItem(pRecipe.getOutput());
-        pRecipe.getSecondary().toNetwork(pBuffer);
     }
 }

@@ -19,6 +19,7 @@ import net.minecraftforge.common.crafting.conditions.ConditionContext;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -137,5 +138,10 @@ public class ForgeCommonEventHandler {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void syncShellContents(OnDatapackSyncEvent syncEvent) {
+        Transport.NETWORK.sendSyncShellContentInfoMessage(syncEvent.getPlayer());
     }
 }

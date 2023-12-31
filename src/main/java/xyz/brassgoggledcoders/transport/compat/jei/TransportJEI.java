@@ -40,7 +40,9 @@ public class TransportJEI implements IModPlugin {
                         .getRecipeManager()
                         .getAllRecipesFor(TransportRecipes.RAIL_WORKER_BENCH_TYPE.get())
                         .stream()
-                        .flatMap(recipe -> recipe.getChildren().stream())
+                        .flatMap(recipe -> recipe.getChildren()
+                                .stream()
+                        )
                         .toList()
         );
     }
