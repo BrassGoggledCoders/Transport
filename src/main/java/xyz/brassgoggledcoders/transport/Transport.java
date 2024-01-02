@@ -4,13 +4,20 @@ import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.NonNullLazy;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import xyz.brassgoggledcoders.transport.compat.top.TransportTOP;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.data.shellcontent.RegistrateShellContentDataProvider;
 import xyz.brassgoggledcoders.transport.item.TransportCreativeModeTab;
 import xyz.brassgoggledcoders.transport.network.NetworkHandler;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static xyz.brassgoggledcoders.transport.Transport.ID;
 
@@ -37,6 +44,17 @@ public class Transport {
         TransportRecipes.setup();
         TransportShellContent.setup();
         TransportText.setup();
+
+        loadCompat("theoneprobe", () -> TransportTOP::new);
+    }
+
+    public void loadCompat(String modid, Supplier<Consumer<IEventBus>> compatRunner) {
+        if (ModList.get().isLoaded(modid)) {
+            compatRunner.get()
+                    .accept(FMLJavaModLoadingContext.get()
+                            .getModEventBus()
+                    );
+        }
     }
 
     public static Registrate getRegistrate() {

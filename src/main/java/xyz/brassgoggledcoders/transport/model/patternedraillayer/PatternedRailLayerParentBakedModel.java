@@ -10,6 +10,7 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
+import org.checkerframework.checker.signature.qual.SignatureUnknown;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +28,7 @@ public class PatternedRailLayerParentBakedModel implements BakedModel {
 
     @Override
     @NotNull
+    @SuppressWarnings("deprecated")
     public List<BakedQuad> getQuads(@Nullable BlockState pState, @Nullable Direction pSide, @NotNull RandomSource pRand) {
         return Collections.emptyList();
     }
@@ -53,6 +55,7 @@ public class PatternedRailLayerParentBakedModel implements BakedModel {
 
     @Override
     @NotNull
+    @SuppressWarnings("deprecated")
     public TextureAtlasSprite getParticleIcon() {
         return particle.sprite();
     }
