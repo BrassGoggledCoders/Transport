@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.shellcontent.storage.item;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -95,5 +96,19 @@ public class ItemStorageShellContent extends ShellContent implements MenuProvide
     public void invalidateCaps() {
         super.invalidateCaps();
         this.itemLazyOptional.invalidate();
+    }
+
+    @NotNull
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag compoundTag = super.serializeNBT();
+        compoundTag.put("inventory", this.itemStackHandler.serializeNBT());
+        return compoundTag;
+    }
+
+    @Override
+    public void deserializeNBT(@NotNull CompoundTag compoundTag) {
+        super.deserializeNBT(compoundTag);
+        this.itemStackHandler.deserializeNBT(compoundTag.getCompound("inventory"));
     }
 }
