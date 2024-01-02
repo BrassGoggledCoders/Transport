@@ -12,7 +12,7 @@ plugins {
 
 apply plugin: 'org.spongepowered.mixin'
 
-version = '0.2.5'
+version = '0.2.6'
 group = 'xyz.brassgoggledcoders.transport'
 archivesBaseName = 'transport'
 
