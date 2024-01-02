@@ -27,9 +27,7 @@ import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
-import xyz.brassgoggledcoders.transport.api.shellcontent.holder.ClientShellContentHolder;
 import xyz.brassgoggledcoders.transport.api.shellcontent.holder.IShellContentHolder;
-import xyz.brassgoggledcoders.transport.api.shellcontent.holder.ServerShellContentHolder;
 import xyz.brassgoggledcoders.transport.content.TransportItems;
 
 import javax.annotation.Nonnull;

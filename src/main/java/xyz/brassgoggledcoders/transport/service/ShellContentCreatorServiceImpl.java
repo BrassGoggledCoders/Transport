@@ -25,8 +25,6 @@ import xyz.brassgoggledcoders.transport.shellcontent.empty.EmptyShellContentCrea
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadListener implements IShellContentCreatorService {
