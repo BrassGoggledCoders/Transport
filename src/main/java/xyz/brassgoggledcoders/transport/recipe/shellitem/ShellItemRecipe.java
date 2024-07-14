@@ -1,6 +1,8 @@
 package xyz.brassgoggledcoders.transport.recipe.shellitem;
 
+import com.google.common.base.Suppliers;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -21,18 +23,17 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class ShellItemRecipe implements IRailWorkerBenchRecipe {
-    private final ResourceLocation id;
     private final Ingredient input;
     private final ItemStack output;
-    private final Lazy<Ingredient> ingredient;
+    private final Supplier<Ingredient> ingredient;
 
-    public ShellItemRecipe(ResourceLocation id, Ingredient input, ItemStack output) {
-        this.id = id;
+    public ShellItemRecipe(Ingredient input, ItemStack output) {
         this.input = input;
         this.output = output;
-        this.ingredient = Lazy.of(() -> Ingredient.of(TransportAPI.SHELL_CONTENT_CREATOR.get()
+        this.ingredient = Suppliers.memoize(() -> Ingredient.of(TransportAPI.SHELL_CONTENT_CREATOR.get()
                 .getAll()
                 .stream()
                 .filter(ShellContentCreatorInfo::createRecipe)
@@ -53,9 +54,9 @@ public class ShellItemRecipe implements IRailWorkerBenchRecipe {
     }
 
     @Override
-    @Nonnull
-    public ItemStack assemble(@Nonnull Container pContainer) {
-        return findMatching(pContainer)
+    @NotNull
+    public ItemStack assemble(@NotNull Container container, @NotNull RegistryAccess registryAccess) {
+        return findMatching(container)
                 .map(tuple -> {
                     for (ShellContentCreatorInfo info : TransportAPI.SHELL_CONTENT_CREATOR.get().getAll()) {
                         if (info.createRecipe() && info.viewState().getBlock().asItem() == tuple.getRight().getItem()) {
@@ -74,15 +75,9 @@ public class ShellItemRecipe implements IRailWorkerBenchRecipe {
     }
 
     @Override
-    @Nonnull
-    public ItemStack getResultItem() {
-        return getOutput().copy();
-    }
-
-    @Override
-    @Nonnull
-    public ResourceLocation getId() {
-        return this.id;
+    @NotNull
+    public ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
+        return this.output.copy();
     }
 
     @Override
@@ -127,7 +122,6 @@ public class ShellItemRecipe implements IRailWorkerBenchRecipe {
                 .stream()
                 .filter(ShellContentCreatorInfo::createRecipe)
                 .<IRailWorkerBenchRecipe>map(info -> new ShellItemChildRecipe(
-                        this.getId(),
                         info.embedNBT(getOutput().copy()),
                         this.getInput(),
                         SizedIngredient.of(Ingredient.of(info.viewState().getBlock()))

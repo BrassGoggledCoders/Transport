@@ -1,9 +1,10 @@
 package xyz.brassgoggledcoders.transport.api.shellcontent;
 
 import com.mojang.serialization.Codec;
-import net.minecraftforge.common.util.NonNullSupplier;
 
-public interface IShellContentCreator<U extends ShellContent> extends NonNullSupplier<U> {
+import java.util.function.Supplier;
+
+public interface IShellContentCreator<U extends ShellContent> extends Supplier<U> {
 
     Codec<? extends IShellContentCreator<?>> getCodec();
 }

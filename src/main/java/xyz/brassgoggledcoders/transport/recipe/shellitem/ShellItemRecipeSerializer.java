@@ -1,12 +1,13 @@
 package xyz.brassgoggledcoders.transport.recipe.shellitem;
 
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.common.crafting.CraftingHelper;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,8 +20,8 @@ public class ShellItemRecipeSerializer implements RecipeSerializer<ShellItemReci
     public ShellItemRecipe fromJson(ResourceLocation pRecipeId, JsonObject pSerializedRecipe) {
         return new ShellItemRecipe(
                 pRecipeId,
-                Ingredient.fromJson(pSerializedRecipe.get("input")),
-                CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(pSerializedRecipe, "output"), true)
+                Ingredient.fromJson(pSerializedRecipe.get("input"), true),
+                CraftingHelper.smeltingResultCodec(GsonHelper.getAsJsonObject(pSerializedRecipe, "output"), true)
         );
     }
 
@@ -30,6 +31,19 @@ public class ShellItemRecipeSerializer implements RecipeSerializer<ShellItemReci
     public ShellItemRecipe fromNetwork(ResourceLocation pRecipeId, FriendlyByteBuf pBuffer) {
         return new ShellItemRecipe(
                 pRecipeId,
+                Ingredient.fromNetwork(pBuffer),
+                pBuffer.readItem()
+        );
+    }
+
+    @Override
+    public Codec<ShellItemRecipe> codec() {
+        return null;
+    }
+
+    @Override
+    public ShellItemRecipe fromNetwork(FriendlyByteBuf pBuffer) {
+        return new ShellItemRecipe(
                 Ingredient.fromNetwork(pBuffer),
                 pBuffer.readItem()
         );

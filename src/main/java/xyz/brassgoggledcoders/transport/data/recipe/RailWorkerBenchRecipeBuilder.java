@@ -2,7 +2,8 @@ package xyz.brassgoggledcoders.transport.data.recipe;
 
 import com.google.common.base.Suppliers;
 import com.google.gson.JsonObject;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -12,10 +13,10 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.api.recipe.ingredient.SizedIngredient;
+import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipe;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class RailWorkerBenchRecipeBuilder {
@@ -68,27 +69,30 @@ public class RailWorkerBenchRecipeBuilder {
         return this.withSecondaryInput(Ingredient.of(secondInput), count);
     }
 
-    public void save(Consumer<FinishedRecipe> pFinishedRecipeConsumer) {
-        this.save(pFinishedRecipeConsumer, getDefaultRecipeId(this.output.getItem()));
+    public void save(RecipeOutput recipeOutput) {
+        this.save(recipeOutput, getDefaultRecipeId(this.output.getItem()));
     }
 
     private static ResourceLocation getDefaultRecipeId(ItemLike pItemLike) {
-        return ForgeRegistries.ITEMS.getKey(pItemLike.asItem());
+        return BuiltInRegistries.ITEM.getKey(pItemLike.asItem());
     }
 
-    public void save(Consumer<FinishedRecipe> pFinishedRecipeConsumer, ResourceLocation pRecipeId) {
+    public void save(RecipeOutput recipeOutput, ResourceLocation pRecipeId) {
         Objects.requireNonNull(this.input, "input cannot be null");
         if (this.input.isEmpty()) {
             throw new IllegalStateException("input cannot be empty");
         }
         Objects.requireNonNull(this.output, "output cannot be null");
         Objects.requireNonNull(this.secondaryInput, "secondaryInput cannot be null");
-        pFinishedRecipeConsumer.accept(new RailWorkerBenchFinishedRecipe(
+        recipeOutput.accept(
                 pRecipeId,
-                this.output,
-                this.input,
-                this.secondaryInput
-        ));
+                new RailWorkerBenchRecipe(
+
+                        this.output,
+                        this.input,
+                        this.secondaryInput
+                ),
+                null);
     }
 
     public static RailWorkerBenchRecipeBuilder of(ItemLike input) {
@@ -97,22 +101,5 @@ public class RailWorkerBenchRecipeBuilder {
 
     public static RailWorkerBenchRecipeBuilder of(ItemLike input, int count) {
         return new RailWorkerBenchRecipeBuilder(new ItemStack(input, count));
-    }
-
-    public static class RailWorkerBenchFinishedRecipe extends BasicFinishedRecipe {
-        private final SizedIngredient secondaryInput;
-
-        public RailWorkerBenchFinishedRecipe(ResourceLocation id, ItemStack output, SizedIngredient input, SizedIngredient secondaryInput) {
-            super(id, output, input, RECIPE_SERIALIZER.get());
-            this.secondaryInput = secondaryInput;
-        }
-
-        @Override
-        public void serializeRecipeData(JsonObject pJson) {
-            super.serializeRecipeData(pJson);
-            if (!secondaryInput.isEmpty()) {
-                pJson.add("secondaryInput", secondaryInput.toJson());
-            }
-        }
     }
 }

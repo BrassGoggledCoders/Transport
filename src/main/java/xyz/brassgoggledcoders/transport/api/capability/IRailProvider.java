@@ -1,14 +1,12 @@
 package xyz.brassgoggledcoders.transport.api.capability;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.capabilities.ItemCapability;
+import net.neoforged.neoforge.items.IItemHandler;
+import xyz.brassgoggledcoders.transport.Transport;
 
 public interface IRailProvider {
-    Capability<IRailProvider> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
-    });
+    ItemCapability<IRailProvider, Void> CAPABILITY = ItemCapability.createVoid(Transport.rl("rail_provider"), IRailProvider.class);
 
     ItemStack findNext(IItemHandler searchable, boolean simulate);
 

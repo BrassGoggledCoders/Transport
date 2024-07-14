@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.recipe.railworkerbench;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +17,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 public record RailWorkerBenchRecipe(
-        ResourceLocation id,
         ItemStack output,
         SizedIngredient input,
         SizedIngredient secondaryInput
@@ -29,7 +29,7 @@ public record RailWorkerBenchRecipe(
 
     @Override
     @NotNull
-    public ItemStack assemble(@NotNull Container pContainer) {
+    public ItemStack assemble(@NotNull Container pContainer, @NotNull RegistryAccess registryAccess) {
         return this.output.copy();
     }
 
@@ -40,8 +40,8 @@ public record RailWorkerBenchRecipe(
 
     @Override
     @NotNull
-    public ItemStack getResultItem() {
-        return this.output;
+    public ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
+        return this.output().copy();
     }
 
     @Override
@@ -57,20 +57,8 @@ public record RailWorkerBenchRecipe(
 
     @Override
     @NotNull
-    public ResourceLocation getId() {
-        return id;
-    }
-
-    @Override
-    @NotNull
     public RecipeSerializer<?> getSerializer() {
         return TransportRecipes.RAIL_WORKER_BENCH.get();
-    }
-
-    @Override
-    @NotNull
-    public RecipeType<?> getType() {
-        return TransportRecipes.RAIL_WORKER_BENCH_TYPE.get();
     }
 
     @Override

@@ -2,8 +2,8 @@ package xyz.brassgoggledcoders.transport.item;
 
 import com.mojang.datafixers.util.Function3;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
@@ -28,12 +28,13 @@ public class DispenserMinecartItemBehavior extends DefaultDispenseItemBehavior {
     @Override
     @Nonnull
     public ItemStack execute(BlockSource blockSource, @Nonnull ItemStack pStack) {
-        Direction direction = blockSource.getBlockState().getValue(DispenserBlock.FACING);
-        Level level = blockSource.getLevel();
-        double d0 = blockSource.x() + (double) direction.getStepX() * 1.125D;
-        double d1 = Math.floor(blockSource.y()) + (double) direction.getStepY();
-        double d2 = blockSource.z() + (double) direction.getStepZ() * 1.125D;
-        BlockPos blockpos = blockSource.getPos().relative(direction);
+        Direction direction = blockSource.state().getValue(DispenserBlock.FACING);
+        Level level = blockSource.level();
+        Vec3 centerVec = blockSource.center();
+        double d0 = centerVec.x() + (double) direction.getStepX() * 1.125D;
+        double d1 = Math.floor(centerVec.y()) + (double) direction.getStepY();
+        double d2 = centerVec.z() + (double) direction.getStepZ() * 1.125D;
+        BlockPos blockpos = blockSource.pos().relative(direction);
         BlockState blockstate = level.getBlockState(blockpos);
         RailShape railshape = blockstate.getBlock() instanceof BaseRailBlock ?
                 ((BaseRailBlock) blockstate.getBlock()).getRailDirection(blockstate, level, blockpos, null) :

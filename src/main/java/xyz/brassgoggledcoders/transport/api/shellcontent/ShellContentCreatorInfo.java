@@ -6,13 +6,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.registries.RegistryManager;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.codec.Codecs;
 import xyz.brassgoggledcoders.transport.content.TransportShellContent;
 
 import javax.annotation.Nullable;
@@ -27,17 +26,17 @@ public record ShellContentCreatorInfo(
         IShellContentCreator<?> contentCreator
 ) {
     @SuppressWarnings("RedundantTypeArguments") //IShellContentCreator<?> is necessary for the dispatch or code fails???
-    private static final Lazy<Codec<ShellContentCreatorInfo>> CODEC = Lazy.of(() ->
+    private static final Codec<ShellContentCreatorInfo> CODEC = ExtraCodecs.lazyInitializedCodec(() ->
             RecordCodecBuilder.create(instance -> instance.group(
                     ResourceLocation.CODEC.fieldOf("id").forGetter(ShellContentCreatorInfo::id),
                     BlockState.CODEC.fieldOf("view_state")
                             .forGetter(ShellContentCreatorInfo::viewState),
-                    Codecs.COMPONENT.optionalFieldOf("name")
+                    ComponentSerialization.CODEC.optionalFieldOf("name")
                             .forGetter(creatorInfo -> Optional.of(creatorInfo.name())),
                     Codec.BOOL.optionalFieldOf("createRecipe", Boolean.TRUE)
                             .forGetter(ShellContentCreatorInfo::createRecipe),
-                    RegistryManager.ACTIVE.getRegistry(TransportShellContent.SHELL_CONTENT_TYPES)
-                            .getCodec()
+                    TransportShellContent.SHELL_CONTENT_TYPES
+                            .byNameCodec()
                             .<IShellContentCreator<?>>dispatch(IShellContentCreator::getCodec, Function.identity())
                             .fieldOf("content")
                             .forGetter(ShellContentCreatorInfo::contentCreator)
@@ -85,6 +84,6 @@ public record ShellContentCreatorInfo(
     }
 
     public static Codec<ShellContentCreatorInfo> getCodec() {
-        return CODEC.get();
+        return CODEC;
     }
 }

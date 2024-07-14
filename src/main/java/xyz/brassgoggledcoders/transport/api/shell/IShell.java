@@ -5,12 +5,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 import xyz.brassgoggledcoders.transport.api.shellcontent.holder.IShellContentHolder;
 
-public interface IShell extends IEntityAdditionalSpawnData {
+public interface IShell extends IEntityWithComplexSpawn {
     default ShellContent getContent() {
         return this.getHolder().get();
     }
@@ -18,7 +18,7 @@ public interface IShell extends IEntityAdditionalSpawnData {
     IShellContentHolder getHolder();
 
     default Level getShellLevel() {
-        return this.getSelf().getLevel();
+        return this.getSelf().level();
     }
 
     default int getShellId() {

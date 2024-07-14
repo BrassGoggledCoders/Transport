@@ -1,10 +1,11 @@
 package xyz.brassgoggledcoders.transport.content;
 
 import com.mojang.serialization.Codec;
-import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.registries.RegistryBuilder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import xyz.brassgoggledcoders.shadyskies.registering.RegisteringEntry;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IEnergyStorageShellContentCreator;
@@ -16,10 +17,16 @@ import xyz.brassgoggledcoders.transport.shellcontent.storage.fluid.FluidStorageS
 import xyz.brassgoggledcoders.transport.shellcontent.storage.item.ItemStorageShellContentCreator;
 
 public class TransportShellContent {
-    public static ResourceKey<Registry<Codec<? extends IShellContentCreator<?>>>> SHELL_CONTENT_TYPES = Transport.getRegistrate()
-            .makeRegistry("shell_content", RegistryBuilder::new);
 
-    public static RegistryEntry<Codec<EmptyShellContentCreator>> EMPTY = Transport.getRegistrate()
+    public static DeferredRegister<Codec<? extends IShellContentCreator<?>>> DEFERRED_REGISTER = DeferredRegister.create(
+            Transport.rl("shell_content"),
+            Transport.ID
+    );
+
+    public static Registry<Codec<? extends IShellContentCreator<?>>> SHELL_CONTENT_TYPES =
+            DEFERRED_REGISTER.makeRegistry(registryBuilder -> {});
+
+    public static RegisteringEntry<Codec<EmptyShellContentCreator>, Codec<? extends IShellContentCreator<?>>> EMPTY = Transport.getRegistrate()
             .object("empty")
             .simple(SHELL_CONTENT_TYPES, () -> EmptyShellContentCreator.CODEC);
 
@@ -39,5 +46,9 @@ public class TransportShellContent {
 
     public static void setup() {
 
+    }
+
+    public static void newRegistry(NewRegistryEvent newRegistryEvent) {
+        newRegistryEvent.register(newRegistryEvent.create());
     }
 }

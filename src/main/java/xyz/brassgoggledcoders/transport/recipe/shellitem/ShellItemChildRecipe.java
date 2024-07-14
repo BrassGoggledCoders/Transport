@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.recipe.shellitem;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -14,7 +15,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 public record ShellItemChildRecipe(
-        ResourceLocation parentId,
         ItemStack output,
         SizedIngredient shellItem,
         SizedIngredient shellContent
@@ -40,13 +40,18 @@ public record ShellItemChildRecipe(
     }
 
     @Override
+    public ItemStack getOutput() {
+        return null;
+    }
+
+    @Override
     public boolean matches(@NotNull Container pContainer, @NotNull Level pLevel) {
         return false;
     }
 
     @Override
     @NotNull
-    public ItemStack assemble(@NotNull Container pContainer) {
+    public ItemStack assemble(@NotNull Container pContainer, @NotNull RegistryAccess registryAccess) {
         return ItemStack.EMPTY;
     }
 
@@ -57,14 +62,8 @@ public record ShellItemChildRecipe(
 
     @Override
     @NotNull
-    public ItemStack getResultItem() {
-        return output();
-    }
-
-    @Override
-    @NotNull
-    public ResourceLocation getId() {
-        return parentId;
+    public ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
+        return null;
     }
 
     @Override

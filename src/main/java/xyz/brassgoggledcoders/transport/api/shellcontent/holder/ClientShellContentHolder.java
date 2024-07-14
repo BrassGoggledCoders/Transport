@@ -76,12 +76,12 @@ public class ClientShellContentHolder implements IShellContentHolder {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        return null;
+    public void save(CompoundTag nbt) {
+
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void load(CompoundTag nbt) {
         if (shellContent == null || shellContent.getCreatorInfo() == TransportAPI.SHELL_CONTENT_CREATOR.get().getEmpty()) {
             this.update(TransportAPI.SHELL_CONTENT_CREATOR.get()
                     .create(nbt)

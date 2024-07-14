@@ -4,12 +4,12 @@ import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.NonNullLazy;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import xyz.brassgoggledcoders.shadyskies.registering.Registering;
 import xyz.brassgoggledcoders.transport.compat.top.TransportTOP;
 import xyz.brassgoggledcoders.transport.content.*;
 import xyz.brassgoggledcoders.transport.data.shellcontent.RegistrateShellContentDataProvider;
@@ -26,17 +26,13 @@ public class Transport {
     public static final String ID = "transport";
     public static final Logger LOGGER = LogManager.getLogger(ID);
 
-    public static final NonNullLazy<Registrate> TRANSPORT_REGISTRATE = NonNullLazy.of(() ->
-            Registrate.create(ID)
-                    .creativeModeTab(TransportCreativeModeTab::new, "Transport")
-                    .addDataGenerator(ProviderType.ITEM_TAGS, TransportAdditionalData::vanillaItemTags)
-                    .addDataGenerator(ProviderType.RECIPE, TransportAdditionalData::vanillaRecipes)
-                    .addDataGenerator(RegistrateShellContentDataProvider.TYPE, TransportShellContentData::generateData)
-    );
+    public static final Registering REGISTERING = Registering.of(ID);
 
     public static final NetworkHandler NETWORK = new NetworkHandler();
 
-    public Transport() {
+    public Transport(IEventBus modEventBus) {
+        REGISTERING.setModBus(modEventBus);
+
         TransportBlocks.setup();
         TransportContainers.setup();
         TransportEntities.setup();
@@ -45,20 +41,18 @@ public class Transport {
         TransportShellContent.setup();
         TransportText.setup();
 
-        loadCompat("theoneprobe", () -> TransportTOP::new);
+        loadCompat(modEventBus, "theoneprobe", () -> TransportTOP::new);
     }
 
-    public void loadCompat(String modid, Supplier<Consumer<IEventBus>> compatRunner) {
+    public void loadCompat(IEventBus eventBus, String modid, Supplier<Consumer<IEventBus>> compatRunner) {
         if (ModList.get().isLoaded(modid)) {
             compatRunner.get()
-                    .accept(FMLJavaModLoadingContext.get()
-                            .getModEventBus()
-                    );
+                    .accept(eventBus);
         }
     }
 
-    public static Registrate getRegistrate() {
-        return TRANSPORT_REGISTRATE.get();
+    public static Registering getRegistering() {
+        return REGISTERING;
     }
 
     public static ResourceLocation rl(String path) {

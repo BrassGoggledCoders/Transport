@@ -88,15 +88,13 @@ public class ServerShellContentHolder implements IShellContentHolder {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
+    public void save(CompoundTag tag) {
         tag.putString(ShellContentCreatorInfo.NBT_TAG_ID, this.shellContent.getCreatorInfo().id().toString());
         tag.put(ShellContentCreatorInfo.NBT_TAG_DATA, this.shellContent.serializeNBT());
-        return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void load(CompoundTag nbt) {
         this.update(this.manager.create(nbt));
     }
 }

@@ -1,16 +1,15 @@
-buildscript {
-    dependencies {
-        classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT"
-    }
-}
-
 plugins {
-    id "maven-publish"
-    id 'net.minecraftforge.gradle' version '5.1.+'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'java-library'
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.neoforged.gradle.userdev' version '7.0.145'
 }
 
-apply plugin: 'org.spongepowered.mixin'
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+    version = "8.8"
+}
 
 version = '0.2.6'
 group = 'xyz.brassgoggledcoders.transport'
@@ -26,6 +25,12 @@ sourceSets {
             srcDir 'src/generated/resources'
         }
     }
+    datagen {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
     gametest {
         compileClasspath += main.compileClasspath
         runtimeClasspath += main.runtimeClasspath
@@ -34,61 +39,36 @@ sourceSets {
     }
 }
 
-minecraft {
-    mappings channel: 'parchment', version: '2022.11.27-1.19.2'
+runs {
+    configureEach {
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+        systemProperty 'forge.logging.console.level', 'debug'
 
-    runs {
-        client {
-            workingDirectory project.file('run')
-
-            property 'forge.enabledGameTestNamespaces', 'transport'
-
-            mods {
-                transport {
-                    source sourceSets.main
-                    source sourceSets.gametest
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-
-            property 'forge.enabledGameTestNamespaces', 'transport'
-
-            mods {
-                transport {
-                    source sourceSets.main
-                    source sourceSets.gametest
-                }
-            }
-        }
-
-        gameTestServer {
-            workingDirectory project.file('run')
-
-            property 'forge.enabledGameTestNamespaces', 'transport'
-
-            mods {
-                transport {
-                    source sourceSets.main
-                    source sourceSets.gametest
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-
-            args '--mod', 'transport', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                transport {
-                    source sourceSets.main
-                }
-            }
-        }
+        modSource project.sourceSets.main
     }
+
+    client {
+        systemProperty 'forge.enabledGameTestNamespaces', 'transport'
+    }
+
+    server {
+        systemProperty 'forge.enabledGameTestNamespaces', 'transport'
+    }
+
+    gameTestServer {
+        systemProperty 'forge.enabledGameTestNamespaces', 'transport'
+        modSource project.sourceSets.gametest
+    }
+
+    data {
+        programArguments.addAll '--mod', 'transport', '--all', '--output', file('src/generated/resources/').getAbsolutePath(),
+                '--existing', file('src/main/resources/').getAbsolutePath()
+        modSource project.sourceSets.datagen
+    }
+}
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
 }
 
 repositories {
@@ -115,26 +95,25 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
+    implementation "net.neoforged:neoforge:20.4.237"
 
-    implementation fg.deobf("com.tterrag.registrate:Registrate:MC1.19-1.1.5")
-    jarJar(group: 'com.tterrag.registrate', name: 'Registrate', version: "MC1.19-1.1.5") {
-        jarJar.ranged(it, "[MC1.19-1.1.5,)")
-    }
+    implementation "xyz.brassgoggledcoders.shadyskies:Registering:1.0.10"
+    jarJar("xyz.brassgoggledcoders.shadyskies:Registering:[1.0.0, 1.1.0)")
 
+    implementation "xyz.brassgoggledcoders.shadyskies:DataRegistering:1.0.7"
 
-    runtimeOnly fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.19.2-9.2.2-165.3")
-    compileOnly fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.19.2-9.2.2-165.3:api")
+    localRuntime "blusunrize.immersiveengineering:ImmersiveEngineering:1.20.4-11.5.0-179"
+    compileOnly "blusunrize.immersiveengineering:ImmersiveEngineering:1.20.4-11.5.0-179:api"
 
-    compileOnly fg.deobf("mezz.jei:jei-1.19.2-forge-api:11.4.0.282")
-    compileOnly fg.deobf("mezz.jei:jei-1.19.2-common-api:11.4.0.282")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.19.2-forge:11.4.0.282")
+    compileOnly "mezz.jei:jei-1.20.4-neoforge-api:17.0.0.30"
+    compileOnly "mezz.jei:jei-1.20.4-common-api:17.0.0.30"
+    localRuntime "mezz.jei:jei-1.20.4-neoforge:17.0.0.30"
 
-    implementation fg.deobf("curse.maven:the-one-probe-245211:3965693")
+    implementation "curse.maven:the-one-probe-245211:3825695"
 }
 
 jar {
-    classifier = "nodep"
+    archiveClassifier = "nodep"
     manifest {
         attributes([
                 "Specification-Title"     : "Transport",
@@ -148,30 +127,14 @@ jar {
     }
 }
 
-reobf {
-    jarJar {}
+tasks.named("jarJar").configure {
+    archiveClassifier = ""
 }
-
-tasks.jarJar.configure {
-    classifier ''
-}
-
-jar.finalizedBy('reobfJar')
-tasks.jarJar.finalizedBy('reobfJarJar')
-
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            fg.component(it)
-            jarJar.component(it)
-
-            pom.withXml {
-                asNode().dependencies.dependency.each { dep ->
-                    assert dep.parent().remove(dep)
-                }
-            }
         }
     }
     repositories {
@@ -184,4 +147,11 @@ publishing {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
     options.compilerArgs << "-Xmaxerrs" << "10000"
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
 }

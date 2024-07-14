@@ -1,32 +1,31 @@
-package xyz.brassgoggledcoders.transport.content;
+package xyz.brassgoggledcoders.transport.data;
 
-import com.tterrag.registrate.providers.RegistrateRecipeProvider;
-import com.tterrag.registrate.providers.RegistrateTagsProvider;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
+import xyz.brassgoggledcoders.shadyskies.dataregistering.recipe.DeferredRecipeProvider;
+import xyz.brassgoggledcoders.shadyskies.dataregistering.tags.DataRegisteringTagProvider;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.tag.TransportItemTags;
 import xyz.brassgoggledcoders.transport.data.recipe.RailWorkerBenchRecipeBuilder;
 
 public class TransportAdditionalData {
 
-    public static void vanillaItemTags(RegistrateTagsProvider<Item> tagsProvider) {
+    public static void vanillaItemTags(DataRegisteringTagProvider tagsProvider) {
         tagsProvider.tag(TransportItemTags.RAILS_GOLD)
-                .add(
+                .with(
                         Items.POWERED_RAIL
                 );
 
         tagsProvider.tag(TransportItemTags.RAILS_IRON)
-                .add(
+                .with(
                         Items.RAIL,
                         Items.DETECTOR_RAIL,
                         Items.ACTIVATOR_RAIL
                 );
     }
 
-    public static void vanillaRecipes(RegistrateRecipeProvider recipeProvider) {
+    public static void vanillaRecipes(DeferredRecipeProvider recipeProvider) {
         RailWorkerBenchRecipeBuilder.of(Items.POWERED_RAIL)
                 .withInput(Ingredient.of(TransportItemTags.RAILS_GOLD))
                 .save(recipeProvider, Transport.rl("powered_rail_from_rails_gold"));
