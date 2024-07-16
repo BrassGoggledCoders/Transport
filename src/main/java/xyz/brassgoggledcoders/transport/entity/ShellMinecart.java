@@ -18,9 +18,6 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
@@ -71,7 +68,7 @@ public class ShellMinecart extends AbstractMinecart implements IShell {
     public void destroy(@Nonnull DamageSource pSource) {
         this.kill();
         this.getContent().destroy(pSource);
-        if (this.getLevel().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             ItemStack itemstack = this.getHolder()
                     .asItemStack();
             if (this.hasCustomName()) {
@@ -100,7 +97,7 @@ public class ShellMinecart extends AbstractMinecart implements IShell {
                     )
             );
         } else {
-            this.getHolder().deserializeNBT(pCompound.getCompound(ShellContentCreatorInfo.NBT_TAG_ELEMENT));
+            this.getHolder().load(pCompound.getCompound(ShellContentCreatorInfo.NBT_TAG_ELEMENT));
         }
 
     }
@@ -108,7 +105,9 @@ public class ShellMinecart extends AbstractMinecart implements IShell {
     @Override
     protected void addAdditionalSaveData(@Nonnull CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        pCompound.put(ShellContentCreatorInfo.NBT_TAG_ELEMENT, this.getHolder().serializeNBT());
+        CompoundTag holderTag = new CompoundTag();
+        this.getHolder().save(holderTag);
+        pCompound.put(ShellContentCreatorInfo.NBT_TAG_ELEMENT, holderTag);
     }
 
     @Override
@@ -121,35 +120,6 @@ public class ShellMinecart extends AbstractMinecart implements IShell {
     @Nonnull
     public BlockState getDefaultDisplayBlockState() {
         return this.getContent().getViewBlockState();
-    }
-
-    @Override
-    @Nonnull
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        this.getContent().invalidateCaps();
-    }
-
-    @Override
-    public void reviveCaps() {
-        super.reviveCaps();
-        this.getContent().reviveCaps();
-    }
-
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        LazyOptional<T> shellCap = this.getContent().getCapability(cap, side);
-        if (shellCap.isPresent()) {
-            return shellCap;
-        }
-
-        return super.getCapability(cap, side);
     }
 
     @Override

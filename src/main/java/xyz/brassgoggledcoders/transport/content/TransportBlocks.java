@@ -10,6 +10,15 @@ import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.WeatheringCopper.WeatherState;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.material.MapColor;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import xyz.brassgoggledcoders.shadyskies.registering.Registering;
+import xyz.brassgoggledcoders.shadyskies.registering.block.BlockEntry;
+import xyz.brassgoggledcoders.shadyskies.registering.block.BlockRegisteringBuilder;
+import xyz.brassgoggledcoders.shadyskies.registering.blockentity.BlockEntityRegisteringEntry;
+import xyz.brassgoggledcoders.shadyskies.registering.item.ItemRegisteringBuilder;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.tag.TransportItemTags;
 import xyz.brassgoggledcoders.transport.block.jobsite.RailWorkerBenchBlock;
@@ -28,7 +37,7 @@ import javax.annotation.Nonnull;
 @SuppressWarnings("unused")
 public class TransportBlocks {
 
-    public static final BlockEntry<DumpRailBlock<IItemHandler>> ITEM_DUMP_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<DumpRailBlock<IItemHandler>> ITEM_DUMP_RAIL = Transport.getRegistering()
             .object("item_dump_rail")
             .block(DumpRailBlock::itemDumpRail)
             .transform(TransportBlocks::defaultRail)
@@ -42,7 +51,7 @@ public class TransportBlocks {
             )
             .register();
 
-    public static final BlockEntry<DumpRailBlock<IFluidHandler>> FLUID_DUMP_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<DumpRailBlock<IFluidHandler>> FLUID_DUMP_RAIL = Transport.getRegistering()
             .object("fluid_dump_rail")
             .block(DumpRailBlock::fluidDumpRail)
             .transform(TransportBlocks::defaultRail)
@@ -56,7 +65,7 @@ public class TransportBlocks {
             )
             .register();
 
-    public static final BlockEntry<DumpRailBlock<IEnergyStorage>> ENERGY_DUMP_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<DumpRailBlock<IEnergyStorage>> ENERGY_DUMP_RAIL = Transport.getRegistering()
             .object("energy_dump_rail")
             .block(DumpRailBlock::energyDumpRail)
             .transform(TransportBlocks::defaultRail)
@@ -70,7 +79,7 @@ public class TransportBlocks {
             )
             .register();
 
-    public static final RegistryEntry<BlockEntityType<DumpRailBlockEntity>> DUMP_RAIL_BLOCK_ENTITY = Transport.getRegistrate()
+    public static final BlockEntityRegisteringEntry<DumpRailBlockEntity> DUMP_RAIL_BLOCK_ENTITY = Transport.getRegistering()
             .object("dump_rail")
             .blockEntity(DumpRailBlockEntity::new)
             .validBlock(ITEM_DUMP_RAIL)
@@ -78,7 +87,7 @@ public class TransportBlocks {
             .validBlock(ENERGY_DUMP_RAIL)
             .register();
 
-    public static final BlockEntry<LoadingRailBlock<IItemHandler>> ITEM_LOADING_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<LoadingRailBlock<IItemHandler>> ITEM_LOADING_RAIL = Transport.getRegistering()
             .object("item_loading_rail")
             .block(properties -> LoadingRailBlock.itemLoadingRail(properties, true))
             .transform(TransportBlocks::defaultRail)
@@ -92,7 +101,7 @@ public class TransportBlocks {
             )
             .register();
 
-    public static final BlockEntry<LoadingRailBlock<IFluidHandler>> FLUID_LOADING_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<LoadingRailBlock<IFluidHandler>> FLUID_LOADING_RAIL = Transport.getRegistering()
             .object("fluid_loading_rail")
             .block(properties -> LoadingRailBlock.fluidDumpRail(properties, true))
             .transform(TransportBlocks::defaultRail)
@@ -106,7 +115,7 @@ public class TransportBlocks {
             )
             .register();
 
-    public static final BlockEntry<LoadingRailBlock<IEnergyStorage>> ENERGY_LOADING_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<LoadingRailBlock<IEnergyStorage>> ENERGY_LOADING_RAIL = Transport.getRegistering()
             .object("energy_loading_rail")
             .block(properties -> LoadingRailBlock.energyDumpRail(properties, true))
             .transform(TransportBlocks::defaultRail)
@@ -120,7 +129,7 @@ public class TransportBlocks {
             )
             .register();
 
-    public static final BlockEntry<LoadingRailBlock<IItemHandler>> ITEM_UNLOADING_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<LoadingRailBlock<IItemHandler>> ITEM_UNLOADING_RAIL = Transport.getRegistering()
             .object("item_unloading_rail")
             .block(properties -> LoadingRailBlock.itemLoadingRail(properties, false))
             .transform(TransportBlocks::defaultRail)
@@ -134,7 +143,7 @@ public class TransportBlocks {
             )
             .register();
 
-    public static final BlockEntry<LoadingRailBlock<IFluidHandler>> FLUID_UNLOADING_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<LoadingRailBlock<IFluidHandler>> FLUID_UNLOADING_RAIL = Transport.getRegistering()
             .object("fluid_unloading_rail")
             .block(properties -> LoadingRailBlock.fluidDumpRail(properties, false))
             .transform(TransportBlocks::defaultRail)
@@ -148,7 +157,7 @@ public class TransportBlocks {
             )
             .register();
 
-    public static final BlockEntry<LoadingRailBlock<IEnergyStorage>> ENERGY_UNLOADING_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<LoadingRailBlock<IEnergyStorage>> ENERGY_UNLOADING_RAIL = Transport.getRegistering()
             .object("energy_unloading_rail")
             .block(properties -> LoadingRailBlock.energyDumpRail(properties, false))
             .transform(TransportBlocks::defaultRail)
@@ -162,18 +171,20 @@ public class TransportBlocks {
             )
             .register();
 
-    public static final BlockEntityEntry<LoadingRailBlockEntity> LOADING_RAIL_BLOCK_ENTITY = Transport.getRegistrate()
+    public static final BlockEntityRegisteringEntry<LoadingRailBlockEntity> LOADING_RAIL_BLOCK_ENTITY = Transport.getRegistering()
             .object("loading_rail")
             .blockEntity(LoadingRailBlockEntity::new)
-            .validBlock(ITEM_LOADING_RAIL)
-            .validBlock(FLUID_LOADING_RAIL)
-            .validBlock(ENERGY_LOADING_RAIL)
-            .validBlock(ITEM_UNLOADING_RAIL)
-            .validBlock(FLUID_UNLOADING_RAIL)
-            .validBlock(ENERGY_UNLOADING_RAIL)
+            .withValidBlocks(
+                    ITEM_LOADING_RAIL,
+                    FLUID_LOADING_RAIL,
+                    ENERGY_LOADING_RAIL,
+                    ITEM_UNLOADING_RAIL,
+                    FLUID_UNLOADING_RAIL,
+                    ENERGY_UNLOADING_RAIL
+            )
             .register();
 
-    public static final BlockEntry<WaxedCopperRail> WAXED_OXIDIZED_COPPER_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<WaxedCopperRail> WAXED_OXIDIZED_COPPER_RAIL = Transport.getRegistering()
             .object("waxed_oxidized_copper_rail")
             .block(WaxedCopperRail::new)
             .transform(TransportBlocks::defaultCopperRail)
@@ -184,7 +195,7 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<WeatheringCopperRail> OXIDIZED_COPPER_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<WeatheringCopperRail> OXIDIZED_COPPER_RAIL = Transport.getRegistering()
             .object("oxidized_copper_rail")
             .block(properties -> new WeatheringCopperRail(properties, WeatherState.OXIDIZED))
             .transform(TransportBlocks::defaultCopperRail)
@@ -194,7 +205,7 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<WaxedCopperRail> WAXED_WEATHERED_COPPER_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<WaxedCopperRail> WAXED_WEATHERED_COPPER_RAIL = Transport.getRegistering()
             .object("waxed_weathered_copper_rail")
             .block(WaxedCopperRail::new)
             .transform(TransportBlocks::defaultCopperRail)
@@ -205,7 +216,7 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<WeatheringCopperRail> WEATHERED_COPPER_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<WeatheringCopperRail> WEATHERED_COPPER_RAIL = Transport.getRegistering()
             .object("weathered_copper_rail")
             .block(properties -> new WeatheringCopperRail(properties, WeatherState.WEATHERED))
             .transform(TransportBlocks::defaultCopperRail)
@@ -215,7 +226,7 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<WaxedCopperRail> WAXED_EXPOSED_COPPER_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<WaxedCopperRail> WAXED_EXPOSED_COPPER_RAIL = Transport.getRegistering()
             .object("waxed_exposed_copper_rail")
             .block(WaxedCopperRail::new)
             .transform(TransportBlocks::defaultCopperRail)
@@ -226,7 +237,7 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<WeatheringCopperRail> EXPOSED_COPPER_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<WeatheringCopperRail> EXPOSED_COPPER_RAIL = Transport.getRegistering()
             .object("exposed_copper_rail")
             .block(properties -> new WeatheringCopperRail(properties, WeatherState.EXPOSED))
             .transform(TransportBlocks::defaultCopperRail)
@@ -236,7 +247,7 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<WaxedCopperRail> WAXED_COPPER_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<WaxedCopperRail> WAXED_COPPER_RAIL = Transport.getRegistering()
             .object("waxed_copper_rail")
             .block(WaxedCopperRail::new)
             .transform(TransportBlocks::defaultCopperRail)
@@ -247,7 +258,7 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<WeatheringCopperRail> COPPER_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<WeatheringCopperRail> COPPER_RAIL = Transport.getRegistering()
             .object("copper_rail")
             .block(properties -> new WeatheringCopperRail(properties, WeatherState.UNAFFECTED))
             .transform(TransportBlocks::defaultCopperRail)
@@ -276,7 +287,7 @@ public class TransportBlocks {
             })
             .register();
 
-    public static final BlockEntry<OneWayBoosterRailBlock> ONE_WAY_BOOSTER_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<OneWayBoosterRailBlock> ONE_WAY_BOOSTER_RAIL = Transport.getRegistering()
             .object("one_way_booster_rail")
             .block(OneWayBoosterRailBlock::new)
             .transform(TransportBlocks::defaultRail)
@@ -290,7 +301,7 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<SwitchRailBlock> SWITCH_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<SwitchRailBlock> SWITCH_RAIL = Transport.getRegistering()
             .object("switch_rail")
             .block(SwitchRailBlock::new)
             .transform(TransportBlocks::defaultRail)
@@ -306,7 +317,7 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<WyeSwitchRailBlock> WYE_SWITCH_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<WyeSwitchRailBlock> WYE_SWITCH_RAIL = Transport.getRegistering()
             .object("wye_switch_rail")
             .block(WyeSwitchRailBlock::new)
             .transform(TransportBlocks::defaultRail)
@@ -320,7 +331,7 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<DiamondCrossingRailBlock> DIAMOND_CROSSING_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<DiamondCrossingRailBlock> DIAMOND_CROSSING_RAIL = Transport.getRegistering()
             .object("diamond_crossing_rail")
             .block(DiamondCrossingRailBlock::new)
             .transform(TransportBlocks::defaultRail)
@@ -339,13 +350,13 @@ public class TransportBlocks {
             .register();
 
 
-    public static final RegistryEntry<BlockEntityType<CachedRailShapeBlockEntity>> CACHED_RAIL_SHAPE_BLOCK_ENTITY = Transport.getRegistrate()
+    public static final RegistryEntry<BlockEntityType<CachedRailShapeBlockEntity>> CACHED_RAIL_SHAPE_BLOCK_ENTITY = Transport.getRegistering()
             .object("cached_rail_shape")
             .blockEntity(CachedRailShapeBlockEntity::new)
             .validBlocks(SWITCH_RAIL, WYE_SWITCH_RAIL)
             .register();
 
-    public static final BlockEntry<BufferRailBlock> BUMPER_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<BufferRailBlock> BUMPER_RAIL = Transport.getRegistering()
             .object("buffer_rail")
             .block(BufferRailBlock::new)
             .initialProperties(Material.DECORATION)
@@ -369,7 +380,7 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<InvertedPoweredRailBlock> INVERTED_POWERED_RAIL = Transport.getRegistrate()
+    public static final BlockEntry<InvertedPoweredRailBlock> INVERTED_POWERED_RAIL = Transport.getRegistering()
             .object("inverted_powered_rail")
             .block(InvertedPoweredRailBlock::new)
             .transform(TransportBlocks::defaultRail)
@@ -390,7 +401,7 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<CapabilityStorageBlock<FluidStorageBlockEntity>> FLUID_STORAGE = Transport.getRegistrate()
+    public static final BlockEntry<CapabilityStorageBlock<FluidStorageBlockEntity>> FLUID_STORAGE = Transport.getRegistering()
             .object("fluid_storage")
             .block(properties -> new CapabilityStorageBlock<>(properties, FluidStorageBlockEntity::new))
             .blockstate(BlockModelHelper::storageBlock)
@@ -410,7 +421,7 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<CapabilityStorageBlock<EnergyStorageBlockEntity>> ENERGY_STORAGE = Transport.getRegistrate()
+    public static final BlockEntry<CapabilityStorageBlock<EnergyStorageBlockEntity>> ENERGY_STORAGE = Transport.getRegistering()
             .object("energy_storage")
             .block(properties -> new CapabilityStorageBlock<>(properties, EnergyStorageBlockEntity::new))
             .blockstate(BlockModelHelper::storageBlock)
@@ -430,7 +441,7 @@ public class TransportBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<RailWorkerBenchBlock> RAIL_WORKER_BENCH = Transport.getRegistrate()
+    public static final BlockEntry<RailWorkerBenchBlock> RAIL_WORKER_BENCH = Transport.getRegistering()
             .object("rail_worker_bench")
             .block(RailWorkerBenchBlock::new)
             .blockstate((context, provider) -> provider.simpleBlock(
@@ -450,33 +461,34 @@ public class TransportBlocks {
             .register();
 
     @Nonnull
-    public static <T extends BaseRailBlock> BlockBuilder<T, Registrate> defaultRail(BlockBuilder<T, Registrate> builder) {
-        return builder.initialProperties(Material.DECORATION)
-                .properties(properties -> properties.noCollission()
-                        .strength(0.7F)
-                        .sound(SoundType.METAL)
-                )
-                .tag(BlockTags.RAILS);
+    public static <T extends BaseRailBlock> BlockRegisteringBuilder<Registering, T> defaultRail(BlockRegisteringBuilder<Registering, T> builder) {
+        return builder.withProperties(properties -> properties.noCollission()
+                .strength(0.7F)
+                .sound(SoundType.METAL)
+        );
+        //TODO Tags
+        //.tag(BlockTags.RAILS);
     }
 
     @Nonnull
-    public static <T extends BaseRailBlock> BlockBuilder<T, Registrate> defaultCopperRail(BlockBuilder<T, Registrate> builder) {
-        return builder.initialProperties(Material.DECORATION)
-                .properties(properties -> properties.noCollission()
-                        .strength(0.7F)
-                        .sound(SoundType.COPPER)
-                        .color(MaterialColor.COLOR_ORANGE)
-                )
-                .tag(BlockTags.RAILS);
+    public static <T extends BaseRailBlock> BlockRegisteringBuilder<Registering, T> defaultCopperRail(BlockRegisteringBuilder<Registering, T> builder) {
+        return builder.withProperties(properties -> properties.noCollission()
+                .strength(0.7F)
+                .sound(SoundType.COPPER)
+                .mapColor(MapColor.COLOR_ORANGE)
+        );
+        //TODO DATA GENERATING
+        //.tag(BlockTags.RAILS);
     }
 
 
     @Nonnull
-    public static <T extends BaseRailBlock> ItemBuilder<BlockItem, BlockBuilder<T, Registrate>> defaultRailItem(
-            BlockBuilder<T, Registrate> builder) {
-        return builder.item()
-                .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/" + context.getName())))
-                .tag(ItemTags.RAILS);
+    public static <T extends BaseRailBlock> ItemRegisteringBuilder<BlockRegisteringBuilder<Registering, T>, BlockItem> defaultRailItem(
+            BlockRegisteringBuilder<Registering, T> builder) {
+        return builder.withItem();
+        //TODO DATA GENERATING
+        //.model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/" + context.getName())))
+        //.tag(ItemTags.RAILS);
     }
 
     public static void setup() {

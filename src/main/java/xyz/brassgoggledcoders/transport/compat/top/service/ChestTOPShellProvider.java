@@ -6,6 +6,7 @@ import mcjty.theoneprobe.api.IProbeConfig.ConfigMode;
 import mcjty.theoneprobe.apiimpl.styles.ItemStyle;
 import mcjty.theoneprobe.apiimpl.styles.LayoutStyle;
 import mcjty.theoneprobe.config.Config;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -13,6 +14,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 
 import javax.annotation.Nonnull;
@@ -28,7 +31,7 @@ public class ChestTOPShellProvider implements ITOPShellProvider {
         Block viewBlock = shellContent.getViewBlockState()
                 .getBlock();
 
-        ResourceLocation viewBlockId = ForgeRegistries.BLOCKS.getKey(viewBlock);
+        ResourceLocation viewBlockId = BuiltInRegistries.BLOCKS.getKey(viewBlock);
 
         boolean inventoryToShow = Config.getInventoriesToShow()
                 .contains(viewBlockId);
@@ -36,7 +39,7 @@ public class ChestTOPShellProvider implements ITOPShellProvider {
         boolean inventoryToNotShow = Config.getInventoriesToNotShow()
                 .contains(viewBlockId);
 
-        int showSmallChestContents = Config.showSmallChestContentsWithoutSneaking.get();
+        int showSmallChestContents = Config.showSmallChestContentsWithoutSneaking;
 
         if (chestMode != ConfigMode.EXTENDED || showSmallChestContents <= 0 && Config.getInventoriesToShow().isEmpty()) {
             if (chestMode == ConfigMode.NORMAL && !Config.getInventoriesToNotShow().isEmpty() && inventoryToNotShow) {

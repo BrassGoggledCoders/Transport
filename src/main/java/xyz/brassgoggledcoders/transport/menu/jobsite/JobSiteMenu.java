@@ -60,7 +60,7 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractC
     public JobSiteMenu(MenuType<?> menuType, int menuId, Inventory inventory, final ContainerLevelAccess levelAccess) {
         super(menuType, menuId);
         this.access = levelAccess;
-        this.level = inventory.player.level;
+        this.level = inventory.player.level();
         this.inputSlots = Lists.newArrayList(
                 this.addSlot(new Slot(this.container, 0, 20, 24)),
                 this.addSlot(new Slot(this.container, 1, 20, 42))
@@ -124,7 +124,7 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractC
         for (int i = 0; i < OUTPUT_SLOT; i++) {
             ItemStack inputSlotStack = this.inputSlots.get(i).getItem();
             ItemStack inputStack = this.inputs.get(i);
-            if (!ItemStack.isSame(inputStack, inputSlotStack) || inputSlotStack.getCount() != inputStack.getCount()) {
+            if (!ItemStack.isSameItemSameTags(inputStack, inputSlotStack) || inputSlotStack.getCount() != inputStack.getCount()) {
                 this.inputs.set(i, inputSlotStack.copy());
                 changed = true;
             }
@@ -293,5 +293,9 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractC
 
     public Container getContainer() {
         return this.container;
+    }
+
+    public NonNullList<ItemStack> getInputs() {
+        return this.inputs;
     }
 }

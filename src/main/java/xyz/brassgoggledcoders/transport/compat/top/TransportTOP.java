@@ -1,9 +1,9 @@
 package xyz.brassgoggledcoders.transport.compat.top;
 
 import mcjty.theoneprobe.api.ITheOneProbe;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.InterModComms;
+import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 
 import java.util.function.Function;
 

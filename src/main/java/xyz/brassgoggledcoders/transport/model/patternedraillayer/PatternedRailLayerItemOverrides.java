@@ -10,6 +10,9 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.capability.IRailProvider;
@@ -32,9 +35,8 @@ public class PatternedRailLayerItemOverrides extends ItemOverrides {
                               @Nullable LivingEntity pEntity, int pSeed) {
 
         ItemStack renderStack = Optional.ofNullable(pEntity)
-                .flatMap(livingEntity -> livingEntity.getCapability(ForgeCapabilities.ITEM_HANDLER)
-                        .resolve()
-                ).flatMap(inventory -> pStack.getCapability(IRailProvider.CAPABILITY)
+                .map(livingEntity -> livingEntity.getCapability(ItemHandler.ENTITY))
+                .flatMap(inventory -> Optional.ofNullable(pStack.getCapability(IRailProvider.CAPABILITY))
                         .map(capability -> capability.findNext(inventory, true))
                 ).orElse(ItemStack.EMPTY);
         return new PatternedRailLayerChildBakedModel(

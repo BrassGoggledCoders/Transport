@@ -57,7 +57,7 @@ public class RailWorkerBenchCategory implements IRecipeCategory<IRailWorkerBench
                 .addIngredients(VanillaTypes.ITEM_STACK, recipe.getSecondaryInput().getMatchingStacks())
                 .setSlotName("secondaryInput");
         builder.addSlot(RecipeIngredientRole.OUTPUT, 108, 1)
-                .addItemStack(recipe.getResultItem())
+                .addItemStack(recipe.getOutput())
                 .setSlotName("result");
     }
 

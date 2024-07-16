@@ -97,10 +97,10 @@ repositories {
 dependencies {
     implementation "net.neoforged:neoforge:20.4.237"
 
-    implementation "xyz.brassgoggledcoders.shadyskies:Registering:1.0.10"
-    jarJar("xyz.brassgoggledcoders.shadyskies:Registering:[1.0.0, 1.1.0)")
+    implementation "xyz.brassgoggledcoders.shadyskies:Registering:1.1.3"
+    jarJar("xyz.brassgoggledcoders.shadyskies:Registering:[1.1.0, 1.2.0)")
 
-    implementation "xyz.brassgoggledcoders.shadyskies:DataRegistering:1.0.7"
+    implementation "xyz.brassgoggledcoders.shadyskies:DataRegistering:1.1.1"
 
     localRuntime "blusunrize.immersiveengineering:ImmersiveEngineering:1.20.4-11.5.0-179"
     compileOnly "blusunrize.immersiveengineering:ImmersiveEngineering:1.20.4-11.5.0-179:api"

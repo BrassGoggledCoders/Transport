@@ -27,9 +27,9 @@ public class EnhancedRailState {
         this.state = pState;
         this.block = (BaseRailBlock) pState.getBlock();
         RailShape[] railShapes;
-        if (this.block instanceof IEnhancedRail enhancedRail) {
-            this.enhancedRail = enhancedRail;
-            railShapes = enhancedRail.getCurrentRailShapes(pState);
+        if (this.block instanceof IEnhancedRail enhancedRailBlock) {
+            this.enhancedRail = enhancedRailBlock;
+            railShapes = this.enhancedRail.getCurrentRailShapes(pState);
         } else {
             this.enhancedRail = null;
             railShapes = new RailShape[]{

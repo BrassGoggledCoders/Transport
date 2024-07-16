@@ -19,7 +19,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public record ShellContentCreatorInfo(
-        ResourceLocation id,
         BlockState viewState,
         Component name,
         boolean createRecipe,
@@ -28,7 +27,6 @@ public record ShellContentCreatorInfo(
     @SuppressWarnings("RedundantTypeArguments") //IShellContentCreator<?> is necessary for the dispatch or code fails???
     private static final Codec<ShellContentCreatorInfo> CODEC = ExtraCodecs.lazyInitializedCodec(() ->
             RecordCodecBuilder.create(instance -> instance.group(
-                    ResourceLocation.CODEC.fieldOf("id").forGetter(ShellContentCreatorInfo::id),
                     BlockState.CODEC.fieldOf("view_state")
                             .forGetter(ShellContentCreatorInfo::viewState),
                     ComponentSerialization.CODEC.optionalFieldOf("name")
@@ -40,8 +38,7 @@ public record ShellContentCreatorInfo(
                             .<IShellContentCreator<?>>dispatch(IShellContentCreator::getCodec, Function.identity())
                             .fieldOf("content")
                             .forGetter(ShellContentCreatorInfo::contentCreator)
-            ).apply(instance, (id, viewState, name, createRecipe, content) -> new ShellContentCreatorInfo(
-                    id,
+            ).apply(instance, (viewState, name, createRecipe, content) -> new ShellContentCreatorInfo(
                     viewState,
                     name.orElseGet(() -> viewState.getBlock().getName()),
                     createRecipe,
@@ -71,8 +68,9 @@ public record ShellContentCreatorInfo(
     }
 
     public ItemStack embedNBT(ItemStack itemStack) {
-        itemStack.getOrCreateTagElement(NBT_TAG_ELEMENT)
-                .putString("Id", this.id().toString());
+        //TODO handle nbt embed
+        //itemStack.getOrCreateTagElement(NBT_TAG_ELEMENT)
+        //        .putString("Id", this.id().toString());
         return itemStack;
     }
 

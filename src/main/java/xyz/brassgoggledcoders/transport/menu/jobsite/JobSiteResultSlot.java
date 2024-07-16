@@ -24,8 +24,8 @@ public class JobSiteResultSlot<T extends IJobSiteRecipe<T>> extends Slot {
 
     @Override
     public void onTake(@NotNull Player pPlayer, ItemStack pStack) {
-        pStack.onCraftedBy(pPlayer.level, pPlayer, pStack.getCount());
-        jobSiteMenu.getResultContainer().awardUsedRecipes(pPlayer);
+        pStack.onCraftedBy(pPlayer.level(), pPlayer, pStack.getCount());
+        jobSiteMenu.getResultContainer().awardUsedRecipes(pPlayer, this.jobSiteMenu.getInputs());
         if (jobSiteMenu.removeInputs()) {
             jobSiteMenu.setupResultSlot();
 

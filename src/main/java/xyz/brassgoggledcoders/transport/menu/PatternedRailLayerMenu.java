@@ -7,9 +7,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.content.TransportContainers;
 import xyz.brassgoggledcoders.transport.content.TransportItems;
@@ -19,8 +18,9 @@ import xyz.brassgoggledcoders.transport.shellcontent.storage.item.CapabilityCont
 public class PatternedRailLayerMenu extends ChestMenu {
 
     private final DataSlot positionData = DataSlot.standalone();
-    public PatternedRailLayerMenu(MenuType<?> menuType, int windowId, Inventory inventory) {
-        super(menuType, windowId, inventory, new SimpleContainer(9), 1);
+
+    public PatternedRailLayerMenu(int windowId, Inventory inventory) {
+        super(TransportContainers.PATTERNED_RAIL_LAYER.get(), windowId, inventory, new SimpleContainer(9), 1);
         this.addDataSlot(positionData);
     }
 

@@ -62,7 +62,8 @@ public class ItemHelperServiceImpl implements IItemHelperService {
     @Override
     public ItemStack appendShellNBT(ItemStack pStack, ShellContent shellContent, boolean includeData) {
         CompoundTag compoundTag = pStack.getOrCreateTagElement(ShellContentCreatorInfo.NBT_TAG_ELEMENT);
-        compoundTag.putString(ShellContentCreatorInfo.NBT_TAG_ID, shellContent.getCreatorInfo().id().toString());
+        //TODO CreatorInfo id
+        //compoundTag.putString(ShellContentCreatorInfo.NBT_TAG_ID, shellContent.getCreatorInfo().id().toString());
         if (includeData) {
             compoundTag.put(ShellContentCreatorInfo.NBT_TAG_DATA, shellContent.serializeNBT());
         }

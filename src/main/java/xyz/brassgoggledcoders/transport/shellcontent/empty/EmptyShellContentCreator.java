@@ -6,7 +6,7 @@ import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 
 public class EmptyShellContentCreator implements IShellContentCreator<EmptyShellContent> {
     public static final EmptyShellContentCreator INSTANCE = new EmptyShellContentCreator();
-    public static final Codec<EmptyShellContentCreator> CODEC = Codec.unit(INSTANCE);
+    public static final Codec<EmptyShellContentCreator> CODEC = Codec.<EmptyShellContentCreator>unit(INSTANCE);
 
     @Override
     public Codec<? extends IShellContentCreator<?>> getCodec() {

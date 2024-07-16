@@ -1,15 +1,15 @@
 package xyz.brassgoggledcoders.transport.util;
 
 import com.mojang.datafixers.util.Pair;
-import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.RailShape;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
-import net.minecraftforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import xyz.brassgoggledcoders.shadyskies.dataregistering.blockstate.DeferredBlockStateProvider;
+import xyz.brassgoggledcoders.shadyskies.registering.block.BlockEntry;
 import xyz.brassgoggledcoders.transport.block.rail.SwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.TransportBlockStateProperties;
 import xyz.brassgoggledcoders.transport.block.rail.WyeSwitchRailBlock;
@@ -17,11 +17,11 @@ import xyz.brassgoggledcoders.transport.block.rail.WyeSwitchRailBlock;
 public class BlockModelHelper {
     private static final ResourceLocation CUTOUT = new ResourceLocation("cutout");
 
-    public static void regularRail(DataGenContext<Block, ? extends BaseRailBlock> context, RegistrateBlockstateProvider provider) {
+    public static void regularRail(BlockEntry<? extends BaseRailBlock> context, DeferredBlockStateProvider provider) {
         regularRail(context.getName(), context.get(), provider);
     }
 
-    public static void regularRail(String name, Block block, RegistrateBlockstateProvider provider) {
+    public static void regularRail(String name, Block block, DeferredBlockStateProvider provider) {
         ModelFile flatRail = provider.models()
                 .getBuilder("block/" + name + "_flat")
                 .renderType(CUTOUT)
@@ -74,7 +74,7 @@ public class BlockModelHelper {
                 });
     }
 
-    public static void straightPoweredRailBlockState(DataGenContext<Block, ? extends BaseRailBlock> context, RegistrateBlockstateProvider provider) {
+    public static void straightPoweredRailBlockState(BlockEntry<? extends BaseRailBlock> context, DeferredBlockStateProvider provider) {
         straightPoweredRailBlockState(
                 context,
                 provider,
@@ -84,8 +84,8 @@ public class BlockModelHelper {
     }
 
     public static void straightPoweredRailBlockState(
-            DataGenContext<Block, ? extends BaseRailBlock> context,
-            RegistrateBlockstateProvider provider,
+            BlockEntry<? extends BaseRailBlock> context,
+            DeferredBlockStateProvider provider,
             ResourceLocation texture,
             ResourceLocation texturePowered
     ) {
@@ -139,8 +139,8 @@ public class BlockModelHelper {
                 }, BlockStateProperties.WATERLOGGED);
     }
 
-    public static void straightPoweredInvertedRailBlockState(DataGenContext<Block, ? extends BaseRailBlock> context,
-                                                             RegistrateBlockstateProvider provider) {
+    public static void straightPoweredInvertedRailBlockState(BlockEntry<? extends BaseRailBlock> context,
+                                                             DeferredBlockStateProvider provider) {
         ModelFile flatRailUnpowered = provider.models().getBuilder("block/" + context.getName() + "_flat")
                 .renderType(CUTOUT)
                 .parent(provider.models()
@@ -211,8 +211,8 @@ public class BlockModelHelper {
     }
 
     public static void straightInvertedFlatRailBlockState(
-            DataGenContext<Block, ? extends BaseRailBlock> context,
-            RegistrateBlockstateProvider provider,
+            BlockEntry<? extends BaseRailBlock> context,
+            DeferredBlockStateProvider provider,
             ResourceLocation existing
     ) {
 
@@ -250,7 +250,7 @@ public class BlockModelHelper {
                 }, BlockStateProperties.WATERLOGGED);
     }
 
-    public static void storageBlock(DataGenContext<Block, ? extends Block> context, RegistrateBlockstateProvider provider) {
+    public static void storageBlock(BlockEntry<? extends Block> context, DeferredBlockStateProvider provider) {
         provider.simpleBlock(context.get(), provider.models()
                 .cubeColumn(
                         context.getName(),
@@ -260,7 +260,7 @@ public class BlockModelHelper {
         );
     }
 
-    public static void switchRail(DataGenContext<Block, ? extends SwitchRailBlock> context, RegistrateBlockstateProvider provider) {
+    public static void switchRail(BlockEntry<? extends SwitchRailBlock> context, DeferredBlockStateProvider provider) {
         ModelFile straightRight = provider.models()
                 .getBuilder("block/" + context.getName() + "_straight_right")
                 .renderType(CUTOUT)
@@ -330,7 +330,7 @@ public class BlockModelHelper {
                 });
     }
 
-    public static void wyeSwitchRail(DataGenContext<Block, ? extends WyeSwitchRailBlock> context, RegistrateBlockstateProvider provider) {
+    public static void wyeSwitchRail(BlockEntry<? extends WyeSwitchRailBlock> context, DeferredBlockStateProvider provider) {
         ModelFile straight = provider.models()
                 .getBuilder("block/" + context.getName())
                 .renderType(CUTOUT)

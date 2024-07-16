@@ -3,6 +3,8 @@ package xyz.brassgoggledcoders.transport.api.recipe.ingredient;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
@@ -18,6 +20,11 @@ public record SizedIngredient(
         Ingredient ingredient,
         int count
 ) implements Predicate<ItemStack> {
+
+    public static final Codec<SizedIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Ingredient.CODEC.fieldOf("ingredient").forGetter(SizedIngredient::ingredient),
+            Codec.intRange(1, 64).optionalFieldOf("count", 1).forGetter(SizedIngredient::count)
+    ).apply(instance, SizedIngredient::new));
 
     @Override
     public boolean test(ItemStack itemStack) {
@@ -47,38 +54,8 @@ public record SizedIngredient(
         packetBuffer.writeInt(count);
     }
 
-    public JsonElement toJson() {
-        JsonElement ingredientJson = ingredient.toJson();
-        if (ingredientJson.isJsonObject()) {
-            JsonObject ingredientJsonObject = ingredientJson.getAsJsonObject();
-            if (count > 1) {
-                ingredientJsonObject.addProperty("count", count);
-            }
-            return ingredientJsonObject;
-        } else if (ingredientJson.isJsonArray()) {
-            if (count == 1) {
-                return ingredientJson;
-            } else {
-                throw new IllegalArgumentException("Failed to properly add count to json: " + ingredientJson);
-            }
-        } else {
-            throw new IllegalArgumentException("Failed to properly serialize to json: " + ingredientJson.toString());
-        }
-    }
-
     public static SizedIngredient fromNetwork(FriendlyByteBuf packetBuffer) {
         return new SizedIngredient(Ingredient.fromNetwork(packetBuffer), packetBuffer.readInt());
-    }
-
-    public static SizedIngredient fromJson(@Nullable JsonElement json) {
-        if (json == null) {
-            return SizedIngredient.of(Ingredient.EMPTY, 0);
-        } else {
-            return new SizedIngredient(
-                    Ingredient.fromJson(json),
-                    json.isJsonObject() ? GsonHelper.getAsInt(json.getAsJsonObject(), "count", 1) : 1
-            );
-        }
     }
 
     public static SizedIngredient of(Ingredient ingredient) {

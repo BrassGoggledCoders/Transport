@@ -1,8 +1,6 @@
 package xyz.brassgoggledcoders.transport.content;
 
-import com.tterrag.registrate.util.entry.MenuEntry;
-import com.tterrag.registrate.util.entry.RegistryEntry;
-import net.minecraft.world.inventory.MenuType;
+import xyz.brassgoggledcoders.shadyskies.registering.menu.MenuRegisteringEntry;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.menu.PatternedRailLayerMenu;
 import xyz.brassgoggledcoders.transport.menu.jobsite.RailWorkerBenchMenu;
@@ -11,16 +9,17 @@ import xyz.brassgoggledcoders.transport.screen.RailWorkerBenchScreen;
 
 public class TransportContainers {
 
-    public static RegistryEntry<MenuType<RailWorkerBenchMenu>> RAIL_WORKER_BENCH = Transport.getRegistrate()
-            .object("rail_worker_bench")
-            .menu(RailWorkerBenchMenu::new, () -> RailWorkerBenchScreen::new)
-            .register();
+    public static MenuRegisteringEntry<RailWorkerBenchMenu> RAIL_WORKER_BENCH = Transport.getRegistering()
+            .<RailWorkerBenchMenu, RailWorkerBenchScreen>menu("rail_worker_bench")
+            .withMenuSupplier(RailWorkerBenchMenu::new)
+            .withScreenConstructor(() -> () -> RailWorkerBenchScreen::new)
+            .build();
 
-    public static MenuEntry<PatternedRailLayerMenu> PATTERNED_RAIL_LAYER = Transport.getRegistrate()
-            .object("patterned_rail_layer")
-            .menu(
-                    (type, windowId, inv) -> new PatternedRailLayerMenu(type, windowId, inv),
-                    () -> PatternedRailLayerScreen::new
+    public static MenuRegisteringEntry<PatternedRailLayerMenu> PATTERNED_RAIL_LAYER = Transport.getRegistering()
+            .<PatternedRailLayerMenu, PatternedRailLayerScreen>menu("patterned_rail_layer")
+            .withMenuSupplier((windowId, inv) -> new PatternedRailLayerMenu(windowId, inv))
+            .withScreenConstructor(
+                    () -> () -> PatternedRailLayerScreen::new
             )
             .register();
 

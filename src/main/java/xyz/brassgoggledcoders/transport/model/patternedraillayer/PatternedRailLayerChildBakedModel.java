@@ -1,7 +1,6 @@
 package xyz.brassgoggledcoders.transport.model.patternedraillayer;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.math.Matrix4f;
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -12,10 +11,11 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.SimpleModelState;
-import net.minecraftforge.client.model.geometry.UnbakedGeometryHelper;
+import net.neoforged.neoforge.client.model.SimpleModelState;
+import net.neoforged.neoforge.client.model.geometry.UnbakedGeometryHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,15 +31,20 @@ public record PatternedRailLayerChildBakedModel(
     public List<BakedQuad> getQuads(@Nullable BlockState pState, @Nullable Direction pSide, @NotNull RandomSource pRand) {
         List<BakedQuad> bakedQuads;
         if (railModel() != null) {
-            bakedQuads = new ArrayList<>(railModel().getQuads(pState, pSide, pRand));
+            //noinspection deprecation
+            bakedQuads = new ArrayList<>(railModel()
+                    .getQuads(pState, pSide, pRand)
+            );
         } else {
             bakedQuads = new ArrayList<>();
         }
         float offset = 0F;
         for (Material material : background()) {
             var unbaked = UnbakedGeometryHelper.createUnbakedItemElements(-1, material.sprite());
+            Matrix4f matrix4f = new Matrix4f();
+            matrix4f.translate(0, 0, offset -= 0.0825F);
             SimpleModelState modelState = new SimpleModelState(
-                    new Transformation(Matrix4f.createTranslateMatrix(0, 0, offset -= 0.0825))
+                    new Transformation(matrix4f)
             );
             bakedQuads.addAll(UnbakedGeometryHelper.bakeElements(unbaked, $ -> material.sprite(), modelState, null));
 

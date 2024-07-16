@@ -1,9 +1,13 @@
 package xyz.brassgoggledcoders.transport.service;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -12,8 +16,8 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
+import net.neoforged.neoforge.common.conditions.ConditionalOps;
+import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.Transport;
@@ -26,23 +30,24 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadListener implements IShellContentCreatorService {
     public static final ShellContentCreatorInfo MISSING = new ShellContentCreatorInfo(
-            Transport.rl("missing"),
             Blocks.BEDROCK.defaultBlockState(),
             Blocks.BEDROCK.getName(),
             false,
             new EmptyShellContentCreator()
     );
 
-    private IContext context;
-    private final Map<ResourceLocation, ShellContentCreatorInfo> creators;
+    public static final Codec<Optional<ShellContentCreatorInfo>> CODEC = ConditionalOps.createConditionalCodec(ShellContentCreatorInfo.getCodec());
+
+    private final BiMap<ResourceLocation, ShellContentCreatorInfo> creators;
     private int generation;
 
     public ShellContentCreatorServiceImpl() {
         super(new Gson(), "transport/shell_content");
-        this.creators = Maps.newHashMap();
+        this.creators = HashBiMap.create();
     }
 
     @Override
@@ -55,16 +60,15 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
             String fileName = entry.getKey().toString();
             JsonObject jsonObject = GsonHelper.convertToJsonObject(entry.getValue(), fileName);
             jsonObject.addProperty("id", fileName);
-            if (CraftingHelper.processConditions(jsonObject, "conditions", context != null ? context : IContext.EMPTY)) {
-                ShellContentCreatorInfo.getCodec()
-                        .decode(JsonOps.INSTANCE, jsonObject)
-                        .resultOrPartial(error -> Transport.LOGGER.warn(fileName + " failed with error: " + error))
-                        .ifPresent(pair -> newCreators.put(entry.getKey(), pair.getFirst()));
+            try {
+                ICondition.getWithConditionalCodec(CODEC, JsonOps.INSTANCE, jsonObject)
+                        .ifPresent(value -> newCreators.put(entry.getKey(), value));
+            } catch (JsonParseException e) {
+                Transport.LOGGER.warn("Failed to read file {}", fileName, e);
             }
-
         }
 
-        Transport.LOGGER.info("Loaded " + newCreators.size() + " Shell Content Creators");
+        Transport.LOGGER.info("Loaded {} Shell Content Creators", newCreators.size());
         this.generation++;
         creators.clear();
         creators.putAll(newCreators);
@@ -114,11 +118,9 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
         return MISSING.create(null);
     }
 
-    public void updateClient(Collection<ShellContentCreatorInfo> infoList) {
+    public void updateClient(Map<ResourceLocation, ShellContentCreatorInfo> infoList) {
         this.creators.clear();
-        for (ShellContentCreatorInfo info : infoList) {
-            this.creators.put(info.id(), info);
-        }
+        this.creators.putAll(infoList);
     }
 
     @Override
@@ -130,9 +132,15 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
     @Override
     public void writeData(@NotNull ShellContent shellContent, @NotNull CompoundTag parent) {
         CompoundTag shellContentNbt = new CompoundTag();
+
         shellContentNbt.putString(ShellContentCreatorInfo.NBT_TAG_ID, shellContent.getCreatorInfo().id().toString());
         shellContentNbt.put(ShellContentCreatorInfo.NBT_TAG_DATA, shellContent.serializeNBT());
         parent.put(ShellContentCreatorInfo.NBT_TAG_ELEMENT, shellContentNbt);
+    }
+
+    public ResourceLocation getId(ShellContentCreatorInfo creatorInfo) {
+        return this.creators.inverse()
+                .get(creatorInfo);
     }
 
     @Override
@@ -144,9 +152,5 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
         } else {
             return this.getEmpty().create(null);
         }
-    }
-
-    public void setContext(IContext context) {
-        this.context = context;
     }
 }

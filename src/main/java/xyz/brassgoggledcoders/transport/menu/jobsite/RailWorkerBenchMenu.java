@@ -16,8 +16,8 @@ public class RailWorkerBenchMenu extends JobSiteMenu<IRailWorkerBenchRecipe> {
         super(TransportContainers.RAIL_WORKER_BENCH.get(), menuId, inventory, levelAccess);
     }
 
-    public RailWorkerBenchMenu(MenuType<RailWorkerBenchMenu> type, int windowId, Inventory inv) {
-        super(type, windowId, inv, ContainerLevelAccess.NULL);
+    public RailWorkerBenchMenu(int windowId, Inventory inv) {
+        super(TransportContainers.RAIL_WORKER_BENCH.get(), windowId, inv, ContainerLevelAccess.NULL);
     }
 
     @Override

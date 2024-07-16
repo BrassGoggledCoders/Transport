@@ -21,7 +21,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.capability.IRailProvider;
-import xyz.brassgoggledcoders.transport.capability.CapabilityProvider;
 import xyz.brassgoggledcoders.transport.capability.PatternedRailProvider;
 import xyz.brassgoggledcoders.transport.menu.PatternedRailLayerMenu;
 

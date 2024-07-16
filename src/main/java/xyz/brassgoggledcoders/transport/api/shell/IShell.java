@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
+import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 import xyz.brassgoggledcoders.transport.api.shellcontent.holder.IShellContentHolder;
@@ -39,12 +40,12 @@ public interface IShell extends IEntityWithComplexSpawn {
     ItemStack asItemStack();
 
     @Override
-    default void writeSpawnData(FriendlyByteBuf buffer) {
-        this.getHolder().writeToBuffer(buffer);
+    default void writeSpawnData(@NotNull FriendlyByteBuf friendlyByteBuf) {
+        this.getHolder().writeToBuffer(friendlyByteBuf);
     }
 
     @Override
-    default void readSpawnData(FriendlyByteBuf additionalData) {
-        this.getHolder().readFromBuffer(additionalData);
+    default void readSpawnData(@NotNull FriendlyByteBuf friendlyByteBuf) {
+        this.getHolder().readFromBuffer(friendlyByteBuf);
     }
 }

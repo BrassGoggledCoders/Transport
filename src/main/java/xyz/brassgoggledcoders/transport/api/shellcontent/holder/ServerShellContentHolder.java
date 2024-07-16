@@ -31,7 +31,8 @@ public class ServerShellContentHolder implements IShellContentHolder {
             CompoundTag nbt = new CompoundTag();
             if (this.shellContent != null) {
                 this.manager.writeData(shellContent, nbt);
-                this.shellContent.invalidateCaps();
+                //TODO is invalidation still needed?
+                //this.shellContent.invalidateCaps();
             }
 
             this.shellContent = this.manager.create(nbt);

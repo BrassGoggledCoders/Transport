@@ -5,7 +5,6 @@ import mcjty.theoneprobe.api.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;

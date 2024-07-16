@@ -1,9 +1,6 @@
 package xyz.brassgoggledcoders.transport;
 
-import com.tterrag.registrate.Registrate;
-import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.util.NonNullLazy;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
@@ -12,8 +9,6 @@ import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.shadyskies.registering.Registering;
 import xyz.brassgoggledcoders.transport.compat.top.TransportTOP;
 import xyz.brassgoggledcoders.transport.content.*;
-import xyz.brassgoggledcoders.transport.data.shellcontent.RegistrateShellContentDataProvider;
-import xyz.brassgoggledcoders.transport.item.TransportCreativeModeTab;
 import xyz.brassgoggledcoders.transport.network.NetworkHandler;
 
 import java.util.function.Consumer;

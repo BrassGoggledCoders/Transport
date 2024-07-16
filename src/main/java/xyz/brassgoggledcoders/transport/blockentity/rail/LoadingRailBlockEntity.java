@@ -12,7 +12,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.block.rail.LoadingRailBlock;
+import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.util.DirectionHelper;
 
 import java.util.Map;
@@ -24,8 +26,8 @@ public class LoadingRailBlockEntity extends BlockEntity {
     private final int UNITS = 16;
     private final Map<UUID, LoadState> loadStates;
 
-    public LoadingRailBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
-        super(pType, pWorldPosition, pBlockState);
+    public LoadingRailBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
+        super(TransportBlocks.LOADING_RAIL_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
         this.loadStates = Maps.newHashMap();
     }
 

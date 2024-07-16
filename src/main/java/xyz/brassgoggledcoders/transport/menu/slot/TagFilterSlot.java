@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class TagFilterSlot extends Slot {
     private final TagKey<Item> tagKey;
+
     public TagFilterSlot(Container pContainer, int pIndex, int pX, int pY, TagKey<Item> tagKey) {
         super(pContainer, pIndex, pX, pY);
         this.tagKey = tagKey;
