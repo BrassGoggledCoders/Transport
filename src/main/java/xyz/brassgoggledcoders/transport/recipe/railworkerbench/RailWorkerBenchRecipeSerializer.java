@@ -1,36 +1,34 @@
 package xyz.brassgoggledcoders.transport.recipe.railworkerbench;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.recipe.ingredient.SizedIngredient;
 
 public class RailWorkerBenchRecipeSerializer implements RecipeSerializer<RailWorkerBenchRecipe> {
+    public static final Codec<RailWorkerBenchRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ItemStack.CODEC.fieldOf("output").forGetter(RailWorkerBenchRecipe::output),
+            SizedIngredient.CODEC.fieldOf("input").forGetter(RailWorkerBenchRecipe::getInput),
+            SizedIngredient.CODEC.optionalFieldOf("secondaryInput", SizedIngredient.EMPTY).forGetter(RailWorkerBenchRecipe::getSecondaryInput)
+    ).apply(instance, RailWorkerBenchRecipe::new));
+
     @Override
     @NotNull
-    public RailWorkerBenchRecipe fromJson(@NotNull ResourceLocation pRecipeId, @NotNull JsonObject pSerializedRecipe) {
+    public RailWorkerBenchRecipe fromNetwork(FriendlyByteBuf pBuffer) {
         return new RailWorkerBenchRecipe(
-                pRecipeId,
-                CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(pSerializedRecipe, "output"), true),
-                SizedIngredient.fromJson(pSerializedRecipe.get("input")),
-                SizedIngredient.fromJson(pSerializedRecipe.get("secondaryInput"))
-        );
-    }
-
-    @Nullable
-    @Override
-    public RailWorkerBenchRecipe fromNetwork(@NotNull ResourceLocation pRecipeId, FriendlyByteBuf pBuffer) {
-        return new RailWorkerBenchRecipe(
-                pRecipeId,
                 pBuffer.readItem(),
                 SizedIngredient.fromNetwork(pBuffer),
                 SizedIngredient.fromNetwork(pBuffer)
         );
+    }
+
+    @Override
+    @NotNull
+    public Codec<RailWorkerBenchRecipe> codec() {
+        return CODEC;
     }
 
     @Override

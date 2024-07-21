@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.block.rail;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.BaseRailBlock;
@@ -20,6 +21,8 @@ import xyz.brassgoggledcoders.transport.util.BlockStateHelper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class SwitchRailBlock extends AbstractSwitchRailBlock {
+    public static MapCodec<SwitchRailBlock> CODEC = simpleCodec(SwitchRailBlock::new);
+
     public static final EnumProperty<RailShape> DIVERGE_SHAPE = EnumProperty.create(
             "diverge_shape",
             RailShape.class,
@@ -45,6 +48,12 @@ public class SwitchRailBlock extends AbstractSwitchRailBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(STRAIGHT_SHAPE, DIVERGE_SHAPE, DIVERGE, WATER_LOGGED);
+    }
+
+    @Override
+    @NotNull
+    protected MapCodec<SwitchRailBlock> codec() {
+        return CODEC;
     }
 
     @Override

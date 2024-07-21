@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.transport.item;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
@@ -15,9 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.capability.IRailProvider;
@@ -48,12 +45,14 @@ public class PatternedRailLayerItem extends Item implements MenuProvider {
     @NotNull
     public InteractionResult useOn(@NotNull UseOnContext pContext) {
         ItemStack heldStack = pContext.getItemInHand();
-        LazyOptional<IRailProvider> railProvider = heldStack.getCapability(IRailProvider.CAPABILITY);
-        ItemStack railStack = Optional.ofNullable(pContext.getPlayer())
-                .flatMap(livingEntity -> livingEntity.getCapability(ForgeCapabilities.ITEM_HANDLER)
-                        .resolve()
-                ).flatMap(inventory -> railProvider.map(capability -> capability.findNext(inventory, false))
-                ).orElse(ItemStack.EMPTY);
+        IRailProvider railProvider = heldStack.getCapability(IRailProvider.CAPABILITY);
+        ItemStack railStack = ItemStack.EMPTY;
+        if (railProvider != null) {
+            railStack = Optional.ofNullable(pContext.getPlayer())
+                    .map(livingEntity -> livingEntity.getCapability(ItemHandler.ENTITY))
+                    .map(inventory -> railProvider.findNext(inventory, false))
+                    .orElse(ItemStack.EMPTY);
+        }
 
         if (railStack.is(ItemTags.RAILS)) {
             InteractionResult result = railStack.useOn(new UseOnContext(
@@ -68,24 +67,13 @@ public class PatternedRailLayerItem extends Item implements MenuProvider {
                             pContext.isInside()
                     )
             ));
-            if (result.consumesAction()) {
-                railProvider.ifPresent(IRailProvider::nextPosition);
+            if (result.consumesAction() && railProvider != null) {
+                railProvider.nextPosition();
             }
             return result;
         }
 
         return super.useOn(pContext);
-    }
-
-    @Nullable
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return new CapabilityProvider<>(
-                IRailProvider.CAPABILITY,
-                PatternedRailProvider::new,
-                PatternedRailProvider::fromTag,
-                PatternedRailProvider::toTag
-        );
     }
 
     @Override
@@ -98,9 +86,9 @@ public class PatternedRailLayerItem extends Item implements MenuProvider {
     @Override
     @ParametersAreNonnullByDefault
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory, Player pPlayer) {
-        return pPlayer.getItemInHand(InteractionHand.MAIN_HAND)
-                .getCapability(IRailProvider.CAPABILITY)
-                .resolve()
+        return Optional.ofNullable(pPlayer.getItemInHand(InteractionHand.MAIN_HAND)
+                        .getCapability(IRailProvider.CAPABILITY)
+                )
                 .map(railProvider -> {
                     if (railProvider instanceof PatternedRailProvider patternedRailProvider) {
                         return new PatternedRailLayerMenu(

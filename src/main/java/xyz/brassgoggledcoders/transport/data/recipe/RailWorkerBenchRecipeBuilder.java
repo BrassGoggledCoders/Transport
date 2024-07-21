@@ -1,7 +1,5 @@
 package xyz.brassgoggledcoders.transport.data.recipe;
 
-import com.google.common.base.Suppliers;
-import com.google.gson.JsonObject;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -9,22 +7,14 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.transport.api.recipe.ingredient.SizedIngredient;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipe;
 
 import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 public class RailWorkerBenchRecipeBuilder {
     private static final ResourceLocation NAME = new ResourceLocation("transport:rail_worker_bench");
-    private static final Supplier<RecipeSerializer<?>> RECIPE_SERIALIZER = Suppliers.memoize(() ->
-            Optional.ofNullable(ForgeRegistries.RECIPE_SERIALIZERS.getValue(NAME))
-                    .orElseThrow()
-    );
 
     private final ItemStack output;
     private SizedIngredient input;
@@ -87,7 +77,6 @@ public class RailWorkerBenchRecipeBuilder {
         recipeOutput.accept(
                 pRecipeId,
                 new RailWorkerBenchRecipe(
-
                         this.output,
                         this.input,
                         this.secondaryInput

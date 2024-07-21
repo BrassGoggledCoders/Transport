@@ -86,6 +86,7 @@ public class ShellMinecartItem<T extends AbstractMinecart> extends Item {
                 .appendTextForShellItems(pStack, pTooltipComponents::add);
     }
 
+    /* TODO Creative Tab
     @Override
     @ParametersAreNonnullByDefault
     public void fillItemCategory(CreativeModeTab pCategory, NonNullList<ItemStack> pItems) {
@@ -102,4 +103,5 @@ public class ShellMinecartItem<T extends AbstractMinecart> extends Item {
             }
         }
     }
+    */
 }

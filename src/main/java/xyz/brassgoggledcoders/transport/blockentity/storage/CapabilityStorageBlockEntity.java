@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.blockentity.storage;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -8,30 +9,26 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullLazy;
+import net.neoforged.neoforge.capabilities.EntityCapability;
 
 import javax.annotation.Nonnull;
 
 public abstract class CapabilityStorageBlockEntity<T, U extends T> extends BlockEntity {
-    private final LazyOptional<T> lazyOptional;
-    private final NonNullLazy<U> storage;
+    private final U storage;
 
     protected CapabilityStorageBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
         super(pType, pWorldPosition, pBlockState);
-        this.lazyOptional = LazyOptional.of(this::getStorage);
-        this.storage = NonNullLazy.of(this::createStorage);
+        this.storage = this.createStorage();
     }
 
-    public abstract Capability<T> getCapability();
+    public abstract EntityCapability<T, Direction> getCapability();
 
     @Nonnull
     public abstract U createStorage();
 
     @Nonnull
     public U getStorage() {
-        return storage.get();
+        return storage;
     }
 
     public abstract int getAnalogOutputSignal();
@@ -39,12 +36,6 @@ public abstract class CapabilityStorageBlockEntity<T, U extends T> extends Block
     public abstract CompoundTag saveStorage();
 
     public abstract void loadStorage(CompoundTag compoundTag);
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        this.lazyOptional.invalidate();
-    }
 
     @Override
     public void load(@Nonnull CompoundTag nbt) {

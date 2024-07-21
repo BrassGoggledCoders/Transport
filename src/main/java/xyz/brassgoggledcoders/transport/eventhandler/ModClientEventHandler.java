@@ -1,12 +1,12 @@
 package xyz.brassgoggledcoders.transport.eventhandler;
 
 import net.minecraft.client.model.MinecartModel;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.model.patternedraillayer.PatternedRailLayerModelLoader;
 import xyz.brassgoggledcoders.transport.renderer.ShellMinecartRenderer;
@@ -21,6 +21,6 @@ public class ModClientEventHandler {
 
     @SubscribeEvent
     public static void registerModelLoader(ModelEvent.RegisterGeometryLoaders event) {
-        event.register(PatternedRailLayerModelLoader.ID.getPath(), new PatternedRailLayerModelLoader());
+        event.register(PatternedRailLayerModelLoader.ID, new PatternedRailLayerModelLoader());
     }
 }

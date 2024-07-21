@@ -6,10 +6,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.api.capability.TransportCapabilities;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 import xyz.brassgoggledcoders.transport.compat.top.service.ITOPShellProvider;
 
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.function.Supplier;
 
@@ -39,7 +41,7 @@ public class ShellInfoEntityProvider implements IProbeInfoEntityProvider {
                 provider.addInfo(shellContent, probeMode, iProbeInfo, probeConfig);
             }
 
-            shellContent.getCapability(ForgeCapabilities.FLUID_HANDLER)
+            Optional.ofNullable(shellContent.getCapability(TransportCapabilities.FLUID_HANDLER, null))
                     .map(TankReference::createHandler)
                     .ifPresent(iProbeInfo::tank);
         }

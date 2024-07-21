@@ -1,14 +1,15 @@
 package xyz.brassgoggledcoders.transport.blockentity.storage;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.EnergyStorage;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
@@ -20,7 +21,7 @@ public class EnergyStorageBlockEntity extends CapabilityStorageBlockEntity<IEner
     public EnergyStorageBlockEntity(BlockPos pWorldPos, BlockState pBlockState) {
         this(
                 TransportBlocks.ENERGY_STORAGE
-                        .getSibling(ForgeRegistries.BLOCK_ENTITY_TYPES)
+                        .<BlockEntityType<?>, BlockEntityType<?>>getSibling(Registries.BLOCK_ENTITY_TYPE)
                         .get(),
                 pWorldPos,
                 pBlockState
@@ -28,8 +29,8 @@ public class EnergyStorageBlockEntity extends CapabilityStorageBlockEntity<IEner
     }
 
     @Override
-    public Capability<IEnergyStorage> getCapability() {
-        return ForgeCapabilities.ENERGY;
+    public EntityCapability<IEnergyStorage, Direction> getCapability() {
+        return Capabilities.EnergyStorage.ENTITY;
     }
 
     @NotNull
@@ -52,6 +53,6 @@ public class EnergyStorageBlockEntity extends CapabilityStorageBlockEntity<IEner
 
     @Override
     public void loadStorage(CompoundTag compoundTag) {
-        this.getStorage().deserializeNBT(compoundTag.get("energy"));
+        this.getStorage().deserializeNBT(compoundTag.getCompound("energy"));
     }
 }

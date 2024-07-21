@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import xyz.brassgoggledcoders.transport.block.rail.DumpRailBlock;
+import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import java.util.Map;
 import java.util.OptionalInt;
@@ -20,6 +21,10 @@ import java.util.UUID;
 
 public class DumpRailBlockEntity extends BlockEntity {
     private final Map<UUID, DumpState> dumpStates;
+
+    public DumpRailBlockEntity(BlockPos pos, BlockState state) {
+        this(TransportBlocks.DUMP_RAIL_BLOCK_ENTITY.get(), pos, state);
+    }
 
     public DumpRailBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
         super(pType, pWorldPosition, pBlockState);

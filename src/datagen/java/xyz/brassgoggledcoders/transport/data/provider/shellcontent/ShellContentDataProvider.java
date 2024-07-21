@@ -1,17 +1,18 @@
-package xyz.brassgoggledcoders.transport.data.shellcontent;
+package xyz.brassgoggledcoders.transport.data.provider.shellcontent;
 
 import com.google.gson.*;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.neoforged.neoforge.common.conditions.ICondition;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 
 import javax.annotation.Nonnull;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 public abstract class ShellContentDataProvider implements DataProvider {
@@ -33,11 +35,12 @@ public abstract class ShellContentDataProvider implements DataProvider {
     protected abstract void gather(BiConsumer<Collection<ICondition>, ShellContentCreatorInfo> consumer);
 
     @Override
-    public void run(@Nonnull CachedOutput pCache) {
+    @NotNull
+    public CompletableFuture<?> run(@Nonnull CachedOutput pCache) {
         List<Pair<Collection<ICondition>, ShellContentCreatorInfo>> shellContentCreatorInfos = Lists.newArrayList();
         this.gather((conditions, info) -> shellContentCreatorInfos.add(Pair.of(conditions, info)));
 
-        Path path = this.generator.getOutputFolder();
+        PackOutput path = this.generator.getPackOutput();
         shellContentCreatorInfos.forEach(shellContentCreatorInfoPair -> {
             ShellContentCreatorInfo shellContentCreatorInfo = shellContentCreatorInfoPair.getRight();
             Path filePath = createPath(path, shellContentCreatorInfo.id());

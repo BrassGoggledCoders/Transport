@@ -14,16 +14,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.crafting.conditions.ConditionContext;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.common.conditions.ConditionContext;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.capability.IRailProvider;
@@ -32,6 +31,8 @@ import xyz.brassgoggledcoders.transport.service.ShellContentCreatorServiceImpl;
 import xyz.brassgoggledcoders.transport.util.DirectionHelper;
 import xyz.brassgoggledcoders.transport.util.RailHelper;
 import xyz.brassgoggledcoders.transport.util.RailPlaceResult;
+
+import java.util.Optional;
 
 @EventBusSubscriber(modid = Transport.ID, bus = Bus.FORGE)
 public class ForgeCommonEventHandler {
@@ -47,7 +48,9 @@ public class ForgeCommonEventHandler {
                     .findFirst()
                     .<ICondition.IContext>map(ConditionContext::new)
                     .orElse(ConditionContext.EMPTY);
-            reloadListener.setContext(context);
+
+            //TODO IContext?
+            //reloadListener.setContext(context);
             event.addListener(reloadListener);
         }
     }
@@ -57,7 +60,7 @@ public class ForgeCommonEventHandler {
         Player player = rightClickBlock.getEntity();
         ItemStack itemStack = rightClickBlock.getItemStack();
 
-        ItemStack railStack;
+        ItemStack railStack = ItemStack.EMPTY;
         Runnable afterPlace = () -> {
 
         };
@@ -65,13 +68,14 @@ public class ForgeCommonEventHandler {
         if (itemStack.is(ItemTags.RAILS)) {
             railStack = itemStack;
         } else if (itemStack.is(TransportItemTags.RAIL_PROVIDERS)) {
-            LazyOptional<IRailProvider> railProvider = itemStack.getCapability(IRailProvider.CAPABILITY);
+            IRailProvider railProvider = itemStack.getCapability(IRailProvider.CAPABILITY);
 
-            railStack = player.getCapability(ForgeCapabilities.ITEM_HANDLER)
-                    .resolve()
-                    .flatMap(inventory -> railProvider.map(capability -> capability.findNext(inventory, false)))
-                    .orElse(ItemStack.EMPTY);
-            afterPlace = () -> railProvider.ifPresent(IRailProvider::nextPosition);
+            if (railProvider != null) {
+                railStack = Optional.ofNullable(player.getCapability(ItemHandler.ENTITY))
+                        .map(inventory -> railProvider.findNext(inventory, false))
+                        .orElse(ItemStack.EMPTY);
+                afterPlace = railProvider::nextPosition;
+            }
         } else {
             railStack = ItemStack.EMPTY;
         }

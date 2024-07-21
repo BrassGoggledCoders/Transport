@@ -84,7 +84,8 @@ public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements E
                 if (distance == 0) {
                     entranceDirection = DirectionHelper.getClosestVerticalSide(minecartEntity.position());
                 } else if (distance == 1) {
-                    entranceDirection = Direction.fromNormal(pos.subtract(minecartEntity.blockPosition()));
+                    BlockPos subtracted = pos.subtract(minecartEntity.blockPosition());
+                    entranceDirection = Direction.fromDelta(subtracted.getX(), subtracted.getY(), subtracted.getZ());
                 }
 
                 if (entranceDirection != null && entranceDirection.getAxis() != Direction.Axis.Y) {
@@ -108,6 +109,7 @@ public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements E
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public boolean canMakeSlopes(BlockState state, BlockGetter world, BlockPos pos) {
         return false;
     }
@@ -120,6 +122,7 @@ public abstract class AbstractSwitchRailBlock extends BaseRailBlock implements E
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction direction) {
         return direction != null && this.getMotorDirection(this.getSwitchConfiguration(state)).getOpposite() == direction;
     }

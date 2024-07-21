@@ -4,8 +4,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NewRegistryEvent;
-import xyz.brassgoggledcoders.shadyskies.registering.RegisteringEntry;
+import xyz.brassgoggledcoders.shadyskies.registering.IRegisteringEntry;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IEnergyStorageShellContentCreator;
@@ -16,39 +15,43 @@ import xyz.brassgoggledcoders.transport.shellcontent.storage.energy.EnergyStorag
 import xyz.brassgoggledcoders.transport.shellcontent.storage.fluid.FluidStorageShellContentCreator;
 import xyz.brassgoggledcoders.transport.shellcontent.storage.item.ItemStorageShellContentCreator;
 
+@SuppressWarnings("unused")
 public class TransportShellContent {
 
+    public static ResourceKey<Registry<Codec<? extends IShellContentCreator<?>>>> REGISTRY_KEY = ResourceKey.createRegistryKey(
+            Transport.rl("shell_content")
+    );
+
     public static DeferredRegister<Codec<? extends IShellContentCreator<?>>> DEFERRED_REGISTER = DeferredRegister.create(
-            Transport.rl("shell_content"),
+            REGISTRY_KEY,
             Transport.ID
     );
 
     public static Registry<Codec<? extends IShellContentCreator<?>>> SHELL_CONTENT_TYPES =
-            DEFERRED_REGISTER.makeRegistry(registryBuilder -> {});
+            DEFERRED_REGISTER.makeRegistry(registryBuilder -> {
+            });
 
-    public static RegisteringEntry<Codec<EmptyShellContentCreator>, Codec<? extends IShellContentCreator<?>>> EMPTY = Transport.getRegistrate()
-            .object("empty")
-            .simple(SHELL_CONTENT_TYPES, () -> EmptyShellContentCreator.CODEC);
+    public static IRegisteringEntry<Codec<EmptyShellContentCreator>, Codec<? extends IShellContentCreator<?>>> EMPTY =
+            Transport.getRegistering()
+                    .object("empty")
+                    .simple(REGISTRY_KEY, () -> EmptyShellContentCreator.CODEC);
 
-    public static RegistryEntry<Codec<IFluidStorageShellContentCreator<?>>> FLUID_STORAGE = Transport.getRegistrate()
-            .object("fluid_storage")
-            .simple(SHELL_CONTENT_TYPES, () -> FluidStorageShellContentCreator.CODEC);
+    public static IRegisteringEntry<Codec<IFluidStorageShellContentCreator<?>>, Codec<? extends IShellContentCreator<?>>> FLUID_STORAGE =
+            Transport.getRegistering()
+                    .object("fluid_storage")
+                    .simple(REGISTRY_KEY, () -> FluidStorageShellContentCreator.CODEC);
 
-    public static RegistryEntry<Codec<IItemStorageShellContentCreator<?>>> ITEM_STORAGE =
-            Transport.getRegistrate()
+    public static IRegisteringEntry<Codec<IItemStorageShellContentCreator<?>>, Codec<? extends IShellContentCreator<?>>> ITEM_STORAGE =
+            Transport.getRegistering()
                     .object("item_storage")
-                    .simple(SHELL_CONTENT_TYPES, () -> ItemStorageShellContentCreator.CODEC);
+                    .simple(REGISTRY_KEY, () -> ItemStorageShellContentCreator.CODEC);
 
-    public static RegistryEntry<Codec<IEnergyStorageShellContentCreator<?>>> ENERGY_STORAGE =
-            Transport.getRegistrate()
+    public static IRegisteringEntry<Codec<IEnergyStorageShellContentCreator<?>>, Codec<? extends IShellContentCreator<?>>> ENERGY_STORAGE =
+            Transport.getRegistering()
                     .object("energy_storage")
-                    .simple(SHELL_CONTENT_TYPES, () -> EnergyStorageShellContentCreator.CODEC);
+                    .simple(REGISTRY_KEY, () -> EnergyStorageShellContentCreator.CODEC);
 
     public static void setup() {
 
-    }
-
-    public static void newRegistry(NewRegistryEvent newRegistryEvent) {
-        newRegistryEvent.register(newRegistryEvent.create());
     }
 }

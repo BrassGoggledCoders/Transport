@@ -60,6 +60,7 @@ public class OneWayBoosterRailBlock extends PoweredRailBlock {
     @Override
     @Nonnull
     @ParametersAreNonnullByDefault
+    @SuppressWarnings("deprecation")
     protected BlockState updateState(BlockState pState, Level pLevel, BlockPos pPos, boolean pIsMoving) {
         BlockState newState = this.updateDir(pLevel, pPos, pState, true);
 
@@ -94,7 +95,7 @@ public class OneWayBoosterRailBlock extends PoweredRailBlock {
             RailShape railShape = state.getValue(RAIL_SHAPE);
             Vec3 normalized = cart.getDeltaMovement().normalize();
 
-            Direction direction = Direction.fromNormal(new BlockPos(normalized));
+            Direction direction = Direction.fromDelta((int) normalized.x(), (int) normalized.y(), (int) normalized.z());
 
             if (direction != null) {
                 Vec3 cartPos = cart.getPosition(1);
@@ -139,7 +140,6 @@ public class OneWayBoosterRailBlock extends PoweredRailBlock {
 
     @Override
     @Nonnull
-    @SuppressWarnings("deprecation")
     @ParametersAreNonnullByDefault
     public BlockState rotate(BlockState pState, Rotation pRotation) {
         BlockState newState = super.rotate(pState, pRotation);
@@ -170,7 +170,6 @@ public class OneWayBoosterRailBlock extends PoweredRailBlock {
 
     @Override
     @Nonnull
-    @SuppressWarnings("deprecation")
     @ParametersAreNonnullByDefault
     public BlockState mirror(BlockState pState, Mirror pMirror) {
         BlockState blockState = super.mirror(pState, pMirror);

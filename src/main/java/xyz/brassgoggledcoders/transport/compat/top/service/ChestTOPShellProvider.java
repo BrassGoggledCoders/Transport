@@ -11,11 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import xyz.brassgoggledcoders.transport.api.capability.TransportCapabilities;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 
 import javax.annotation.Nonnull;
@@ -31,7 +28,7 @@ public class ChestTOPShellProvider implements ITOPShellProvider {
         Block viewBlock = shellContent.getViewBlockState()
                 .getBlock();
 
-        ResourceLocation viewBlockId = BuiltInRegistries.BLOCKS.getKey(viewBlock);
+        ResourceLocation viewBlockId = BuiltInRegistries.BLOCK.getKey(viewBlock);
 
         boolean inventoryToShow = Config.getInventoriesToShow()
                 .contains(viewBlockId);
@@ -39,7 +36,7 @@ public class ChestTOPShellProvider implements ITOPShellProvider {
         boolean inventoryToNotShow = Config.getInventoriesToNotShow()
                 .contains(viewBlockId);
 
-        int showSmallChestContents = Config.showSmallChestContentsWithoutSneaking;
+        int showSmallChestContents = Config.showSmallChestContentsWithoutSneaking.get();
 
         if (chestMode != ConfigMode.EXTENDED || showSmallChestContents <= 0 && Config.getInventoriesToShow().isEmpty()) {
             if (chestMode == ConfigMode.NORMAL && !Config.getInventoriesToNotShow().isEmpty() && inventoryToNotShow) {
@@ -103,7 +100,7 @@ public class ChestTOPShellProvider implements ITOPShellProvider {
     private static int getChestContents(ShellContent shellContent, List<ItemStack> stacks) {
         Set<Item> foundItems = Config.compactEqualStacks.get() ? new HashSet<>() : null;
 
-        return shellContent.getCapability(ForgeCapabilities.ITEM_HANDLER)
+        return Optional.ofNullable(shellContent.getCapability(TransportCapabilities.ITEM_HANDLER, null))
                 .map((capability) -> {
                     for (int i = 0; i < capability.getSlots(); ++i) {
                         addItemStack(stacks, foundItems, capability.getStackInSlot(i));

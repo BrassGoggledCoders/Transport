@@ -1,8 +1,10 @@
-package xyz.brassgoggledcoders.transport.data;
+package xyz.brassgoggledcoders.transport.data.content;
 
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.Tags;
+import xyz.brassgoggledcoders.shadyskies.dataregistering.DataRegistering;
+import xyz.brassgoggledcoders.shadyskies.dataregistering.provider.ProviderTypes;
 import xyz.brassgoggledcoders.shadyskies.dataregistering.recipe.DeferredRecipeProvider;
 import xyz.brassgoggledcoders.shadyskies.dataregistering.tags.DataRegisteringTagProvider;
 import xyz.brassgoggledcoders.transport.Transport;
@@ -10,6 +12,11 @@ import xyz.brassgoggledcoders.transport.api.tag.TransportItemTags;
 import xyz.brassgoggledcoders.transport.data.recipe.RailWorkerBenchRecipeBuilder;
 
 public class TransportAdditionalData {
+
+    public static void generate(DataRegistering dataRegistering) {
+        dataRegistering.deferredWithProvider(ProviderTypes.RECIPE, TransportAdditionalData::vanillaRecipes);
+        dataRegistering.doWithProvider(ProviderTypes.TAGS, TransportAdditionalData::vanillaItemTags);
+    }
 
     public static void vanillaItemTags(DataRegisteringTagProvider tagsProvider) {
         tagsProvider.tag(TransportItemTags.RAILS_GOLD)

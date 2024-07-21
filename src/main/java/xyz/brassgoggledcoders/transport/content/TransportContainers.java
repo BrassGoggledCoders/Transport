@@ -10,17 +10,15 @@ import xyz.brassgoggledcoders.transport.screen.RailWorkerBenchScreen;
 public class TransportContainers {
 
     public static MenuRegisteringEntry<RailWorkerBenchMenu> RAIL_WORKER_BENCH = Transport.getRegistering()
-            .<RailWorkerBenchMenu, RailWorkerBenchScreen>menu("rail_worker_bench")
-            .withMenuSupplier(RailWorkerBenchMenu::new)
-            .withScreenConstructor(() -> () -> RailWorkerBenchScreen::new)
-            .build();
+            .object("rail_worker_bench")
+            .<RailWorkerBenchMenu, RailWorkerBenchScreen>menu(RailWorkerBenchMenu::new)
+            .withScreenConstructor(() -> RailWorkerBenchScreen::new)
+            .register();
 
     public static MenuRegisteringEntry<PatternedRailLayerMenu> PATTERNED_RAIL_LAYER = Transport.getRegistering()
-            .<PatternedRailLayerMenu, PatternedRailLayerScreen>menu("patterned_rail_layer")
-            .withMenuSupplier((windowId, inv) -> new PatternedRailLayerMenu(windowId, inv))
-            .withScreenConstructor(
-                    () -> () -> PatternedRailLayerScreen::new
-            )
+            .object("patterned_rail_layer")
+            .menu(PatternedRailLayerMenu::new)
+            .withScreenConstructor(() -> PatternedRailLayerScreen::new)
             .register();
 
     public static void setup() {

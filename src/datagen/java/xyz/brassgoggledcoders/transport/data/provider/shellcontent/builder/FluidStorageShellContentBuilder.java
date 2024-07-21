@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.data.shellcontent.builder;
+package xyz.brassgoggledcoders.transport.data.provider.shellcontent.builder;
 
 import com.mojang.serialization.Codec;
 import net.minecraftforge.fluids.FluidType;
@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IFluidStorageShellContentCreator;
-import xyz.brassgoggledcoders.transport.data.shellcontent.IShellContentCreatorBuilder;
+import xyz.brassgoggledcoders.transport.data.provider.shellcontent.IShellContentCreatorBuilder;
 import xyz.brassgoggledcoders.transport.shellcontent.storage.fluid.FluidStorageShellContentCreator;
 
 public class FluidStorageShellContentBuilder implements IShellContentCreatorBuilder, IFluidStorageShellContentCreator<ShellContent> {

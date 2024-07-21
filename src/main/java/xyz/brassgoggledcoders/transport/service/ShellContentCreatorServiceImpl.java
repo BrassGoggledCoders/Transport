@@ -133,7 +133,9 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
     public void writeData(@NotNull ShellContent shellContent, @NotNull CompoundTag parent) {
         CompoundTag shellContentNbt = new CompoundTag();
 
-        shellContentNbt.putString(ShellContentCreatorInfo.NBT_TAG_ID, shellContent.getCreatorInfo().id().toString());
+        ResourceLocation id = this.getId(shellContent.getCreatorInfo());
+
+        shellContentNbt.putString(ShellContentCreatorInfo.NBT_TAG_ID, id.toString());
         shellContentNbt.put(ShellContentCreatorInfo.NBT_TAG_DATA, shellContent.serializeNBT());
         parent.put(ShellContentCreatorInfo.NBT_TAG_ELEMENT, shellContentNbt);
     }

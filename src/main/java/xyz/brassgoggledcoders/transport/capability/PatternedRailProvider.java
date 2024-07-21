@@ -1,5 +1,8 @@
 package xyz.brassgoggledcoders.transport.capability;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -8,9 +11,31 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.capability.IRailProvider;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
 public class PatternedRailProvider implements IRailProvider {
-    private final ItemStackHandler pattern = new ItemStackHandler(9);
-    private int position = 0;
+    public static final Codec<PatternedRailProvider> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ItemStack.CODEC.listOf().fieldOf("pattern").forGetter(PatternedRailProvider::getListForCodec),
+            Codec.INT.fieldOf("position").forGetter(PatternedRailProvider::getPosition)
+    ).apply(instance, PatternedRailProvider::new));
+
+    private final ItemStackHandler pattern;
+    private int position;
+
+    public PatternedRailProvider() {
+        this(NonNullList.withSize(9, ItemStack.EMPTY), 0);
+    }
+
+    public PatternedRailProvider(List<ItemStack> pattern, int position) {
+        this.pattern = new ItemStackHandler(9);
+        for (int i = 0; i < 9; i++) {
+            if (pattern.size() > i) {
+                this.pattern.setStackInSlot(i, pattern.get(i));
+            }
+        }
+        this.position = position;
+    }
 
     @Override
     @NotNull
@@ -51,6 +76,12 @@ public class PatternedRailProvider implements IRailProvider {
 
     public IItemHandlerModifiable getPattern() {
         return pattern;
+    }
+
+    private List<ItemStack> getListForCodec() {
+        return IntStream.range(0, this.getPattern().getSlots())
+                .mapToObj(this.getPattern()::getStackInSlot)
+                .toList();
     }
 
     public CompoundTag toTag() {

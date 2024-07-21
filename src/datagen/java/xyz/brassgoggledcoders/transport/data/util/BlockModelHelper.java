@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.util;
+package xyz.brassgoggledcoders.transport.data.util;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +13,7 @@ import xyz.brassgoggledcoders.shadyskies.registering.block.BlockEntry;
 import xyz.brassgoggledcoders.transport.block.rail.SwitchRailBlock;
 import xyz.brassgoggledcoders.transport.block.rail.TransportBlockStateProperties;
 import xyz.brassgoggledcoders.transport.block.rail.WyeSwitchRailBlock;
+import xyz.brassgoggledcoders.transport.util.RailHelper;
 
 public class BlockModelHelper {
     private static final ResourceLocation CUTOUT = new ResourceLocation("cutout");

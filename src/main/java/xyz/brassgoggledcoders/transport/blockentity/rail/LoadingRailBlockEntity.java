@@ -7,12 +7,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import xyz.brassgoggledcoders.transport.Transport;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.EntityCapability;
 import xyz.brassgoggledcoders.transport.block.rail.LoadingRailBlock;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.util.DirectionHelper;
@@ -31,8 +29,10 @@ public class LoadingRailBlockEntity extends BlockEntity {
         this.loadStates = Maps.newHashMap();
     }
 
-    public <T> void tryLoading(AbstractMinecart cart, boolean loading, Capability<T> capability,
-                               Function3<T, T, Pair<Integer, Integer>, Pair<Integer, Integer>> transfer) {
+    public <T> void tryLoading(AbstractMinecart cart, boolean loading, EntityCapability<T, Direction> entityCapability,
+                               BlockCapability<T, Direction> blockCapability,
+                               Function3<T, T, Pair<Integer, Integer>, Pair<Integer, Integer>> transfer
+    ) {
         if (this.getLevel() != null) {
             long gameTime = this.getLevel().getGameTime();
             loadStates.values().removeIf(loadState -> loadState.lastSeen() + 40 < gameTime);
@@ -44,9 +44,9 @@ public class LoadingRailBlockEntity extends BlockEntity {
             ));
 
             if (!loadState.done()) {
-                LazyOptional<T> cartOptional = cart.getCapability(capability);
+                T cartCapabilityValue = cart.getCapability(entityCapability, null);
 
-                if (cartOptional.isPresent()) {
+                if (cartCapabilityValue != null) {
                     RailShape railShape = this.getBlockState().getValue(LoadingRailBlock.RAIL_SHAPE);
 
                     Pair<Integer, Integer> counter = loadState.lastLoad()
@@ -77,32 +77,26 @@ public class LoadingRailBlockEntity extends BlockEntity {
                             nextCheckPos = this.getBlockPos().relative(direction.get());
                         }
 
-                        BlockEntity blockEntity = this.getLevel().getBlockEntity(nextCheckPos);
-                        if (blockEntity == null && direction.get() == Direction.UP) {
-                            blockEntity = this.getLevel().getBlockEntity(nextCheckPos.above());
+                        T blockCapabilityValue = this.getLevel().getCapability(blockCapability, nextCheckPos, direction.get().getOpposite());
+                        if (blockCapabilityValue == null && direction.get() == Direction.UP) {
+                            blockCapabilityValue = this.getLevel().getCapability(blockCapability, nextCheckPos.above(), direction.get().getOpposite());
                         }
 
-                        if (blockEntity != null) {
-                            LazyOptional<T> blockOptional = blockEntity.getCapability(capability, direction.get().getOpposite());
-                            if (blockOptional.isPresent()) {
-                                if (loading) {
-                                    counter = transfer.apply(
-                                            blockOptional.orElseThrow(IllegalStateException::new),
-                                            cartOptional.orElseThrow(IllegalStateException::new),
-                                            counter
-                                    );
-                                } else {
-                                    counter = transfer.apply(
-                                            cartOptional.orElseThrow(IllegalStateException::new),
-                                            blockOptional.orElseThrow(IllegalStateException::new),
-                                            counter
-                                    );
-                                }
-                                if (counter.getSecond() == 0) {
-                                    direction = direction.flatMap(value -> DirectionHelper.next(value, false));
-                                }
+                        if (blockCapabilityValue != null) {
+                            if (loading) {
+                                counter = transfer.apply(
+                                        blockCapabilityValue,
+                                        cartCapabilityValue,
+                                        counter
+                                );
                             } else {
-                                counter = counter.mapFirst(units -> units - 4);
+                                counter = transfer.apply(
+                                        cartCapabilityValue,
+                                        blockCapabilityValue,
+                                        counter
+                                );
+                            }
+                            if (counter.getSecond() == 0) {
                                 direction = direction.flatMap(value -> DirectionHelper.next(value, false));
                             }
                         } else {

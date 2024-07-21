@@ -1,14 +1,19 @@
 package xyz.brassgoggledcoders.transport.block.rail;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.PoweredRailBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class InvertedPoweredRailBlock extends PoweredRailBlock {
+    public static MapCodec<PoweredRailBlock> CODEC = simpleCodec(InvertedPoweredRailBlock::new);
+
     public InvertedPoweredRailBlock(Properties builder) {
         super(builder, true);
         this.registerDefaultState(this.defaultBlockState()
@@ -30,6 +35,11 @@ public class InvertedPoweredRailBlock extends PoweredRailBlock {
                 pLevel.updateNeighborsAt(pPos.above(), this);
             }
         }
+    }
 
+    @Override
+    @NotNull
+    public MapCodec<PoweredRailBlock> codec() {
+        return CODEC;
     }
 }

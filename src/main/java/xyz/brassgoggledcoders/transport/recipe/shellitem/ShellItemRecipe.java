@@ -3,14 +3,12 @@ package xyz.brassgoggledcoders.transport.recipe.shellitem;
 import com.google.common.base.Suppliers;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Lazy;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
@@ -132,6 +130,10 @@ public class ShellItemRecipe implements IRailWorkerBenchRecipe {
     @Override
     public boolean isSpecial() {
         return true;
+    }
+
+    public Ingredient getInternalInput() {
+        return this.input;
     }
 
     @Override

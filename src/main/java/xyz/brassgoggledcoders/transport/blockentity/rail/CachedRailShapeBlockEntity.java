@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 import java.util.*;
 
@@ -17,6 +18,10 @@ public class CachedRailShapeBlockEntity extends BlockEntity {
     public static final int CACHED_TIME = 10;
 
     private final Table<UUID, Long, RailShape> railShapes;
+
+    public CachedRailShapeBlockEntity(BlockPos pos, BlockState state) {
+        this(TransportBlocks.CACHED_RAIL_SHAPE_BLOCK_ENTITY.get(), pos, state);
+    }
 
     public CachedRailShapeBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
         super(pType, pWorldPosition, pBlockState);
@@ -43,7 +48,7 @@ public class CachedRailShapeBlockEntity extends BlockEntity {
     }
 
     public RailShape getRailShapeFor(AbstractMinecart minecartEntity) {
-        long oldestGameTime = minecartEntity.getLevel().getGameTime() - CACHED_TIME;
+        long oldestGameTime = minecartEntity.level().getGameTime() - CACHED_TIME;
         return this.railShapes.row(minecartEntity.getUUID())
                 .entrySet()
                 .stream()
@@ -54,7 +59,7 @@ public class CachedRailShapeBlockEntity extends BlockEntity {
     }
 
     public void setRailShapeFor(AbstractMinecart minecartEntity, RailShape railShape) {
-        this.railShapes.put(minecartEntity.getUUID(), minecartEntity.getLevel().getGameTime(), railShape);
+        this.railShapes.put(minecartEntity.getUUID(), minecartEntity.level().getGameTime(), railShape);
     }
 
     public void clean() {

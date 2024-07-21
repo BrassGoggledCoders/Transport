@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.block.rail;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -16,6 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @SuppressWarnings("deprecation")
 public class BufferRailBlock extends BaseRailBlock {
+    public static final MapCodec<BufferRailBlock> CODEC = simpleCodec(BufferRailBlock::new);
     public static final BooleanProperty INVERTED = BlockStateProperties.INVERTED;
     public static final EnumProperty<RailShape> SHAPE = TransportBlockStateProperties.FLAT_STRAIGHT_RAIL_SHAPE;
 
@@ -26,6 +28,12 @@ public class BufferRailBlock extends BaseRailBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(INVERTED, SHAPE, BaseRailBlock.WATERLOGGED);
+    }
+
+    @Override
+    @NotNull
+    protected MapCodec<? extends BaseRailBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -43,6 +51,7 @@ public class BufferRailBlock extends BaseRailBlock {
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public boolean canMakeSlopes(BlockState state, BlockGetter blockGetter, BlockPos pos) {
         return false;
     }

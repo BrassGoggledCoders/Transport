@@ -109,6 +109,11 @@ public record RailWorkerBenchRecipe(
     }
 
     @Override
+    public ItemStack getOutput() {
+        return this.output();
+    }
+
+    @Override
     public boolean isSpecial() {
         return true;
     }

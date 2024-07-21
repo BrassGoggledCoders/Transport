@@ -8,6 +8,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import xyz.brassgoggledcoders.transport.api.capability.ShellContentCapability;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 
 import javax.annotation.Nonnull;
@@ -71,5 +72,13 @@ public class ShellContent {
         } else {
             return !(pPlayer.distanceToSqr(this.getShell().getSelf()) > 64.0D);
         }
+    }
+
+    public final <T, C> T getCapability(ShellContentCapability<T, C> capability, C context) {
+        return capability.getCapability(this, context);
+    }
+
+    public final <T> T getCapability(ShellContentCapability<T, Void> capability) {
+        return capability.getCapability(this, null);
     }
 }

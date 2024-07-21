@@ -1,13 +1,13 @@
 package xyz.brassgoggledcoders.transport.content;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import xyz.brassgoggledcoders.shadyskies.registering.RegisteringEntry;
+import xyz.brassgoggledcoders.shadyskies.registering.IRegisteringEntry;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.IRailWorkerBenchRecipe;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.RailWorkerBenchRecipeSerializer;
@@ -20,9 +20,9 @@ public class TransportRecipes {
             Transport.ID
     );
 
-    public static final RegistryEntry<ShellItemRecipeSerializer> SHELL_ITEMS = Transport.getRegistrate()
+    public static final IRegisteringEntry<ShellItemRecipeSerializer, RecipeSerializer<?>> SHELL_ITEMS = Transport.getRegistering()
             .object("shell_items")
-            .simple(BuiltInRegistries.RECIPE_SERIALIZER, ShellItemRecipeSerializer::new);
+            .simple(Registries.RECIPE_SERIALIZER, ShellItemRecipeSerializer::new);
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<IRailWorkerBenchRecipe>> RAIL_WORKER_BENCH_TYPE =
             RECIPE_TYPE_REGISTER.register(
@@ -30,11 +30,12 @@ public class TransportRecipes {
                     () -> RecipeType.simple(Transport.rl("rail_worker_bench"))
             );
 
-    public static final RegisteringEntry<RailWorkerBenchRecipeSerializer, RecipeSerializer<?>> RAIL_WORKER_BENCH =
+    public static final IRegisteringEntry<RailWorkerBenchRecipeSerializer, RecipeSerializer<?>> RAIL_WORKER_BENCH =
             Transport.getRegistering()
-                    .simple("rail_worker_bench", Registries.RECIPE_SERIALIZER, RailWorkerBenchRecipeSerializer::new);
+                    .object("rail_worker_bench")
+                    .simple(Registries.RECIPE_SERIALIZER, RailWorkerBenchRecipeSerializer::new);
 
-    public static void setup() {
-        RECIPE_TYPE_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+    public static void setup(IEventBus modEventBus) {
+        RECIPE_TYPE_REGISTER.register(modEventBus);
     }
 }

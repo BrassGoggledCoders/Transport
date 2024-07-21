@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.transport.data.shellcontent;
+package xyz.brassgoggledcoders.transport.data.provider.shellcontent;
 
 import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 

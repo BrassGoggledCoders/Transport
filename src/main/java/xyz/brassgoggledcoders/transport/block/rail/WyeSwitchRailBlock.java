@@ -1,12 +1,15 @@
 package xyz.brassgoggledcoders.transport.block.rail;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.*;
+import org.checkerframework.checker.lock.qual.NewObject;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -14,6 +17,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @SuppressWarnings("deprecation")
 public class WyeSwitchRailBlock extends AbstractSwitchRailBlock {
+    public static final MapCodec<WyeSwitchRailBlock> CODEC = simpleCodec(WyeSwitchRailBlock::new);
+
     public static final EnumProperty<RailShape> SHAPE = TransportBlockStateProperties.FLAT_STRAIGHT_RAIL_SHAPE;
     public static final BooleanProperty INVERTED = BlockStateProperties.INVERTED;
 
@@ -41,6 +46,12 @@ public class WyeSwitchRailBlock extends AbstractSwitchRailBlock {
             case SOUTH_WEST -> RailShape.NORTH_WEST;
             default -> RailShape.SOUTH_WEST;
         };
+    }
+
+    @Override
+    @NotNull
+    protected MapCodec<WyeSwitchRailBlock> codec() {
+        return CODEC;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.transport.block.rail;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -17,18 +18,18 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.transport.api.block.EnhancedRailState;
 import xyz.brassgoggledcoders.transport.api.block.IEnhancedRail;
 import xyz.brassgoggledcoders.transport.blockentity.rail.CachedRailShapeBlockEntity;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.util.DirectionHelper;
-import xyz.brassgoggledcoders.transport.api.block.EnhancedRailState;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 
 @SuppressWarnings("deprecation")
 public class DiamondCrossingRailBlock extends BaseRailBlock implements IEnhancedRail, EntityBlock {
+    public static final MapCodec<DiamondCrossingRailBlock> CODEC = simpleCodec(DiamondCrossingRailBlock::new);
     public static final EnumProperty<RailShape> SHAPE = TransportBlockStateProperties.FLAT_STRAIGHT_RAIL_SHAPE;
 
     public DiamondCrossingRailBlock(Properties properties) {
@@ -60,7 +61,8 @@ public class DiamondCrossingRailBlock extends BaseRailBlock implements IEnhanced
                 if (distance == 0) {
                     entranceDirection = DirectionHelper.getClosestVerticalSide(minecartEntity.position());
                 } else if (distance == 1) {
-                    entranceDirection = Direction.fromNormal(pos.subtract(minecartEntity.blockPosition()));
+                    BlockPos subtracted = pos.subtract(minecartEntity.blockPosition());
+                    entranceDirection = Direction.fromDelta(subtracted.getX(), subtracted.getY(), subtracted.getZ());
                 }
 
                 if (entranceDirection == Direction.NORTH || entranceDirection == Direction.SOUTH) {
@@ -85,13 +87,14 @@ public class DiamondCrossingRailBlock extends BaseRailBlock implements IEnhanced
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public boolean canMakeSlopes(BlockState state, BlockGetter blockGetter, BlockPos pos) {
         return false;
     }
 
     @Override
     public RailShape[] getCurrentRailShapes(BlockState blockState) {
-        return new RailShape[] {
+        return new RailShape[]{
                 RailShape.NORTH_SOUTH,
                 RailShape.EAST_WEST
         };
@@ -107,6 +110,12 @@ public class DiamondCrossingRailBlock extends BaseRailBlock implements IEnhanced
     @ParametersAreNonnullByDefault
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return new CachedRailShapeBlockEntity(TransportBlocks.CACHED_RAIL_SHAPE_BLOCK_ENTITY.get(), pPos, pState);
+    }
+
+    @Override
+    @NotNull
+    protected MapCodec<? extends BaseRailBlock> codec() {
+        return CODEC;
     }
 
     @Override

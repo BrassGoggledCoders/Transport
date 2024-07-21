@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.transport.shellcontent.storage.item;
 
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -11,11 +10,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
@@ -29,27 +25,16 @@ public class ItemStorageShellContent extends ShellContent implements MenuProvide
     private final boolean showScreen;
 
     private final ItemStackHandler itemStackHandler;
-    private final LazyOptional<IItemHandler> itemLazyOptional;
 
     public ItemStorageShellContent(StorageSize size, boolean showScreen) {
         this.size = size;
         this.showScreen = showScreen;
         this.itemStackHandler = new ItemStackHandler(size.getTotal());
-        this.itemLazyOptional = LazyOptional.of(this::getHandler);
     }
 
     @Nonnull
     private IItemHandler getHandler() {
         return this.itemStackHandler;
-    }
-
-    @Override
-    @Nonnull
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return this.itemLazyOptional.cast();
-        }
-        return super.getCapability(cap, side);
     }
 
     @Override
@@ -61,7 +46,7 @@ public class ItemStorageShellContent extends ShellContent implements MenuProvide
                 return ret;
             }
             pPlayer.openMenu(this);
-            if (!pPlayer.level.isClientSide) {
+            if (!pPlayer.level().isClientSide) {
                 this.getLevel().gameEvent(pPlayer, GameEvent.CONTAINER_OPEN, this.getShell().getSelf().position());
                 PiglinAi.angerNearbyPiglins(pPlayer, true);
                 return InteractionResult.CONSUME;
@@ -90,12 +75,6 @@ public class ItemStorageShellContent extends ShellContent implements MenuProvide
                         this::stillValid
                 )
         ) : null;
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        this.itemLazyOptional.invalidate();
     }
 
     @NotNull

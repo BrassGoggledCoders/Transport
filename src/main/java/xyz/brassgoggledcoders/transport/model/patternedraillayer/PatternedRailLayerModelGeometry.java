@@ -1,16 +1,18 @@
 package xyz.brassgoggledcoders.transport.model.patternedraillayer;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.*;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
-import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Set;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Function;
 
 public record PatternedRailLayerModelGeometry(
@@ -18,16 +20,13 @@ public record PatternedRailLayerModelGeometry(
 ) implements IUnbakedGeometry<PatternedRailLayerModelGeometry> {
 
     @Override
-    public BakedModel bake(IGeometryBakingContext owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
+    @NotNull
+    @ParametersAreNonnullByDefault
+    public BakedModel bake(IGeometryBakingContext owner, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
                            ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
         return new PatternedRailLayerParentBakedModel(
                 owner.getTransforms(),
                 this.textures
         );
-    }
-
-    @Override
-    public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        return textures();
     }
 }

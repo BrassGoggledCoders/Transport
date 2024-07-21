@@ -4,13 +4,15 @@ import mcjty.theoneprobe.api.*;
 import mcjty.theoneprobe.apiimpl.elements.ElementProgress;
 import mcjty.theoneprobe.config.Config;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import xyz.brassgoggledcoders.transport.api.capability.TransportCapabilities;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
+
+import java.util.Optional;
 
 public class EnergyTOPShellProvider implements ITOPShellProvider {
     @Override
     public void addInfo(ShellContent shellContent, ProbeMode mode, IProbeInfo probeInfo, IProbeConfig probeConfig) {
-        shellContent.getCapability(ForgeCapabilities.ENERGY)
+        Optional.of(shellContent.getCapability(TransportCapabilities.ENERGY_STORAGE, null))
                 .ifPresent(iEnergyStorage -> addEnergyInfo(
                         probeInfo,
                         probeConfig,

@@ -1,19 +1,20 @@
 package xyz.brassgoggledcoders.transport.blockentity.storage;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
@@ -27,7 +28,7 @@ public class FluidStorageBlockEntity extends CapabilityStorageBlockEntity<IFluid
     public FluidStorageBlockEntity(BlockPos pWorldPos, BlockState pBlockState) {
         this(
                 TransportBlocks.FLUID_STORAGE
-                        .getSibling(ForgeRegistries.BLOCK_ENTITY_TYPES)
+                        .<BlockEntityType<?>, BlockEntityType<?>>getSibling(Registries.BLOCK_ENTITY_TYPE)
                         .get(),
                 pWorldPos,
                 pBlockState
@@ -35,8 +36,8 @@ public class FluidStorageBlockEntity extends CapabilityStorageBlockEntity<IFluid
     }
 
     @Override
-    public Capability<IFluidHandler> getCapability() {
-        return ForgeCapabilities.FLUID_HANDLER;
+    public EntityCapability<IFluidHandler, Direction> getCapability() {
+        return Capabilities.FluidHandler.ENTITY;
     }
 
     @NotNull

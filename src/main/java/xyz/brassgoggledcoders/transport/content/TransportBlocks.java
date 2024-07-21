@@ -9,7 +9,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.WeatheringCopper.WeatherState;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -30,9 +29,10 @@ import xyz.brassgoggledcoders.transport.blockentity.rail.LoadingRailBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.EnergyStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.blockentity.storage.FluidStorageBlockEntity;
 import xyz.brassgoggledcoders.transport.data.recipe.RailWorkerBenchRecipeBuilder;
-import xyz.brassgoggledcoders.transport.util.BlockModelHelper;
 
 import javax.annotation.Nonnull;
+
+;
 
 @SuppressWarnings("unused")
 public class TransportBlocks {
@@ -41,134 +41,82 @@ public class TransportBlocks {
             .object("item_dump_rail")
             .block(DumpRailBlock::itemDumpRail)
             .transform(TransportBlocks::defaultRail)
-            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
-            .tag(TransportItemTags.RAILS_IRON)
             .build()
-            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
-                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
-                    .save(provider)
-            )
             .register();
 
     public static final BlockEntry<DumpRailBlock<IFluidHandler>> FLUID_DUMP_RAIL = Transport.getRegistering()
             .object("fluid_dump_rail")
             .block(DumpRailBlock::fluidDumpRail)
             .transform(TransportBlocks::defaultRail)
-            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
-            .tag(TransportItemTags.RAILS_IRON)
             .build()
-            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
-                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
-                    .save(provider)
-            )
             .register();
 
     public static final BlockEntry<DumpRailBlock<IEnergyStorage>> ENERGY_DUMP_RAIL = Transport.getRegistering()
             .object("energy_dump_rail")
             .block(DumpRailBlock::energyDumpRail)
             .transform(TransportBlocks::defaultRail)
-            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
-            .tag(TransportItemTags.RAILS_IRON)
             .build()
-            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
-                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
-                    .save(provider)
-            )
             .register();
 
     public static final BlockEntityRegisteringEntry<DumpRailBlockEntity> DUMP_RAIL_BLOCK_ENTITY = Transport.getRegistering()
             .object("dump_rail")
             .blockEntity(DumpRailBlockEntity::new)
-            .validBlock(ITEM_DUMP_RAIL)
-            .validBlock(FLUID_DUMP_RAIL)
-            .validBlock(ENERGY_DUMP_RAIL)
+            .withValidBlocks(
+                    ITEM_DUMP_RAIL,
+                    FLUID_DUMP_RAIL,
+                    ENERGY_DUMP_RAIL
+            )
             .register();
 
     public static final BlockEntry<LoadingRailBlock<IItemHandler>> ITEM_LOADING_RAIL = Transport.getRegistering()
             .object("item_loading_rail")
             .block(properties -> LoadingRailBlock.itemLoadingRail(properties, true))
             .transform(TransportBlocks::defaultRail)
-            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
-            .tag(TransportItemTags.RAILS_IRON)
             .build()
-            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
-                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
-                    .save(provider)
-            )
             .register();
 
     public static final BlockEntry<LoadingRailBlock<IFluidHandler>> FLUID_LOADING_RAIL = Transport.getRegistering()
             .object("fluid_loading_rail")
             .block(properties -> LoadingRailBlock.fluidDumpRail(properties, true))
             .transform(TransportBlocks::defaultRail)
-            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
-            .tag(TransportItemTags.RAILS_IRON)
             .build()
-            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
-                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
-                    .save(provider)
-            )
             .register();
 
     public static final BlockEntry<LoadingRailBlock<IEnergyStorage>> ENERGY_LOADING_RAIL = Transport.getRegistering()
             .object("energy_loading_rail")
             .block(properties -> LoadingRailBlock.energyDumpRail(properties, true))
             .transform(TransportBlocks::defaultRail)
-            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
-            .tag(TransportItemTags.RAILS_IRON)
             .build()
-            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
-                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
-                    .save(provider)
-            )
             .register();
 
     public static final BlockEntry<LoadingRailBlock<IItemHandler>> ITEM_UNLOADING_RAIL = Transport.getRegistering()
             .object("item_unloading_rail")
             .block(properties -> LoadingRailBlock.itemLoadingRail(properties, false))
             .transform(TransportBlocks::defaultRail)
-            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
-            .tag(TransportItemTags.RAILS_IRON)
             .build()
-            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
-                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
-                    .save(provider)
-            )
             .register();
 
     public static final BlockEntry<LoadingRailBlock<IFluidHandler>> FLUID_UNLOADING_RAIL = Transport.getRegistering()
             .object("fluid_unloading_rail")
             .block(properties -> LoadingRailBlock.fluidDumpRail(properties, false))
             .transform(TransportBlocks::defaultRail)
-            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
-            .tag(TransportItemTags.RAILS_IRON)
             .build()
-            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
-                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
-                    .save(provider)
-            )
             .register();
 
     public static final BlockEntry<LoadingRailBlock<IEnergyStorage>> ENERGY_UNLOADING_RAIL = Transport.getRegistering()
             .object("energy_unloading_rail")
             .block(properties -> LoadingRailBlock.energyDumpRail(properties, false))
             .transform(TransportBlocks::defaultRail)
-            .blockstate(BlockModelHelper::straightPoweredRailBlockState)
             .transform(TransportBlocks::defaultRailItem)
-            .tag(TransportItemTags.RAILS_IRON)
             .build()
-            .recipe((context, provider) -> RailWorkerBenchRecipeBuilder.of(context.get())
-                    .withInput(Ingredient.of(TransportItemTags.RAILS_IRON))
-                    .save(provider)
-            )
             .register();
 
     public static final BlockEntityRegisteringEntry<LoadingRailBlockEntity> LOADING_RAIL_BLOCK_ENTITY = Transport.getRegistering()
@@ -188,10 +136,7 @@ public class TransportBlocks {
             .object("waxed_oxidized_copper_rail")
             .block(WaxedCopperRail::new)
             .transform(TransportBlocks::defaultCopperRail)
-            .blockstate((context, provider) -> BlockModelHelper.regularRail("oxidized_copper_rail", context.get(), provider))
             .transform(TransportBlocks::defaultRailItem)
-            .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/oxidized_copper_rail")))
-            .tag(TransportItemTags.RAILS_COPPER)
             .build()
             .register();
 
@@ -199,9 +144,7 @@ public class TransportBlocks {
             .object("oxidized_copper_rail")
             .block(properties -> new WeatheringCopperRail(properties, WeatherState.OXIDIZED))
             .transform(TransportBlocks::defaultCopperRail)
-            .blockstate(BlockModelHelper::regularRail)
             .transform(TransportBlocks::defaultRailItem)
-            .tag(TransportItemTags.RAILS_COPPER)
             .build()
             .register();
 
@@ -209,10 +152,7 @@ public class TransportBlocks {
             .object("waxed_weathered_copper_rail")
             .block(WaxedCopperRail::new)
             .transform(TransportBlocks::defaultCopperRail)
-            .blockstate((context, provider) -> BlockModelHelper.regularRail("weathered_copper_rail", context.get(), provider))
             .transform(TransportBlocks::defaultRailItem)
-            .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/weathered_copper_rail")))
-            .tag(TransportItemTags.RAILS_COPPER)
             .build()
             .register();
 
@@ -220,9 +160,7 @@ public class TransportBlocks {
             .object("weathered_copper_rail")
             .block(properties -> new WeatheringCopperRail(properties, WeatherState.WEATHERED))
             .transform(TransportBlocks::defaultCopperRail)
-            .blockstate(BlockModelHelper::regularRail)
             .transform(TransportBlocks::defaultRailItem)
-            .tag(TransportItemTags.RAILS_COPPER)
             .build()
             .register();
 
@@ -230,10 +168,7 @@ public class TransportBlocks {
             .object("waxed_exposed_copper_rail")
             .block(WaxedCopperRail::new)
             .transform(TransportBlocks::defaultCopperRail)
-            .blockstate((context, provider) -> BlockModelHelper.regularRail("exposed_copper_rail", context.get(), provider))
             .transform(TransportBlocks::defaultRailItem)
-            .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/exposed_copper_rail")))
-            .tag(TransportItemTags.RAILS_COPPER)
             .build()
             .register();
 
@@ -241,9 +176,7 @@ public class TransportBlocks {
             .object("exposed_copper_rail")
             .block(properties -> new WeatheringCopperRail(properties, WeatherState.EXPOSED))
             .transform(TransportBlocks::defaultCopperRail)
-            .blockstate(BlockModelHelper::regularRail)
             .transform(TransportBlocks::defaultRailItem)
-            .tag(TransportItemTags.RAILS_COPPER)
             .build()
             .register();
 
@@ -251,10 +184,7 @@ public class TransportBlocks {
             .object("waxed_copper_rail")
             .block(WaxedCopperRail::new)
             .transform(TransportBlocks::defaultCopperRail)
-            .blockstate((context, provider) -> BlockModelHelper.regularRail("copper_rail", context.get(), provider))
             .transform(TransportBlocks::defaultRailItem)
-            .model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/copper_rail")))
-            .tag(TransportItemTags.RAILS_COPPER)
             .build()
             .register();
 
@@ -262,29 +192,8 @@ public class TransportBlocks {
             .object("copper_rail")
             .block(properties -> new WeatheringCopperRail(properties, WeatherState.UNAFFECTED))
             .transform(TransportBlocks::defaultCopperRail)
-            .blockstate(BlockModelHelper::regularRail)
             .transform(TransportBlocks::defaultRailItem)
-            .tag(TransportItemTags.RAILS_COPPER)
             .build()
-            .recipe((context, provider) -> {
-                RailWorkerBenchRecipeBuilder.of(context.get())
-                        .withInput(Ingredient.of(TransportItemTags.RAILS_COPPER))
-                        .save(provider, Transport.rl("copper_rail_from_rails_copper"));
-
-                RailWorkerBenchRecipeBuilder.of(context.get(), 32)
-                        .withInput(Ingredient.of(Tags.Items.INGOTS_COPPER), 4)
-                        .withSecondaryInput(Ingredient.of(Tags.Items.RODS_WOODEN))
-                        .save(provider, Transport.rl("cheaper_copper_rail"));
-
-                ShapedRecipeBuilder.shaped(context.get(), 16)
-                        .pattern("C C")
-                        .pattern("CSC")
-                        .pattern("C C")
-                        .define('C', Tags.Items.INGOTS_COPPER)
-                        .define('S', Tags.Items.RODS_WOODEN)
-                        .unlockedBy("has_item", RegistrateRecipeProvider.has(Tags.Items.INGOTS_COPPER))
-                        .save(provider, Transport.rl("copper_rail"));
-            })
             .register();
 
     public static final BlockEntry<OneWayBoosterRailBlock> ONE_WAY_BOOSTER_RAIL = Transport.getRegistering()
@@ -350,17 +259,16 @@ public class TransportBlocks {
             .register();
 
 
-    public static final RegistryEntry<BlockEntityType<CachedRailShapeBlockEntity>> CACHED_RAIL_SHAPE_BLOCK_ENTITY = Transport.getRegistering()
+    public static final BlockEntityRegisteringEntry<CachedRailShapeBlockEntity> CACHED_RAIL_SHAPE_BLOCK_ENTITY = Transport.getRegistering()
             .object("cached_rail_shape")
             .blockEntity(CachedRailShapeBlockEntity::new)
-            .validBlocks(SWITCH_RAIL, WYE_SWITCH_RAIL)
+            .withValidBlocks(SWITCH_RAIL, WYE_SWITCH_RAIL)
             .register();
 
     public static final BlockEntry<BufferRailBlock> BUMPER_RAIL = Transport.getRegistering()
             .object("buffer_rail")
             .block(BufferRailBlock::new)
-            .initialProperties(Material.DECORATION)
-            .properties(properties -> properties.noOcclusion()
+            .withProperties(properties -> properties.noOcclusion()
                     .strength(2.1F)
                     .sound(SoundType.METAL)
             )
@@ -466,8 +374,6 @@ public class TransportBlocks {
                 .strength(0.7F)
                 .sound(SoundType.METAL)
         );
-        //TODO Tags
-        //.tag(BlockTags.RAILS);
     }
 
     @Nonnull
@@ -477,18 +383,14 @@ public class TransportBlocks {
                 .sound(SoundType.COPPER)
                 .mapColor(MapColor.COLOR_ORANGE)
         );
-        //TODO DATA GENERATING
-        //.tag(BlockTags.RAILS);
     }
 
 
     @Nonnull
     public static <T extends BaseRailBlock> ItemRegisteringBuilder<BlockRegisteringBuilder<Registering, T>, BlockItem> defaultRailItem(
-            BlockRegisteringBuilder<Registering, T> builder) {
+            BlockRegisteringBuilder<Registering, T> builder
+    ) {
         return builder.withItem();
-        //TODO DATA GENERATING
-        //.model((context, provider) -> provider.generated(context, provider.modLoc("block/rail/" + context.getName())))
-        //.tag(ItemTags.RAILS);
     }
 
     public static void setup() {

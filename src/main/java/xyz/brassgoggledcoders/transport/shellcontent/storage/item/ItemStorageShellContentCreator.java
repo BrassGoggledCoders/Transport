@@ -16,7 +16,7 @@ public record ItemStorageShellContentCreator(
             Codec.STRING.flatXmap(
                     value -> StorageSize.getByName(value)
                             .map(DataResult::success)
-                            .orElseGet(() -> DataResult.error("No Size with name '" + value + "' exists.")),
+                            .orElseGet(() -> DataResult.error(() -> "No Size with name '" + value + "' exists.")),
                     value -> DataResult.success(value.name())
             ).fieldOf("size").forGetter(IItemStorageShellContentCreator::getSize),
             Codec.BOOL.optionalFieldOf("showScreen", Boolean.TRUE).forGetter(IItemStorageShellContentCreator::isShowScreen)

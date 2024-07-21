@@ -9,11 +9,12 @@ import net.minecraft.world.level.block.RailBlock;
 import net.minecraft.world.level.block.SupportType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.common.ToolActions;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.content.TransportWeathering;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 
 public class WaxedCopperRail extends RailBlock {
@@ -38,6 +39,7 @@ public class WaxedCopperRail extends RailBlock {
 
     @Override
     @Nullable
+    @ParametersAreNonnullByDefault
     public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
         if (toolAction == ToolActions.AXE_WAX_OFF) {
             Optional<BlockState> blockState = Optional.ofNullable(

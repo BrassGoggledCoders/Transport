@@ -21,8 +21,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.content.TransportWeathering;
@@ -39,11 +39,13 @@ public class WeatheringCopperRail extends RailBlock implements WeatheringCopper 
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public float getRailMaxSpeed(BlockState state, Level level, BlockPos pos, AbstractMinecart cart) {
         return super.getRailMaxSpeed(state, level, pos, cart) / 2;
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public void onMinecartPass(BlockState state, Level level, BlockPos pos, AbstractMinecart cart) {
         if (state.getValue(this.getShapeProperty()).isAscending() &&
                 level.getBlockState(pos.above()).isFaceSturdy(level, pos, Direction.DOWN, SupportType.RIGID)) {
@@ -87,6 +89,7 @@ public class WeatheringCopperRail extends RailBlock implements WeatheringCopper 
 
     @Override
     @Nullable
+    @ParametersAreNonnullByDefault
     public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
         if (toolAction == ToolActions.AXE_SCRAPE) {
             Optional<BlockState> blockState = Optional.ofNullable(TransportWeathering.PREVIOUS_BY_BLOCK.get()
@@ -115,7 +118,7 @@ public class WeatheringCopperRail extends RailBlock implements WeatheringCopper 
     @SuppressWarnings("deprecation")
     @ParametersAreNonnullByDefault
     public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
-        this.onRandomTick(pState, pLevel, pPos, pRandom);
+        this.changeOverTime(pState, pLevel, pPos, pRandom);
     }
 
     @Override
