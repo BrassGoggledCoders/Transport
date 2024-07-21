@@ -97,7 +97,7 @@ repositories {
 dependencies {
     implementation "net.neoforged:neoforge:20.4.237"
 
-    implementation "xyz.brassgoggledcoders.shadyskies:Registering:1.1.7"
+    implementation "xyz.brassgoggledcoders.shadyskies:Registering:1.1.8"
     jarJar("xyz.brassgoggledcoders.shadyskies:Registering:[1.1.0, 1.2.0)")
 
     implementation "xyz.brassgoggledcoders.shadyskies:DataRegistering:1.1.4"

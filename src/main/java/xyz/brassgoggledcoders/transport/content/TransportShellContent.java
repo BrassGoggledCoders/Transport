@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.transport.content;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import xyz.brassgoggledcoders.shadyskies.registering.IRegisteringEntry;
 import xyz.brassgoggledcoders.transport.Transport;
@@ -51,7 +52,7 @@ public class TransportShellContent {
                     .object("energy_storage")
                     .simple(REGISTRY_KEY, () -> EnergyStorageShellContentCreator.CODEC);
 
-    public static void setup() {
-
+    public static void setup(IEventBus bus) {
+        DEFERRED_REGISTER.register(bus);
     }
 }

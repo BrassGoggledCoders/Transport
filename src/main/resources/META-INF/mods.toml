@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[40,)"
+loaderVersion="[2,)"
 issueTrackerURL="https://github.com/Brass-Goggled-Coders/Transport/issues"
 license="MIT"
 
@@ -12,8 +12,7 @@ license="MIT"
     '''
 
 [[dependencies.transport]]
-    modId="forge"
-    mandatory=true
-    versionRange="[40.1.0,)"
+    modId="neoforge"
+    versionRange="[20.4,)"
     ordering="NONE"
     side="BOTH"

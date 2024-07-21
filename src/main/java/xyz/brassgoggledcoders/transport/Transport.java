@@ -33,7 +33,7 @@ public class Transport {
         TransportEntities.setup();
         TransportItems.setup();
         TransportRecipes.setup(modEventBus);
-        TransportShellContent.setup();
+        TransportShellContent.setup(modEventBus);
 
         loadCompat(modEventBus, "theoneprobe", () -> TransportTOP::new);
     }
