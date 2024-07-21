@@ -21,12 +21,10 @@ import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import java.util.Objects;
 
 public class FluidStorageBlockEntity extends CapabilityStorageBlockEntity<IFluidHandler, FluidTank> {
-    public FluidStorageBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
-        super(pType, pWorldPosition, pBlockState);
-    }
+
 
     public FluidStorageBlockEntity(BlockPos pWorldPos, BlockState pBlockState) {
-        this(
+        super(
                 TransportBlocks.FLUID_STORAGE
                         .<BlockEntityType<?>, BlockEntityType<?>>getSibling(Registries.BLOCK_ENTITY_TYPE)
                         .get(),

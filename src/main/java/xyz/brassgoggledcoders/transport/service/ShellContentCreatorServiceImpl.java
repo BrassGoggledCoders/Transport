@@ -93,6 +93,11 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
     }
 
     @Override
+    public @NotNull Map<ResourceLocation, ShellContentCreatorInfo> getMap() {
+        return this.creators;
+    }
+
+    @Override
     @Nonnull
     public ShellContent create(ResourceLocation id, @Nullable CompoundTag nbt) {
         ShellContentCreatorInfo info = this.getById(id);
@@ -135,6 +140,8 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
 
         ResourceLocation id = this.getId(shellContent.getCreatorInfo());
 
+        //TODO better handling of Ids
+        assert id != null;
         shellContentNbt.putString(ShellContentCreatorInfo.NBT_TAG_ID, id.toString());
         shellContentNbt.put(ShellContentCreatorInfo.NBT_TAG_DATA, shellContent.serializeNBT());
         parent.put(ShellContentCreatorInfo.NBT_TAG_ELEMENT, shellContentNbt);

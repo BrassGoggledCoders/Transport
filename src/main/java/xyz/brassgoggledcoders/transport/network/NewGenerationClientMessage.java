@@ -2,22 +2,26 @@ package xyz.brassgoggledcoders.transport.network;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.common.util.LogicalSidedProvider;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public record NewGenerationClientMessage(
         int entityId,
         ShellContentCreatorInfo shellContentCreatorInfo
-) {
-    public void encode(FriendlyByteBuf friendlyByteBuf) {
+) implements CustomPacketPayload {
+    public static final ResourceLocation ID = Transport.rl("new_generation");
+
+    @Override
+    public void write(FriendlyByteBuf friendlyByteBuf) {
         friendlyByteBuf.writeInt(entityId);
         Optional<CompoundTag> tag = shellContentCreatorInfo.asTag();
 
@@ -25,16 +29,25 @@ public record NewGenerationClientMessage(
         tag.ifPresent(friendlyByteBuf::writeNbt);
     }
 
-    public void consume(Supplier<NetworkEvent.Context> contextSupplier) {
-        LogicalSide logicalSide = contextSupplier.get().getDirection().getReceptionSide();
-        LogicalSidedProvider.CLIENTWORLD.get(logicalSide)
-                .ifPresent(level -> {
-                    Entity entity = level.getEntity(this.entityId());
-                    if (entity instanceof IShell shell) {
-                        shell.getHolder()
-                                .update(this.shellContentCreatorInfo().create(null));
-                    }
-                });
+    @Override
+    @NotNull
+    public ResourceLocation id() {
+        return ID;
+    }
+
+    public static void consume(NewGenerationClientMessage clientMessage, IPayloadContext context) {
+        context.workHandler()
+                .execute(() -> context.level()
+                        .ifPresent(level -> {
+                            Entity entity = level.getEntity(clientMessage.entityId());
+                            if (entity instanceof IShell shell) {
+                                shell.getHolder()
+                                        .update(clientMessage.shellContentCreatorInfo()
+                                                .create(null)
+                                        );
+                            }
+                        })
+                );
     }
 
     public static NewGenerationClientMessage decode(FriendlyByteBuf friendlyByteBuf) {

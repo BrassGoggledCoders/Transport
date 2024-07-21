@@ -1,16 +1,16 @@
 package xyz.brassgoggledcoders.transport.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.Transport;
 import xyz.brassgoggledcoders.transport.menu.jobsite.JobSiteMenu;
@@ -21,6 +21,11 @@ import java.util.Objects;
 
 public class JobSiteScreen<T extends JobSiteMenu<U>, U extends IJobSiteRecipe<U>> extends AbstractContainerScreen<T> {
     private static final ResourceLocation BG_LOCATION = Transport.rl("textures/screen/rail_worker_bench.png");
+    private static final ResourceLocation SCROLLER_SPRITE = new ResourceLocation("container/stonecutter/scroller");
+    private static final ResourceLocation SCROLLER_DISABLED_SPRITE = new ResourceLocation("container/stonecutter/scroller_disabled");
+    private static final ResourceLocation RECIPE_SELECTED_SPRITE = new ResourceLocation("container/stonecutter/recipe_selected");
+    private static final ResourceLocation RECIPE_HIGHLIGHTED_SPRITE = new ResourceLocation("container/stonecutter/recipe_highlighted");
+    private static final ResourceLocation RECIPE_SPRITE = new ResourceLocation("container/stonecutter/recipe");
 
     private float scrollOffs;
 
@@ -36,77 +41,89 @@ public class JobSiteScreen<T extends JobSiteMenu<U>, U extends IJobSiteRecipe<U>
     }
 
     @Override
-    public void render(@NotNull PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
-        this.renderTooltip(pPoseStack, pMouseX, pMouseY);
+    public void render(@NotNull GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        this.renderTooltip(guiGraphics, pMouseX, pMouseY);
     }
 
     @Override
-    protected void renderBg(@NotNull PoseStack pPoseStack, float pPartialTick, int pX, int pY) {
-        this.renderBackground(pPoseStack);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, BG_LOCATION);
+    protected void renderBg(@NotNull GuiGraphics guiGraphics, float pPartialTick, int pX, int pY) {
         int i = this.leftPos;
         int j = this.topPos;
-        this.blit(pPoseStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(BG_LOCATION, i, j, 0, 0, this.imageWidth, this.imageHeight);
         int k = (int) (41.0F * this.scrollOffs);
-        this.blit(pPoseStack, i + 119, j + 15 + k, 176 + (this.isScrollBarActive() ? 0 : 12), 0, 12, 15);
+        ResourceLocation scrollBarSprite = this.isScrollBarActive() ? SCROLLER_SPRITE : SCROLLER_DISABLED_SPRITE;
+        guiGraphics.blitSprite(scrollBarSprite, i + 119, j + 15 + k, 12, 15);
         int l = this.leftPos + 52;
         int i1 = this.topPos + 14;
         int j1 = this.startIndex + 12;
-        this.renderButtons(pPoseStack, pX, pY, l, i1, j1);
-        this.renderRecipes(l, i1, j1);
+        this.renderButtons(guiGraphics, pX, pY, l, i1, j1);
+        this.renderRecipes(guiGraphics, l, i1, j1);
     }
 
     @Override
-    protected void renderTooltip(@NotNull PoseStack pPoseStack, int pX, int pY) {
-        super.renderTooltip(pPoseStack, pX, pY);
+    protected void renderTooltip(@NotNull GuiGraphics guiGraphics, int pX, int pY) {
+        super.renderTooltip(guiGraphics, pX, pY);
         if (this.displayRecipes) {
             int i = this.leftPos + 52;
             int j = this.topPos + 14;
             int k = this.startIndex + 12;
-            List<U> list = this.menu.getRecipes();
+            List<RecipeHolder<U>> list = this.menu.getRecipes();
 
             for (int l = this.startIndex; l < k && l < this.menu.getNumRecipes(); ++l) {
                 int i1 = l - this.startIndex;
                 int j1 = i + i1 % 4 * 16;
                 int k1 = j + i1 / 4 * 18 + 2;
                 if (pX >= j1 && pX < j1 + 16 && pY >= k1 && pY < k1 + 18) {
-                    this.renderTooltip(pPoseStack, list.get(l).assemble(this.menu.getContainer()), pX, pY);
+                    guiGraphics.renderTooltip(
+                            this.font,
+                            list.get(l)
+                                    .value()
+                                    .getResultItem(this.getRegistryAccess()),
+                            pX,
+                            pY
+                    );
                 }
             }
         }
 
     }
 
-    private void renderButtons(PoseStack pPoseStack, int pMouseX, int pMouseY, int pX, int pY, int pLastVisibleElementIndex) {
+    private void renderButtons(GuiGraphics guiGraphics, int pMouseX, int pMouseY, int pX, int pY, int pLastVisibleElementIndex) {
         for (int i = this.startIndex; i < pLastVisibleElementIndex && i < this.menu.getNumRecipes(); ++i) {
             int j = i - this.startIndex;
             int k = pX + j % 4 * 16;
             int l = j / 4;
             int i1 = pY + l * 18 + 2;
-            int j1 = this.imageHeight;
+            ResourceLocation recipeSprite;
             if (i == this.menu.getSelectedRecipeIndex()) {
-                j1 += 18;
+                recipeSprite = RECIPE_SELECTED_SPRITE;
             } else if (pMouseX >= k && pMouseY >= i1 && pMouseX < k + 16 && pMouseY < i1 + 18) {
-                j1 += 36;
+                recipeSprite = RECIPE_HIGHLIGHTED_SPRITE;
+            } else {
+                recipeSprite = RECIPE_SPRITE;
             }
 
-            this.blit(pPoseStack, k, i1 - 1, 0, j1, 16, 18);
+            guiGraphics.blitSprite(recipeSprite, k, i1 - 1, 16, 18);
         }
 
     }
 
-    private void renderRecipes(int pLeft, int pTop, int pRecipeIndexOffsetMax) {
-        List<U> list = this.menu.getRecipes();
+    private RegistryAccess getRegistryAccess() {
+        return Objects.requireNonNull(Minecraft.getInstance()
+                .level
+        ).registryAccess();
+    }
+
+    private void renderRecipes(GuiGraphics guiGraphics, int pLeft, int pTop, int pRecipeIndexOffsetMax) {
+        List<RecipeHolder<U>> list = this.menu.getRecipes();
 
         for (int i = this.startIndex; i < pRecipeIndexOffsetMax && i < this.menu.getNumRecipes(); ++i) {
             int j = i - this.startIndex;
             int k = pLeft + j % 4 * 16;
             int l = j / 4;
             int i1 = pTop + l * 18 + 2;
-            this.getMinecraft().getItemRenderer().renderAndDecorateItem(list.get(i).getResultItem(), k, i1);
+            guiGraphics.renderItem(list.get(i).value().getResultItem(this.getRegistryAccess()), k, i1);
         }
 
     }
@@ -153,10 +170,11 @@ public class JobSiteScreen<T extends JobSiteMenu<U>, U extends IJobSiteRecipe<U>
         }
     }
 
-    public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
+    @Override
+    public boolean mouseScrolled(double pMouseX, double pMouseY, double pDeltaX, double pDeltaY) {
         if (this.isScrollBarActive()) {
             int i = this.getOffscreenRows();
-            float f = (float) pDelta / (float) i;
+            float f = (float) pDeltaY / (float) i;
             this.scrollOffs = Mth.clamp(this.scrollOffs - f, 0.0F, 1.0F);
             this.startIndex = (int) ((double) (this.scrollOffs * (float) i) + 0.5D) * 4;
         }

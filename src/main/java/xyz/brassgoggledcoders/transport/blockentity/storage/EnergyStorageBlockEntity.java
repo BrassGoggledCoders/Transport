@@ -14,12 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 
 public class EnergyStorageBlockEntity extends CapabilityStorageBlockEntity<IEnergyStorage, EnergyStorage> {
-    public EnergyStorageBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
-        super(pType, pWorldPosition, pBlockState);
-    }
-
     public EnergyStorageBlockEntity(BlockPos pWorldPos, BlockState pBlockState) {
-        this(
+        super(
                 TransportBlocks.ENERGY_STORAGE
                         .<BlockEntityType<?>, BlockEntityType<?>>getSibling(Registries.BLOCK_ENTITY_TYPE)
                         .get(),

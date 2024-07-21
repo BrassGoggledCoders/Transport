@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -34,7 +35,7 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractC
      */
     private final DataSlot selectedRecipeIndex = DataSlot.standalone();
     private final Level level;
-    private final List<T> recipes = Lists.newArrayList();
+    private final List<RecipeHolder<T>> recipes = Lists.newArrayList();
 
     private final NonNullList<ItemStack> inputs = NonNullList.withSize(2, ItemStack.EMPTY);
 
@@ -87,7 +88,7 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractC
         return this.selectedRecipeIndex.get();
     }
 
-    public List<T> getRecipes() {
+    public List<RecipeHolder<T>> getRecipes() {
         return this.recipes;
     }
 
@@ -139,7 +140,7 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractC
         int numberRecipes = this.getNumRecipes();
         int lastSelectedSlot = -1;
 
-        T lastRecipe = null;
+        RecipeHolder<T> lastRecipe = null;
         if (numberRecipes > 0) {
             lastSelectedSlot = this.selectedRecipeIndex.get();
             if (lastSelectedSlot >= 0) {
@@ -163,9 +164,11 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractC
 
     public void setupResultSlot() {
         if (!this.recipes.isEmpty() && this.isValidRecipeIndex(this.selectedRecipeIndex.get())) {
-            T recipe = this.recipes.get(this.selectedRecipeIndex.get());
+            RecipeHolder<T> recipe = this.recipes.get(this.selectedRecipeIndex.get());
+            ItemStack result = recipe.value()
+                    .assemble(this.container, this.level.registryAccess());
             this.resultContainer.setRecipeUsed(recipe);
-            this.resultSlot.set(recipe.assemble(this.container));
+            this.resultSlot.set(result);
         } else {
             this.resultSlot.set(ItemStack.EMPTY);
         }
@@ -192,7 +195,7 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractC
             Item item = slotItemStack.getItem();
             copiedItemStack = slotItemStack.copy();
             if (pIndex == OUTPUT_SLOT) {
-                item.onCraftedBy(slotItemStack, pPlayer.level, pPlayer);
+                item.onCraftedBy(slotItemStack, pPlayer.level(), pPlayer);
                 if (!this.moveItemStackTo(slotItemStack, INV_SLOT_START, USE_ROW_SLOT_END, true)) {
                     return ItemStack.EMPTY;
                 }
@@ -239,7 +242,7 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractC
             return this.level.getRecipeManager()
                     .getAllRecipesFor(TransportRecipes.RAIL_WORKER_BENCH_TYPE.get())
                     .stream()
-                    .flatMap(recipe -> recipe.getIngredients().stream())
+                    .flatMap(recipe -> recipe.value().getIngredients().stream())
                     .anyMatch(ingredient -> ingredient.test(slotItemStack));
         } else if (itemStackList.size() < this.inputSlots.size()) {
             SimpleContainer simpleContainer = new SimpleContainer(this.inputs.size());
@@ -288,6 +291,7 @@ public abstract class JobSiteMenu<T extends IJobSiteRecipe<T>> extends AbstractC
     public boolean removeInputs() {
         return this.getSelectedRecipeIndex() >= 0 && this.getRecipes()
                 .get(this.getSelectedRecipeIndex())
+                .value()
                 .reduceContainer(this.container);
     }
 

@@ -12,6 +12,7 @@ import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ServerShellContentHolder implements IShellContentHolder {
@@ -90,7 +91,10 @@ public class ServerShellContentHolder implements IShellContentHolder {
 
     @Override
     public void save(CompoundTag tag) {
-        tag.putString(ShellContentCreatorInfo.NBT_TAG_ID, this.shellContent.getCreatorInfo().id().toString());
+        ResourceLocation id = TransportAPI.SHELL_CONTENT_CREATOR.get()
+                .getId(this.shellContent.getCreatorInfo());
+        //TODO BETTER ID HANDLING
+        tag.putString(ShellContentCreatorInfo.NBT_TAG_ID, Objects.requireNonNull(id).toString());
         tag.put(ShellContentCreatorInfo.NBT_TAG_DATA, this.shellContent.serializeNBT());
     }
 
