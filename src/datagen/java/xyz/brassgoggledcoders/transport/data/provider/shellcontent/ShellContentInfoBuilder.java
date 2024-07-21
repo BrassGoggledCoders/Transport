@@ -1,17 +1,17 @@
 package xyz.brassgoggledcoders.transport.data.provider.shellcontent;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.common.conditions.WithConditions;
 import org.apache.commons.compress.utils.Lists;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -48,22 +48,26 @@ public class ShellContentInfoBuilder {
         return this;
     }
 
-    public void build(BiConsumer<Collection<ICondition>, ShellContentCreatorInfo> infoConsumer) {
+    public void build(BiConsumer<ResourceLocation, WithConditions<ShellContentCreatorInfo>> infoConsumer) {
         if (this.viewState == null) {
             throw new IllegalStateException("viewState is required");
         }
-        build(Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(this.viewState.getBlock())), infoConsumer);
+        build(Objects.requireNonNull(BuiltInRegistries.BLOCK.getKey(this.viewState.getBlock())), infoConsumer);
     }
 
-    public void build(@Nonnull ResourceLocation id, BiConsumer<Collection<ICondition>, ShellContentCreatorInfo> infoConsumer) {
+    public void build(@Nonnull ResourceLocation id, BiConsumer<ResourceLocation, WithConditions<ShellContentCreatorInfo>> infoConsumer) {
         validate();
-        infoConsumer.accept(conditions, new ShellContentCreatorInfo(
+        infoConsumer.accept(
                 id,
-                this.viewState,
-                this.name != null ? this.name : this.viewState.getBlock().getName(),
-                this.createRecipe,
-                this.shellContentCreatorBuilder.build()
-        ));
+                WithConditions.builder(new ShellContentCreatorInfo(
+                                this.viewState,
+                                this.name != null ? this.name : this.viewState.getBlock().getName(),
+                                this.createRecipe,
+                                this.shellContentCreatorBuilder.build()
+                        ))
+                        .addCondition(this.conditions)
+                        .build()
+        );
     }
 
     protected void validate() {

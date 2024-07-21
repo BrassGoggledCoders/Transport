@@ -1,7 +1,7 @@
 package xyz.brassgoggledcoders.transport.data.provider.shellcontent.builder;
 
 import com.mojang.serialization.Codec;
-import net.minecraftforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;

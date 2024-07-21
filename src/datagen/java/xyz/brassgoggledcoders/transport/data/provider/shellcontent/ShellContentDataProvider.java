@@ -1,13 +1,16 @@
 package xyz.brassgoggledcoders.transport.data.provider.shellcontent;
 
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.conditions.ICondition;
+import net.minecraft.util.ExtraCodecs;
+import net.neoforged.neoforge.common.conditions.ConditionalOps;
+import net.neoforged.neoforge.common.conditions.WithConditions;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
@@ -16,56 +19,43 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 public abstract class ShellContentDataProvider implements DataProvider {
     private static final Logger LOGGER = LogManager.getLogger(ShellContentDataProvider.class);
-
+    private static final Codec<Optional<WithConditions<ShellContentCreatorInfo>>> CODEC = ExtraCodecs.lazyInitializedCodec(
+            () -> ConditionalOps.createConditionalCodecWithConditions(ShellContentCreatorInfo.getCodec())
+    );
     private final DataGenerator generator;
 
     protected ShellContentDataProvider(DataGenerator generator) {
         this.generator = generator;
     }
 
-    protected abstract void gather(BiConsumer<Collection<ICondition>, ShellContentCreatorInfo> consumer);
+    protected abstract void gather(BiConsumer<ResourceLocation, WithConditions<ShellContentCreatorInfo>> consumer);
 
     @Override
     @NotNull
     public CompletableFuture<?> run(@Nonnull CachedOutput pCache) {
-        List<Pair<Collection<ICondition>, ShellContentCreatorInfo>> shellContentCreatorInfos = Lists.newArrayList();
+        List<Pair<ResourceLocation, WithConditions<ShellContentCreatorInfo>>> shellContentCreatorInfos = Lists.newArrayList();
         this.gather((conditions, info) -> shellContentCreatorInfos.add(Pair.of(conditions, info)));
 
         PackOutput path = this.generator.getPackOutput();
-        shellContentCreatorInfos.forEach(shellContentCreatorInfoPair -> {
-            ShellContentCreatorInfo shellContentCreatorInfo = shellContentCreatorInfoPair.getRight();
-            Path filePath = createPath(path, shellContentCreatorInfo.id());
+        return CompletableFuture.allOf(shellContentCreatorInfos.stream()
+                .map(shellContentCreatorInfoPair -> {
+                    WithConditions<ShellContentCreatorInfo> shellContentCreatorInfo = shellContentCreatorInfoPair.getRight();
+                    Path filePath = createPath(path.getOutputFolder(), shellContentCreatorInfoPair.getKey());
 
-            try {
-                JsonElement jsonElement = ShellContentCreatorInfo.getCodec()
-                        .encode(shellContentCreatorInfo, JsonOps.INSTANCE, JsonOps.INSTANCE.empty())
-                        .getOrThrow(false, LOGGER::warn);
-                if (jsonElement.isJsonObject()) {
-                    JsonObject jsonObject = jsonElement.getAsJsonObject();
-                    jsonObject.remove("id");
-                    Collection<ICondition> conditions = shellContentCreatorInfoPair.getLeft();
-                    if (!conditions.isEmpty()) {
-                        JsonArray conditionsArray = new JsonArray();
-                        for (ICondition condition : conditions) {
-                            conditionsArray.add(CraftingHelper.serialize(condition));
-                        }
-                        jsonObject.add("conditions", conditionsArray);
-                    }
-                }
-                DataProvider.saveStable(pCache, jsonElement, filePath);
-            } catch (IOException ioexception) {
-                LOGGER.error("Couldn't save shell content creator {}", filePath, ioexception);
-            }
-        });
+                    JsonElement jsonElement = CODEC.encode(Optional.of(shellContentCreatorInfo), JsonOps.INSTANCE, JsonOps.INSTANCE.empty())
+                            .getOrThrow(false, LOGGER::warn);
+                    return DataProvider.saveStable(pCache, jsonElement, filePath);
+                })
+                .toArray(CompletableFuture[]::new)
+        );
     }
 
     @Override
