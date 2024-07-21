@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.transport.menu.jobsite;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
