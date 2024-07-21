@@ -49,6 +49,7 @@ runs {
 
     client {
         systemProperty 'forge.enabledGameTestNamespaces', 'transport'
+        modSource project.sourceSets.gametest
     }
 
     server {
