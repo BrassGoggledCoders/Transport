@@ -1,0 +1,7 @@
+// 1.20.4	2024-07-21T22:44:24.5248248	transport All Tags
+ebf9c02ccf215662d173973471298726f59bed29 data/minecraft/tags/blocks/rails.json
+ebf9c02ccf215662d173973471298726f59bed29 data/minecraft/tags/items/rails.json
+993083798982014d8352634480c869aec12e69aa data/transport/tags/items/rails/copper.json
+b352945869782df5ee2db6a5cac89e046d617ec8 data/transport/tags/items/rails/gold.json
+fc9889311477e44038d51959a067586ea724284a data/transport/tags/items/rails/iron.json
+c2be5806a4f841a4afe5b16203f86d577e1418fe data/transport/tags/items/rail_providers.json

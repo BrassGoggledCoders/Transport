@@ -7,12 +7,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.recipe.ingredient.SizedIngredient;
+import xyz.brassgoggledcoders.transport.codec.SizedIngredientCodec;
 
 public class RailWorkerBenchRecipeSerializer implements RecipeSerializer<RailWorkerBenchRecipe> {
     public static final Codec<RailWorkerBenchRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ItemStack.CODEC.fieldOf("output").forGetter(RailWorkerBenchRecipe::output),
-            SizedIngredient.CODEC.fieldOf("input").forGetter(RailWorkerBenchRecipe::getInput),
-            SizedIngredient.CODEC.optionalFieldOf("secondaryInput", SizedIngredient.EMPTY).forGetter(RailWorkerBenchRecipe::getSecondaryInput)
+            ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("output").forGetter(RailWorkerBenchRecipe::output),
+            SizedIngredientCodec.CODEC.fieldOf("input").forGetter(RailWorkerBenchRecipe::getInput),
+            SizedIngredientCodec.CODEC.optionalFieldOf("secondaryInput", SizedIngredient.EMPTY).forGetter(RailWorkerBenchRecipe::getSecondaryInput)
     ).apply(instance, RailWorkerBenchRecipe::new));
 
     @Override

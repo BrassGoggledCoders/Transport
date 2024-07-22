@@ -127,7 +127,6 @@ public class TransportBlockData {
                 });
 
         dataRegistering.forEntry(TransportBlocks.ONE_WAY_BOOSTER_RAIL)
-                .withDefaults(BlockBasics::defaultLoot)
                 .withDefaults(TransportBlockData::defaultBaseRail)
                 .withDefaults(TransportBlockData::defaultGoldRail)
                 .withDeferredProvider(
@@ -138,6 +137,7 @@ public class TransportBlockData {
         dataRegistering.forEntry(TransportBlocks.SWITCH_RAIL)
                 .withDefaults(TransportBlockData::defaultIronRail)
                 .withDefaults(BlockBasics::defaultLoot)
+                .withDefaults(BlockBasics::defaultLang)
                 .withProvider(ProviderTypes.TAGS, TransportBlockData::railTag)
                 .withDeferredProvider(
                         ProviderTypes.BLOCKSTATE,
@@ -173,7 +173,9 @@ public class TransportBlockData {
                 );
 
         dataRegistering.forEntry(TransportBlocks.BUMPER_RAIL)
-                .withDefaults(TransportBlockData::defaultBaseRail)
+                .withDefaults(BlockBasics::defaultLang)
+                .withProvider(ProviderTypes.TAGS, TransportBlockData::railTag)
+                .withDefaults(BlockBasics::defaultLoot)
                 .withDefaults(TransportBlockData::defaultIronRail)
                 .withDeferredProvider(
                         ProviderTypes.BLOCKSTATE,
@@ -182,6 +184,8 @@ public class TransportBlockData {
 
         dataRegistering.forEntry(TransportBlocks.INVERTED_POWERED_RAIL)
                 .withDefaults(TransportBlockData::defaultGoldRail)
+                .withDefaults(BlockBasics::defaultLang)
+                .withDefaults(BlockBasics::defaultLoot)
                 .withProvider(ProviderTypes.TAGS, TransportBlockData::railTag)
                 .withDeferredProvider(
                         ProviderTypes.BLOCKSTATE,
@@ -218,7 +222,7 @@ public class TransportBlockData {
                 .withDefaults(BlockBasics::defaultLang)
                 .withDeferredProvider(
                         ProviderTypes.BLOCKSTATE,
-                        (entry, provider) -> provider.simpleBlock(
+                        (entry, provider) -> provider.simpleBlockWithItem(
                                 entry.get(),
                                 provider.models()
                                         .getExistingFile(provider.modLoc("block/rail_worker_bench"))
@@ -272,21 +276,22 @@ public class TransportBlockData {
     private static <R extends BaseRailBlock> Consumer<DataRegisteringEntry<BlockEntry<R>, R, Block>> defaultNamedRail(
             String realName
     ) {
-        return blockEntry -> {
-            blockEntry.withDeferredProvider(
-                    ProviderTypes.BLOCKSTATE,
-                    (entry, provider) -> BlockModelHelper.regularRail(realName, entry.get(), provider)
-            );
-            blockEntry.withDeferredProvider(
-                    ProviderTypes.ITEM_MODELS,
-                    (entry, provider) -> provider.getBuilder(entry.getId().toString())
-                            .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                            .texture("layer0", new ResourceLocation(
-                                    entry.getId().getNamespace(),
-                                    "block/rail/" + realName
-                            ))
-            );
-        };
+        return blockEntry -> blockEntry.withDefaults(BlockBasics::defaultLang)
+                .withDefaults(BlockBasics::defaultLoot)
+                .withProvider(ProviderTypes.TAGS, TransportBlockData::railTag)
+                .withDeferredProvider(
+                        ProviderTypes.BLOCKSTATE,
+                        (entry, provider) -> BlockModelHelper.regularRail(realName, entry.get(), provider)
+                )
+                .withDeferredProvider(
+                        ProviderTypes.ITEM_MODELS,
+                        (entry, provider) -> provider.getBuilder(entry.getId().toString())
+                                .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                                .texture("layer0", new ResourceLocation(
+                                        entry.getId().getNamespace(),
+                                        "block/rail/" + realName
+                                ))
+                );
     }
 
     private static <R extends BaseRailBlock> void defaultIronRail(
@@ -324,9 +329,10 @@ public class TransportBlockData {
     private static <R extends BaseRailBlock> void defaultBaseRail(
             DataRegisteringEntry<BlockEntry<R>, R, Block> entry
     ) {
-        entry.withProvider(ProviderTypes.TAGS, TransportBlockData::railTag);
-        entry.withDeferredProvider(ProviderTypes.ITEM_MODELS, TransportBlockData::railItemModel);
-        entry.withDefaults(BlockBasics::defaultLoot);
+        entry.withDefaults(BlockBasics::defaultLang)
+                .withProvider(ProviderTypes.TAGS, TransportBlockData::railTag)
+                .withDeferredProvider(ProviderTypes.ITEM_MODELS, TransportBlockData::railItemModel)
+                .withDefaults(BlockBasics::defaultLoot);
     }
 
     private static <R extends BaseRailBlock> void defaultRail(

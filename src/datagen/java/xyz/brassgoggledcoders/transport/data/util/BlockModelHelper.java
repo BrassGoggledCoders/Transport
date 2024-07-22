@@ -231,6 +231,11 @@ public class BlockModelHelper {
                     .getExistingFile(existing);
         }
 
+        provider.simpleBlockItem(
+                context.get(),
+                flatRail
+        );
+
         provider.getVariantBuilder(context.get())
                 .forAllStatesExcept(blockState -> {
                     RailShape railShape = blockState.getValue(TransportBlockStateProperties.FLAT_STRAIGHT_RAIL_SHAPE);
@@ -252,7 +257,7 @@ public class BlockModelHelper {
     }
 
     public static void storageBlock(BlockEntry<? extends Block> context, DeferredBlockStateProvider provider) {
-        provider.simpleBlock(context.get(), provider.models()
+        provider.simpleBlockWithItem(context.get(), provider.models()
                 .cubeColumn(
                         context.getName(),
                         provider.modLoc("block/storage/" + context.getName() + "_side"),

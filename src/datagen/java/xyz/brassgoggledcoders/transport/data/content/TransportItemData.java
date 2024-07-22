@@ -10,6 +10,7 @@ import xyz.brassgoggledcoders.shadyskies.dataregistering.DataRegistering;
 import xyz.brassgoggledcoders.shadyskies.dataregistering.provider.ProviderTypes;
 import xyz.brassgoggledcoders.transport.api.tag.TransportItemTags;
 import xyz.brassgoggledcoders.transport.content.TransportItems;
+import xyz.brassgoggledcoders.transport.data.recipe.RailWorkerBenchRecipeBuilder;
 import xyz.brassgoggledcoders.transport.data.recipe.ShellItemRecipeBuilder;
 import xyz.brassgoggledcoders.transport.data.util.ItemBasics;
 import xyz.brassgoggledcoders.transport.model.patternedraillayer.PatternedRailLayerCustomLoaderBuilder;
@@ -47,7 +48,17 @@ public class TransportItemData {
                 )
                 .withDeferredProvider(
                         ProviderTypes.RECIPE,
-                        (entry, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, entry.get())
+                        (entry, provider) -> RailWorkerBenchRecipeBuilder.of(entry.get())
+                                .withInput(Ingredient.of(Items.SMOOTH_STONE_SLAB))
+                                .withSecondaryInput(Ingredient.of(Tags.Items.CHESTS))
+                                .save(provider, entry.getId())
+                );
+
+        dataRegistering.forEntry(TransportItems.RAIL_BREAKER)
+                .withDefaults(ItemBasics::defaultItem)
+                .withDeferredProvider(
+                        ProviderTypes.RECIPE,
+                        (entry, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, entry.get())
                                 .pattern(" RI")
                                 .pattern("RIR")
                                 .pattern("IR ")

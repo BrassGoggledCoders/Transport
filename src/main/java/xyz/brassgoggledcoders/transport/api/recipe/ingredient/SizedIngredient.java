@@ -1,11 +1,8 @@
 package xyz.brassgoggledcoders.transport.api.recipe.ingredient;
 
 import com.google.common.collect.Lists;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -17,15 +14,6 @@ public record SizedIngredient(
         Ingredient ingredient,
         int count
 ) implements Predicate<ItemStack> {
-
-    public static final Codec<SizedIngredient> CODEC = ExtraCodecs.withAlternative(
-            RecordCodecBuilder.create(instance -> instance.group(
-                    Ingredient.CODEC.fieldOf("ingredient").forGetter(SizedIngredient::ingredient),
-                    Codec.intRange(1, 64).optionalFieldOf("count", 1).forGetter(SizedIngredient::count)
-            ).apply(instance, SizedIngredient::new)),
-            Ingredient.CODEC.xmap(SizedIngredient::new, SizedIngredient::ingredient)
-    );
-
     public static final SizedIngredient EMPTY = new SizedIngredient(Ingredient.EMPTY, 0);
 
     public SizedIngredient(Ingredient ingredient) {

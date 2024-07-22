@@ -1,8 +1,8 @@
 {
   "values": [
+    "minecraft:activator_rail",
     "minecraft:rail",
     "minecraft:detector_rail",
-    "minecraft:activator_rail",
     "transport:item_dump_rail",
     "transport:fluid_dump_rail",
     "transport:energy_dump_rail",

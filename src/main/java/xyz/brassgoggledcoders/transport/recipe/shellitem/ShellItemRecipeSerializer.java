@@ -13,8 +13,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ShellItemRecipeSerializer implements RecipeSerializer<ShellItemRecipe> {
     public static final Codec<ShellItemRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Ingredient.CODEC.fieldOf("input").forGetter(ShellItemRecipe::getInternalInput),
-            ItemStack.CODEC.fieldOf("output").forGetter(ShellItemRecipe::getOutput)
+            ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("output").forGetter(ShellItemRecipe::getOutput)
     ).apply(instance, ShellItemRecipe::new));
+
 
     @Override
     @NotNull

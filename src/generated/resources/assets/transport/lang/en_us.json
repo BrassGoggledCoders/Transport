@@ -25,11 +25,10 @@
   "block.transport.waxed_weathered_copper_rail": "Waxed Weathered Copper Rail",
   "block.transport.weathered_copper_rail": "Weathered Copper Rail",
   "block.transport.wye_switch_rail": "Wye Switch Rail",
-  "entity.transport.shell_minecart": "Shell Minecart",
+  "entity.transport.shell_minecart": "Minecart",
   "entity.transport.shell_minecart.with": "Minecart with %s",
   "item.transport.patterned_rail_layer": "Patterned Rail Layer",
   "item.transport.rail_breaker": "Rail Breaker",
   "item.transport.shell_minecart": "Shell Minecart",
-  "itemGroup.transport": "Transport",
   "text.transport.shell_content": "Shell Content: %s"
 }
