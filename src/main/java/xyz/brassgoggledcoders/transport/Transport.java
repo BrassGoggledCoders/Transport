@@ -28,8 +28,10 @@ public class Transport {
     public Transport(IEventBus modEventBus) {
         REGISTERING.setModBus(modEventBus);
 
+        TransportAttachments.setup();
         TransportBlocks.setup();
         TransportContainers.setup();
+        TransportCreativeTabs.setup();
         TransportEntities.setup();
         TransportItems.setup();
         TransportRecipes.setup(modEventBus);

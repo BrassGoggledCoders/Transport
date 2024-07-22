@@ -7,11 +7,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
+import xyz.brassgoggledcoders.transport.attachment.ShellContentItemAttachment;
+import xyz.brassgoggledcoders.transport.content.TransportAttachments;
 import xyz.brassgoggledcoders.transport.content.TransportShellContent;
 
 import javax.annotation.Nullable;
@@ -68,9 +69,13 @@ public record ShellContentCreatorInfo(
     }
 
     public ItemStack embedNBT(ItemStack itemStack) {
-        //TODO handle nbt embed
-        //itemStack.getOrCreateTagElement(NBT_TAG_ELEMENT)
-        //        .putString("Id", this.id().toString());
+        itemStack.setData(
+                TransportAttachments.SHELL_CONTENT_ITEM,
+                new ShellContentItemAttachment(
+                        TransportAPI.SHELL_CONTENT_CREATOR.get()
+                                .getId(this)
+                )
+        );
         return itemStack;
     }
 

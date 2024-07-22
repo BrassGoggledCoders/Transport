@@ -3,9 +3,7 @@ package xyz.brassgoggledcoders.transport.service;
 import com.mojang.datafixers.util.Function3;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -17,6 +15,8 @@ import xyz.brassgoggledcoders.transport.api.service.IItemHelperService;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
+import xyz.brassgoggledcoders.transport.attachment.ShellContentItemAttachment;
+import xyz.brassgoggledcoders.transport.content.TransportAttachments;
 import xyz.brassgoggledcoders.transport.item.DispenserMinecartItemBehavior;
 import xyz.brassgoggledcoders.transport.item.ShellMinecartItem;
 
@@ -48,8 +48,8 @@ public class ItemHelperServiceImpl implements IItemHelperService {
 
     @Override
     public void appendTextForShellItems(ItemStack pStack, Consumer<Component> consumer) {
-        ShellContentCreatorInfo info = Optional.ofNullable(pStack.getTagElement(ShellContentCreatorInfo.NBT_TAG_ELEMENT))
-                .map(nbt -> ResourceLocation.tryParse(nbt.getString(ShellContentCreatorInfo.NBT_TAG_ID)))
+        ShellContentCreatorInfo info = Optional.of(pStack.getData(TransportAttachments.SHELL_CONTENT_ITEM))
+                .map(ShellContentItemAttachment::id)
                 .map(TransportAPI.SHELL_CONTENT_CREATOR.get()::getById)
                 .orElseGet(TransportAPI.SHELL_CONTENT_CREATOR.get()::getEmpty);
 
@@ -61,13 +61,14 @@ public class ItemHelperServiceImpl implements IItemHelperService {
 
     @Override
     public ItemStack appendShellNBT(ItemStack pStack, ShellContent shellContent, boolean includeData) {
-        CompoundTag compoundTag = pStack.getOrCreateTagElement(ShellContentCreatorInfo.NBT_TAG_ELEMENT);
-        //TODO CreatorInfo id
-        //compoundTag.putString(ShellContentCreatorInfo.NBT_TAG_ID, shellContent.getCreatorInfo().id().toString());
-        if (includeData) {
-            compoundTag.put(ShellContentCreatorInfo.NBT_TAG_DATA, shellContent.serializeNBT());
-        }
-
+        pStack.setData(
+                TransportAttachments.SHELL_CONTENT_ITEM,
+                new ShellContentItemAttachment(
+                        TransportAPI.SHELL_CONTENT_CREATOR.get()
+                                .getId(shellContent.getCreatorInfo()),
+                        includeData ? Optional.of(shellContent.serializeNBT()) : Optional.empty()
+                )
+        );
         return pStack;
     }
 }

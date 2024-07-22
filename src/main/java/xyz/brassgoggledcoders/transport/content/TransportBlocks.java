@@ -199,7 +199,7 @@ public class TransportBlocks {
             .object("switch_rail")
             .block(SwitchRailBlock::new)
             .transform(TransportBlocks::defaultRail)
-            .withItem()
+            .transform(TransportBlocks::defaultRailItem)
             .build()
             .register();
 
@@ -233,21 +233,24 @@ public class TransportBlocks {
                     .strength(2.1F)
                     .sound(SoundType.METAL)
             )
-            .withDefaultItem()
+            .transform(TransportBlocks::defaultRailItem)
+            .build()
             .register();
 
     public static final BlockEntry<InvertedPoweredRailBlock> INVERTED_POWERED_RAIL = Transport.getRegistering()
             .object("inverted_powered_rail")
             .block(InvertedPoweredRailBlock::new)
             .transform(TransportBlocks::defaultRail)
-            .withItem()
+            .transform(TransportBlocks::defaultRailItem)
             .build()
             .register();
 
     public static final BlockEntry<CapabilityStorageBlock<FluidStorageBlockEntity>> FLUID_STORAGE = Transport.getRegistering()
             .object("fluid_storage")
             .block(properties -> new CapabilityStorageBlock<>(properties, FluidStorageBlockEntity::new))
-            .withDefaultItem()
+            .withItem()
+            .withCreativeTabs(TransportCreativeTabs.CREATIVE_TAB.getKey())
+            .build()
             .withBlockEntity(FluidStorageBlockEntity::new)
             .build()
             .register();
@@ -255,7 +258,9 @@ public class TransportBlocks {
     public static final BlockEntry<CapabilityStorageBlock<EnergyStorageBlockEntity>> ENERGY_STORAGE = Transport.getRegistering()
             .object("energy_storage")
             .block(properties -> new CapabilityStorageBlock<>(properties, EnergyStorageBlockEntity::new))
-            .withDefaultItem()
+            .withItem()
+            .withCreativeTabs(TransportCreativeTabs.CREATIVE_TAB.getKey())
+            .build()
             .withBlockEntity(EnergyStorageBlockEntity::new)
             .build()
             .register();
@@ -263,7 +268,9 @@ public class TransportBlocks {
     public static final BlockEntry<RailWorkerBenchBlock> RAIL_WORKER_BENCH = Transport.getRegistering()
             .object("rail_worker_bench")
             .block(RailWorkerBenchBlock::new)
-            .withDefaultItem()
+            .withItem()
+            .withCreativeTabs(TransportCreativeTabs.CREATIVE_TAB.getKey())
+            .build()
             .register();
 
     @Nonnull
@@ -288,7 +295,8 @@ public class TransportBlocks {
     public static <T extends BaseRailBlock> ItemRegisteringBuilder<BlockRegisteringBuilder<Registering, T>, BlockItem> defaultRailItem(
             BlockRegisteringBuilder<Registering, T> builder
     ) {
-        return builder.withItem();
+        return builder.withItem()
+                .withCreativeTabs(TransportCreativeTabs.CREATIVE_TAB.getKey());
     }
 
     public static void setup() {

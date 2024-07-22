@@ -2,12 +2,10 @@ package xyz.brassgoggledcoders.transport.item;
 
 import com.mojang.datafixers.util.Function3;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -20,11 +18,9 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
-import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContentCreatorInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collection;
 import java.util.List;
 
 public class ShellMinecartItem<T extends AbstractMinecart> extends Item {
@@ -85,23 +81,4 @@ public class ShellMinecartItem<T extends AbstractMinecart> extends Item {
         TransportAPI.ITEM_HELPER.get()
                 .appendTextForShellItems(pStack, pTooltipComponents::add);
     }
-
-    /* TODO Creative Tab
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab pCategory, NonNullList<ItemStack> pItems) {
-        if (this.allowedIn(pCategory)) {
-            Collection<ShellContentCreatorInfo> creatorInfos = TransportAPI.SHELL_CONTENT_CREATOR.get().getAll();
-            if (creatorInfos.isEmpty()) {
-                pItems.add(new ItemStack(this));
-            } else {
-                for (ShellContentCreatorInfo info : creatorInfos) {
-                    ItemStack itemStack = new ItemStack(this);
-                    info.embedNBT(itemStack);
-                    pItems.add(itemStack);
-                }
-            }
-        }
-    }
-    */
 }

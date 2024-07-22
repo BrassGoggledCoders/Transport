@@ -33,6 +33,8 @@ import java.util.Map;
 import java.util.Optional;
 
 public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadListener implements IShellContentCreatorService {
+    public static final ResourceLocation MISSING_ID = Transport.rl("missing");
+
     public static final ShellContentCreatorInfo MISSING = new ShellContentCreatorInfo(
             Blocks.BEDROCK.defaultBlockState(),
             Blocks.BEDROCK.getName(),
@@ -81,9 +83,9 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
     }
 
     @Override
-    @Nullable
+    @NotNull
     public ShellContentCreatorInfo getById(ResourceLocation id) {
-        return this.creators.get(id);
+        return this.creators.getOrDefault(id, MISSING);
     }
 
     @Override
@@ -101,10 +103,6 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
     @Nonnull
     public ShellContent create(ResourceLocation id, @Nullable CompoundTag nbt) {
         ShellContentCreatorInfo info = this.getById(id);
-
-        if (info == null) {
-            info = MISSING;
-        }
 
         return info.create(nbt);
     }
@@ -139,17 +137,16 @@ public class ShellContentCreatorServiceImpl extends SimpleJsonResourceReloadList
         CompoundTag shellContentNbt = new CompoundTag();
 
         ResourceLocation id = this.getId(shellContent.getCreatorInfo());
-
-        //TODO better handling of Ids
-        assert id != null;
         shellContentNbt.putString(ShellContentCreatorInfo.NBT_TAG_ID, id.toString());
         shellContentNbt.put(ShellContentCreatorInfo.NBT_TAG_DATA, shellContent.serializeNBT());
         parent.put(ShellContentCreatorInfo.NBT_TAG_ELEMENT, shellContentNbt);
     }
 
+    @Override
+    @NotNull
     public ResourceLocation getId(ShellContentCreatorInfo creatorInfo) {
         return this.creators.inverse()
-                .get(creatorInfo);
+                .getOrDefault(creatorInfo, MISSING_ID);
     }
 
     @Override

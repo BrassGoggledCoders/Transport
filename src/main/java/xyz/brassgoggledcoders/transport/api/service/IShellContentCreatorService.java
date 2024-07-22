@@ -18,7 +18,7 @@ public interface IShellContentCreatorService {
     @Nullable
     ShellContentCreatorInfo getById(ResourceLocation id);
 
-    @Nullable
+    @NotNull
     ResourceLocation getId(ShellContentCreatorInfo info);
 
     @Nonnull
