@@ -12,7 +12,7 @@ import java.util.Optional;
 public class EnergyTOPShellProvider implements ITOPShellProvider {
     @Override
     public void addInfo(ShellContent shellContent, ProbeMode mode, IProbeInfo probeInfo, IProbeConfig probeConfig) {
-        Optional.of(shellContent.getCapability(TransportCapabilities.ENERGY_STORAGE, null))
+        Optional.ofNullable(shellContent.getCapability(TransportCapabilities.ENERGY_STORAGE, null))
                 .ifPresent(iEnergyStorage -> addEnergyInfo(
                         probeInfo,
                         probeConfig,

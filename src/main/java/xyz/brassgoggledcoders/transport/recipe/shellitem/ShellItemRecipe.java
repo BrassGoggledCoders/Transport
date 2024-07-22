@@ -20,6 +20,7 @@ import xyz.brassgoggledcoders.transport.recipe.railworkerbench.IRailWorkerBenchR
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -156,6 +157,6 @@ public class ShellItemRecipe implements IRailWorkerBenchRecipe {
     }
 
     public ItemStack getOutput() {
-        return output;
+        return Objects.requireNonNull(output);
     }
 }

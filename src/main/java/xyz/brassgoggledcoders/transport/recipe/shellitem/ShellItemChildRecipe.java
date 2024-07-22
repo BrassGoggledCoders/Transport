@@ -1,14 +1,13 @@
 package xyz.brassgoggledcoders.transport.recipe.shellitem;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import xyz.brassgoggledcoders.transport.content.TransportRecipes;
 import xyz.brassgoggledcoders.transport.api.recipe.ingredient.SizedIngredient;
+import xyz.brassgoggledcoders.transport.content.TransportRecipes;
 import xyz.brassgoggledcoders.transport.recipe.railworkerbench.IRailWorkerBenchRecipe;
 
 import java.util.Collection;
@@ -41,7 +40,7 @@ public record ShellItemChildRecipe(
 
     @Override
     public ItemStack getOutput() {
-        return null;
+        return this.output();
     }
 
     @Override
@@ -52,7 +51,8 @@ public record ShellItemChildRecipe(
     @Override
     @NotNull
     public ItemStack assemble(@NotNull Container pContainer, @NotNull RegistryAccess registryAccess) {
-        return ItemStack.EMPTY;
+        return this.output()
+                .copy();
     }
 
     @Override
@@ -63,7 +63,8 @@ public record ShellItemChildRecipe(
     @Override
     @NotNull
     public ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
-        return null;
+        return this.output()
+                .copy();
     }
 
     @Override

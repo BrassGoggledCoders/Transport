@@ -6,6 +6,8 @@ import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.transport.api.TransportAPI;
 import xyz.brassgoggledcoders.transport.api.shell.IShell;
 
+import java.util.HashMap;
+
 public class NetworkHandler {
     public NetworkHandler() {
 
@@ -34,7 +36,7 @@ public class NetworkHandler {
             packetTarget = PacketDistributor.ALL.noArg();
         }
         packetTarget.send(
-                new SyncShellContentCreatorInfoMessage(TransportAPI.SHELL_CONTENT_CREATOR.get().getMap())
+                new SyncShellContentCreatorInfoMessage(new HashMap<>(TransportAPI.SHELL_CONTENT_CREATOR.get().getMap()))
         );
     }
 }
