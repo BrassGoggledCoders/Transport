@@ -127,7 +127,8 @@ public class TransportBlockData {
                 });
 
         dataRegistering.forEntry(TransportBlocks.ONE_WAY_BOOSTER_RAIL)
-                .withDefaults(TransportBlockData::defaultRail)
+                .withDefaults(BlockBasics::defaultLoot)
+                .withDefaults(TransportBlockData::defaultBaseRail)
                 .withDefaults(TransportBlockData::defaultGoldRail)
                 .withDeferredProvider(
                         ProviderTypes.BLOCKSTATE,
@@ -136,6 +137,7 @@ public class TransportBlockData {
 
         dataRegistering.forEntry(TransportBlocks.SWITCH_RAIL)
                 .withDefaults(TransportBlockData::defaultIronRail)
+                .withDefaults(BlockBasics::defaultLoot)
                 .withProvider(ProviderTypes.TAGS, TransportBlockData::railTag)
                 .withDeferredProvider(
                         ProviderTypes.BLOCKSTATE,
@@ -179,8 +181,8 @@ public class TransportBlockData {
                 );
 
         dataRegistering.forEntry(TransportBlocks.INVERTED_POWERED_RAIL)
-                .withDefaults(TransportBlockData::defaultBaseRail)
                 .withDefaults(TransportBlockData::defaultGoldRail)
+                .withProvider(ProviderTypes.TAGS, TransportBlockData::railTag)
                 .withDeferredProvider(
                         ProviderTypes.BLOCKSTATE,
                         (entry, provider) -> BlockModelHelper.straightPoweredRailBlockState(
@@ -324,6 +326,7 @@ public class TransportBlockData {
     ) {
         entry.withProvider(ProviderTypes.TAGS, TransportBlockData::railTag);
         entry.withDeferredProvider(ProviderTypes.ITEM_MODELS, TransportBlockData::railItemModel);
+        entry.withDefaults(BlockBasics::defaultLoot);
     }
 
     private static <R extends BaseRailBlock> void defaultRail(
@@ -334,7 +337,6 @@ public class TransportBlockData {
     }
 
     private static <R extends BaseRailBlock> void defaultStraightRail(
-            DataRegistering dataRegistering,
             DataRegisteringEntry<BlockEntry<R>, R, Block> blockEntry
     ) {
         TransportBlockData.defaultBaseRail(blockEntry);

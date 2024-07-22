@@ -1,30 +1,28 @@
 package xyz.brassgoggledcoders.transport.data.content;
 
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance.Slots;
-import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.Tags;
 import xyz.brassgoggledcoders.shadyskies.dataregistering.DataRegistering;
 import xyz.brassgoggledcoders.shadyskies.dataregistering.provider.ProviderTypes;
+import xyz.brassgoggledcoders.transport.api.tag.TransportItemTags;
 import xyz.brassgoggledcoders.transport.content.TransportItems;
 import xyz.brassgoggledcoders.transport.data.recipe.ShellItemRecipeBuilder;
 import xyz.brassgoggledcoders.transport.data.util.ItemBasics;
-
-import java.util.List;
-import java.util.Optional;
+import xyz.brassgoggledcoders.transport.model.patternedraillayer.PatternedRailLayerCustomLoaderBuilder;
 
 public class TransportItemData {
     public static void generate(DataRegistering dataRegistering) {
-        dataRegistering.forEntry(TransportItems.PATTERNED_RAIL_LAYER)
+        dataRegistering.forEntry(TransportItems.SHELL_MINECART)
                 .withDefaults(ItemBasics::defaultLang)
                 .withDeferredProvider(
                         ProviderTypes.ITEM_MODELS,
-                        (entry, provider) -> provider.basicItem(provider.mcLoc("item/minecart"))
+                        (entry, provider) -> provider.getBuilder(entry.getId().toString())
+                                .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                                .texture("layer0", provider.mcLoc("item/minecart"))
                 )
                 .withDeferredProvider(
                         ProviderTypes.RECIPE,
@@ -34,7 +32,19 @@ public class TransportItemData {
                 );
 
         dataRegistering.forEntry(TransportItems.PATTERNED_RAIL_LAYER)
-                .withDefaults(ItemBasics::defaultItem)
+                .withDefaults(ItemBasics::defaultLang)
+                .withProvider(
+                        ProviderTypes.TAGS,
+                        (entry, provider) -> provider.tag(TransportItemTags.RAIL_PROVIDERS)
+                                .with(entry.asItem())
+                )
+                .withDeferredProvider(
+                        ProviderTypes.ITEM_MODELS,
+                        (entry, provider) -> provider.getBuilder("item/patterned_rail_layer")
+                                .parent(provider.getExistingFile(provider.mcLoc("item/generated")))
+                                .customLoader(PatternedRailLayerCustomLoaderBuilder::new)
+                                .withLayer(provider.mcLoc("block/smooth_stone"))
+                )
                 .withDeferredProvider(
                         ProviderTypes.RECIPE,
                         (entry, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, entry.get())
@@ -43,15 +53,7 @@ public class TransportItemData {
                                 .pattern("IR ")
                                 .define('R', Tags.Items.DYES_RED)
                                 .define('I', Tags.Items.INGOTS_IRON)
-                                .unlockedBy("has_item", CriteriaTriggers.INVENTORY_CHANGED
-                                        .createCriterion(new InventoryChangeTrigger.TriggerInstance(
-                                                Optional.empty(),
-                                                Slots.ANY,
-                                                List.of(ItemPredicate.Builder.item()
-                                                        .of(Tags.Items.INGOTS_IRON)
-                                                        .build()
-                                                )
-                                        )))
+                                .unlockedBy("has_item", provider.unlockedByTag(Tags.Items.INGOTS_IRON))
                                 .save(provider)
                 );
     }

@@ -59,14 +59,15 @@ public class ShellContentInfoBuilder {
         validate();
         infoConsumer.accept(
                 id,
-                WithConditions.builder(new ShellContentCreatorInfo(
+                new WithConditions<>(
+                        new ShellContentCreatorInfo(
                                 this.viewState,
                                 this.name != null ? this.name : this.viewState.getBlock().getName(),
                                 this.createRecipe,
                                 this.shellContentCreatorBuilder.build()
-                        ))
-                        .addCondition(this.conditions)
-                        .build()
+                        ),
+                        this.conditions.toArray(ICondition[]::new)
+                )
         );
     }
 

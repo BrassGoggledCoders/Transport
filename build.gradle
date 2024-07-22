@@ -44,12 +44,12 @@ runs {
         systemProperty 'forge.logging.markers', 'REGISTRIES'
         systemProperty 'forge.logging.console.level', 'debug'
 
-        modSource project.sourceSets.main
+        modSource sourceSets.main
     }
 
     client {
         systemProperty 'forge.enabledGameTestNamespaces', 'transport'
-        modSource project.sourceSets.gametest
+        modSource sourceSets.gametest
     }
 
     server {
@@ -58,13 +58,13 @@ runs {
 
     gameTestServer {
         systemProperty 'forge.enabledGameTestNamespaces', 'transport'
-        modSource project.sourceSets.gametest
+        modSource sourceSets.gametest
     }
 
     data {
         programArguments.addAll '--mod', 'transport', '--all', '--output', file('src/generated/resources/').getAbsolutePath(),
                 '--existing', file('src/main/resources/').getAbsolutePath()
-        modSource project.sourceSets.datagen
+        modSource sourceSets.datagen
     }
 }
 
@@ -101,7 +101,7 @@ dependencies {
     implementation "xyz.brassgoggledcoders.shadyskies:Registering:1.1.9"
     jarJar("xyz.brassgoggledcoders.shadyskies:Registering:[1.1.0, 1.2.0)")
 
-    implementation "xyz.brassgoggledcoders.shadyskies:DataRegistering:1.1.4"
+    implementation "xyz.brassgoggledcoders.shadyskies:DataRegistering:1.1.6"
 
     localRuntime "blusunrize.immersiveengineering:ImmersiveEngineering:1.20.4-11.5.0-179"
     compileOnly "blusunrize.immersiveengineering:ImmersiveEngineering:1.20.4-11.5.0-179:api"
