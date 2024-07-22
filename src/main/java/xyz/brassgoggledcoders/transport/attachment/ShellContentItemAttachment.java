@@ -4,13 +4,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.Transport;
 
 import java.util.Optional;
 
 public record ShellContentItemAttachment(
-        ResourceLocation id,
-        Optional<CompoundTag> savedTag
+        @NotNull ResourceLocation id,
+        @NotNull Optional<CompoundTag> savedTag
 ) {
     public static final Codec<ShellContentItemAttachment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("id").forGetter(ShellContentItemAttachment::id),

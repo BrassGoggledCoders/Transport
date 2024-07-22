@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import xyz.brassgoggledcoders.transport.Transport;
+import xyz.brassgoggledcoders.transport.content.TransportAttachments;
 import xyz.brassgoggledcoders.transport.content.TransportBlocks;
 import xyz.brassgoggledcoders.transport.content.TransportItems;
 import xyz.brassgoggledcoders.transport.content.TransportRecipes;
@@ -58,6 +59,11 @@ public class TransportJEI implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
-        registration.useNbtForSubtypes(TransportItems.SHELL_MINECART.get());
+        registration.registerSubtypeInterpreter(
+                TransportItems.SHELL_MINECART.asItem(),
+                (ingredient, context) -> ingredient.getData(TransportAttachments.SHELL_CONTENT_ITEM)
+                        .id()
+                        .toString()
+        );
     }
 }

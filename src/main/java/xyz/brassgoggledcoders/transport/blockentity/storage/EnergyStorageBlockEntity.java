@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -49,6 +50,10 @@ public class EnergyStorageBlockEntity extends CapabilityStorageBlockEntity<IEner
 
     @Override
     public void loadStorage(CompoundTag compoundTag) {
-        this.getStorage().deserializeNBT(compoundTag.getCompound("energy"));
+        Tag tag = compoundTag.get("energy");
+        if (tag != null) {
+            this.getStorage()
+                    .deserializeNBT(tag);
+        }
     }
 }
