@@ -33,7 +33,7 @@ public class ItemStorageShellContent extends ShellContent implements MenuProvide
     }
 
     @Nonnull
-    private IItemHandler getHandler() {
+    public IItemHandler getHandler() {
         return this.itemStackHandler;
     }
 

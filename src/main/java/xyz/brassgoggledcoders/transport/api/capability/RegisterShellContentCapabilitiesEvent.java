@@ -15,7 +15,7 @@ public class RegisterShellContentCapabilitiesEvent extends Event implements IMod
     public <T, C, SC extends ShellContent> void registerShellContent(
             ShellContentCapability<T, C> contentCapability,
             Codec<? extends IShellContentCreator<? extends SC>> codec,
-            ICapabilityProvider<SC, T, C> capabilityProvider
+            ICapabilityProvider<SC, C, T> capabilityProvider
     ) {
         contentCapability.addProvider(
                 codec,

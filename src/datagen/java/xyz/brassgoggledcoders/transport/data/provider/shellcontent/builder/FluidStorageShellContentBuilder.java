@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.transport.data.provider.shellcontent.builder;
 
 import com.mojang.serialization.Codec;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
@@ -18,6 +19,7 @@ public class FluidStorageShellContentBuilder implements IShellContentCreatorBuil
         this.allowItemInteraction = true;
     }
 
+    @SuppressWarnings("unused")
     public FluidStorageShellContentBuilder withAllowItemInteraction(boolean allowItemInteraction) {
         this.allowItemInteraction = allowItemInteraction;
         return this;

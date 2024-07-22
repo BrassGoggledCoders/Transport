@@ -4,12 +4,11 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.neoforge.capabilities.BaseCapability;
-import net.neoforged.neoforge.capabilities.CapabilityRegistry;
-import net.neoforged.neoforge.capabilities.EntityCapability;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.minecraft.world.entity.EntityType;
+import net.neoforged.neoforge.capabilities.*;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import xyz.brassgoggledcoders.transport.api.shell.IShell;
 import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 
@@ -41,6 +40,15 @@ public class ShellContentCapability<T, C> extends BaseCapability<T, C> {
         return this.entityCapability;
     }
 
+    public <E extends Entity & IShell> void registerEntityCapability(RegisterCapabilitiesEvent event, EntityType<E> eEntityType) {
+        event.registerEntity(
+                this.getEntityCapability(),
+                eEntityType,
+                (entity, context) -> entity.getContent()
+                        .getCapability(this, context)
+        );
+    }
+
     @ApiStatus.Internal
     @Nullable
     public T getCapability(ShellContent shellContent, C context) {
@@ -58,10 +66,10 @@ public class ShellContentCapability<T, C> extends BaseCapability<T, C> {
     @SuppressWarnings("unchecked")
     public <SC extends ShellContent> void addProvider(
             Codec<? extends IShellContentCreator<? extends SC>> codec,
-            ICapabilityProvider<SC, T, C> capabilityProvider
+            ICapabilityProvider<SC, C, T> capabilityProvider
     ) {
         this.providers.computeIfAbsent(codec, c -> new ArrayList<>())
-                .add((ICapabilityProvider<ShellContent, C, T>)capabilityProvider);
+                .add((ICapabilityProvider<ShellContent, C, T>) capabilityProvider);
     }
 
     public static synchronized List<ShellContentCapability<?, ?>> getAll() {

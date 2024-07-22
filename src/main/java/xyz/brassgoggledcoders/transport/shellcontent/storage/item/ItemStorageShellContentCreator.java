@@ -12,7 +12,7 @@ public record ItemStorageShellContentCreator(
         StorageSize size,
         boolean showScreen
 ) implements IItemStorageShellContentCreator<ItemStorageShellContent> {
-    public static final Codec<IItemStorageShellContentCreator<?>> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final Codec<ItemStorageShellContentCreator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.flatXmap(
                     value -> StorageSize.getByName(value)
                             .map(DataResult::success)

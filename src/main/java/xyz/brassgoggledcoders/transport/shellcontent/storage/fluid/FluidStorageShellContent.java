@@ -5,6 +5,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 
@@ -17,6 +18,10 @@ public class FluidStorageShellContent extends ShellContent {
     public FluidStorageShellContent(int capacity, boolean allowItemInteraction) {
         this.fluidTank = new FluidTank(capacity);
         this.allowItemInteraction = allowItemInteraction;
+    }
+
+    public final IFluidHandler getHandler() {
+        return this.fluidTank;
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.transport.api.shellcontent.IShellContentCreator;
-import xyz.brassgoggledcoders.transport.api.shellcontent.ShellContent;
 import xyz.brassgoggledcoders.transport.api.shellcontent.builtin.IEnergyStorageShellContentCreator;
 
 public record EnergyStorageShellContentCreator(
@@ -13,7 +12,7 @@ public record EnergyStorageShellContentCreator(
         int maxExtract,
         boolean creative
 ) implements IEnergyStorageShellContentCreator<EnergyStorageShellContent> {
-    public static final Codec<IEnergyStorageShellContentCreator<? extends ShellContent>> CODEC =
+    public static final Codec<EnergyStorageShellContentCreator> CODEC =
             RecordCodecBuilder.create(instance -> instance.group(
                     Codec.INT.fieldOf("capacity").forGetter(IEnergyStorageShellContentCreator::getCapacity),
                     Codec.INT.optionalFieldOf("maxReceive", -1).forGetter(IEnergyStorageShellContentCreator::getMaxReceive),

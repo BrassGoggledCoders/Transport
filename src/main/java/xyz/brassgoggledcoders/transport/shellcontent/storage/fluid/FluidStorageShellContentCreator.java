@@ -9,7 +9,7 @@ public record FluidStorageShellContentCreator(
         int capacity,
         boolean allowItemInteraction
 ) implements IFluidStorageShellContentCreator<FluidStorageShellContent> {
-    public static Codec<IFluidStorageShellContentCreator<?>> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static Codec<FluidStorageShellContentCreator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("capacity")
                     .forGetter(IFluidStorageShellContentCreator::getCapacity),
             Codec.BOOL.optionalFieldOf("allowItemInteraction", true)

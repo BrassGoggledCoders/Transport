@@ -37,17 +37,17 @@ public class TransportShellContent {
                     .object("empty")
                     .simple(REGISTRY_KEY, () -> EmptyShellContentCreator.CODEC);
 
-    public static IRegisteringEntry<Codec<IFluidStorageShellContentCreator<?>>, Codec<? extends IShellContentCreator<?>>> FLUID_STORAGE =
+    public static IRegisteringEntry<Codec<FluidStorageShellContentCreator>, Codec<? extends IShellContentCreator<?>>> FLUID_STORAGE =
             Transport.getRegistering()
                     .object("fluid_storage")
                     .simple(REGISTRY_KEY, () -> FluidStorageShellContentCreator.CODEC);
 
-    public static IRegisteringEntry<Codec<IItemStorageShellContentCreator<?>>, Codec<? extends IShellContentCreator<?>>> ITEM_STORAGE =
+    public static IRegisteringEntry<Codec<ItemStorageShellContentCreator>, Codec<? extends IShellContentCreator<?>>> ITEM_STORAGE =
             Transport.getRegistering()
                     .object("item_storage")
                     .simple(REGISTRY_KEY, () -> ItemStorageShellContentCreator.CODEC);
 
-    public static IRegisteringEntry<Codec<IEnergyStorageShellContentCreator<?>>, Codec<? extends IShellContentCreator<?>>> ENERGY_STORAGE =
+    public static IRegisteringEntry<Codec<EnergyStorageShellContentCreator>, Codec<? extends IShellContentCreator<?>>> ENERGY_STORAGE =
             Transport.getRegistering()
                     .object("energy_storage")
                     .simple(REGISTRY_KEY, () -> EnergyStorageShellContentCreator.CODEC);
